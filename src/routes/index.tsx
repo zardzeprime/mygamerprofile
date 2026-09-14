@@ -4,8 +4,17 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { GameCard } from "@/components/games/GameCard";
 import { GAMES } from "@/config/games";
 import { useI18n } from "@/i18n";
+import { useAuth } from "@/hooks/useAuth";
+import { listPosts, createPost } from "@/lib/posts.functions";
+import { PostCard } from "@/components/posts/PostCard";
+import { PostComposer } from "@/components/posts/PostComposer";
+import { useState } from "react";
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const posts = await listPosts();
+    return { posts };
+  },
   head: () => ({
     meta: [
       { title: "MGP — Sua identidade nos jogos" },
@@ -17,8 +26,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "MGP — Sua identidade nos jogos" },
       {
         property: "og:description",
-        content:
-          "Crie seu perfil gamer, monte Game Profiles por jogo, siga jogadores e encontre grupo no LFG.",
+        content: "Crie seu perfil gamer, monte Game Profiles por jogo, siga jogadores e encontre grupo no LFG.",
       },
     ],
   }),
@@ -27,6 +35,9 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { t } = useI18n();
+  const { user } = useAuth();
+  const { posts: initialPosts } = Route.useLoaderData();
+  const [posts, setPosts] = useState(initialPosts);
 
   const discover = [
     {
@@ -53,16 +64,45 @@ function Home() {
           <h1 className="mt-4 font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
             {t("home.hero.title")}
           </h1>
-          <p className="mt-4 text-base text-muted-foreground sm:text-lg">
-            {t("home.hero.subtitle")}
-          </p>
+          <p className="mt-4 text-base text-muted-foreground sm:text-lg">{t("home.hero.subtitle")}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/games"
-              className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-            >
-              {t("home.cta.exploreGames")}
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  to="/settings/profile"
+                  className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                >
+                  {t("home.cta.myProfile")}
+                </Link>
+                <Link
+                  to="/games"
+                  className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+                >
+                  {t("home.cta.exploreGames")}
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/register"
+                  className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                >
+                  {t("home.cta.createProfile")}
+                </Link>
+                <Link
+                  to="/login"
+                  className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+                >
+                  {t("home.cta.login")}
+                </Link>
+                <Link
+                  to="/games"
+                  className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+                >
+                  {t("home.cta.exploreGames")}
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -82,8 +122,13 @@ function Home() {
         <h2 id="community-activity" className="font-display text-2xl font-semibold text-foreground">
           {t("home.activity.title")}
         </h2>
-        <div className="mt-5">
-          <EmptyState title={t("home.activity.empty")} />
+        <div className="mt-5 space-y-4">
+          {user && <PostComposer onCreated={(post) => setPosts((prev) => [post, ...prev])} />}
+          {posts.length === 0 ? (
+            <EmptyState title={t("home.activity.empty")} />
+          ) : (
+            posts.map((post) => <PostCard key={post.id} post={post} />)
+          )}
         </div>
       </section>
 

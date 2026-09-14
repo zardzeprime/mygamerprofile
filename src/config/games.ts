@@ -26,6 +26,7 @@ export type GameProfileField = {
 };
 
 export type GameConfig = {
+  id: string;
   slug: string;
   name: string;
   description: Record<Locale, string>;
@@ -51,6 +52,7 @@ export const MODULE_LABELS: Record<GameModuleKey, Record<Locale, string>> = {
 
 export const GAMES: GameConfig[] = [
   {
+    id: "00000000-0000-0000-0000-000000000001",
     slug: "dark-souls-remastered",
     name: "Dark Souls Remastered",
     description: {
@@ -128,6 +130,7 @@ export const GAMES: GameConfig[] = [
     ],
   },
   {
+    id: "00000000-0000-0000-0000-000000000002",
     slug: "valorant",
     name: "Valorant",
     description: {
