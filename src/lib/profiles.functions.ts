@@ -83,13 +83,13 @@ export const updateProfile = createServerFn({ method: "POST" })
   .inputValidator((data) => updateProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
     const payload = data as Record<string, unknown>;
-    if (payload.username && !USERNAME_REGEX.test(payload.username as string)) {
+    if (payload["username"] && !USERNAME_REGEX.test(payload["username"] as string)) {
       throw new Error("invalid_username");
     }
     const supabase = context.supabase;
     const { data: profile, error } = await supabase
       .from("profiles")
-      .update(payload)
+      .update(payload as any)
       .eq("id", context.userId)
       .select()
       .single();
