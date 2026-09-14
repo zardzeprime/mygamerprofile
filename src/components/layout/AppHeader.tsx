@@ -1,19 +1,73 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, Search, X, User, Settings, LogOut } from "lucide-react";
 import { useState } from "react";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
 import { ThemeSelector } from "@/components/common/ThemeSelector";
 import { useI18n, type TranslationKey } from "@/i18n";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { UserAvatar } from "@/components/common/UserAvatar";
 
 const NAV: { to: string; key: TranslationKey }[] = [
   { to: "/", key: "navigation.home" },
   { to: "/games", key: "navigation.games" },
+  { to: "/lfg", key: "navigation.lfg" },
 ];
 
 export function AppHeader() {
   const { t } = useI18n();
+  const { user, loading, signOut } = useAuth();
   const [open, setOpen] = useState(false);
+
+  const AuthSection = () => {
+    if (loading) return null;
+    if (!user) {
+      return (
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/login">{t("auth.login")}</Link>
+          </Button>
+          <Button size="sm" asChild>
+            <Link to="/register">{t("auth.register")}</Link>
+          </Button>
+        </div>
+      );
+    }
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            aria-label={t("navigation.menu")}
+            className="flex items-center gap-2 rounded-full border border-border bg-surface px-2 py-1 text-sm font-medium transition-colors hover:bg-muted"
+          >
+            <UserAvatar user={user} size="sm" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem asChild>
+            <Link to="/settings/profile" className="flex items-center gap-2">
+              <Settings className="size-4" />
+              {t("navigation.settings")}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={signOut} className="flex items-center gap-2 text-destructive">
+            <LogOut className="size-4" />
+            {t("auth.logout")}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
@@ -48,6 +102,9 @@ export function AppHeader() {
             <LanguageSelector />
             <ThemeSelector />
           </div>
+          <div className="hidden lg:block">
+            <AuthSection />
+          </div>
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
@@ -80,9 +137,39 @@ export function AppHeader() {
               </Link>
             ))}
           </nav>
-          <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border pt-4">
-            <LanguageSelector />
-            <ThemeSelector />
+          <div className="mt-4 flex flex-col gap-3 border-t border-border pt-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <LanguageSelector />
+              <ThemeSelector />
+            </div>
+            {!loading && !user && (
+              <div className="flex flex-col gap-2">
+                <Button asChild>
+                  <Link to="/register" onClick={() => setOpen(false)}>
+                    {t("auth.register")}
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/login" onClick={() => setOpen(false)}>
+                    {t("auth.login")}
+                  </Link>
+                </Button>
+              </div>
+            )}
+            {!loading && user && (
+              <div className="flex flex-col gap-2">
+                <Button variant="outline" asChild>
+                  <Link to="/settings/profile" onClick={() => setOpen(false)}>
+                    <Settings className="mr-2 size-4" />
+                    {t("navigation.settings")}
+                  </Link>
+                </Button>
+                <Button variant="destructive" onClick={() => { signOut(); setOpen(false); }}>
+                  <LogOut className="mr-2 size-4" />
+                  {t("auth.logout")}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       ) : null}
