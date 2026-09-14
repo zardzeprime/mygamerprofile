@@ -1,34 +1,45 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { GAMES, type GameProfileField } from "@/config/games";
 import { getSupabasePublic } from "./supabase.server";
+
+const slugSchema = z.object({ slug: z.string() });
+const gameProfileSchema = z.object({ username: z.string(), slug: z.string() });
+const upsertGameProfileSchema = z.object({
+  game_id: z.string(),
+  profile_data: z.record(z.unknown()),
+  visibility: z.string().optional(),
+});
 
 export const getGames = createServerFn({ method: "GET" }).handler(async () => {
   const supabase = getSupabasePublic();
-  const { data: games, error } = await supabase
+  const { data, error } = await supabase
     .from("games")
-    .select("*, game_modules(module_key, enabled, sort_order)")
+    .select("*, game_modules(*)")
     .eq("active", true)
     .order("name");
   if (error) throw new Error(error.message);
-  return games ?? [];
+  return data;
 });
 
-export const getGameBySlug = createServerFn({ method: "GET" }).handler(
-  async ({ data }: { data: { slug: string } }) => {
+export const getGameBySlug = createServerFn({ method: "GET" })
+  .inputValidator((data) => slugSchema.parse(data))
+  .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
     const { data: game, error } = await supabase
       .from("games")
-      .select("*, game_modules(module_key, enabled, sort_order)")
+      .select("*, game_modules(*)")
       .eq("slug", data.slug)
       .eq("active", true)
       .single();
     if (error) throw new Error(error.message);
     return game;
-  },
-);
+  });
 
-export const getGameProfile = createServerFn({ method: "GET" }).handler(
-  async ({ data }: { data: { username: string; slug: string } }) => {
+export const getGameProfile = createServerFn({ method: "GET" })
+  .inputValidator((data) => gameProfileSchema.parse(data))
+  .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
@@ -37,33 +48,31 @@ export const getGameProfile = createServerFn({ method: "GET" }).handler(
       .single();
     if (profileError) throw new Error(profileError.message);
 
-    const { data: game, error: gameError } = await supabase
-      .from("games")
-      .select("id, slug, name")
-      .eq("slug", data.slug)
-      .single();
-    if (gameError) throw new Error(gameError.message);
+    const game = GAMES.find((g) => g.slug === data.slug);
+    if (!game) throw new Error("game_not_found");
 
-    const { data: gameProfile, error } = await supabase
+    const { data: gameProfile, error: gpError } = await supabase
       .from("game_profiles")
       .select("*")
       .eq("user_id", profile.id)
       .eq("game_id", game.id)
-      .single();
-    if (error && error.code !== "PGRST116") throw new Error(error.message);
-    return { profile, game, gameProfile: gameProfile ? { ...gameProfile, game_slug: game.slug } : null };
-  },
-);
+      .maybeSingle();
+    if (gpError) throw new Error(gpError.message);
+
+    return {
+      profile,
+      game,
+      gameProfile: gameProfile ? { ...gameProfile, game_slug: game.slug } : null,
+    };
+  });
 
 export const upsertGameProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((data) => upsertGameProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const { game_id, profile_data, visibility = "public" } = data as {
-      game_id: string;
-      profile_data: Record<string, unknown>;
-      visibility?: string;
-    };
     const supabase = context.supabase;
+    const { game_id, profile_data, visibility = "public" } = data;
+
     const { data: existing } = await supabase
       .from("game_profiles")
       .select("id")
