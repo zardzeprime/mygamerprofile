@@ -41,7 +41,7 @@ function AdminReportsPage() {
 
   const handleStatusChange = async (id: string, status: string) => {
     const updated = await doUpdate({ data: { id, status } });
-    setReports((prev) => prev.map((r) => (r.id === id ? updated : r)));
+    setReports((prev) => prev.map((r) => (r.id === id ? (updated as any) : r)));
   };
 
   return (
