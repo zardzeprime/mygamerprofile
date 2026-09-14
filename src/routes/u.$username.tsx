@@ -120,7 +120,7 @@ function ProfilePage() {
             </TabsList>
             <TabsContent value="posts" className="mt-4 space-y-4">
               {posts.length === 0 ? (
-                <EmptyState message={t("home.activity.empty")} />
+                <EmptyState title={t("home.activity.empty")} />
               ) : (
                 posts.map((post) => <PostCard key={post.id} post={post} />)
               )}
