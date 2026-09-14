@@ -80,7 +80,7 @@ function LfgPage() {
         slots_open: Number(formData.get("slots_total")),
       },
     });
-    setPosts((prev) => [post, ...prev]);
+    setPosts((prev) => [post as any, ...prev]);
     setDialogOpen(false);
     form.reset();
   };
