@@ -68,11 +68,11 @@ function AdminReportsPage() {
                               : "bg-gold-soft/50 text-gold-foreground"
                       }
                     >
-                      {t(`admin.status.${report.status}` as const)}
+                      {t(`admin.status.${report.status}` as any)}
                     </Badge>
                   </div>
                   <p className="mt-2 text-sm">
-                    {t(`report.reasons.${report.reason}` as const)} · {report.reporter?.display_name} (@
+                    {t(`report.reasons.${report.reason}` as any)} · {report.reporter?.display_name} (@
                     {report.reporter?.username})
                   </p>
                   {report.details && <p className="mt-1 text-sm text-muted-foreground">{report.details}</p>}
