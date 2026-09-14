@@ -21,7 +21,7 @@ const deleteCommentSchema = z.object({ id: z.string() });
 const reactionSchema = z.object({ post_id: z.string() });
 
 export const listPosts = createServerFn({ method: "GET" })
-  .inputValidator((data) => listPostsSchema.parse(data))
+  .inputValidator((data) => listPostsSchema.parse(data ?? {}))
   .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
     const pageSize = 20;
