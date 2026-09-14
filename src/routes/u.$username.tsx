@@ -127,10 +127,10 @@ function ProfilePage() {
             </TabsContent>
             <TabsContent value="games" className="mt-4 grid gap-4 sm:grid-cols-2">
               {gameProfiles.length === 0 ? (
-                <EmptyState message={t("common.empty")} />
+                <EmptyState title={t("common.empty")} />
               ) : (
                 gameProfiles.map((gp) => (
-                  <GameProfileCard key={gp!.game_id} gameProfile={gp!} username={profile.username} />
+                  <GameProfileCard key={gp.game_id} gameProfile={gp} username={profile.username} />
                 ))
               )}
             </TabsContent>
