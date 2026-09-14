@@ -232,7 +232,7 @@ function LfgPage() {
           <SelectContent>
             {STATUSES.map((s) => (
               <SelectItem key={s} value={s}>
-                {t(`lfg.status.${s}` as const)}
+                {t(`lfg.status.${s}` as any)}
               </SelectItem>
             ))}
           </SelectContent>
