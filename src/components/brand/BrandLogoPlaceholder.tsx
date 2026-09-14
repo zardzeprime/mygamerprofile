@@ -8,12 +8,17 @@ import { cn } from "@/lib/utils";
  */
 export function BrandLogoPlaceholder({
   withFullName = false,
+  size = "md",
   className,
 }: {
   withFullName?: boolean;
+  size?: "sm" | "md" | "lg";
   className?: string;
 }) {
   const { t } = useI18n();
+
+  const markSize = size === "lg" ? "size-12 text-[0.95rem]" : size === "sm" ? "size-7 text-[0.6rem]" : "size-9 text-[0.7rem]";
+  const textSize = size === "lg" ? "text-xl" : size === "sm" ? "text-sm" : "text-base";
 
   return (
     <Link
@@ -23,7 +28,7 @@ export function BrandLogoPlaceholder({
     >
       <span
         aria-hidden="true"
-        className="grid size-9 place-items-center rounded-full border border-gold/60 bg-gold-soft/40 font-display text-[0.7rem] font-bold tracking-tight text-gold-strong transition-colors group-hover:border-gold"
+        className={cn("grid place-items-center rounded-full border border-gold/60 bg-gold-soft/40 font-display font-bold tracking-tight text-gold-strong transition-colors group-hover:border-gold", markSize)}
       >
         MGP
       </span>
