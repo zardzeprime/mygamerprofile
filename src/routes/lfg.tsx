@@ -267,7 +267,7 @@ function LfgPage() {
                       : "bg-muted text-muted-foreground"
                   }`}
                 >
-                  {t(`lfg.status.${post.status}` as const)}
+                  {t(`lfg.status.${post.status}` as any)}
                 </span>
               </div>
               <p className="mt-3 text-sm">{post.description}</p>
