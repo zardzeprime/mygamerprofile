@@ -20,7 +20,7 @@ import { useServerFn } from "@tanstack/react-start";
 
 export const Route = createFileRoute("/_authenticated/settings/profile")({
   loader: async () => {
-    const profile = await getCurrentProfile({ data: {} });
+    const profile = await getCurrentProfile();
     return { profile };
   },
   head: () => ({
