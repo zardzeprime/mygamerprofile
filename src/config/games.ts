@@ -130,6 +130,7 @@ export const GAMES: GameConfig[] = [
     ],
   },
   {
+    id: "00000000-0000-0000-0000-000000000002",
     slug: "valorant",
     name: "Valorant",
     description: {
