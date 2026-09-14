@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { User } from "@supabase/supabase-js";
 
 interface UserAvatarProps {
-  user: User | null;
+  user?: User | null;
   src?: string | null;
   name?: string | null;
   size?: "sm" | "md" | "lg";
@@ -16,8 +16,8 @@ const SIZE_CLASSES = {
 };
 
 export function UserAvatar({ user, src, name, size = "md", className }: UserAvatarProps) {
-  const displayName = name ?? user?.user_metadata?.display_name ?? user?.email?.split("@")[0] ?? "?";
-  const imageUrl = src ?? user?.user_metadata?.avatar_url;
+  const displayName = name ?? user?.user_metadata?.["display_name"] ?? user?.email?.split("@")[0] ?? "?";
+  const imageUrl = src ?? user?.user_metadata?.["avatar_url"];
   const initials = displayName.slice(0, 2).toUpperCase();
 
   return (
