@@ -20,11 +20,11 @@ export const Route = createFileRoute("/u/$username")({
   loader: async ({ params }) => {
     const profile = await getProfileByUsername({ data: { username: params.username } });
     if (!profile) throw notFound();
-    const posts = await listPosts({ data: { authorId: profile.id, limit: 20 } });
+    const posts = await listPosts({ data: { authorId: profile.id } });
     const gameProfiles = await Promise.all(
       GAMES.map((game) => getGameProfile({ data: { username: params.username, slug: game.slug } }).catch(() => null)),
     );
-    return { profile, posts, gameProfiles: gameProfiles.map((g) => g?.gameProfile).filter(Boolean) };
+    return { profile, posts, gameProfiles: gameProfiles.map((g) => g?.gameProfile).filter((g): g is NonNullable<typeof g> => !!g) };
   },
   notFoundComponent: () => {
     const { t } = useI18n();
