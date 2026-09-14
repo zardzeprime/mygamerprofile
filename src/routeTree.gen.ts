@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LfgRouteImport } from './routes/lfg'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
@@ -32,6 +33,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LfgRoute = LfgRouteImport.update({
+  id: '/lfg',
+  path: '/lfg',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -73,6 +79,7 @@ const UUsernameGamesSlugRoute = UUsernameGamesSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -84,6 +91,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
+  '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
+  '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/forgot-password'
+    | '/lfg'
     | '/login'
     | '/register'
     | '/onboarding'
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/forgot-password'
+    | '/lfg'
     | '/login'
     | '/register'
     | '/onboarding'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/forgot-password'
+    | '/lfg'
     | '/login'
     | '/register'
     | '/_authenticated/onboarding'
@@ -146,6 +158,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LfgRoute: typeof LfgRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   GamesSlugRoute: typeof GamesSlugRoute
@@ -174,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lfg': {
+      id: '/lfg'
+      path: '/lfg'
+      fullPath: '/lfg'
+      preLoaderRoute: typeof LfgRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -255,6 +275,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  LfgRoute: LfgRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   GamesSlugRoute: GamesSlugRoute,
