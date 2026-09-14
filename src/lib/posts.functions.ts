@@ -1,46 +1,61 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { getSupabasePublic } from "./supabase.server";
 
-const POSTS_PAGE = 20;
+const listPostsSchema = z.object({
+  gameId: z.string().optional(),
+  authorId: z.string().optional(),
+  page: z.number().default(1),
+});
+const createPostSchema = z.object({
+  body: z.string().max(2000),
+  game_id: z.string().optional(),
+  image_url: z.string().optional(),
+});
+const updatePostSchema = z.object({ id: z.string(), body: z.string().max(2000) });
+const deletePostSchema = z.object({ id: z.string() });
+const listCommentsSchema = z.object({ postId: z.string() });
+const createCommentSchema = z.object({ post_id: z.string(), body: z.string().max(2000) });
+const deleteCommentSchema = z.object({ id: z.string() });
+const reactionSchema = z.object({ post_id: z.string() });
 
-export const listPosts = createServerFn({ method: "GET" }).handler(
-  async ({ data }: { data: { gameId?: string; authorId?: string; page?: number } }) => {
+export const listPosts = createServerFn({ method: "GET" })
+  .inputValidator((data) => listPostsSchema.parse(data))
+  .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
+    const pageSize = 20;
+    const from = ((data.page ?? 1) - 1) * pageSize;
     let query = supabase
       .from("posts")
       .select(
-        "*, author:profiles(id, username, display_name, avatar_url), game:games(id, slug, name), reactions(count)",
+        "*, author:profiles!posts_author_id_fkey(id, username, display_name, avatar_url), game:games!posts_game_id_fkey(id, name, slug), reactions:reactions(user_id, reaction_type)",
       )
       .is("deleted_at", null)
       .order("created_at", { ascending: false })
-      .range(
-        ((data.page ?? 1) - 1) * POSTS_PAGE,
-        (data.page ?? 1) * POSTS_PAGE - 1,
-      );
+      .range(from, from + pageSize - 1);
     if (data.gameId) query = query.eq("game_id", data.gameId);
     if (data.authorId) query = query.eq("author_id", data.authorId);
-    const { data: posts, error } = await query;
+    const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
-    return posts ?? [];
-  },
-);
+    return rows;
+  });
 
 export const createPost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((data) => createPostSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const { body, game_id, image_url } = data as {
-      body: string;
-      game_id?: string;
-      image_url?: string;
-    };
-    if (!body || body.length > 2000) throw new Error("invalid_body");
     const supabase = context.supabase;
     const { data: post, error } = await supabase
       .from("posts")
-      .insert({ author_id: context.userId, body, game_id: game_id ?? null, image_url: image_url ?? null })
+      .insert({
+        author_id: context.userId,
+        body: data.body,
+        game_id: data.game_id ?? null,
+        image_url: data.image_url ?? null,
+      })
       .select(
-        "*, author:profiles(id, username, display_name, avatar_url), game:games(id, slug, name)",
+        "*, author:profiles!posts_author_id_fkey(id, username, display_name, avatar_url), game:games!posts_game_id_fkey(id, name, slug), reactions:reactions(user_id, reaction_type)",
       )
       .single();
     if (error) throw new Error(error.message);
@@ -49,14 +64,13 @@ export const createPost = createServerFn({ method: "POST" })
 
 export const updatePost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((data) => updatePostSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const { id, body } = data as { id: string; body: string };
-    if (!body || body.length > 2000) throw new Error("invalid_body");
     const supabase = context.supabase;
     const { data: post, error } = await supabase
       .from("posts")
-      .update({ body })
-      .eq("id", id)
+      .update({ body: data.body, updated_at: new Date().toISOString() })
+      .eq("id", data.id)
       .eq("author_id", context.userId)
       .select()
       .single();
@@ -66,42 +80,49 @@ export const updatePost = createServerFn({ method: "POST" })
 
 export const deletePost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((data) => deletePostSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const { id } = data as { id: string };
     const supabase = context.supabase;
     const { error } = await supabase
       .from("posts")
       .update({ deleted_at: new Date().toISOString() })
-      .eq("id", id)
+      .eq("id", data.id)
       .eq("author_id", context.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
 
-export const listComments = createServerFn({ method: "GET" }).handler(
-  async ({ data }: { data: { postId: string } }) => {
+export const listComments = createServerFn({ method: "GET" })
+  .inputValidator((data) => listCommentsSchema.parse(data))
+  .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
-    const { data: comments, error } = await supabase
+    const { data: rows, error } = await supabase
       .from("comments")
-      .select("*, author:profiles(id, username, display_name, avatar_url)")
+      .select(
+        "*, author:profiles!comments_author_id_fkey(id, username, display_name, avatar_url)",
+      )
       .eq("post_id", data.postId)
       .is("deleted_at", null)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
-    return comments ?? [];
-  },
-);
+    return rows;
+  });
 
 export const createComment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((data) => createCommentSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const { post_id, body } = data as { post_id: string; body: string };
-    if (!body || body.length > 1000) throw new Error("invalid_body");
     const supabase = context.supabase;
     const { data: comment, error } = await supabase
       .from("comments")
-      .insert({ post_id, author_id: context.userId, body })
-      .select("*, author:profiles(id, username, display_name, avatar_url)")
+      .insert({
+        post_id: data.post_id,
+        author_id: context.userId,
+        body: data.body,
+      })
+      .select(
+        "*, author:profiles!comments_author_id_fkey(id, username, display_name, avatar_url)",
+      )
       .single();
     if (error) throw new Error(error.message);
     return comment;
@@ -109,13 +130,13 @@ export const createComment = createServerFn({ method: "POST" })
 
 export const deleteComment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((data) => deleteCommentSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const { id } = data as { id: string };
     const supabase = context.supabase;
     const { error } = await supabase
       .from("comments")
       .update({ deleted_at: new Date().toISOString() })
-      .eq("id", id)
+      .eq("id", data.id)
       .eq("author_id", context.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -123,46 +144,41 @@ export const deleteComment = createServerFn({ method: "POST" })
 
 export const toggleReaction = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((data) => reactionSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const { post_id, reaction_type = "like" } = data as {
-      post_id: string;
-      reaction_type?: string;
-    };
     const supabase = context.supabase;
     const { data: existing } = await supabase
       .from("reactions")
       .select("id")
+      .eq("post_id", data.post_id)
       .eq("user_id", context.userId)
-      .eq("post_id", post_id)
-      .eq("reaction_type", reaction_type)
       .maybeSingle();
 
     if (existing) {
-      const { error } = await supabase
-        .from("reactions")
-        .delete()
-        .eq("id", existing.id);
+      const { error } = await supabase.from("reactions").delete().eq("id", existing.id);
       if (error) throw new Error(error.message);
       return { liked: false };
     }
 
-    const { error } = await supabase
-      .from("reactions")
-      .insert({ user_id: context.userId, post_id, reaction_type });
+    const { error } = await supabase.from("reactions").insert({
+      post_id: data.post_id,
+      user_id: context.userId,
+      reaction_type: "like",
+    });
     if (error) throw new Error(error.message);
     return { liked: true };
   });
 
 export const getUserReactions = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((data) => reactionSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const { post_ids } = data as { post_ids: string[] };
     const supabase = context.supabase;
     const { data: rows, error } = await supabase
       .from("reactions")
-      .select("post_id, reaction_type")
+      .select("post_id")
       .eq("user_id", context.userId)
-      .in("post_id", post_ids);
+      .eq("post_id", data.post_id);
     if (error) throw new Error(error.message);
-    return rows ?? [];
+    return { liked: rows.length > 0 };
   });
