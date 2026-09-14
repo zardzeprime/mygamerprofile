@@ -26,7 +26,7 @@ const updateLfgSchema = z.object({ id: z.string() }).catchall(z.unknown());
 const closeLfgSchema = z.object({ id: z.string() });
 
 export const listLfgPosts = createServerFn({ method: "GET" })
-  .inputValidator((data) => listLfgSchema.parse(data))
+  .inputValidator((data) => listLfgSchema.parse(data ?? {}))
   .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
     const pageSize = 20;

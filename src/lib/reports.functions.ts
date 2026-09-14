@@ -34,7 +34,7 @@ export const createReport = createServerFn({ method: "POST" })
 
 export const listReports = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => listReportsSchema.parse(data))
+  .inputValidator((data) => listReportsSchema.parse(data ?? {}))
   .handler(async ({ context, data }) => {
     const supabase = context.supabase;
     const pageSize = 50;
