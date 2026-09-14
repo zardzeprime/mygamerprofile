@@ -24,7 +24,7 @@ export const Route = createFileRoute("/u/$username")({
     const gameProfiles = await Promise.all(
       GAMES.map((game) => getGameProfile({ data: { username: params.username, slug: game.slug } }).catch(() => null)),
     );
-    return { profile, posts, gameProfiles: gameProfiles.map((g) => g?.gameProfile).filter((g): g is NonNullable<typeof g> => !!g) };
+    return { profile, posts, gameProfiles: gameProfiles.map((g) => g?.gameProfile).filter((g): g is NonNullable<typeof g> => !!g).map((g) => ({ ...g, profile_data: (g.profile_data ?? {}) as Record<string, unknown> })) };
   },
   notFoundComponent: () => {
     const { t } = useI18n();
