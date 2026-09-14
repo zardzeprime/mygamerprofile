@@ -26,6 +26,7 @@ export type GameProfileField = {
 };
 
 export type GameConfig = {
+  id: string;
   slug: string;
   name: string;
   description: Record<Locale, string>;
