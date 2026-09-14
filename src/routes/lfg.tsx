@@ -244,7 +244,7 @@ function LfgPage() {
 
       <div className="space-y-4">
         {posts.length === 0 ? (
-          <EmptyState message={t("common.empty")} />
+          <EmptyState title={t("common.empty")} />
         ) : (
           posts.map((post) => (
             <article key={post.id} className="surface-panel rounded-xl p-4">
