@@ -46,12 +46,12 @@ export const getGameProfile = createServerFn({ method: "GET" }).handler(
 
     const { data: gameProfile, error } = await supabase
       .from("game_profiles")
-      .select("*, game_slug:games!inner(slug)")
+      .select("*")
       .eq("user_id", profile.id)
       .eq("game_id", game.id)
       .single();
     if (error && error.code !== "PGRST116") throw new Error(error.message);
-    return { profile, game, gameProfile };
+    return { profile, game, gameProfile: gameProfile ? { ...gameProfile, game_slug: game.slug } : null };
   },
 );
 
