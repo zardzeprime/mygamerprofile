@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_authenticated/settings/appearance")({
 
 function SettingsAppearancePage() {
   const { t } = useI18n();
-  const { theme, setTheme } = useTheme();
+  const { preference, setPreference } = useTheme();
 
   return (
     <SettingsLayout>
@@ -26,7 +26,7 @@ function SettingsAppearancePage() {
         <div className="space-y-4">
           <div>
             <Label className="mb-3 block">{t("settings.theme")}</Label>
-            <RadioGroup value={theme} onValueChange={(value) => setTheme(value as "light" | "dark" | "system")}>
+            <RadioGroup value={preference} onValueChange={(value) => setPreference(value as "light" | "dark" | "system")}>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="light" id="theme-light" />
                 <Label htmlFor="theme-light">{t("theme.light")}</Label>
