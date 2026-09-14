@@ -24,7 +24,7 @@ export const Route = createFileRoute("/u/$username")({
     const gameProfiles = await Promise.all(
       GAMES.map((game) => getGameProfile({ data: { username: params.username, slug: game.slug } }).catch(() => null)),
     );
-    return { profile, posts, gameProfiles: gameProfiles.filter(Boolean) };
+    return { profile, posts, gameProfiles: gameProfiles.map((g) => g?.gameProfile).filter(Boolean) };
   },
   notFoundComponent: () => {
     const { t } = useI18n();
