@@ -175,6 +175,7 @@ const ptBR = {
   "common.error": "Algo deu errado.",
   "common.empty": "Nada por aqui ainda.",
   "common.close": "Fechar",
+  "common.all": "Todos",
 } satisfies Record<string, string>;
 
 export type TranslationKey = keyof typeof ptBR;
