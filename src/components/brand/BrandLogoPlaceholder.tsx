@@ -33,7 +33,7 @@ export function BrandLogoPlaceholder({
         MGP
       </span>
       <span className="flex flex-col leading-none">
-        <span className="font-display text-base font-bold tracking-tight text-foreground">
+        <span className={cn("font-display font-bold tracking-tight text-foreground", textSize)}>
           {t("brand.name")}
         </span>
         {withFullName ? (
