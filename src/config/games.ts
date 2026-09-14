@@ -52,6 +52,7 @@ export const MODULE_LABELS: Record<GameModuleKey, Record<Locale, string>> = {
 
 export const GAMES: GameConfig[] = [
   {
+    id: "00000000-0000-0000-0000-000000000001",
     slug: "dark-souls-remastered",
     name: "Dark Souls Remastered",
     description: {
