@@ -26,7 +26,7 @@ export function GameProfileCard({ gameProfile, username }: GameProfileCardProps)
           <DataSourceIndicator source="player_provided" />
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          {Object.keys(gameProfile.profile_data).length} {t("profile.games")}
+          {Object.keys(gameProfile.profile_data ?? {}).length} {t("profile.games")}
         </p>
       </article>
     </Link>
