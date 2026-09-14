@@ -12,7 +12,7 @@ import { useState } from "react";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const posts = await listPosts({ data: {} });
+    const posts = await listPosts();
     return { posts };
   },
   head: () => ({
