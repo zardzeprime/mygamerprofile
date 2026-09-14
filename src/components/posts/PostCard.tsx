@@ -34,7 +34,7 @@ export function PostCard({ post }: PostCardProps) {
   const isOwn = user?.id === post.author?.id;
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(
-    Array.isArray(post.reactions) ? post.reactions[0]?.count ?? 0 : typeof post.reactions === "number" ? post.reactions : 0,
+    Array.isArray(post.reactions) ? post.reactions.length : typeof post.reactions === "number" ? post.reactions : 0,
   );
   const [editing, setEditing] = useState(false);
   const [body, setBody] = useState(post.body);
