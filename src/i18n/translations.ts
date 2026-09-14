@@ -349,6 +349,7 @@ const en: Record<TranslationKey, string> = {
   "common.error": "Something went wrong.",
   "common.empty": "Nothing here yet.",
   "common.close": "Close",
+  "common.all": "All",
 };
 
 export const translations: Record<Locale, Record<TranslationKey, string>> = {
