@@ -81,7 +81,7 @@ export const updateLfgPost = createServerFn({ method: "POST" })
     const supabase = context.supabase;
     const { data: post, error } = await supabase
       .from("lfg_posts")
-      .update(updates)
+      .update(updates as any)
       .eq("id", id)
       .eq("user_id", context.userId)
       .select()
