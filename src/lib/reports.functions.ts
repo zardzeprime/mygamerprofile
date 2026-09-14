@@ -1,69 +1,70 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { getSupabasePublic } from "./supabase.server";
 
+const createReportSchema = z.object({
+  target_type: z.enum(["profile", "post", "comment", "lfg"]),
+  target_id: z.string(),
+  reason: z.string(),
+  details: z.string().optional(),
+});
+const listReportsSchema = z.object({
+  status: z.string().optional(),
+  page: z.number().default(1),
+});
+const updateReportSchema = z.object({ id: z.string(), status: z.enum(["pending", "reviewing", "resolved", "rejected"]) });
+
 export const createReport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((data) => createReportSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const { target_type, target_id, reason, details } = data as {
-      target_type: string;
-      target_id: string;
-      reason: string;
-      details?: string;
-    };
     const supabase = context.supabase;
-    const { data: report, error } = await supabase
-      .from("reports")
-      .insert({
-        reporter_id: context.userId,
-        target_type,
-        target_id,
-        reason,
-        details: details ?? null,
-      })
-      .select()
-      .single();
+    const { error } = await supabase.from("reports").insert({
+      reporter_id: context.userId,
+      target_type: data.target_type,
+      target_id: data.target_id,
+      reason: data.reason,
+      details: data.details ?? null,
+      status: "pending",
+    });
     if (error) throw new Error(error.message);
-    return report;
+    return { ok: true };
   });
 
 export const listReports = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const { data: isAdmin } = await context.supabase
-      .from("user_roles")
-      .select("id")
-      .eq("user_id", context.userId)
-      .eq("role", "admin")
-      .maybeSingle();
-    if (!isAdmin) throw new Error("unauthorized");
-
-    const supabase = getSupabasePublic();
-    const { data: reports, error } = await supabase
+  .inputValidator((data) => listReportsSchema.parse(data))
+  .handler(async ({ context, data }) => {
+    const supabase = context.supabase;
+    const pageSize = 50;
+    const from = ((data.page ?? 1) - 1) * pageSize;
+    let query = supabase
       .from("reports")
-      .select("*, reporter:profiles(id, username, display_name)")
-      .order("created_at", { ascending: false });
+      .select(
+        "*, reporter:profiles!reports_reporter_id_fkey(id, username, display_name)",
+      )
+      .order("created_at", { ascending: false })
+      .range(from, from + pageSize - 1);
+    if (data.status) query = query.eq("status", data.status);
+    const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
-    return reports ?? [];
+    return rows;
   });
 
 export const updateReportStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
+  .inputValidator((data) => updateReportSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const { id, status } = data as { id: string; status: string };
-    const { data: isAdmin } = await context.supabase
-      .from("user_roles")
-      .select("id")
-      .eq("user_id", context.userId)
-      .eq("role", "admin")
-      .maybeSingle();
-    if (!isAdmin) throw new Error("unauthorized");
-
     const supabase = context.supabase;
     const { data: report, error } = await supabase
       .from("reports")
-      .update({ status, reviewed_at: new Date().toISOString(), reviewed_by: context.userId })
-      .eq("id", id)
+      .update({
+        status: data.status,
+        reviewed_by: context.userId,
+        reviewed_at: new Date().toISOString(),
+      })
+      .eq("id", data.id)
       .select()
       .single();
     if (error) throw new Error(error.message);
