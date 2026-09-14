@@ -6,6 +6,7 @@ import { getGameConfig } from "@/config/games";
 interface GameProfileCardProps {
   gameProfile: {
     game_id: string;
+    game_slug?: string;
     profile_data: Record<string, unknown>;
     visibility: string;
   };
@@ -14,7 +15,7 @@ interface GameProfileCardProps {
 
 export function GameProfileCard({ gameProfile, username }: GameProfileCardProps) {
   const { t } = useI18n();
-  const config = getGameConfigById(gameProfile.game_id);
+  const config = getGameConfig(gameProfile.game_slug ?? "");
   if (!config) return null;
 
   return (
@@ -30,8 +31,4 @@ export function GameProfileCard({ gameProfile, username }: GameProfileCardProps)
       </article>
     </Link>
   );
-}
-
-function getGameConfigById(id: string) {
-  return getGameConfig(id) || undefined;
 }
