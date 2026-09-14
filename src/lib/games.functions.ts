@@ -72,6 +72,7 @@ export const upsertGameProfile = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     const supabase = context.supabase;
     const { game_id, profile_data, visibility = "public" } = data;
+    const jsonData = profile_data as unknown as Record<string, unknown>;
 
     const { data: existing } = await supabase
       .from("game_profiles")
@@ -83,7 +84,7 @@ export const upsertGameProfile = createServerFn({ method: "POST" })
     if (existing) {
       const { data: updated, error } = await supabase
         .from("game_profiles")
-        .update({ profile_data, visibility })
+        .update({ profile_data: jsonData as any, visibility })
         .eq("id", existing.id)
         .select()
         .single();
@@ -93,7 +94,7 @@ export const upsertGameProfile = createServerFn({ method: "POST" })
 
     const { data: inserted, error } = await supabase
       .from("game_profiles")
-      .insert({ user_id: context.userId, game_id, profile_data, visibility })
+      .insert({ user_id: context.userId, game_id, profile_data: jsonData as any, visibility })
       .select()
       .single();
     if (error) throw new Error(error.message);
