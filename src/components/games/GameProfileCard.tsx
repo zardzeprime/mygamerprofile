@@ -7,7 +7,7 @@ interface GameProfileCardProps {
   gameProfile: {
     game_id: string;
     game_slug?: string;
-    profile_data: Record<string, unknown>;
+    profile_data: Record<string, unknown> | null;
     visibility: string;
   };
   username: string;
