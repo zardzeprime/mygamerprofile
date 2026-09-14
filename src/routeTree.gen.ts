@@ -20,6 +20,9 @@ import { Route as GamesIndexRouteImport } from './routes/games.index'
 import { Route as GamesSlugRouteImport } from './routes/games.$slug'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
+import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings.account'
+import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings.appearance'
+import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as UUsernameGamesSlugRouteImport } from './routes/u.$username.games.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -77,6 +80,24 @@ const AuthenticatedAdminReportsRoute =
     path: '/admin/reports',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSettingsAccountRoute =
+  AuthenticatedSettingsAccountRouteImport.update({
+    id: '/settings/account',
+    path: '/settings/account',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsAppearanceRoute =
+  AuthenticatedSettingsAppearanceRouteImport.update({
+    id: '/settings/appearance',
+    path: '/settings/appearance',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsProfileRoute =
+  AuthenticatedSettingsProfileRouteImport.update({
+    id: '/settings/profile',
+    path: '/settings/profile',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const UUsernameGamesSlugRoute = UUsernameGamesSlugRouteImport.update({
   id: '/games/$slug',
   path: '/games/$slug',
@@ -94,6 +115,9 @@ export interface FileRoutesByFullPath {
   '/u/$username': typeof UUsernameRouteWithChildren
   '/games/': typeof GamesIndexRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/settings/account': typeof AuthenticatedSettingsAccountRoute
+  '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
+  '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
 export interface FileRoutesByTo {
@@ -107,6 +131,9 @@ export interface FileRoutesByTo {
   '/u/$username': typeof UUsernameRouteWithChildren
   '/games': typeof GamesIndexRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/settings/account': typeof AuthenticatedSettingsAccountRoute
+  '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
+  '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
 export interface FileRoutesById {
@@ -122,6 +149,9 @@ export interface FileRoutesById {
   '/u/$username': typeof UUsernameRouteWithChildren
   '/games/': typeof GamesIndexRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
+  '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
+  '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
 export interface FileRouteTypes {
@@ -137,6 +167,9 @@ export interface FileRouteTypes {
     | '/u/$username'
     | '/games/'
     | '/admin/reports'
+    | '/settings/account'
+    | '/settings/appearance'
+    | '/settings/profile'
     | '/u/$username/games/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -150,6 +183,9 @@ export interface FileRouteTypes {
     | '/u/$username'
     | '/games'
     | '/admin/reports'
+    | '/settings/account'
+    | '/settings/appearance'
+    | '/settings/profile'
     | '/u/$username/games/$slug'
   id:
     | '__root__'
@@ -164,6 +200,9 @@ export interface FileRouteTypes {
     | '/u/$username'
     | '/games/'
     | '/_authenticated/admin/reports'
+    | '/_authenticated/settings/account'
+    | '/_authenticated/settings/appearance'
+    | '/_authenticated/settings/profile'
     | '/u/$username/games/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -258,6 +297,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/settings/account': {
+      id: '/_authenticated/settings/account'
+      path: '/settings/account'
+      fullPath: '/settings/account'
+      preLoaderRoute: typeof AuthenticatedSettingsAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings/appearance': {
+      id: '/_authenticated/settings/appearance'
+      path: '/settings/appearance'
+      fullPath: '/settings/appearance'
+      preLoaderRoute: typeof AuthenticatedSettingsAppearanceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings/profile': {
+      id: '/_authenticated/settings/profile'
+      path: '/settings/profile'
+      fullPath: '/settings/profile'
+      preLoaderRoute: typeof AuthenticatedSettingsProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/u/$username/games/$slug': {
       id: '/u/$username/games/$slug'
       path: '/games/$slug'
@@ -271,11 +331,17 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedSettingsAccountRoute: typeof AuthenticatedSettingsAccountRoute
+  AuthenticatedSettingsAppearanceRoute: typeof AuthenticatedSettingsAppearanceRoute
+  AuthenticatedSettingsProfileRoute: typeof AuthenticatedSettingsProfileRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+  AuthenticatedSettingsAccountRoute: AuthenticatedSettingsAccountRoute,
+  AuthenticatedSettingsAppearanceRoute: AuthenticatedSettingsAppearanceRoute,
+  AuthenticatedSettingsProfileRoute: AuthenticatedSettingsProfileRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
