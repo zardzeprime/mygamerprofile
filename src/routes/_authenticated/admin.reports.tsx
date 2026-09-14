@@ -87,7 +87,7 @@ function AdminReportsPage() {
                   <SelectContent>
                     {STATUSES.map((s) => (
                       <SelectItem key={s} value={s}>
-                        {t(`admin.status.${s}` as const)}
+                        {t(`admin.status.${s}` as any)}
                       </SelectItem>
                     ))}
                   </SelectContent>
