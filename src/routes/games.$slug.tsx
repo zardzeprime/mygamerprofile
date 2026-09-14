@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { EmptyState } from "@/components/common/EmptyState";
-import { GAMES, MODULE_LABELS, getGameConfig, type GameModuleKey } from "@/config/games";
+import { MODULE_LABELS, getGameConfig, type GameModuleKey } from "@/config/games";
 import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
 
@@ -52,8 +52,10 @@ function HubMissing() {
 function GameHub() {
   const { slug } = Route.useParams();
   const { locale, t } = useI18n();
-  const game = getGameConfig(slug) ?? GAMES[0];
-  const [active, setActive] = useState<GameModuleKey>(game.modules[0]);
+  const game = getGameConfig(slug);
+  const [active, setActive] = useState<GameModuleKey>("overview");
+
+  if (!game) return <HubMissing />;
 
   return (
     <div className="pb-6">
