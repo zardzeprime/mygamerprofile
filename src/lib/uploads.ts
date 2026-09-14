@@ -15,7 +15,7 @@ export async function uploadImage(
   if (!ALLOWED_TYPES.includes(file.type)) {
     throw new Error("invalid_file_type");
   }
-  if (file.size > BUCKET_LIMITS[bucket]) {
+  if (file.size > (BUCKET_LIMITS[bucket] ?? 0)) {
     throw new Error("file_too_large");
   }
 
