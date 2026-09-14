@@ -17,6 +17,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as GamesIndexRouteImport } from './routes/games.index'
 import { Route as GamesSlugRouteImport } from './routes/games.$slug'
+import { Route as UUsernameRouteImport } from './routes/u.$username'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -57,6 +58,11 @@ const GamesSlugRoute = GamesSlugRouteImport.update({
   path: '/games/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UUsernameRoute = UUsernameRouteImport.update({
+  id: '/u/$username',
+  path: '/u/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/games/$slug': typeof GamesSlugRoute
+  '/u/$username': typeof UUsernameRoute
   '/games/': typeof GamesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/games/$slug': typeof GamesSlugRoute
+  '/u/$username': typeof UUsernameRoute
   '/games': typeof GamesIndexRoute
 }
 export interface FileRoutesById {
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/games/$slug': typeof GamesSlugRoute
+  '/u/$username': typeof UUsernameRoute
   '/games/': typeof GamesIndexRoute
 }
 export interface FileRouteTypes {
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/onboarding'
     | '/games/$slug'
+    | '/u/$username'
     | '/games/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/onboarding'
     | '/games/$slug'
+    | '/u/$username'
     | '/games'
   id:
     | '__root__'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/_authenticated/onboarding'
     | '/games/$slug'
+    | '/u/$username'
     | '/games/'
   fileRoutesById: FileRoutesById
 }
@@ -125,6 +137,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   GamesSlugRoute: typeof GamesSlugRoute
+  UUsernameRoute: typeof UUsernameRoute
   GamesIndexRoute: typeof GamesIndexRoute
 }
 
@@ -186,6 +199,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GamesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/u/$username': {
+      id: '/u/$username'
+      path: '/u/$username'
+      fullPath: '/u/$username'
+      preLoaderRoute: typeof UUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -207,6 +227,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   GamesSlugRoute: GamesSlugRoute,
+  UUsernameRoute: UUsernameRoute,
   GamesIndexRoute: GamesIndexRoute,
 }
 export const routeTree = rootRouteImport
