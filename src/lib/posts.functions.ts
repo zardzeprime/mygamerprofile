@@ -5,7 +5,7 @@ import { getSupabasePublic } from "./supabase.server";
 const POSTS_PAGE = 20;
 
 export const listPosts = createServerFn({ method: "GET" }).handler(
-  async ({ data }: { data: { gameId?: string; page?: number } }) => {
+  async ({ data }: { data: { gameId?: string; authorId?: string; page?: number } }) => {
     const supabase = getSupabasePublic();
     let query = supabase
       .from("posts")
@@ -19,6 +19,7 @@ export const listPosts = createServerFn({ method: "GET" }).handler(
         (data.page ?? 1) * POSTS_PAGE - 1,
       );
     if (data.gameId) query = query.eq("game_id", data.gameId);
+    if (data.authorId) query = query.eq("author_id", data.authorId);
     const { data: posts, error } = await query;
     if (error) throw new Error(error.message);
     return posts ?? [];
