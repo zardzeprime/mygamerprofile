@@ -19,6 +19,7 @@ import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authentic
 import { Route as GamesIndexRouteImport } from './routes/games.index'
 import { Route as GamesSlugRouteImport } from './routes/games.$slug'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
 import { Route as UUsernameGamesSlugRouteImport } from './routes/u.$username.games.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -70,6 +71,12 @@ const UUsernameRoute = UUsernameRouteImport.update({
   path: '/u/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminReportsRoute =
+  AuthenticatedAdminReportsRouteImport.update({
+    id: '/admin/reports',
+    path: '/admin/reports',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const UUsernameGamesSlugRoute = UUsernameGamesSlugRouteImport.update({
   id: '/games/$slug',
   path: '/games/$slug',
@@ -86,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/games/$slug': typeof GamesSlugRoute
   '/u/$username': typeof UUsernameRouteWithChildren
   '/games/': typeof GamesIndexRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
 export interface FileRoutesByTo {
@@ -98,6 +106,7 @@ export interface FileRoutesByTo {
   '/games/$slug': typeof GamesSlugRoute
   '/u/$username': typeof UUsernameRouteWithChildren
   '/games': typeof GamesIndexRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
 export interface FileRoutesById {
@@ -112,6 +121,7 @@ export interface FileRoutesById {
   '/games/$slug': typeof GamesSlugRoute
   '/u/$username': typeof UUsernameRouteWithChildren
   '/games/': typeof GamesIndexRoute
+  '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
 export interface FileRouteTypes {
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/games/$slug'
     | '/u/$username'
     | '/games/'
+    | '/admin/reports'
     | '/u/$username/games/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/games/$slug'
     | '/u/$username'
     | '/games'
+    | '/admin/reports'
     | '/u/$username/games/$slug'
   id:
     | '__root__'
@@ -151,6 +163,7 @@ export interface FileRouteTypes {
     | '/games/$slug'
     | '/u/$username'
     | '/games/'
+    | '/_authenticated/admin/reports'
     | '/u/$username/games/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -238,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UUsernameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/reports': {
+      id: '/_authenticated/admin/reports'
+      path: '/admin/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/u/$username/games/$slug': {
       id: '/u/$username/games/$slug'
       path: '/games/$slug'
@@ -250,10 +270,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
