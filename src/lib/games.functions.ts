@@ -46,7 +46,7 @@ export const getGameProfile = createServerFn({ method: "GET" }).handler(
 
     const { data: gameProfile, error } = await supabase
       .from("game_profiles")
-      .select("*")
+      .select("*, game_slug:games!inner(slug)")
       .eq("user_id", profile.id)
       .eq("game_id", game.id)
       .single();
