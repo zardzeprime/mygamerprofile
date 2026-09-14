@@ -18,7 +18,7 @@ const STATUSES = ["pending", "reviewing", "resolved", "rejected"] as const;
 export const Route = createFileRoute("/_authenticated/admin/reports")({
   loader: async () => {
     try {
-      const reports = await listReports({ data: {} });
+      const reports = await listReports();
       return { reports };
     } catch {
       throw redirect({ to: "/" });
