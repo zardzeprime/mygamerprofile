@@ -24,7 +24,7 @@ interface PostCardProps {
     updated_at?: string;
     author?: { id: string; username: string; display_name: string; avatar_url?: string | null } | null;
     game?: { id: string; slug: string; name: string } | null;
-    reactions?: { count: number }[] | number;
+    reactions?: { user_id: string; reaction_type: string }[] | number;
   };
 }
 
