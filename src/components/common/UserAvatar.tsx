@@ -3,8 +3,8 @@ import type { User } from "@supabase/supabase-js";
 
 interface UserAvatarProps {
   user?: User | null;
-  src?: string | null;
-  name?: string | null;
+  src?: string | null | undefined;
+  name?: string | null | undefined;
   size?: "sm" | "md" | "lg";
   className?: string;
 }
