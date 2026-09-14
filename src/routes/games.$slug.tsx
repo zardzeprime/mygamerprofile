@@ -10,6 +10,7 @@ import { listLfgPosts } from "@/lib/lfg.functions";
 import { PostCard } from "@/components/posts/PostCard";
 import { PostComposer } from "@/components/posts/PostComposer";
 import { UserAvatar } from "@/components/common/UserAvatar";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/games/$slug")({
   loader: async ({ params }) => {
