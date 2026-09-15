@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import type { GameConfig } from "@/config/games";
 import { cn } from "@/lib/utils";
 
-const LEAGUE_OFFICIAL_LOGO =
-  "https://www.riotgames.com/darkroom/original/9a50f5b3bdcfb815580ef103ec9b6ee2%3Ad49b78b12cf185e10127cdf81b144a00/lol-logo-rendered-hi-res.png";
+// Riot-hosted Data Dragon splash art. We intentionally avoid hotlinking the
+// TechTudo copy because that page credits Riot but does not publish the image
+// under a reusable Creative Commons license.
+const LEAGUE_OFFICIAL_COVER =
+  "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yasuo_0.jpg";
 
 type GameArtworkProps = {
   game: GameConfig;
@@ -22,13 +25,18 @@ export function GameArtwork({
 }: GameArtworkProps) {
   const isLeagueArtwork = game.slug === "league-of-legends";
   const configuredSource = isLeagueArtwork
-    ? LEAGUE_OFFICIAL_LOGO
+    ? LEAGUE_OFFICIAL_COVER
     : variant === "hero"
       ? game.visual.heroImage
       : game.visual.coverImage;
   const [source, setSource] = useState(configuredSource);
-  const objectPosition =
-    variant === "hero" ? game.visual.heroObjectPosition : game.visual.cardObjectPosition;
+  const objectPosition = isLeagueArtwork
+    ? variant === "hero"
+      ? "center 32%"
+      : "center 28%"
+    : variant === "hero"
+      ? game.visual.heroObjectPosition
+      : game.visual.cardObjectPosition;
 
   useEffect(() => {
     setSource(configuredSource);
@@ -38,8 +46,7 @@ export function GameArtwork({
     <div
       className={cn(
         "game-artwork relative h-full w-full overflow-hidden bg-muted",
-        isLeagueArtwork &&
-          "bg-[radial-gradient(circle_at_45%_40%,#123954_0%,#071a2d_48%,#03101d_100%)]",
+        isLeagueArtwork && "bg-[#071a2d]",
         className,
       )}
     >
@@ -56,17 +63,16 @@ export function GameArtwork({
         }}
         style={objectPosition ? { objectPosition } : undefined}
         className={cn(
-          "game-artwork-base h-full w-full select-none transition-[transform,filter,opacity] duration-700 group-hover:scale-[1.065]",
-          isLeagueArtwork
-            ? variant === "hero"
-              ? "object-contain p-[22%] opacity-80"
-              : "object-contain p-[12%]"
-            : "object-cover",
+          "game-artwork-base h-full w-full select-none object-cover transition-[transform,filter,opacity] duration-700 group-hover:scale-[1.065]",
+          isLeagueArtwork && variant === "hero" && "opacity-90",
           imageClassName,
         )}
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/12 via-transparent to-white/[0.025]"
+        className={cn(
+          "pointer-events-none absolute inset-0 bg-gradient-to-t from-black/12 via-transparent to-white/[0.025]",
+          isLeagueArtwork && "bg-[linear-gradient(90deg,rgba(2,10,18,0.42),rgba(2,10,18,0.03)_55%,rgba(2,10,18,0.2))]",
+        )}
         aria-hidden="true"
       />
     </div>
