@@ -156,7 +156,6 @@ export const getValorantWeapons = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const rows = await fetchValorantApi<WeaponApi[]>("weapons", data.locale);
     return rows
-      .filter((weapon) => weapon.weaponStats || weapon.shopData)
       .map<ValorantWeapon>((weapon) => ({
         uuid: weapon.uuid,
         name: weapon.displayName,
