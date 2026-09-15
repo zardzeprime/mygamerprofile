@@ -143,8 +143,8 @@ function OnboardingPage() {
       }
 
       const { data: usernameRows, error: usernameError } = await supabase
-        .from("profile_usernames")
-        .select("user_id")
+        .from("profiles")
+        .select("id")
         .ilike("username", normalized)
         .limit(1);
       if (usernameError) throw usernameError;
@@ -224,7 +224,6 @@ function OnboardingPage() {
           language,
           theme_preference: "system",
           visibility: "public",
-          profile_background: "mgp-grid",
         })
         .select("username")
         .single();

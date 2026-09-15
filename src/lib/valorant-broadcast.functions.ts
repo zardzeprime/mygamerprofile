@@ -25,7 +25,7 @@ async function youtubeJson<T>(url: URL): Promise<T> {
 }
 
 export const getValorantOfficialBroadcasts = createServerFn({ method: "GET" }).handler(async () => {
-  const key = process.env.YOUTUBE_API_KEY;
+  const key = process.env["YOUTUBE_API_KEY"];
   if (!key) return { configured: false as const, broadcasts: [] as ValorantBroadcast[] };
 
   if (cache && cache.expiresAt > Date.now()) {
@@ -54,13 +54,14 @@ export const getValorantOfficialBroadcasts = createServerFn({ method: "GET" }).h
     for (const item of payload.items ?? []) {
       const videoId = item.id.videoId;
       if (!videoId) continue;
-      results.push({
+      const broadcast: ValorantBroadcast = {
         videoId,
         title: item.snippet.title,
         url: `https://www.youtube.com/watch?v=${videoId}`,
         status: eventType,
-        scheduledAt: item.snippet.scheduledStartTime,
-      });
+      };
+      if (item.snippet.scheduledStartTime) broadcast.scheduledAt = item.snippet.scheduledStartTime;
+      results.push(broadcast);
     }
   }
 

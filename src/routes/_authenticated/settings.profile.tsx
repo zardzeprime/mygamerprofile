@@ -27,6 +27,7 @@ import {
 } from "@/config/profileBackgrounds";
 import { GAMES } from "@/config/games";
 import type { Json } from "@/integrations/supabase/types";
+import type { Database } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
 
 function isFavoriteProfileData(value: Json) {
@@ -49,9 +50,7 @@ export const Route = createFileRoute("/_authenticated/settings/profile")({
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select(
-        "id,username,display_name,bio,avatar_url,language,visibility,profile_background,theme_preference,created_at,updated_at",
-      )
+      .select("*")
       .eq("id", authData.user.id)
       .maybeSingle();
 
@@ -70,7 +69,11 @@ export const Route = createFileRoute("/_authenticated/settings/profile")({
     if (gamesError) throw new Error(gamesError.message);
     if (gameProfilesError) throw new Error(gameProfilesError.message);
 
-    return { profile, gameRows: gameRows ?? [], gameProfiles: gameProfiles ?? [] };
+    return {
+      profile: profile as typeof profile & { profile_background?: string },
+      gameRows: gameRows ?? [],
+      gameProfiles: gameProfiles ?? [],
+    };
   },
   head: () => ({
     meta: [
@@ -147,18 +150,19 @@ function SettingsProfilePage() {
         }
       }
 
+      const updatePayload = {
+        display_name: cleanDisplayName,
+        username: normalized,
+        bio: cleanBio || null,
+        avatar_url: avatarUrl || null,
+        language,
+        visibility,
+        profile_background: background,
+        updated_at: new Date().toISOString(),
+      } as Database["public"]["Tables"]["profiles"]["Update"];
       const { error: updateError } = await supabase
         .from("profiles")
-        .update({
-          display_name: cleanDisplayName,
-          username: normalized,
-          bio: cleanBio || null,
-          avatar_url: avatarUrl || null,
-          language,
-          visibility,
-          profile_background: background,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updatePayload)
         .eq("id", profile.id);
 
       if (updateError) throw updateError;

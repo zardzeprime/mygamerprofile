@@ -85,7 +85,7 @@ function ProfilePage() {
   const { user } = useAuth();
   const isOwn = user?.id === profile.id;
   const [following, setFollowing] = useState<boolean | null>(null);
-  const [followerCount, setFollowerCount] = useState(profile.followers ?? 0);
+  const [followerCount, setFollowerCount] = useState<number>(profile.followers ?? 0);
   const [followBusy, setFollowBusy] = useState(false);
 
   const checkFollow = useServerFn(isFollowing);
@@ -96,7 +96,7 @@ function ProfilePage() {
   const favoriteGames = useMemo(
     () =>
       gameProfiles
-        .filter((gameProfile) => gameProfile.profile_data?.favorite === true)
+        .filter((gameProfile) => gameProfile.profile_data?.["favorite"] === true)
         .map((gameProfile) => GAMES.find((game) => game.slug === gameProfile.game_slug))
         .filter((game): game is NonNullable<typeof game> => Boolean(game)),
     [gameProfiles],

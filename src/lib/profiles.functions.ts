@@ -1,7 +1,14 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
 import { getSupabasePublic } from "./supabase.server";
+
+type PublicProfile = Database["public"]["Tables"]["profiles"]["Row"] & {
+  profile_background?: string;
+  followers_count?: number;
+  following_count?: number;
+};
 
 const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/;
 const APP_LANGUAGES = ["pt-BR", "en", "es"] as const;
@@ -46,18 +53,17 @@ export const getProfileByUsername = createServerFn({ method: "GET" })
     const supabase = getSupabasePublic();
     const { data: profile, error } = await supabase
       .from("profiles")
-      .select(
-        "id,username,display_name,bio,avatar_url,language,theme_preference,visibility,profile_background,followers_count,following_count,created_at,updated_at",
-      )
+      .select("*")
       .ilike("username", data.username)
       .maybeSingle();
     if (error) throw new Error(error.message);
     if (!profile) return null;
 
+    const publicProfile = profile as PublicProfile;
     return {
-      ...profile,
-      followers: Number(profile.followers_count ?? 0),
-      following: Number(profile.following_count ?? 0),
+      ...publicProfile,
+      followers: Number(publicProfile.followers_count ?? 0),
+      following: Number(publicProfile.following_count ?? 0),
     };
   });
 
@@ -82,10 +88,10 @@ export const checkUsernameAvailable = createServerFn({ method: "GET" })
 
     const supabase = getSupabasePublic();
     let query = supabase
-      .from("profile_usernames")
-      .select("user_id")
+      .from("profiles")
+      .select("id")
       .ilike("username", normalized);
-    if (data.excludeUserId) query = query.neq("user_id", data.excludeUserId);
+    if (data.excludeUserId) query = query.neq("id", data.excludeUserId);
     const { data: rows, error } = await query.limit(1);
     if (error) throw new Error(error.message);
     return { available: rows.length === 0 };
@@ -111,7 +117,6 @@ export const createProfile = createServerFn({ method: "POST" })
         display_name,
         language,
         theme_preference,
-        profile_background: "mgp-grid",
       })
       .select()
       .single();
@@ -137,9 +142,10 @@ export const updateProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((data) => updateProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
+    const updatePayload = { ...data, updated_at: new Date().toISOString() } as Database["public"]["Tables"]["profiles"]["Update"];
     const { data: profile, error } = await context.supabase
       .from("profiles")
-      .update({ ...data, updated_at: new Date().toISOString() })
+      .update(updatePayload)
       .eq("id", context.userId)
       .select()
       .single();

@@ -8,8 +8,7 @@ export type ProfileBackgroundPreset = {
   premium?: boolean;
 };
 
-export const PROFILE_BACKGROUNDS: ProfileBackgroundPreset[] = [
-  {
+const DEFAULT_PROFILE_BACKGROUND: ProfileBackgroundPreset = {
     key: "mgp-grid",
     name: { "pt-BR": "Grade MGP", en: "MGP Grid", es: "Cuadrícula MGP" },
     description: {
@@ -18,7 +17,10 @@ export const PROFILE_BACKGROUNDS: ProfileBackgroundPreset[] = [
       es: "Identidad institucional en negro y dorado.",
     },
     className: "profile-bg-mgp-grid",
-  },
+  };
+
+export const PROFILE_BACKGROUNDS: ProfileBackgroundPreset[] = [
+  DEFAULT_PROFILE_BACKGROUND,
   {
     key: "ember",
     name: { "pt-BR": "Brasas", en: "Embers", es: "Brasas" },
@@ -52,5 +54,5 @@ export const PROFILE_BACKGROUNDS: ProfileBackgroundPreset[] = [
 ];
 
 export function getProfileBackground(key?: string | null) {
-  return PROFILE_BACKGROUNDS.find((preset) => preset.key === key) ?? PROFILE_BACKGROUNDS[0];
+  return PROFILE_BACKGROUNDS.find((preset) => preset.key === key) ?? DEFAULT_PROFILE_BACKGROUND;
 }
