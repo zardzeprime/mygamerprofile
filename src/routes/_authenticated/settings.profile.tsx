@@ -1,8 +1,9 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useRouter } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Camera, Check, Eye, LockKeyhole, Palette } from "lucide-react";
-import { getCurrentProfile, updateProfile, checkUsernameAvailable } from "@/lib/profiles.functions";
+import { checkUsernameAvailable } from "@/lib/profiles.functions";
 import { uploadImage } from "@/lib/uploads";
+import { supabase } from "@/integrations/supabase/client";
 import { useI18n, LOCALES, LOCALE_LABELS, type Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { SettingsLayout } from "@/components/settings/SettingsLayout";
@@ -18,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UserAvatar } from "@/components/common/UserAvatar";
-import { useServerFn } from "@tanstack/react-start";
 import {
   PROFILE_BACKGROUNDS,
   getProfileBackground,
@@ -28,7 +28,20 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/settings/profile")({
   loader: async () => {
-    const profile = await getCurrentProfile();
+    const { data: authData, error: authError } = await supabase.auth.getUser();
+    if (authError || !authData.user) throw redirect({ to: "/login" });
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select(
+        "id,username,display_name,bio,avatar_url,language,visibility,profile_background,theme_preference,created_at,updated_at",
+      )
+      .eq("id", authData.user.id)
+      .maybeSingle();
+
+    if (profileError) throw new Error(profileError.message);
+    if (!profile) throw redirect({ to: "/onboarding" });
+
     return { profile };
   },
   head: () => ({
@@ -62,45 +75,60 @@ function SettingsProfilePage() {
   const [error, setError] = useState("");
   const avatarInput = useRef<HTMLInputElement>(null);
 
-  const doUpdate = useServerFn(updateProfile);
-  const checkUsername = useServerFn(checkUsernameAvailable);
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
+    setSaved(false);
+
     const normalized = username.trim().toLowerCase();
+    const cleanDisplayName = displayName.trim();
+    const cleanBio = bio.trim();
+
     if (!/^[a-z0-9_]{3,20}$/.test(normalized)) {
       setError(t("auth.errors.invalidUsername"));
       return;
     }
-    if (normalized !== profile.username) {
-      const { available } = await checkUsername({ data: { username: normalized, excludeUserId: profile.id } });
-      if (!available) {
-        setError(t("auth.errors.usernameTaken"));
-        return;
-      }
+    if (!cleanDisplayName || cleanDisplayName.length > 80 || cleanBio.length > 500) {
+      setError(t("auth.errors.generic"));
+      return;
     }
 
     setLoading(true);
     try {
-      await doUpdate({
-        data: {
-          display_name: displayName.trim(),
+      if (normalized !== profile.username) {
+        const { available } = await checkUsernameAvailable({
+          data: { username: normalized, excludeUserId: profile.id },
+        });
+        if (!available) {
+          setError(t("auth.errors.usernameTaken"));
+          return;
+        }
+      }
+
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({
+          display_name: cleanDisplayName,
           username: normalized,
-          bio: bio.trim() || null,
+          bio: cleanBio || null,
           avatar_url: avatarUrl || null,
           language,
           visibility,
           profile_background: background,
-        },
-      });
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", profile.id);
+
+      if (updateError) throw updateError;
+
       setLocale(language);
       setSaved(true);
       window.setTimeout(() => setSaved(false), 2200);
+
       if (normalized !== profile.username) {
-        router.navigate({ to: "/u/$username", params: { username: normalized } });
+        await router.navigate({ to: "/u/$username", params: { username: normalized } });
       } else {
-        router.invalidate();
+        await router.invalidate();
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : t("auth.errors.generic"));
@@ -140,7 +168,7 @@ function SettingsProfilePage() {
                   type="button"
                   onClick={() => avatarInput.current?.click()}
                   disabled={uploadingAvatar}
-                  className="absolute -bottom-1 -right-1 grid size-9 place-items-center rounded-full border border-border bg-surface text-foreground shadow-soft transition-transform hover:scale-105"
+                  className="absolute -bottom-1 -right-1 grid size-9 place-items-center rounded-full border border-border bg-surface text-foreground shadow-soft transition-transform hover:scale-105 disabled:opacity-60"
                   aria-label={copy("Alterar avatar", "Change avatar", "Cambiar avatar")}
                 >
                   <Camera className="size-4" />
@@ -159,6 +187,7 @@ function SettingsProfilePage() {
               </div>
             </div>
           </div>
+
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-4 sm:px-7">
             <div>
               <p className="text-sm font-semibold">{copy("Prévia do perfil", "Profile preview", "Vista previa del perfil")}</p>
@@ -166,7 +195,7 @@ function SettingsProfilePage() {
                 {copy("Apenas o avatar é enviado por você. O plano de fundo usa presets do MGP.", "Only your avatar is uploaded. The background uses MGP presets.", "Solo subes tu avatar. El fondo usa presets de MGP.")}
               </p>
             </div>
-            <Button asChild type="button" variant="outline" size="sm">
+            <Button asChild variant="outline" size="sm">
               <Link to="/u/$username" params={{ username: profile.username }}>
                 <Eye className="mr-2 size-4" />
                 {copy("Ver perfil", "View profile", "Ver perfil")}
@@ -187,6 +216,7 @@ function SettingsProfilePage() {
               "Elige un aspecto oficial de MGP. Los fondos animados y cosméticos premium llegarán más adelante sin permitir cargas libres de banners.",
             )}
           </p>
+
           <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {PROFILE_BACKGROUNDS.map((preset) => {
               const selected = background === preset.key;
@@ -202,7 +232,11 @@ function SettingsProfilePage() {
                 >
                   <div className={cn("relative h-24", preset.className)}>
                     <div className="absolute inset-0 bg-gradient-to-t from-background/75 to-transparent" />
-                    {selected ? <span className="absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-gold text-gold-foreground"><Check className="size-4" /></span> : null}
+                    {selected ? (
+                      <span className="absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-gold text-gold-foreground">
+                        <Check className="size-4" />
+                      </span>
+                    ) : null}
                   </div>
                   <div className="bg-surface p-3">
                     <p className="text-sm font-semibold">{preset.name[locale]}</p>
@@ -271,6 +305,7 @@ function SettingsProfilePage() {
 
           {error ? <p className="mt-5 text-sm text-destructive">{error}</p> : null}
           {saved ? <p className="mt-5 text-sm text-success">{t("settings.saved")}</p> : null}
+
           <div className="mt-6 flex flex-wrap gap-3">
             <Button type="submit" disabled={loading || uploadingAvatar}>
               {loading ? t("common.loading") : t("settings.save")}
