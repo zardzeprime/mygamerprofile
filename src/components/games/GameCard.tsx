@@ -45,15 +45,15 @@ export function GameCard({ game }: { game: GameConfig }) {
     [clearFade],
   );
 
-  const targetVolume = Math.min(0.12, Math.max(0.025, (uiVolume / 100) * 0.16));
+  const targetVolume = Math.min(0.085, Math.max(0.018, (uiVolume / 100) * 0.12));
 
   useEffect(() => {
-    const source = game.themeKey === "dark_souls" ? game.visual.ambientAudio : undefined;
+    const source = game.visual.hoverAudio;
     if (!source) return;
 
     const audio = new Audio(source);
     audio.loop = true;
-    audio.preload = "auto";
+    audio.preload = "metadata";
     audio.volume = 0;
     audioRef.current = audio;
 
@@ -64,7 +64,7 @@ export function GameCard({ game }: { game: GameConfig }) {
       audio.load();
       audioRef.current = null;
     };
-  }, [clearFade, game.themeKey, game.visual.ambientAudio]);
+  }, [clearFade, game.visual.hoverAudio]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -77,21 +77,21 @@ export function GameCard({ game }: { game: GameConfig }) {
   }, [fadeAudio, targetVolume, uiEnabled]);
 
   const handlePointerEnter = () => {
-    if (game.themeKey !== "dark_souls" || !game.visual.ambientAudio || !uiEnabled) return;
+    if (!game.visual.hoverAudio || !uiEnabled) return;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
     const audio = audioRef.current;
     if (!audio) return;
     hoveredRef.current = true;
     audio.volume = Math.min(audio.volume, targetVolume);
-    void audio.play().then(() => fadeAudio(targetVolume, 280)).catch(() => undefined);
+    void audio.play().then(() => fadeAudio(targetVolume, 320)).catch(() => undefined);
   };
 
   const handlePointerLeave = () => {
     hoveredRef.current = false;
     const audio = audioRef.current;
     if (!audio || audio.paused) return;
-    fadeAudio(0, 320, () => {
+    fadeAudio(0, 380, () => {
       if (!hoveredRef.current) audio.pause();
     });
   };
@@ -107,19 +107,26 @@ export function GameCard({ game }: { game: GameConfig }) {
         <div className="game-card-scrim absolute inset-0" />
         <div className="game-card-sheen absolute inset-0" aria-hidden="true" />
         <div className="absolute left-4 top-4 flex items-center gap-2">
-          <span className="rounded-sm border border-border-strong bg-background/80 px-2 py-1 text-[0.65rem] font-bold uppercase text-foreground backdrop-blur">{game.genre}</span>
-          <span className="rounded-sm bg-background/80 px-2 py-1 text-[0.65rem] font-semibold text-muted-foreground backdrop-blur">{game.ageRating}</span>
+          <span className="rounded-sm border border-border-strong bg-background/80 px-2 py-1 text-[0.65rem] font-bold uppercase text-foreground backdrop-blur">
+            {game.genre}
+          </span>
+          <span className="rounded-sm bg-background/80 px-2 py-1 text-[0.65rem] font-semibold text-muted-foreground backdrop-blur">
+            {game.ageRating}
+          </span>
         </div>
-        <span className="absolute bottom-4 right-4 grid size-9 translate-y-2 place-items-center rounded-full bg-primary text-primary-foreground opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100" aria-hidden="true"><Play className="size-4 fill-current" /></span>
+        <span
+          className="absolute bottom-4 right-4 grid size-9 translate-y-2 place-items-center rounded-full bg-primary text-primary-foreground opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"
+          aria-hidden="true"
+        >
+          <Play className="size-4 fill-current" />
+        </span>
       </div>
       <div className="p-5">
         <div className="flex items-start justify-between gap-3">
           <h3 className="font-display text-lg font-semibold text-foreground">{game.name}</h3>
           <ArrowUpRight className="size-4 shrink-0 text-gold-strong transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </div>
-        <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
-          {game.description[locale]}
-        </p>
+        <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{game.description[locale]}</p>
         <ul className="mt-4 flex flex-wrap gap-1.5">
           {game.platforms.map((platform) => (
             <li
@@ -133,7 +140,7 @@ export function GameCard({ game }: { game: GameConfig }) {
         <Link
           to="/games/$slug"
           params={{ slug: game.slug }}
-          className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-gold-strong story-link"
+          className="story-link mt-5 inline-flex items-center gap-2 text-sm font-semibold text-gold-strong"
         >
           {t("games.openHub")}
         </Link>
