@@ -18,6 +18,9 @@ import { FutureCollection } from "@/components/games/FutureCollection";
 import { ChevronRight, Headphones, Shield, Sparkles } from "lucide-react";
 import { useGameAmbience } from "@/hooks/useGameAmbience";
 
+type CommunityPost = Awaited<ReturnType<typeof listPosts>>[number];
+type LfgPost = Awaited<ReturnType<typeof listLfgPosts>>[number];
+
 export const Route = createFileRoute("/games/$slug")({
   loader: async ({ params }) => {
     const game = getGameConfig(params.slug);
@@ -69,8 +72,8 @@ function GameHub() {
   const { user } = useAuth();
   useGameAmbience(game.visual.ambientAudio);
   const [active, setActive] = useState<GameModuleKey>("overview");
-  const [posts, setPosts] = useState<any[]>([]);
-  const [lfgPosts, setLfgPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
+  const [lfgPosts, setLfgPosts] = useState<LfgPost[]>([]);
   const [loaded, setLoaded] = useState<Record<GameModuleKey, boolean>>({
     overview: true,
     community: false,
