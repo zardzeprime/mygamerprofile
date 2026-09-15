@@ -34,6 +34,10 @@ function isLocale(value: string | null): value is Locale {
   return value !== null && (LOCALES as readonly string[]).includes(value);
 }
 
+function applyBrandName(value: string) {
+  return value.replace(/\bMGP\b/g, "MG Profile");
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
 
@@ -52,7 +56,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const t = useCallback(
-    (key: TranslationKey) => translations[locale][key] ?? translations[DEFAULT_LOCALE][key] ?? key,
+    (key: TranslationKey) =>
+      applyBrandName(translations[locale][key] ?? translations[DEFAULT_LOCALE][key] ?? key),
     [locale],
   );
 
