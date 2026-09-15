@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, Search, X, Settings, LogOut } from "lucide-react";
-import { useState } from "react";
+import { Menu, Search, X, Settings, LogOut, UserRound } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
 import { ThemeSelector } from "@/components/common/ThemeSelector";
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { AudioControl } from "@/components/common/AudioControl";
+import { getCurrentProfile } from "@/lib/profiles.functions";
 
 const NAV: { to: string; key: TranslationKey }[] = [
   { to: "/", key: "navigation.home" },
@@ -25,9 +27,31 @@ const NAV: { to: string; key: TranslationKey }[] = [
 ];
 
 export function AppHeader() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { user, loading, signOut } = useAuth();
   const [open, setOpen] = useState(false);
+  const [profileUsername, setProfileUsername] = useState<string | null>(null);
+  const readCurrentProfile = useServerFn(getCurrentProfile);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!user) {
+      setProfileUsername(null);
+      return;
+    }
+    readCurrentProfile()
+      .then((profile) => {
+        if (!cancelled) setProfileUsername(profile.username ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setProfileUsername(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [readCurrentProfile, user]);
+
+  const profileLabel = locale === "pt-BR" ? "Meu perfil" : locale === "es" ? "Mi perfil" : "My profile";
 
   const AuthSection = () => {
     if (loading) return null;
@@ -55,6 +79,14 @@ export function AppHeader() {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          {profileUsername ? (
+            <DropdownMenuItem asChild>
+              <Link to="/u/$username" params={{ username: profileUsername }} className="flex items-center gap-2">
+                <UserRound className="size-4" />
+                {profileLabel}
+              </Link>
+            </DropdownMenuItem>
+          ) : null}
           <DropdownMenuItem asChild>
             <Link to="/settings/profile" className="flex items-center gap-2">
               <Settings className="size-4" />
@@ -73,7 +105,7 @@ export function AppHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/88 backdrop-blur-xl">
-      <div className="mx-auto grid h-16 w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6">
+      <div className="mx-auto grid h-16 w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 sm:px-6">
         <BrandLogoPlaceholder />
 
         <nav aria-label={t("navigation.menu")} className="hidden items-center gap-1 md:flex">
@@ -90,7 +122,7 @@ export function AppHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center justify-end gap-1 sm:gap-2">
+        <div className="flex min-w-0 items-center justify-end gap-1 sm:gap-2">
           <label className="hidden items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 sm:flex">
             <Search aria-hidden="true" className="size-4 text-muted-foreground" />
             <span className="sr-only">{t("common.search")}</span>
@@ -113,13 +145,9 @@ export function AppHeader() {
             onClick={() => setOpen((value) => !value)}
             aria-expanded={open}
             aria-label={open ? t("navigation.closeMenu") : t("navigation.openMenu")}
-            className="inline-flex size-9 items-center justify-center rounded-full border border-border bg-surface text-foreground transition-colors hover:bg-muted lg:hidden"
+            className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-foreground transition-colors hover:bg-muted lg:hidden"
           >
-            {open ? (
-              <X aria-hidden="true" className="size-4" />
-            ) : (
-              <Menu aria-hidden="true" className="size-4" />
-            )}
+            {open ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
           </button>
         </div>
       </div>
@@ -146,34 +174,34 @@ export function AppHeader() {
               <ThemeSelector />
               <AudioControl />
             </div>
-            {!loading && !user && (
+            {!loading && !user ? (
               <div className="flex flex-col gap-2">
-                <Button asChild>
-                  <Link to="/register" onClick={() => setOpen(false)}>
-                    {t("auth.register")}
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link to="/login" onClick={() => setOpen(false)}>
-                    {t("auth.login")}
-                  </Link>
-                </Button>
+                <Button asChild><Link to="/register" onClick={() => setOpen(false)}>{t("auth.register")}</Link></Button>
+                <Button variant="outline" asChild><Link to="/login" onClick={() => setOpen(false)}>{t("auth.login")}</Link></Button>
               </div>
-            )}
-            {!loading && user && (
+            ) : null}
+            {!loading && user ? (
               <div className="flex flex-col gap-2">
+                {profileUsername ? (
+                  <Button variant="outline" asChild>
+                    <Link to="/u/$username" params={{ username: profileUsername }} onClick={() => setOpen(false)}>
+                      <UserRound className="mr-2 size-4" />
+                      {profileLabel}
+                    </Link>
+                  </Button>
+                ) : null}
                 <Button variant="outline" asChild>
                   <Link to="/settings/profile" onClick={() => setOpen(false)}>
                     <Settings className="mr-2 size-4" />
                     {t("navigation.settings")}
                   </Link>
                 </Button>
-                <Button variant="destructive" onClick={() => { signOut(); setOpen(false); }}>
+                <Button variant="destructive" onClick={() => { void signOut(); setOpen(false); }}>
                   <LogOut className="mr-2 size-4" />
                   {t("auth.logout")}
                 </Button>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       ) : null}

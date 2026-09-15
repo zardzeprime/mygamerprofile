@@ -7,6 +7,14 @@ const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/;
 const APP_LANGUAGES = ["pt-BR", "en", "es"] as const;
 const THEME_PREFERENCES = ["light", "dark", "system"] as const;
 const PROFILE_VISIBILITIES = ["public", "private"] as const;
+const PROFILE_BACKGROUNDS = ["mgp-grid", "ember", "tactical", "midnight"] as const;
+const AVATAR_PUBLIC_PREFIX =
+  "https://gudvdgpjfapshzqyfcpj.supabase.co/storage/v1/object/public/avatars/";
+
+const avatarUrlSchema = z
+  .string()
+  .url()
+  .refine((value) => value.startsWith(AVATAR_PUBLIC_PREFIX), "invalid_avatar_url");
 
 const usernameSchema = z.object({ username: z.string().trim().min(3).max(20) });
 const usernameCheckSchema = z.object({
@@ -23,28 +31,38 @@ const createProfileSchema = z.object({
 const updateProfileSchema = z.object({
   username: z.string().regex(USERNAME_REGEX).optional(),
   display_name: z.string().trim().min(1).max(80).optional(),
-  bio: z.string().max(500).nullable().optional(),
-  avatar_url: z.string().url().nullable().optional(),
-  banner_url: z.string().url().nullable().optional(),
+  bio: z.string().trim().max(500).nullable().optional(),
+  avatar_url: avatarUrlSchema.nullable().optional(),
   language: z.enum(APP_LANGUAGES).optional(),
   theme_preference: z.enum(THEME_PREFERENCES).optional(),
   visibility: z.enum(PROFILE_VISIBILITIES).optional(),
+  profile_background: z.enum(PROFILE_BACKGROUNDS).optional(),
 });
 const followSchema = z.object({ following_id: z.string().uuid() });
 
 export const getProfileByUsername = createServerFn({ method: "GET" })
-  .inputValidator((data) => usernameSchema.parse(data))
+  .validator((data) => usernameSchema.parse(data))
   .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
     const { data: profile, error } = await supabase
       .from("profiles")
       .select(
-        "*, followers:follows!follows_following_id_fkey(count), following:follows!follows_follower_id_fkey(count)",
+        "id,username,display_name,bio,avatar_url,language,theme_preference,visibility,profile_background,created_at,updated_at",
       )
       .ilike("username", data.username)
-      .single();
+      .maybeSingle();
     if (error) throw new Error(error.message);
-    return profile;
+    if (!profile) return null;
+
+    const { data: counts, error: countsError } = await supabase
+      .rpc("profile_follow_counts", { target_user_id: profile.id })
+      .maybeSingle();
+
+    return {
+      ...profile,
+      followers: countsError ? 0 : Number(counts?.followers ?? 0),
+      following: countsError ? 0 : Number(counts?.following ?? 0),
+    };
   });
 
 export const getCurrentProfile = createServerFn({ method: "GET" })
@@ -54,26 +72,28 @@ export const getCurrentProfile = createServerFn({ method: "GET" })
       .from("profiles")
       .select("*")
       .eq("id", context.userId)
-      .single();
+      .maybeSingle();
     if (error) throw new Error(error.message);
+    if (!profile) throw new Error("profile_not_found");
     return profile;
   });
 
 export const checkUsernameAvailable = createServerFn({ method: "GET" })
-  .inputValidator((data) => usernameCheckSchema.parse(data))
+  .validator((data) => usernameCheckSchema.parse(data))
   .handler(async ({ data }) => {
     if (!USERNAME_REGEX.test(data.username)) return { available: false };
     const supabase = getSupabasePublic();
-    let query = supabase.from("profiles").select("id").ilike("username", data.username);
-    if (data.excludeUserId) query = query.neq("id", data.excludeUserId);
-    const { data: rows, error } = await query;
+    const { data: available, error } = await supabase.rpc("is_username_available", {
+      candidate: data.username,
+      exclude_user_id: data.excludeUserId ?? null,
+    });
     if (error) throw new Error(error.message);
-    return { available: rows.length === 0 };
+    return { available: available === true };
   });
 
 export const createProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => createProfileSchema.parse(data))
+  .validator((data) => createProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
     const {
       username,
@@ -91,6 +111,7 @@ export const createProfile = createServerFn({ method: "POST" })
         display_name,
         language,
         theme_preference,
+        profile_background: "mgp-grid",
       })
       .select()
       .single();
@@ -114,7 +135,7 @@ export const createProfile = createServerFn({ method: "POST" })
 
 export const updateProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => updateProfileSchema.parse(data))
+  .validator((data) => updateProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { data: profile, error } = await context.supabase
       .from("profiles")
@@ -128,7 +149,7 @@ export const updateProfile = createServerFn({ method: "POST" })
 
 export const followUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => followSchema.parse(data))
+  .validator((data) => followSchema.parse(data))
   .handler(async ({ context, data }) => {
     if (data.following_id === context.userId) throw new Error("cannot_follow_self");
     const { error } = await context.supabase.from("follows").insert({
@@ -141,7 +162,7 @@ export const followUser = createServerFn({ method: "POST" })
 
 export const unfollowUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => followSchema.parse(data))
+  .validator((data) => followSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { error } = await context.supabase
       .from("follows")
@@ -154,7 +175,7 @@ export const unfollowUser = createServerFn({ method: "POST" })
 
 export const isFollowing = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => followSchema.parse(data))
+  .validator((data) => followSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { data: rows, error } = await context.supabase
       .from("follows")

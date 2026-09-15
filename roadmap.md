@@ -67,11 +67,33 @@
 - [x] Add a VALORANT News tab with official-only filtering, search and chronological ordering
 - [x] Seed the news archive with current Riot patch notes, official trailers, esports announcements and confirmed future-dated changes
 - [x] Add lightweight module/card entrance and hover motion while respecting reduced-motion preferences
-- [ ] Maintain VALORANT News through a review-only automation that opens GitHub PRs and never auto-merges
+- [x] Maintain VALORANT News through a review-only automation that opens GitHub PRs and never auto-merges
 - [ ] Add per-ability gameplay video previews only when a stable official/approved source exists for the full Agent roster
+
+# MGP v0.1.4C — Responsive, Profiles & Security Correction Pass
+
+- [x] Add global responsive overflow guards and mobile-safe proportions across the shell and game hubs
+- [x] Prevent mobile browser focus zoom by keeping form controls at a mobile-safe font size
+- [x] Reduce oversized hub hero heights and tighten small-screen spacing without changing desktop identity
+- [x] Rebuild the public profile route with fault-tolerant profile/post/game-profile loading
+- [x] Add direct My Profile navigation for signed-in users
+- [x] Limit user-uploaded profile media to the avatar and remove free banner upload from profile settings
+- [x] Add four controlled MGP profile-background presets as the foundation for future premium/animated cosmetics
+- [x] Restrict profile avatar URLs to the MGP avatar bucket
+- [x] Add missing foreign-key indexes and optimize repeated auth checks in RLS policies
+- [x] Keep the branded Portuguese confirmation-email template versioned in the repository
+- [ ] Activate the branded confirmation template in hosted Supabase Auth when management access is available
+- [ ] Enable Supabase leaked-password protection in hosted Auth settings
+- [ ] Validate the final layout on representative real iOS and Android devices after deployment
 
 # Future — VALORANT Competitive + Lineups
 
 - [ ] Add official/approved live VCT provider sync and match status updates
 - [ ] Add community-created lineup publishing with map, Agent, ability, side, position and provenance
 - [ ] Add moderation and verified MGP lineup curation
+
+# MGP v0.2 — Social Identity Expansion
+
+- [ ] Expand profile cosmetics, ownership/entitlements and premium presentation without pay-to-win mechanics
+- [ ] Introduce controlled animated profile backgrounds and cosmetic inventory
+- [ ] Deepen community publishing, moderation and creator provenance
