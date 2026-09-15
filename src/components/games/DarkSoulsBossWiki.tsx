@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   BookOpen,
   ChevronRight,
@@ -25,6 +25,7 @@ type Filter = "all" | "required" | "optional" | "dlc";
 
 export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
   const pt = locale === "pt-BR";
+  const detailRef = useRef<HTMLElement>(null);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [selectedSlug, setSelectedSlug] = useState(DARK_SOULS_BOSSES[0]?.slug ?? "");
@@ -50,11 +51,19 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
   const selectBoss = (boss: DarkSoulsBoss) => {
     setSelectedSlug(boss.slug);
     setShowSpoilers(false);
+
+    requestAnimationFrame(() => {
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      detailRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    });
   };
 
   return (
     <div className="space-y-6">
-      <section className="surface-panel overflow-hidden">
+      <section ref={detailRef} className="surface-panel scroll-mt-24 overflow-hidden">
         <div className="relative isolate overflow-hidden border-b border-border px-5 py-7 sm:px-8">
           <img
             src={darkSoulsAtmosphere}
