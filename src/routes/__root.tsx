@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import responsiveCss from "../responsive.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../i18n";
 import { ThemeProvider, themeBootstrapScript } from "../lib/theme";
@@ -93,6 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "stylesheet", href: responsiveCss },
       { rel: "icon", href: "/brand/mgp-logo.png", type: "image/png" },
       { rel: "apple-touch-icon", href: "/brand/mgp-logo.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
