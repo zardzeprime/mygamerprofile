@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Gamepad2, Trophy, Users2, UsersRound } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { GameCard } from "@/components/games/GameCard";
+import { GameArtwork } from "@/components/games/GameArtwork";
 import { GAMES } from "@/config/games";
 import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
@@ -57,8 +58,8 @@ function Home() {
     <div className="pb-16">
       <section className="home-hero relative isolate min-h-[min(76vh,46rem)] overflow-hidden border-b border-border">
         <div className="absolute inset-0 grid grid-cols-2" aria-hidden="true">
-          <img src={GAMES[0]?.visual.heroImage} alt="" width={1600} height={1000} className="h-full w-full object-cover opacity-70" />
-          <img src={GAMES[1]?.visual.heroImage} alt="" width={1600} height={1000} className="h-full w-full object-cover opacity-60" />
+          {GAMES[0] ? <GameArtwork game={GAMES[0]} variant="hero" loading="eager" className="h-full w-full opacity-70" /> : null}
+          {GAMES[1] ? <GameArtwork game={GAMES[1]} variant="hero" loading="eager" className="h-full w-full opacity-65" /> : null}
         </div>
         <div className="home-hero-scrim absolute inset-0" />
         <div className="relative mx-auto flex min-h-[min(76vh,46rem)] w-full max-w-7xl items-end px-4 pb-14 pt-28 sm:px-6 sm:pb-20">
