@@ -128,8 +128,15 @@ function MatchRow({ match, locale }: { match: ValorantEsportsMatch; locale: Loca
   const body = (
     <div className="rounded-xl border border-border bg-muted/20 p-3 transition-colors hover:border-tactical/30 hover:bg-tactical/[0.035]">
       <div className="flex items-center justify-between gap-3 text-[0.62rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-        <span>{match.competition} · {match.stage}</span>
-        <span>Bo{match.bestOf}</span>
+        <div className="flex min-w-0 items-center gap-2">
+          {match.competitionLogoUrl ? (
+            <span className="grid size-6 shrink-0 place-items-center rounded-md border border-border bg-black/30 p-1">
+              <img src={match.competitionLogoUrl} alt="" className="max-h-full max-w-full object-contain" loading="lazy" />
+            </span>
+          ) : null}
+          <span className="truncate">{match.competition} · {match.stage}</span>
+        </div>
+        <span className="shrink-0">Bo{match.bestOf}</span>
       </div>
       <div className="mt-3 grid grid-cols-[1fr_auto_1fr] items-center gap-2">
         <Team team={match.teamA} align="left" />
@@ -150,8 +157,17 @@ function MatchRow({ match, locale }: { match: ValorantEsportsMatch; locale: Loca
 function Team({ team, align }: { team: ValorantEsportsMatch["teamA"]; align: "left" | "right" }) {
   return (
     <div className={cn("flex min-w-0 items-center gap-2", align === "right" && "flex-row-reverse text-right")}>
-      <span className="grid size-8 shrink-0 place-items-center rounded-lg border border-tactical/20 bg-tactical/[0.07] font-display text-[0.62rem] font-black text-foreground">{team.short.slice(0, 4)}</span>
-      <span className="truncate text-xs font-semibold text-foreground" title={team.name}>{team.name}</span>
+      <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-tactical/20 bg-white p-1 shadow-sm">
+        {team.logoUrl ? (
+          <img src={team.logoUrl} alt={`${team.name} logo`} className="max-h-full max-w-full object-contain" loading="lazy" />
+        ) : (
+          <span className="font-display text-[0.58rem] font-black text-black">{team.short.slice(0, 4)}</span>
+        )}
+      </span>
+      <span className="min-w-0">
+        <span className="block truncate text-xs font-semibold text-foreground" title={team.name}>{team.name}</span>
+        <span className="block text-[0.58rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">{team.short}</span>
+      </span>
     </div>
   );
 }
