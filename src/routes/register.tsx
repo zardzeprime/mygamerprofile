@@ -39,7 +39,7 @@ function RegisterPage() {
       return;
     }
     setLoading(true);
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: { emailRedirectTo: window.location.origin },
@@ -49,6 +49,14 @@ function RegisterPage() {
       setError(signUpError.message || t("auth.errors.generic"));
       return;
     }
+
+    // Supabase may require email confirmation. In that case the account is
+    // created, but no authenticated session exists yet, so onboarding would fail.
+    if (!data.session) {
+      router.navigate({ to: "/login" });
+      return;
+    }
+
     router.navigate({ to: "/onboarding" });
   };
 
