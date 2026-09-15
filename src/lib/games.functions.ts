@@ -51,7 +51,16 @@ export const getGameProfile = createServerFn({ method: "GET" })
       .single();
     if (profileError) throw new Error(profileError.message);
 
-    const game = GAMES.find((candidate) => candidate.slug === data.slug);
+    const configuredGame = GAMES.find((candidate) => candidate.slug === data.slug);
+    if (!configuredGame) throw new Error("game_not_found");
+
+    const { data: game, error: gameError } = await supabase
+      .from("games")
+      .select("id,slug,name")
+      .eq("slug", configuredGame.slug)
+      .eq("active", true)
+      .maybeSingle();
+    if (gameError) throw new Error(gameError.message);
     if (!game) throw new Error("game_not_found");
 
     const { data: gameProfile, error: gpError } = await supabase
@@ -75,8 +84,16 @@ export const upsertGameProfile = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     const { game_id, profile_data, visibility = "public" } = data;
 
-    const configuredGame = GAMES.find((game) => game.id === game_id);
-    if (!configuredGame) throw new Error("game_not_supported");
+    const { data: databaseGame, error: gameError } = await context.supabase
+      .from("games")
+      .select("id,slug")
+      .eq("id", game_id)
+      .eq("active", true)
+      .maybeSingle();
+    if (gameError) throw new Error(gameError.message);
+
+    const configuredGame = GAMES.find((game) => game.slug === databaseGame?.slug);
+    if (!configuredGame || !databaseGame) throw new Error("game_not_supported");
 
     const allowedKeys = new Set(configuredGame.profileFields.map((field) => field.key));
     const sanitizedData = Object.fromEntries(
@@ -85,17 +102,24 @@ export const upsertGameProfile = createServerFn({ method: "POST" })
 
     const { data: existing, error: existingError } = await context.supabase
       .from("game_profiles")
-      .select("id")
+      .select("id,profile_data")
       .eq("user_id", context.userId)
       .eq("game_id", game_id)
       .maybeSingle();
     if (existingError) throw new Error(existingError.message);
 
+    const existingData =
+      existing?.profile_data &&
+      typeof existing.profile_data === "object" &&
+      !Array.isArray(existing.profile_data)
+        ? existing.profile_data
+        : {};
+
     if (existing) {
       const { data: updated, error } = await context.supabase
         .from("game_profiles")
         .update({
-          profile_data: sanitizedData,
+          profile_data: { ...existingData, ...sanitizedData },
           visibility,
           updated_at: new Date().toISOString(),
         })

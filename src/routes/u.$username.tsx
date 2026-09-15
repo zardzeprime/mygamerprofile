@@ -104,7 +104,7 @@ function ProfilePage() {
     () =>
       gameProfiles
         .filter((gameProfile) => gameProfile.profile_data?.favorite === true)
-        .map((gameProfile) => GAMES.find((game) => game.id === gameProfile.game_id))
+        .map((gameProfile) => GAMES.find((game) => game.slug === gameProfile.game_slug))
         .filter((game): game is NonNullable<typeof game> => Boolean(game)),
     [gameProfiles],
   );
@@ -200,7 +200,7 @@ function ProfilePage() {
               <div className="mt-4 flex flex-wrap gap-2">
                 {favoriteGames.map((game) => (
                   <Link
-                    key={game.id}
+                    key={game.slug}
                     to="/games/$slug"
                     params={{ slug: game.slug }}
                     className="rounded-full border border-border bg-muted/20 px-3 py-1.5 text-xs font-semibold transition-colors hover:border-gold/35 hover:text-gold-strong"
@@ -222,7 +222,25 @@ function ProfilePage() {
             </TabsContent>
             <TabsContent value="games" className="mt-4 grid min-w-0 gap-4 md:grid-cols-2">
               {gameProfiles.length === 0 ? (
-                <div className="md:col-span-2"><EmptyState title={t("common.empty")} /></div>
+                <div className="md:col-span-2">
+                  {isOwn ? (
+                    <EmptyState
+                      title={copy("Nenhum Game Profile configurado", "No Game Profile configured", "Ningún Game Profile configurado")}
+                      description={copy(
+                        "Escolha seus jogos favoritos nas configurações e complete cada perfil de jogo.",
+                        "Choose your favorite games in settings and complete each Game Profile.",
+                        "Elige tus juegos favoritos en la configuración y completa cada Game Profile.",
+                      )}
+                      action={
+                        <Button asChild size="sm">
+                          <Link to="/settings/profile">{t("profile.editProfile")}</Link>
+                        </Button>
+                      }
+                    />
+                  ) : (
+                    <EmptyState title={t("common.empty")} />
+                  )}
+                </div>
               ) : (
                 gameProfiles.map((gameProfile) => <GameProfileCard key={gameProfile.game_id} gameProfile={gameProfile} username={profile.username} />)
               )}

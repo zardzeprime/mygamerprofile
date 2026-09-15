@@ -1,6 +1,6 @@
 import { createFileRoute, Link, redirect, useRouter } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Camera, Check, Eye, LockKeyhole, Palette } from "lucide-react";
+import { Camera, Check, Eye, Gamepad2, LockKeyhole, Palette } from "lucide-react";
 import { checkUsernameAvailable } from "@/lib/profiles.functions";
 import { uploadImage } from "@/lib/uploads";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,12 +19,28 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UserAvatar } from "@/components/common/UserAvatar";
+import { GameArtwork } from "@/components/games/GameArtwork";
 import {
   PROFILE_BACKGROUNDS,
   getProfileBackground,
   type ProfileBackgroundKey,
 } from "@/config/profileBackgrounds";
+import { GAMES } from "@/config/games";
+import type { Json } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
+
+function isFavoriteProfileData(value: Json) {
+  return Boolean(
+    value &&
+      typeof value === "object" &&
+      !Array.isArray(value) &&
+      value["favorite"] === true,
+  );
+}
+
+function copyProfileData(value: Json): Record<string, Json | undefined> {
+  return value && typeof value === "object" && !Array.isArray(value) ? { ...value } : {};
+}
 
 export const Route = createFileRoute("/_authenticated/settings/profile")({
   loader: async () => {
@@ -42,7 +58,19 @@ export const Route = createFileRoute("/_authenticated/settings/profile")({
     if (profileError) throw new Error(profileError.message);
     if (!profile) throw redirect({ to: "/onboarding" });
 
-    return { profile };
+    const [{ data: gameRows, error: gamesError }, { data: gameProfiles, error: gameProfilesError }] =
+      await Promise.all([
+        supabase.from("games").select("id,slug").eq("active", true).order("name"),
+        supabase
+          .from("game_profiles")
+          .select("game_id,profile_data,visibility")
+          .eq("user_id", profile.id),
+      ]);
+
+    if (gamesError) throw new Error(gamesError.message);
+    if (gameProfilesError) throw new Error(gameProfilesError.message);
+
+    return { profile, gameRows: gameRows ?? [], gameProfiles: gameProfiles ?? [] };
   },
   head: () => ({
     meta: [
@@ -57,7 +85,7 @@ function SettingsProfilePage() {
   const { t, locale, setLocale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const router = useRouter();
-  const { profile } = Route.useLoaderData();
+  const { profile, gameRows, gameProfiles } = Route.useLoaderData();
   const [displayName, setDisplayName] = useState(profile.display_name ?? "");
   const [username, setUsername] = useState(profile.username ?? "");
   const [bio, setBio] = useState(profile.bio ?? "");
@@ -69,11 +97,25 @@ function SettingsProfilePage() {
   const [visibility, setVisibility] = useState<"public" | "private">(
     profile.visibility === "private" ? "private" : "public",
   );
+  const [favoriteGameSlugs, setFavoriteGameSlugs] = useState<string[]>(() =>
+    gameRows
+      .filter((game) => {
+        const gameProfile = gameProfiles.find((item) => item.game_id === game.id);
+        return gameProfile ? isFavoriteProfileData(gameProfile.profile_data) : false;
+      })
+      .map((game) => game.slug),
+  );
   const [loading, setLoading] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
   const avatarInput = useRef<HTMLInputElement>(null);
+
+  const toggleFavoriteGame = (slug: string) => {
+    setFavoriteGameSlugs((current) =>
+      current.includes(slug) ? current.filter((item) => item !== slug) : [...current, slug],
+    );
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -120,6 +162,36 @@ function SettingsProfilePage() {
         .eq("id", profile.id);
 
       if (updateError) throw updateError;
+
+      const favoriteRows = GAMES.flatMap((game) => {
+        const databaseGame = gameRows.find((row) => row.slug === game.slug);
+        if (!databaseGame) return [];
+
+        const existing = gameProfiles.find((row) => row.game_id === databaseGame.id);
+        const profileData = copyProfileData(existing?.profile_data ?? null);
+        const selected = favoriteGameSlugs.includes(game.slug);
+
+        if (selected) profileData["favorite"] = true;
+        else delete profileData["favorite"];
+
+        if (!selected && !existing) return [];
+
+        return [
+          {
+            user_id: profile.id,
+            game_id: databaseGame.id,
+            profile_data: profileData,
+            visibility: existing?.visibility ?? "public",
+          },
+        ];
+      });
+
+      if (favoriteRows.length > 0) {
+        const { error: favoriteError } = await supabase
+          .from("game_profiles")
+          .upsert(favoriteRows, { onConflict: "user_id,game_id" });
+        if (favoriteError) throw favoriteError;
+      }
 
       setLocale(language);
       setSaved(true);
@@ -241,6 +313,63 @@ function SettingsProfilePage() {
                   <div className="bg-surface p-3">
                     <p className="text-sm font-semibold">{preset.name[locale]}</p>
                     <p className="mt-1 text-xs leading-5 text-muted-foreground">{preset.description[locale]}</p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="surface-panel rounded-2xl p-4 sm:p-6">
+          <div className="flex items-center gap-2">
+            <Gamepad2 className="size-4 text-gold-strong" />
+            <h2 className="font-display text-lg font-semibold">
+              {copy("Jogos favoritos", "Favorite games", "Juegos favoritos")}
+            </h2>
+          </div>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            {copy(
+              "Escolha os jogos que aparecem na sua identidade gamer. As informações detalhadas continuam dentro de cada Game Profile.",
+              "Choose the games shown in your gamer identity. Detailed information stays inside each Game Profile.",
+              "Elige los juegos que aparecen en tu identidad gamer. La información detallada sigue dentro de cada Game Profile.",
+            )}
+          </p>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {GAMES.map((game) => {
+              const selected = favoriteGameSlugs.includes(game.slug);
+              return (
+                <button
+                  key={game.slug}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => toggleFavoriteGame(game.slug)}
+                  className={cn(
+                    "group overflow-hidden rounded-xl border bg-surface text-left transition-all hover:-translate-y-0.5",
+                    selected
+                      ? "border-gold/65 ring-2 ring-gold/15"
+                      : "border-border hover:border-gold/35",
+                  )}
+                >
+                  <div className="relative h-28 overflow-hidden">
+                    <GameArtwork game={game} className="h-full w-full" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
+                    <span
+                      className={cn(
+                        "absolute right-3 top-3 grid size-7 place-items-center rounded-full border backdrop-blur",
+                        selected
+                          ? "border-gold bg-gold text-gold-foreground"
+                          : "border-white/20 bg-black/35 text-white/70",
+                      )}
+                    >
+                      <Check className={cn("size-4", !selected && "opacity-0")} />
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    <p className="font-display text-sm font-semibold">{game.name}</p>
+                    <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">
+                      {game.genre}
+                    </p>
                   </div>
                 </button>
               );

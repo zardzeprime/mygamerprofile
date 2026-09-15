@@ -37,13 +37,15 @@ function OnboardingPage() {
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [language, setLanguage] = useState<Locale>(locale);
-  const [favoriteGameIds, setFavoriteGameIds] = useState<string[]>([]);
+  const [favoriteGameSlugs, setFavoriteGameSlugs] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const toggleFavorite = (gameId: string) => {
-    setFavoriteGameIds((current) =>
-      current.includes(gameId) ? current.filter((id) => id !== gameId) : [...current, gameId],
+  const toggleFavorite = (gameSlug: string) => {
+    setFavoriteGameSlugs((current) =>
+      current.includes(gameSlug)
+        ? current.filter((slug) => slug !== gameSlug)
+        : [...current, gameSlug],
     );
   };
 
@@ -80,6 +82,28 @@ function OnboardingPage() {
         return;
       }
 
+      let favoriteGames: Array<{ id: string; slug: string }> = [];
+      if (favoriteGameSlugs.length > 0) {
+        const { data: gameRows, error: gamesError } = await supabase
+          .from("games")
+          .select("id,slug")
+          .in("slug", favoriteGameSlugs)
+          .eq("active", true);
+
+        if (gamesError) throw gamesError;
+        favoriteGames = gameRows ?? [];
+
+        if (favoriteGames.length !== favoriteGameSlugs.length) {
+          throw new Error(
+            copy(
+              "Não foi possível localizar todos os jogos escolhidos.",
+              "Could not find every selected game.",
+              "No se pudieron encontrar todos los juegos elegidos.",
+            ),
+          );
+        }
+      }
+
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .insert({
@@ -102,10 +126,10 @@ function OnboardingPage() {
         throw profileError;
       }
 
-      if (favoriteGameIds.length > 0) {
-        const rows = favoriteGameIds.map((gameId) => ({
+      if (favoriteGames.length > 0) {
+        const rows = favoriteGames.map((game) => ({
           user_id: user.id,
-          game_id: gameId,
+          game_id: game.id,
           profile_data: { favorite: true },
           visibility: "public",
         }));
@@ -219,13 +243,13 @@ function OnboardingPage() {
 
               <div className="grid gap-3 sm:grid-cols-2">
                 {GAMES.map((game) => {
-                  const selected = favoriteGameIds.includes(game.id);
+                  const selected = favoriteGameSlugs.includes(game.slug);
                   return (
                     <button
-                      key={game.id}
+                      key={game.slug}
                       type="button"
                       aria-pressed={selected}
-                      onClick={() => toggleFavorite(game.id)}
+                      onClick={() => toggleFavorite(game.slug)}
                       className={cn(
                         "group relative overflow-hidden rounded-xl border bg-surface text-left transition duration-200",
                         selected
