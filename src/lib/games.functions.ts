@@ -9,6 +9,7 @@ const gameProfileSchema = z.object({
   username: z.string().trim().min(3).max(20),
   slug: z.string().trim().min(1).max(100),
 });
+const publicGameProfilesSchema = z.object({ userId: z.string().uuid() });
 const upsertGameProfileSchema = z.object({
   game_id: z.string().uuid(),
   profile_data: z.record(z.unknown()),
@@ -76,6 +77,50 @@ export const getGameProfile = createServerFn({ method: "GET" })
       game,
       gameProfile: gameProfile ? { ...gameProfile, game_slug: game.slug } : null,
     };
+  });
+
+/**
+ * Public profile pages should not issue one server-function call per configured game.
+ * This keeps the request count constant as the catalog grows and makes the route more
+ * resilient to transient hosting/database latency.
+ */
+export const getPublicGameProfilesByUserId = createServerFn({ method: "GET" })
+  .inputValidator((data) => publicGameProfilesSchema.parse(data))
+  .handler(async ({ data }) => {
+    const supabase = getSupabasePublic();
+    const { data: gameProfiles, error: gpError } = await supabase
+      .from("game_profiles")
+      .select("id,user_id,game_id,profile_data,visibility,created_at,updated_at")
+      .eq("user_id", data.userId);
+    if (gpError) throw new Error(gpError.message);
+    if (!gameProfiles?.length) return [];
+
+    const gameIds = Array.from(new Set(gameProfiles.map((entry) => entry.game_id)));
+    const { data: games, error: gamesError } = await supabase
+      .from("games")
+      .select("id,slug,name")
+      .in("id", gameIds)
+      .eq("active", true);
+    if (gamesError) throw new Error(gamesError.message);
+
+    const gamesById = new Map((games ?? []).map((game) => [game.id, game]));
+    return gameProfiles.flatMap((gameProfile) => {
+      const game = gamesById.get(gameProfile.game_id);
+      if (!game) return [];
+      return [
+        {
+          ...gameProfile,
+          game_slug: game.slug,
+          game_name: game.name,
+          profile_data:
+            gameProfile.profile_data &&
+            typeof gameProfile.profile_data === "object" &&
+            !Array.isArray(gameProfile.profile_data)
+              ? (gameProfile.profile_data as Record<string, unknown>)
+              : {},
+        },
+      ];
+    });
   });
 
 export const upsertGameProfile = createServerFn({ method: "POST" })
