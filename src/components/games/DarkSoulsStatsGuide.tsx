@@ -1,4 +1,4 @@
-import { useMemo, useState, type LucideIcon } from "react";
+import { useMemo, useState } from "react";
 import {
   ArrowRight,
   BookOpen,
@@ -13,6 +13,7 @@ import {
   Sun,
   Swords,
   TriangleAlert,
+  type LucideIcon,
 } from "lucide-react";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
