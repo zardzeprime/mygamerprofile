@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pause, Play, Volume2, VolumeX } from "lucide-react";
+import { LoaderCircle, Pause, Play, Volume2, VolumeX } from "lucide-react";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
@@ -37,6 +37,11 @@ type YouTubeApi = {
     ENDED: number;
     PLAYING: number;
   };
+};
+
+type NetworkInformation = {
+  saveData?: boolean;
+  effectiveType?: string;
 };
 
 declare global {
@@ -213,16 +218,37 @@ export function MinimalVideoPlayer({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
+  const [buffering, setBuffering] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(72);
+  const [preload, setPreload] = useState<"none" | "metadata" | "auto">("metadata");
   const lastAudibleVolumeRef = useRef(72);
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
 
   useEffect(() => {
+    setPlaying(false);
+    setReady(false);
+    setBuffering(false);
+    setCurrentTime(0);
+    setDuration(0);
+  }, [src]);
+
+  useEffect(() => {
     const video = videoRef.current;
-    if (!video || !autoPlay) return;
-    void video.play().catch(() => undefined);
+    if (!video) return;
+
+    const connection = (navigator as Navigator & { connection?: NetworkInformation }).connection;
+    const saveData = connection?.saveData === true;
+    const effectiveType = connection?.effectiveType ?? "";
+    const slowConnection = effectiveType === "slow-2g" || effectiveType === "2g";
+    const mobileOrTouch = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
+
+    setPreload(saveData || slowConnection ? "none" : mobileOrTouch ? "metadata" : "auto");
+
+    if (!autoPlay || mobileOrTouch || saveData || slowConnection) return;
+    setBuffering(true);
+    void video.play().catch(() => setBuffering(false));
   }, [autoPlay, src]);
 
   useEffect(() => {
@@ -232,6 +258,15 @@ export function MinimalVideoPlayer({
     video.volume = volume / 100;
   }, [volume]);
 
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState !== "hidden") return;
+      videoRef.current?.pause();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
   const setVolume = useCallback((nextVolume: number) => {
     const safeVolume = Math.max(0, Math.min(100, nextVolume));
     setVolumeState(safeVolume);
@@ -240,42 +275,68 @@ export function MinimalVideoPlayer({
 
   const toggleMute = () => setVolume(volume === 0 ? lastAudibleVolumeRef.current || 72 : 0);
 
+  const requestPlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      setBuffering(true);
+      void video.play().catch(() => setBuffering(false));
+    } else {
+      video.pause();
+    }
+  };
+
   return (
     <div className={cn("relative isolate overflow-hidden bg-black", className)}>
       <video
         ref={videoRef}
         src={src}
         playsInline
-        preload="metadata"
+        preload={preload}
         className="mx-auto h-full max-h-[68dvh] w-full bg-black object-contain"
         onLoadedMetadata={(event) => {
           setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0);
           setReady(true);
         }}
+        onLoadedData={() => {
+          setReady(true);
+          setBuffering(false);
+        }}
+        onCanPlay={() => setBuffering(false)}
         onDurationChange={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)}
         onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
         onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
-        onEnded={() => setPlaying(false)}
-        onClick={() => {
-          const video = videoRef.current;
-          if (!video) return;
-          if (video.paused) void video.play().catch(() => undefined);
-          else video.pause();
+        onPlaying={() => {
+          setPlaying(true);
+          setBuffering(false);
         }}
+        onWaiting={() => setBuffering(true)}
+        onStalled={() => setBuffering(true)}
+        onPause={() => {
+          setPlaying(false);
+          setBuffering(false);
+        }}
+        onEnded={() => {
+          setPlaying(false);
+          setBuffering(false);
+        }}
+        onClick={requestPlay}
       />
+      {buffering ? (
+        <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-black/10" aria-live="polite">
+          <span className="grid size-11 place-items-center rounded-full bg-black/60 text-white shadow-lg">
+            <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+            <span className="sr-only">{copy("Carregando vídeo", "Loading video", "Cargando video")}</span>
+          </span>
+        </div>
+      ) : null}
       <PlayerControls
         playing={playing}
         ready={ready}
         currentTime={currentTime}
         duration={duration}
         volume={volume}
-        onTogglePlay={() => {
-          const video = videoRef.current;
-          if (!video) return;
-          if (video.paused) void video.play().catch(() => undefined);
-          else video.pause();
-        }}
+        onTogglePlay={requestPlay}
         onSeek={(seconds) => {
           const video = videoRef.current;
           if (!video) return;
