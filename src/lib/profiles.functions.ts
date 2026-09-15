@@ -47,21 +47,17 @@ export const getProfileByUsername = createServerFn({ method: "GET" })
     const { data: profile, error } = await supabase
       .from("profiles")
       .select(
-        "id,username,display_name,bio,avatar_url,language,theme_preference,visibility,profile_background,created_at,updated_at",
+        "id,username,display_name,bio,avatar_url,language,theme_preference,visibility,profile_background,followers_count,following_count,created_at,updated_at",
       )
       .ilike("username", data.username)
       .maybeSingle();
     if (error) throw new Error(error.message);
     if (!profile) return null;
 
-    const { data: counts, error: countsError } = await supabase
-      .rpc("profile_follow_counts", { target_user_id: profile.id })
-      .maybeSingle();
-
     return {
       ...profile,
-      followers: countsError ? 0 : Number(counts?.followers ?? 0),
-      following: countsError ? 0 : Number(counts?.following ?? 0),
+      followers: Number(profile.followers_count ?? 0),
+      following: Number(profile.following_count ?? 0),
     };
   });
 
@@ -81,14 +77,18 @@ export const getCurrentProfile = createServerFn({ method: "GET" })
 export const checkUsernameAvailable = createServerFn({ method: "GET" })
   .validator((data) => usernameCheckSchema.parse(data))
   .handler(async ({ data }) => {
-    if (!USERNAME_REGEX.test(data.username)) return { available: false };
+    const normalized = data.username.trim().toLowerCase();
+    if (!USERNAME_REGEX.test(normalized)) return { available: false };
+
     const supabase = getSupabasePublic();
-    const { data: available, error } = await supabase.rpc("is_username_available", {
-      candidate: data.username,
-      exclude_user_id: data.excludeUserId ?? null,
-    });
+    let query = supabase
+      .from("profile_usernames")
+      .select("user_id")
+      .ilike("username", normalized);
+    if (data.excludeUserId) query = query.neq("user_id", data.excludeUserId);
+    const { data: rows, error } = await query.limit(1);
     if (error) throw new Error(error.message);
-    return { available: available === true };
+    return { available: rows.length === 0 };
   });
 
 export const createProfile = createServerFn({ method: "POST" })
