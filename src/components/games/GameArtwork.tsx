@@ -20,8 +20,8 @@ export function GameArtwork({
   imageClassName,
   loading = "lazy",
 }: GameArtworkProps) {
-  const isLeagueCard = game.slug === "league-of-legends" && variant === "card";
-  const configuredSource = isLeagueCard
+  const isLeagueArtwork = game.slug === "league-of-legends";
+  const configuredSource = isLeagueArtwork
     ? LEAGUE_OFFICIAL_LOGO
     : variant === "hero"
       ? game.visual.heroImage
@@ -38,7 +38,8 @@ export function GameArtwork({
     <div
       className={cn(
         "game-artwork relative h-full w-full overflow-hidden bg-muted",
-        isLeagueCard && "bg-[#071a2d]",
+        isLeagueArtwork &&
+          "bg-[radial-gradient(circle_at_45%_40%,#123954_0%,#071a2d_48%,#03101d_100%)]",
         className,
       )}
     >
@@ -56,7 +57,11 @@ export function GameArtwork({
         style={objectPosition ? { objectPosition } : undefined}
         className={cn(
           "game-artwork-base h-full w-full select-none transition-[transform,filter,opacity] duration-700 group-hover:scale-[1.065]",
-          isLeagueCard ? "object-contain p-[12%]" : "object-cover",
+          isLeagueArtwork
+            ? variant === "hero"
+              ? "object-contain p-[22%] opacity-80"
+              : "object-contain p-[12%]"
+            : "object-cover",
           imageClassName,
         )}
       />

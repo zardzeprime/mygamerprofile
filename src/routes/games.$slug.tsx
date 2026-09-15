@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { GameLivePanel } from "@/components/games/GameLivePanel";
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { FutureCollection } from "@/components/games/FutureCollection";
+import { LeagueEsportsPanel } from "@/components/games/LeagueEsportsPanel";
 import { useGameAmbience } from "@/hooks/useGameAmbience";
 
 export const Route = createFileRoute("/games/$slug")({
@@ -27,10 +28,15 @@ export const Route = createFileRoute("/games/$slug")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Jogo não encontrado — MGP" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "Jogo não encontrado — MG Profile" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
-    const title = `${loaderData.game.name} — MGP`;
-    const description = `Informações, guias, builds e conteúdo editorial de ${loaderData.game.name} no MGP.`;
+    const title = `${loaderData.game.name} — MG Profile`;
+    const description = `Informações, guias, builds e conteúdo editorial de ${loaderData.game.name} no MG Profile.`;
     return {
       meta: [
         { title },
@@ -71,10 +77,19 @@ function GameHub() {
   useGameAmbience(game.visual.ambientAudio);
 
   const [active, setActive] = useState<GameModuleKey>("overview");
-  const visibleModules = useMemo(
-    () => game.modules.filter((moduleKey) => moduleKey !== "community" && moduleKey !== "lfg"),
-    [game.modules],
-  );
+  const visibleModules = useMemo(() => {
+    const modules = game.modules.filter(
+      (moduleKey) => moduleKey !== "community" && moduleKey !== "lfg",
+    );
+    if (game.slug !== "league-of-legends") return modules;
+
+    // League is organized by player-facing game modes rather than a raw map
+    // encyclopedia. The underlying game config keeps backwards compatibility,
+    // while the hub surfaces the new Modes section.
+    return Array.from(
+      new Set(modules.map((moduleKey) => (moduleKey === "maps" ? "modes" : moduleKey))),
+    ) as GameModuleKey[];
+  }, [game.modules, game.slug]);
   const editorial = GAME_EDITORIAL_OVERVIEW[game.slug];
 
   const handleTab = (moduleKey: GameModuleKey, scrollToPanel = false) => {
@@ -83,12 +98,20 @@ function GameHub() {
 
     requestAnimationFrame(() => {
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      panelRef.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+      panelRef.current?.scrollIntoView({
+        behavior: reducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
     });
   };
 
   return (
-    <div className={cn("game-hub pb-10", game.themeKey === "dark_souls" ? "game-hub-ember" : "game-hub-tactical")}>
+    <div
+      className={cn(
+        "game-hub pb-10",
+        game.themeKey === "dark_souls" ? "game-hub-ember" : "game-hub-tactical",
+      )}
+    >
       <section className="game-hub-hero relative isolate overflow-hidden border-b border-border">
         <GameArtwork
           game={game}
@@ -104,7 +127,7 @@ function GameHub() {
           </div>
           <div className="max-w-2xl">
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-hero-muted">
-              <span>MGP</span>
+              <span>MG Profile</span>
               <ChevronRight className="size-3" />
               <span>{game.genre}</span>
             </div>
@@ -129,7 +152,14 @@ function GameHub() {
             </ul>
 
             {game.expansions?.length ? (
-              <div className="mt-4 flex flex-wrap items-center gap-2" aria-label={copy("Expansões e DLCs", "Expansions and DLC", "Expansiones y DLC")}>
+              <div
+                className="mt-4 flex flex-wrap items-center gap-2"
+                aria-label={copy(
+                  "Expansões e DLCs",
+                  "Expansions and DLC",
+                  "Expansiones y DLC",
+                )}
+              >
                 <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-hero-muted">
                   {copy("Conteúdo adicional", "Additional content", "Contenido adicional")}
                 </span>
@@ -185,7 +215,10 @@ function GameHub() {
           aria-labelledby={`hub-tab-${active}`}
           className="scroll-mt-24 py-8 outline-none"
         >
-          <div key={active} className="animate-in fade-in slide-in-from-bottom-2 duration-300 motion-reduce:animate-none">
+          <div
+            key={active}
+            className="animate-in fade-in slide-in-from-bottom-2 duration-300 motion-reduce:animate-none"
+          >
             {active === "overview" ? (
               <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
                 <article className="surface-panel p-6 sm:p-8">
@@ -207,10 +240,26 @@ function GameHub() {
 
                       {editorial ? (
                         <div className="mt-7 grid gap-3 sm:grid-cols-2">
-                          <GameFact icon={CalendarDays} label={copy("Lançamento", "Release", "Lanzamiento")} value={editorial.release[locale]} />
-                          <GameFact icon={Building2} label={copy("Desenvolvimento", "Developer", "Desarrollo")} value={editorial.developer} />
-                          <GameFact icon={Building2} label={copy("Publicação", "Publisher", "Publicación")} value={editorial.publisher} />
-                          <GameFact icon={RefreshCw} label={copy("Versão", "Version", "Versión")} value={editorial.latestVersion} />
+                          <GameFact
+                            icon={CalendarDays}
+                            label={copy("Lançamento", "Release", "Lanzamiento")}
+                            value={editorial.release[locale]}
+                          />
+                          <GameFact
+                            icon={Building2}
+                            label={copy("Desenvolvimento", "Developer", "Desarrollo")}
+                            value={editorial.developer}
+                          />
+                          <GameFact
+                            icon={Building2}
+                            label={copy("Publicação", "Publisher", "Publicación")}
+                            value={editorial.publisher}
+                          />
+                          <GameFact
+                            icon={RefreshCw}
+                            label={copy("Versão", "Version", "Versión")}
+                            value={editorial.latestVersion}
+                          />
                         </div>
                       ) : null}
                     </div>
@@ -223,19 +272,45 @@ function GameHub() {
                           <span className="text-base font-semibold text-muted-foreground">/10</span>
                         </p>
                         <p className="mt-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                          {copy("Média de referência", "Reference average", "Promedio de referencia")}
+                          {copy(
+                            "Média de referência",
+                            "Reference average",
+                            "Promedio de referencia",
+                          )}
                         </p>
-                        <p className="mt-3 text-xs leading-5 text-muted-foreground">{editorial.score.sourceLabel}</p>
-                        <p className="mt-2 text-[0.7rem] leading-5 text-muted-foreground">{editorial.score.note[locale]}</p>
+                        <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                          {editorial.score.sourceLabel}
+                        </p>
+                        <p className="mt-2 text-[0.7rem] leading-5 text-muted-foreground">
+                          {editorial.score.note[locale]}
+                        </p>
                       </div>
                     ) : null}
                   </div>
                 </article>
 
-                <GameLivePanel gameSlug={game.slug} themeKey={game.themeKey} locale={locale} onOpenModule={(moduleKey) => handleTab(moduleKey, true)} />
+                {game.slug === "league-of-legends" ? (
+                  <LeagueEsportsPanel
+                    locale={locale}
+                    compact
+                    onOpenCompetitive={() => handleTab("competitive", true)}
+                  />
+                ) : (
+                  <GameLivePanel
+                    gameSlug={game.slug}
+                    themeKey={game.themeKey}
+                    locale={locale}
+                    onOpenModule={(moduleKey) => handleTab(moduleKey, true)}
+                  />
+                )}
               </div>
             ) : (
-              <FutureCollection gameSlug={game.slug} moduleKey={active} themeKey={game.themeKey} locale={locale} />
+              <FutureCollection
+                gameSlug={game.slug}
+                moduleKey={active}
+                themeKey={game.themeKey}
+                locale={locale}
+              />
             )}
           </div>
         </div>
@@ -244,7 +319,15 @@ function GameHub() {
   );
 }
 
-function GameFact({ icon: Icon, label, value }: { icon: typeof CalendarDays; label: string; value: string }) {
+function GameFact({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof CalendarDays;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="rounded-xl border border-border bg-muted/20 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/25 hover:bg-muted/30">
       <div className="flex items-center gap-2 text-gold-strong">
