@@ -54,7 +54,21 @@
 - [x] Preserve available streamed-video metadata for a later animation-preview update
 - [ ] Replace fragile external esports-logo hotlinks with approved/official hosted assets when available
 - [ ] Add exact historical per-skin VP pricing from an approved provider/editorial dataset
-- [ ] Add opt-in skin animation/video previews with rights and bandwidth safeguards
+
+# MGP v0.1.3C — Previews, News & Motion
+
+- [x] Refine the skin wheel with smaller/farther orbit cards and a stronger center focus
+- [x] Capture wheel scrolling only while the pointer is over the skin showcase
+- [x] Add per-weapon skin search inside the selected weapon collection
+- [x] Turn streamed skin/chroma media into an animated MGP preview modal
+- [x] Make the full game catalog card clickable instead of requiring an Open Hub CTA
+- [x] Make the game-card play control open an inline official trailer and the arrow open the official external video
+- [x] Add Dark Souls Remastered and VALORANT official trailer references
+- [x] Add a VALORANT News tab with official-only filtering, search and chronological ordering
+- [x] Seed the news archive with current Riot patch notes, official trailers, esports announcements and confirmed future-dated changes
+- [x] Add lightweight module/card entrance and hover motion while respecting reduced-motion preferences
+- [ ] Maintain VALORANT News through a review-only automation that opens GitHub PRs and never auto-merges
+- [ ] Add per-ability gameplay video previews only when a stable official/approved source exists for the full Agent roster
 
 # Future — VALORANT Competitive + Lineups
 
