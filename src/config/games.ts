@@ -46,6 +46,7 @@ export type GameConfig = {
     cardObjectPosition?: string;
     heroObjectPosition?: string;
     hoverPreviewVideo?: string;
+    hoverAudio?: string;
     ambientAudio?: string;
     assetSource: string;
     assetLicense: string;
@@ -155,7 +156,7 @@ export const GAMES: GameConfig[] = [
       fallbackImage: darkSoulsAtmosphere,
       cardObjectPosition: "center 18%",
       heroObjectPosition: "center 20%",
-      ambientAudio: "/audio/dark-souls-campfire.mp3",
+      hoverAudio: "/audio/dark-souls-campfire.mp3",
       assetSource: "Dark Souls Remastered public cover-art reference",
       assetLicense: "Third-party promotional cover art; source attribution tracked by MGP",
     },
