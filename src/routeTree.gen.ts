@@ -14,14 +14,19 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LfgRouteImport } from './routes/lfg'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as CommunitiesIndexRouteImport } from './routes/communities.index'
+import { Route as CommunitiesSlugRouteImport } from './routes/communities.$slug'
 import { Route as GamesIndexRouteImport } from './routes/games.index'
 import { Route as GamesSlugRouteImport } from './routes/games.$slug'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings.account'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings.appearance'
+import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as UUsernameGamesSlugRouteImport } from './routes/u.$username.games.$slug'
 
@@ -49,15 +54,35 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const CommunitiesIndexRoute = CommunitiesIndexRouteImport.update({
+  id: '/communities/',
+  path: '/communities/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunitiesSlugRoute = CommunitiesSlugRouteImport.update({
+  id: '/communities/$slug',
+  path: '/communities/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const GamesIndexRoute = GamesIndexRouteImport.update({
   id: '/games/',
@@ -92,6 +117,12 @@ const AuthenticatedSettingsAppearanceRoute =
     path: '/settings/appearance',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSettingsConnectionsRoute =
+  AuthenticatedSettingsConnectionsRouteImport.update({
+    id: '/settings/connections',
+    path: '/settings/connections',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsProfileRoute =
   AuthenticatedSettingsProfileRouteImport.update({
     id: '/settings/profile',
@@ -109,14 +140,19 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/communities/$slug': typeof CommunitiesSlugRoute
   '/games/$slug': typeof GamesSlugRoute
   '/u/$username': typeof UUsernameRouteWithChildren
+  '/communities/': typeof CommunitiesIndexRoute
   '/games/': typeof GamesIndexRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
+  '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -125,14 +161,19 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/communities/$slug': typeof CommunitiesSlugRoute
   '/games/$slug': typeof GamesSlugRoute
   '/u/$username': typeof UUsernameRouteWithChildren
+  '/communities': typeof CommunitiesIndexRoute
   '/games': typeof GamesIndexRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
+  '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -143,14 +184,19 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
+  '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/communities/$slug': typeof CommunitiesSlugRoute
   '/games/$slug': typeof GamesSlugRoute
   '/u/$username': typeof UUsernameRouteWithChildren
+  '/communities/': typeof CommunitiesIndexRoute
   '/games/': typeof GamesIndexRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
+  '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -161,14 +207,19 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/lfg'
     | '/login'
+    | '/privacy'
     | '/register'
+    | '/terms'
     | '/onboarding'
+    | '/communities/$slug'
     | '/games/$slug'
     | '/u/$username'
+    | '/communities/'
     | '/games/'
     | '/admin/reports'
     | '/settings/account'
     | '/settings/appearance'
+    | '/settings/connections'
     | '/settings/profile'
     | '/u/$username/games/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -177,14 +228,19 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/lfg'
     | '/login'
+    | '/privacy'
     | '/register'
+    | '/terms'
     | '/onboarding'
+    | '/communities/$slug'
     | '/games/$slug'
     | '/u/$username'
+    | '/communities'
     | '/games'
     | '/admin/reports'
     | '/settings/account'
     | '/settings/appearance'
+    | '/settings/connections'
     | '/settings/profile'
     | '/u/$username/games/$slug'
   id:
@@ -194,14 +250,19 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/lfg'
     | '/login'
+    | '/privacy'
     | '/register'
+    | '/terms'
     | '/_authenticated/onboarding'
+    | '/communities/$slug'
     | '/games/$slug'
     | '/u/$username'
+    | '/communities/'
     | '/games/'
     | '/_authenticated/admin/reports'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
+    | '/_authenticated/settings/connections'
     | '/_authenticated/settings/profile'
     | '/u/$username/games/$slug'
   fileRoutesById: FileRoutesById
@@ -212,9 +273,13 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LfgRoute: typeof LfgRoute
   LoginRoute: typeof LoginRoute
+  PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
+  TermsRoute: typeof TermsRoute
+  CommunitiesSlugRoute: typeof CommunitiesSlugRoute
   GamesSlugRoute: typeof GamesSlugRoute
   UUsernameRoute: typeof UUsernameRouteWithChildren
+  CommunitiesIndexRoute: typeof CommunitiesIndexRoute
   GamesIndexRoute: typeof GamesIndexRoute
 }
 
@@ -255,11 +320,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/onboarding': {
@@ -268,6 +347,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/onboarding'
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/communities/': {
+      id: '/communities/'
+      path: '/communities'
+      fullPath: '/communities/'
+      preLoaderRoute: typeof CommunitiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/communities/$slug': {
+      id: '/communities/$slug'
+      path: '/communities/$slug'
+      fullPath: '/communities/$slug'
+      preLoaderRoute: typeof CommunitiesSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/games/': {
       id: '/games/'
@@ -311,6 +404,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsAppearanceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/settings/connections': {
+      id: '/_authenticated/settings/connections'
+      path: '/settings/connections'
+      fullPath: '/settings/connections'
+      preLoaderRoute: typeof AuthenticatedSettingsConnectionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings/profile': {
       id: '/_authenticated/settings/profile'
       path: '/settings/profile'
@@ -333,6 +433,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
   AuthenticatedSettingsAccountRoute: typeof AuthenticatedSettingsAccountRoute
   AuthenticatedSettingsAppearanceRoute: typeof AuthenticatedSettingsAppearanceRoute
+  AuthenticatedSettingsConnectionsRoute: typeof AuthenticatedSettingsConnectionsRoute
   AuthenticatedSettingsProfileRoute: typeof AuthenticatedSettingsProfileRoute
 }
 
@@ -341,6 +442,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
   AuthenticatedSettingsAccountRoute: AuthenticatedSettingsAccountRoute,
   AuthenticatedSettingsAppearanceRoute: AuthenticatedSettingsAppearanceRoute,
+  AuthenticatedSettingsConnectionsRoute: AuthenticatedSettingsConnectionsRoute,
   AuthenticatedSettingsProfileRoute: AuthenticatedSettingsProfileRoute,
 }
 
@@ -365,9 +467,13 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   LfgRoute: LfgRoute,
   LoginRoute: LoginRoute,
+  PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
+  TermsRoute: TermsRoute,
+  CommunitiesSlugRoute: CommunitiesSlugRoute,
   GamesSlugRoute: GamesSlugRoute,
   UUsernameRoute: UUsernameRouteWithChildren,
+  CommunitiesIndexRoute: CommunitiesIndexRoute,
   GamesIndexRoute: GamesIndexRoute,
 }
 export const routeTree = rootRouteImport
