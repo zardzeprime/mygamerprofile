@@ -167,95 +167,68 @@ function GameHub() {
           aria-labelledby={`hub-tab-${active}`}
           className="scroll-mt-24 py-8 outline-none"
         >
-          {active === "overview" ? (
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-              <article className="surface-panel p-6 sm:p-8">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="size-4 text-gold-strong" />
-                  <span className="section-kicker">
-                    {copy("FICHA DO JOGO", "GAME PROFILE", "FICHA DEL JUEGO")}
-                  </span>
-                </div>
+          <div key={active} className="animate-in fade-in slide-in-from-bottom-2 duration-300 motion-reduce:animate-none">
+            {active === "overview" ? (
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                <article className="surface-panel p-6 sm:p-8">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="size-4 text-gold-strong" />
+                    <span className="section-kicker">
+                      {copy("FICHA DO JOGO", "GAME PROFILE", "FICHA DEL JUEGO")}
+                    </span>
+                  </div>
 
-                <div className="mt-4 grid gap-7 xl:grid-cols-[minmax(0,1fr)_13rem]">
-                  <div>
-                    <h2 className="font-display text-2xl font-semibold text-foreground">
-                      {copy("Sobre o jogo", "About the game", "Sobre el juego")}
-                    </h2>
-                    <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
-                      {editorial?.synopsis[locale] ?? game.description[locale]}
-                    </p>
+                  <div className="mt-4 grid gap-7 xl:grid-cols-[minmax(0,1fr)_13rem]">
+                    <div>
+                      <h2 className="font-display text-2xl font-semibold text-foreground">
+                        {copy("Sobre o jogo", "About the game", "Sobre el juego")}
+                      </h2>
+                      <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
+                        {editorial?.synopsis[locale] ?? game.description[locale]}
+                      </p>
 
-                    {editorial ? (
-                      <div className="mt-7 grid gap-3 sm:grid-cols-2">
-                        <GameFact
-                          icon={CalendarDays}
-                          label={copy("Lançamento", "Release", "Lanzamiento")}
-                          value={editorial.release[locale]}
-                        />
-                        <GameFact
-                          icon={Building2}
-                          label={copy("Desenvolvimento", "Developer", "Desarrollo")}
-                          value={editorial.developer}
-                        />
-                        <GameFact
-                          icon={Building2}
-                          label={copy("Publicação", "Publisher", "Publicación")}
-                          value={editorial.publisher}
-                        />
-                        <GameFact
-                          icon={RefreshCw}
-                          label={copy("Última atualização oficial", "Latest official update", "Última actualización oficial")}
-                          value={editorial.latestUpdate[locale]}
-                        />
+                      {editorial ? (
+                        <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                          <GameFact icon={CalendarDays} label={copy("Lançamento", "Release", "Lanzamiento")} value={editorial.release[locale]} />
+                          <GameFact icon={Building2} label={copy("Desenvolvimento", "Developer", "Desarrollo")} value={editorial.developer} />
+                          <GameFact icon={Building2} label={copy("Publicação", "Publisher", "Publicación")} value={editorial.publisher} />
+                          <GameFact icon={RefreshCw} label={copy("Última atualização oficial", "Latest official update", "Última actualización oficial")} value={editorial.latestUpdate[locale]} />
+                        </div>
+                      ) : null}
+                    </div>
+
+                    {editorial?.score ? (
+                      <div className="self-start rounded-2xl border border-gold/25 bg-[radial-gradient(circle_at_top,rgba(212,167,44,0.14),transparent_65%),hsl(var(--muted)/0.2)] p-5 text-center transition-transform duration-300 hover:-translate-y-1">
+                        <Star className="mx-auto size-5 fill-current text-gold-strong" />
+                        <p className="mt-3 font-display text-4xl font-bold text-foreground">
+                          {editorial.score.value.toFixed(1)}
+                          <span className="text-base font-semibold text-muted-foreground">/10</span>
+                        </p>
+                        <p className="mt-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                          {copy("Média de referência", "Reference average", "Promedio de referencia")}
+                        </p>
+                        <p className="mt-3 text-xs leading-5 text-muted-foreground">{editorial.score.sourceLabel}</p>
+                        <p className="mt-2 text-[0.7rem] leading-5 text-muted-foreground">{editorial.score.note[locale]}</p>
                       </div>
                     ) : null}
                   </div>
+                </article>
 
-                  {editorial?.score ? (
-                    <div className="self-start rounded-2xl border border-gold/25 bg-[radial-gradient(circle_at_top,rgba(212,167,44,0.14),transparent_65%),hsl(var(--muted)/0.2)] p-5 text-center">
-                      <Star className="mx-auto size-5 fill-current text-gold-strong" />
-                      <p className="mt-3 font-display text-4xl font-bold text-foreground">
-                        {editorial.score.value.toFixed(1)}
-                        <span className="text-base font-semibold text-muted-foreground">/10</span>
-                      </p>
-                      <p className="mt-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                        {copy("Média de referência", "Reference average", "Promedio de referencia")}
-                      </p>
-                      <p className="mt-3 text-xs leading-5 text-muted-foreground">{editorial.score.sourceLabel}</p>
-                      <p className="mt-2 text-[0.7rem] leading-5 text-muted-foreground">{editorial.score.note[locale]}</p>
-                    </div>
-                  ) : null}
-                </div>
-              </article>
-
-              <GameLivePanel
-                gameSlug={game.slug}
-                themeKey={game.themeKey}
-                locale={locale}
-                onOpenModule={(moduleKey) => handleTab(moduleKey, true)}
-              />
-            </div>
-          ) : (
-            <FutureCollection moduleKey={active} themeKey={game.themeKey} locale={locale} />
-          )}
+                <GameLivePanel gameSlug={game.slug} themeKey={game.themeKey} locale={locale} onOpenModule={(moduleKey) => handleTab(moduleKey, true)} />
+              </div>
+            ) : (
+              <FutureCollection moduleKey={active} themeKey={game.themeKey} locale={locale} />
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function GameFact({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: typeof CalendarDays;
-  label: string;
-  value: string;
-}) {
+function GameFact({ icon: Icon, label, value }: { icon: typeof CalendarDays; label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-border bg-muted/20 p-4">
+    <div className="rounded-xl border border-border bg-muted/20 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/25 hover:bg-muted/30">
       <div className="flex items-center gap-2 text-gold-strong">
         <Icon className="size-4" />
         <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em]">{label}</span>

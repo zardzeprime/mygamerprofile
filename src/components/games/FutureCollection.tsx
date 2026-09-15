@@ -8,6 +8,7 @@ import { DarkSoulsBossWiki } from "@/components/games/DarkSoulsBossWiki";
 import { DarkSoulsGuides } from "@/components/games/DarkSoulsGuides";
 import { ValorantAgents } from "@/components/games/ValorantAgents";
 import { ValorantMaps } from "@/components/games/ValorantMaps";
+import { ValorantNews } from "@/components/games/ValorantNews";
 import { ValorantWeapons } from "@/components/games/ValorantWeapons";
 import { ValorantSkins } from "@/components/games/ValorantSkins";
 
@@ -16,6 +17,7 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
   if (moduleKey === "guides" && themeKey === "dark_souls") return <DarkSoulsGuides locale={locale} />;
 
   if (themeKey === "valorant") {
+    if (moduleKey === "news") return <ValorantNews locale={locale} />;
     if (moduleKey === "agents") return <ValorantAgents locale={locale} />;
     if (moduleKey === "maps") return <ValorantMaps locale={locale} />;
     if (moduleKey === "weapons") return <ValorantWeapons locale={locale} />;
@@ -27,6 +29,14 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
     bosses: [
       copy("Enciclopédia de bosses", "Boss encyclopedia", "Enciclopedia de jefes"),
       copy("Chefes, filtros e páginas individuais chegam na próxima atualização.", "Bosses, filters and individual pages arrive in the next update.", "Jefes, filtros y páginas individuales llegarán en la próxima actualización."),
+    ],
+    guides: [
+      copy("Guias da comunidade", "Community guides", "Guías de la comunidad"),
+      copy("Conteúdo editorial e guias verificados serão organizados aqui.", "Editorial content and verified guides will be organized here.", "El contenido editorial y las guías verificadas se organizarán aquí."),
+    ],
+    news: [
+      copy("Novidades", "News", "Novedades"),
+      copy("Atualizações e anúncios oficiais aparecerão aqui.", "Official updates and announcements will appear here.", "Actualizaciones y anuncios oficiales aparecerán aquí."),
     ],
     agents: [
       copy("Enciclopédia de agentes", "Agent encyclopedia", "Enciclopedia de agentes"),
@@ -55,10 +65,6 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
     builds: [
       copy("Laboratório de builds", "Build laboratory", "Laboratorio de builds"),
       copy("Crie e descubra combinações da comunidade em breve.", "Create and discover community combinations soon.", "Muy pronto podrás crear y descubrir combinaciones de la comunidad."),
-    ],
-    guides: [
-      copy("Guias da comunidade", "Community guides", "Guías de la comunidad"),
-      copy("Conteúdo editorial e guias verificados serão organizados aqui.", "Editorial content and verified guides will be organized here.", "El contenido editorial y las guías verificadas se organizarán aquí."),
     ],
     clips: [
       copy("Clipes", "Clips", "Clips"),
