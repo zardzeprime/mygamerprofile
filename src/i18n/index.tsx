@@ -35,7 +35,7 @@ function isLocale(value: string | null): value is Locale {
 }
 
 function applyBrandName(value: string) {
-  return value.replace(/\bMGP\b/g, "MG Profile");
+  return value.replace(/My Gamer Profile/g, "MG Profile").replace(/\bMGP\b/g, "MG Profile");
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
