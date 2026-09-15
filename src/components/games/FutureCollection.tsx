@@ -9,6 +9,7 @@ import { DarkSoulsGuides } from "@/components/games/DarkSoulsGuides";
 import { ValorantAgents } from "@/components/games/ValorantAgents";
 import { ValorantMaps } from "@/components/games/ValorantMaps";
 import { ValorantWeapons } from "@/components/games/ValorantWeapons";
+import { ValorantSkins } from "@/components/games/ValorantSkins";
 
 export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: GameModuleKey; themeKey: GameThemeKey; locale: Locale }) {
   if (moduleKey === "bosses" && themeKey === "dark_souls") return <DarkSoulsBossWiki locale={locale} />;
@@ -18,6 +19,7 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
     if (moduleKey === "agents") return <ValorantAgents locale={locale} />;
     if (moduleKey === "maps") return <ValorantMaps locale={locale} />;
     if (moduleKey === "weapons") return <ValorantWeapons locale={locale} />;
+    if (moduleKey === "skins") return <ValorantSkins locale={locale} />;
   }
 
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
@@ -37,6 +39,10 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
     weapons: [
       copy("Arsenal", "Arsenal", "Arsenal"),
       copy("Armas, economia, penetração e tabelas de dano aparecerão aqui.", "Weapons, economy, penetration and damage tables will appear here.", "Armas, economía, penetración y tablas de daño aparecerán aquí."),
+    ],
+    skins: [
+      copy("Coleção de skins", "Skin collection", "Colección de skins"),
+      copy("Skins, variantes, preços de referência e evolução aparecerão aqui.", "Skins, variants, reference prices and upgrades will appear here.", "Skins, variantes, precios de referencia y mejoras aparecerán aquí."),
     ],
     competitive: [
       copy("Competitivo", "Competitive", "Competitivo"),
@@ -63,11 +69,11 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
     copy("Em preparação", "In preparation", "En preparación"),
     copy("Este espaço está sendo preparado.", "This space is being prepared.", "Este espacio se está preparando."),
   ];
-  const slots = moduleKey === "bosses" || moduleKey === "agents" || moduleKey === "maps" || moduleKey === "weapons" ? 6 : 3;
+  const slots = moduleKey === "bosses" || moduleKey === "agents" || moduleKey === "maps" || moduleKey === "weapons" || moduleKey === "skins" ? 6 : 3;
 
   return (
     <div className="space-y-5">
-      {(moduleKey === "bosses" || moduleKey === "agents" || moduleKey === "maps" || moduleKey === "weapons") && (
+      {(moduleKey === "bosses" || moduleKey === "agents" || moduleKey === "maps" || moduleKey === "weapons" || moduleKey === "skins") && (
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <label className="flex max-w-sm flex-1 items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 transition-colors focus-within:border-gold/60">
             <Search className="size-4 text-muted-foreground" />
