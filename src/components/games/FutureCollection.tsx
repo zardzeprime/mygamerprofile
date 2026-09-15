@@ -12,11 +12,26 @@ import { ValorantNews } from "@/components/games/ValorantNews";
 import { ValorantWeapons } from "@/components/games/ValorantWeapons";
 import { ValorantSkins } from "@/components/games/ValorantSkins";
 
-export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: GameModuleKey; themeKey: GameThemeKey; locale: Locale }) {
-  if (moduleKey === "bosses" && themeKey === "dark_souls") return <DarkSoulsBossWiki locale={locale} />;
-  if (moduleKey === "guides" && themeKey === "dark_souls") return <DarkSoulsGuides locale={locale} />;
+export function FutureCollection({
+  moduleKey,
+  themeKey,
+  locale,
+  gameSlug,
+}: {
+  moduleKey: GameModuleKey;
+  themeKey: GameThemeKey;
+  locale: Locale;
+  gameSlug: string;
+}) {
+  // Specialized collections are intentionally scoped to their exact game.
+  // New games may share a visual language without accidentally inheriting
+  // Dark Souls Remastered bosses or VALORANT agents/weapons.
+  if (gameSlug === "dark-souls-remastered") {
+    if (moduleKey === "bosses") return <DarkSoulsBossWiki locale={locale} />;
+    if (moduleKey === "guides") return <DarkSoulsGuides locale={locale} />;
+  }
 
-  if (themeKey === "valorant") {
+  if (gameSlug === "valorant") {
     if (moduleKey === "news") return <ValorantNews locale={locale} />;
     if (moduleKey === "agents") return <ValorantAgents locale={locale} />;
     if (moduleKey === "maps") return <ValorantMaps locale={locale} />;
@@ -27,8 +42,8 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const labels: Partial<Record<GameModuleKey, [string, string]>> = {
     bosses: [
-      copy("Enciclopédia de bosses", "Boss encyclopedia", "Enciclopedia de jefes"),
-      copy("Chefes, filtros e páginas individuais chegam na próxima atualização.", "Bosses, filters and individual pages arrive in the next update.", "Jefes, filtros y páginas individuales llegarán en la próxima actualización."),
+      copy("Enciclopédia de chefes", "Boss encyclopedia", "Enciclopedia de jefes"),
+      copy("Chefes, filtros e páginas individuais serão organizados aqui para este jogo.", "Bosses, filters and individual pages will be organized here for this game.", "Jefes, filtros y páginas individuales se organizarán aquí para este juego."),
     ],
     guides: [
       copy("Guias da comunidade", "Community guides", "Guías de la comunidad"),
@@ -36,31 +51,43 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
     ],
     news: [
       copy("Novidades", "News", "Novedades"),
-      copy("Atualizações e anúncios oficiais aparecerão aqui.", "Official updates and announcements will appear here.", "Actualizaciones y anuncios oficiales aparecerán aquí."),
+      copy("Atualizações e anúncios oficiais deste jogo aparecerão aqui.", "Official updates and announcements for this game will appear here.", "Actualizaciones y anuncios oficiales de este juego aparecerán aquí."),
     ],
     agents: [
       copy("Enciclopédia de agentes", "Agent encyclopedia", "Enciclopedia de agentes"),
       copy("Agentes e habilidades serão adicionados com informações canônicas.", "Agents and abilities will be added with canonical information.", "Los agentes y sus habilidades se añadirán con información canónica."),
     ],
+    champions: [
+      copy("Enciclopédia de campeões", "Champion encyclopedia", "Enciclopedia de campeones"),
+      copy("Campeões, funções, habilidades e referências oficiais serão organizados aqui.", "Champions, roles, abilities and official references will be organized here.", "Campeones, roles, habilidades y referencias oficiales se organizarán aquí."),
+    ],
     maps: [
       copy("Atlas de mapas", "Map atlas", "Atlas de mapas"),
-      copy("Mapas, minimapas e características táticas aparecerão aqui.", "Maps, minimaps and tactical characteristics will appear here.", "Mapas, minimapas y características tácticas aparecerán aquí."),
+      copy("Mapas e características táticas aparecerão aqui.", "Maps and tactical characteristics will appear here.", "Mapas y características tácticas aparecerán aquí."),
     ],
     weapons: [
       copy("Arsenal", "Arsenal", "Arsenal"),
-      copy("Armas, economia, penetração e tabelas de dano aparecerão aqui.", "Weapons, economy, penetration and damage tables will appear here.", "Armas, economía, penetración y tablas de daño aparecerán aquí."),
+      copy("Armas, economia e dados oficiais aparecerão aqui.", "Weapons, economy and official data will appear here.", "Armas, economía y datos oficiales aparecerán aquí."),
+    ],
+    items: [
+      copy("Biblioteca de itens", "Item library", "Biblioteca de objetos"),
+      copy("Itens, componentes, atributos e mudanças de patch serão organizados aqui.", "Items, components, stats and patch changes will be organized here.", "Objetos, componentes, atributos y cambios de parche se organizarán aquí."),
+    ],
+    modes: [
+      copy("Modos de jogo", "Game modes", "Modos de juego"),
+      copy("Modos, temporadas e formatos competitivos serão organizados aqui.", "Modes, seasons and competitive formats will be organized here.", "Modos, temporadas y formatos competitivos se organizarán aquí."),
     ],
     skins: [
       copy("Coleção de skins", "Skin collection", "Colección de skins"),
-      copy("Skins, variantes, preços de referência e evolução aparecerão aqui.", "Skins, variants, reference prices and upgrades will appear here.", "Skins, variantes, precios de referencia y mejoras aparecerán aquí."),
+      copy("Skins, variantes e referências oficiais aparecerão aqui.", "Skins, variants and official references will appear here.", "Skins, variantes y referencias oficiales aparecerán aquí."),
     ],
     competitive: [
       copy("Competitivo", "Competitive", "Competitivo"),
-      copy("Ranked, VCT, rankings e integrações competitivas serão aprofundados em uma próxima etapa. A agenda oficial já aparece na Visão geral.", "Ranked, VCT, rankings and competitive integrations will be expanded in a later step. The official schedule already appears in Overview.", "Ranked, VCT, rankings e integraciones competitivas se ampliarán en una etapa posterior. La agenda oficial ya aparece en Vista general."),
+      copy("Ranked, esports, rankings e integrações competitivas serão aprofundados aqui.", "Ranked, esports, rankings and competitive integrations will be expanded here.", "Ranked, esports, rankings e integraciones competitivas se ampliarán aquí."),
     ],
     lineups: [
       copy("Biblioteca de lineups", "Lineup library", "Biblioteca de lineups"),
-      copy("Smokes, molotovs, setups, utilitários e jogadas da comunidade serão publicados aqui com autoria e procedência.", "Smokes, mollies, setups, utility and community plays will be published here with authorship and provenance.", "Smokes, molotovs, setups, utilidades y jugadas de la comunidad se publicarán aquí con autoría y procedencia."),
+      copy("Setups, utilitários e jogadas da comunidade serão publicados com autoria e procedência.", "Setups, utility and community plays will be published with authorship and provenance.", "Setups, utilidades y jugadas de la comunidad se publicarán con autoría y procedencia."),
     ],
     builds: [
       copy("Laboratório de builds", "Build laboratory", "Laboratorio de builds"),
@@ -70,16 +97,24 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
       copy("Clipes", "Clips", "Clips"),
       copy("Momentos da comunidade chegarão em uma versão futura.", "Community moments will arrive in a future version.", "Los momentos de la comunidad llegarán en una versión futura."),
     ],
+    lfg: [
+      copy("Procurando grupo", "Looking for group", "Buscando grupo"),
+      copy("O LFG global do MGP poderá ser filtrado por este jogo.", "MGP's global LFG can be filtered by this game.", "El LFG global de MGP podrá filtrarse por este juego."),
+    ],
   };
+
   const [title, description] = labels[moduleKey] ?? [
     copy("Em preparação", "In preparation", "En preparación"),
     copy("Este espaço está sendo preparado.", "This space is being prepared.", "Este espacio se está preparando."),
   ];
-  const slots = moduleKey === "bosses" || moduleKey === "agents" || moduleKey === "maps" || moduleKey === "weapons" || moduleKey === "skins" ? 6 : 3;
+  const collectionModules: GameModuleKey[] = ["bosses", "agents", "champions", "maps", "weapons", "items", "modes", "skins"];
+  const isCollection = collectionModules.includes(moduleKey);
+  const slots = isCollection ? 6 : 3;
+  const tacticalTheme = themeKey === "valorant" || themeKey === "competitive";
 
   return (
     <div className="space-y-5">
-      {(moduleKey === "bosses" || moduleKey === "agents" || moduleKey === "maps" || moduleKey === "weapons" || moduleKey === "skins") && (
+      {isCollection && (
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <label className="flex max-w-sm flex-1 items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 transition-colors focus-within:border-gold/60">
             <Search className="size-4 text-muted-foreground" />
@@ -90,7 +125,7 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
       )}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: slots }).map((_, index) => (
-          <div key={index} className={`future-card ${themeKey === "valorant" ? "future-card-tactical" : "future-card-ember"}`} aria-hidden="true">
+          <div key={index} className={`future-card ${tacticalTheme ? "future-card-tactical" : "future-card-ember"}`} aria-hidden="true">
             <LockKeyhole className="size-5" />
             <span>{String(index + 1).padStart(2, "0")}</span>
           </div>
