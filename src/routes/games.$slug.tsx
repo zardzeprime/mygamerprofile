@@ -127,6 +127,24 @@ function GameHub() {
                 </li>
               ))}
             </ul>
+
+            {game.expansions?.length ? (
+              <div className="mt-4 flex flex-wrap items-center gap-2" aria-label={copy("Expansões e DLCs", "Expansions and DLC", "Expansiones y DLC")}>
+                <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-hero-muted">
+                  {copy("Conteúdo adicional", "Additional content", "Contenido adicional")}
+                </span>
+                {game.expansions.map((expansion) => (
+                  <span
+                    key={expansion.slug}
+                    className="rounded-full border border-hero-border bg-hero-surface px-3 py-1 text-[0.7rem] font-semibold text-hero-foreground backdrop-blur"
+                    title={expansion.kind}
+                  >
+                    {expansion.name}
+                    {expansion.releaseLabel ? ` · ${expansion.releaseLabel}` : ""}
+                  </span>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
@@ -217,7 +235,7 @@ function GameHub() {
                 <GameLivePanel gameSlug={game.slug} themeKey={game.themeKey} locale={locale} onOpenModule={(moduleKey) => handleTab(moduleKey, true)} />
               </div>
             ) : (
-              <FutureCollection moduleKey={active} themeKey={game.themeKey} locale={locale} />
+              <FutureCollection gameSlug={game.slug} moduleKey={active} themeKey={game.themeKey} locale={locale} />
             )}
           </div>
         </div>
