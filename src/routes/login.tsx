@@ -30,15 +30,33 @@ function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const { error: signInError } = await supabase.auth.signInWithPassword({
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    setLoading(false);
-    if (signInError) {
+    if (signInError || !data.user) {
+      setLoading(false);
       setError(t("auth.errors.invalidCredentials"));
       return;
     }
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", data.user.id)
+      .maybeSingle();
+
+    setLoading(false);
+    if (profileError) {
+      setError(t("auth.errors.generic"));
+      return;
+    }
+
+    if (!profile) {
+      router.navigate({ to: "/onboarding" });
+      return;
+    }
+
     router.navigate({ to: "/" });
   };
 
