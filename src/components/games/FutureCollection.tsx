@@ -11,6 +11,11 @@ import { ValorantMaps } from "@/components/games/ValorantMaps";
 import { ValorantNews } from "@/components/games/ValorantNews";
 import { ValorantWeapons } from "@/components/games/ValorantWeapons";
 import { ValorantSkins } from "@/components/games/ValorantSkins";
+import { LeagueChampionExplorer } from "@/components/games/LeagueChampionExplorer";
+import { LeagueItemsExplorer } from "@/components/games/LeagueItemsExplorer";
+import { LeagueMapsExplorer } from "@/components/games/LeagueMapsExplorer";
+import { SoulsBossExplorer } from "@/components/games/SoulsBossExplorer";
+import { SoulsGameGuides } from "@/components/games/SoulsGameGuides";
 
 export function FutureCollection({
   moduleKey,
@@ -31,12 +36,24 @@ export function FutureCollection({
     if (moduleKey === "guides") return <DarkSoulsGuides locale={locale} />;
   }
 
+  if (gameSlug === "dark-souls-iii" || gameSlug === "elden-ring") {
+    if (moduleKey === "bosses") return <SoulsBossExplorer gameSlug={gameSlug} locale={locale} />;
+    if (moduleKey === "guides") return <SoulsGameGuides gameSlug={gameSlug} locale={locale} />;
+  }
+
   if (gameSlug === "valorant") {
     if (moduleKey === "news") return <ValorantNews locale={locale} />;
     if (moduleKey === "agents") return <ValorantAgents locale={locale} />;
     if (moduleKey === "maps") return <ValorantMaps locale={locale} />;
     if (moduleKey === "weapons") return <ValorantWeapons locale={locale} />;
     if (moduleKey === "skins") return <ValorantSkins locale={locale} />;
+  }
+
+  if (gameSlug === "league-of-legends") {
+    if (moduleKey === "champions") return <LeagueChampionExplorer locale={locale} />;
+    if (moduleKey === "skins") return <LeagueChampionExplorer locale={locale} mode="skins" />;
+    if (moduleKey === "items") return <LeagueItemsExplorer locale={locale} />;
+    if (moduleKey === "maps") return <LeagueMapsExplorer locale={locale} />;
   }
 
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
