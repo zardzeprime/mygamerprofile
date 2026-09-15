@@ -6,14 +6,18 @@ import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { DarkSoulsBossWiki } from "@/components/games/DarkSoulsBossWiki";
 import { DarkSoulsGuides } from "@/components/games/DarkSoulsGuides";
+import { ValorantAgents } from "@/components/games/ValorantAgents";
+import { ValorantMaps } from "@/components/games/ValorantMaps";
+import { ValorantWeapons } from "@/components/games/ValorantWeapons";
 
 export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: GameModuleKey; themeKey: GameThemeKey; locale: Locale }) {
-  if (moduleKey === "bosses" && themeKey === "dark_souls") {
-    return <DarkSoulsBossWiki locale={locale} />;
-  }
+  if (moduleKey === "bosses" && themeKey === "dark_souls") return <DarkSoulsBossWiki locale={locale} />;
+  if (moduleKey === "guides" && themeKey === "dark_souls") return <DarkSoulsGuides locale={locale} />;
 
-  if (moduleKey === "guides" && themeKey === "dark_souls") {
-    return <DarkSoulsGuides locale={locale} />;
+  if (themeKey === "valorant") {
+    if (moduleKey === "agents") return <ValorantAgents locale={locale} />;
+    if (moduleKey === "maps") return <ValorantMaps locale={locale} />;
+    if (moduleKey === "weapons") return <ValorantWeapons locale={locale} />;
   }
 
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
@@ -26,9 +30,21 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
       copy("Enciclopédia de agentes", "Agent encyclopedia", "Enciclopedia de agentes"),
       copy("Agentes e habilidades serão adicionados com informações canônicas.", "Agents and abilities will be added with canonical information.", "Los agentes y sus habilidades se añadirán con información canónica."),
     ],
+    maps: [
+      copy("Atlas de mapas", "Map atlas", "Atlas de mapas"),
+      copy("Mapas, minimapas e características táticas aparecerão aqui.", "Maps, minimaps and tactical characteristics will appear here.", "Mapas, minimapas y características tácticas aparecerán aquí."),
+    ],
+    weapons: [
+      copy("Arsenal", "Arsenal", "Arsenal"),
+      copy("Armas, economia, penetração e tabelas de dano aparecerão aqui.", "Weapons, economy, penetration and damage tables will appear here.", "Armas, economía, penetración y tablas de daño aparecerán aquí."),
+    ],
     competitive: [
       copy("Competitivo", "Competitive", "Competitivo"),
-      copy("Rotação, leaderboard, Top Radiant e ato atual dependem da integração oficial.", "Rotation, leaderboard, Top Radiant and current act require official integration.", "La rotación, el ranking, Top Radiant y el acto actual dependen de la integración oficial."),
+      copy("Ranked, VCT, rankings e integrações competitivas serão aprofundados em uma próxima etapa. A agenda oficial já aparece na Visão geral.", "Ranked, VCT, rankings and competitive integrations will be expanded in a later step. The official schedule already appears in Overview.", "Ranked, VCT, rankings e integraciones competitivas se ampliarán en una etapa posterior. La agenda oficial ya aparece en Vista general."),
+    ],
+    lineups: [
+      copy("Biblioteca de lineups", "Lineup library", "Biblioteca de lineups"),
+      copy("Smokes, molotovs, setups, utilitários e jogadas da comunidade serão publicados aqui com autoria e procedência.", "Smokes, mollies, setups, utility and community plays will be published here with authorship and provenance.", "Smokes, molotovs, setups, utilidades y jugadas de la comunidad se publicarán aquí con autoría y procedencia."),
     ],
     builds: [
       copy("Laboratório de builds", "Build laboratory", "Laboratorio de builds"),
@@ -47,11 +63,11 @@ export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: G
     copy("Em preparação", "In preparation", "En preparación"),
     copy("Este espaço está sendo preparado.", "This space is being prepared.", "Este espacio se está preparando."),
   ];
-  const slots = moduleKey === "bosses" || moduleKey === "agents" ? 6 : 3;
+  const slots = moduleKey === "bosses" || moduleKey === "agents" || moduleKey === "maps" || moduleKey === "weapons" ? 6 : 3;
 
   return (
     <div className="space-y-5">
-      {(moduleKey === "bosses" || moduleKey === "agents") && (
+      {(moduleKey === "bosses" || moduleKey === "agents" || moduleKey === "maps" || moduleKey === "weapons") && (
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <label className="flex max-w-sm flex-1 items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 transition-colors focus-within:border-gold/60">
             <Search className="size-4 text-muted-foreground" />
