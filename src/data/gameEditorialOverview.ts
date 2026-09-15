@@ -1,4 +1,5 @@
 import type { AppLocale as Locale } from "@/i18n/translations";
+import type { GameModuleKey } from "@/config/games";
 
 export type FeaturedContentOrigin = "official" | "community";
 
@@ -9,7 +10,7 @@ export type FeaturedContentItem = {
   description: Record<Locale, string>;
   origin: FeaturedContentOrigin;
   authorLabel: Record<Locale, string>;
-  module: "guides" | "builds" | "agents" | "maps" | "weapons" | "lineups";
+  module: GameModuleKey;
 };
 
 export type GameEditorialOverview = {
@@ -70,6 +71,42 @@ export const GAME_EDITORIAL_OVERVIEW: Record<string, GameEditorialOverview | und
       },
     ],
   },
+  "dark-souls-iii": {
+    synopsis: {
+      "pt-BR": "Dark Souls III encerra a trilogia principal em Lothric, misturando exploração interligada, combate mais veloz e um dos elencos de chefes mais lembrados da série. O hub do MGP mantém Ashes of Ariandel e The Ringed City como DLCs do mesmo jogo, preservando builds, progresso e comunidade em um único lugar.",
+      en: "Dark Souls III closes the main trilogy in Lothric, combining interconnected exploration, faster combat and one of the series' most memorable boss rosters. MGP keeps Ashes of Ariandel and The Ringed City as DLC inside the same game hub.",
+      es: "Dark Souls III cierra la trilogía principal en Lothric, combinando exploración interconectada, combate más rápido y uno de los elencos de jefes más memorables de la serie. MGP mantiene Ashes of Ariandel y The Ringed City como DLC dentro del mismo hub.",
+    },
+    release: { "pt-BR": "12 abr 2016", en: "Apr 12, 2016", es: "12 abr 2016" },
+    developer: "FromSoftware",
+    publisher: "Bandai Namco Entertainment",
+    latestVersion: "1.15.2",
+    featured: [],
+  },
+  "elden-ring": {
+    synopsis: {
+      "pt-BR": "Elden Ring leva a fórmula de RPG de ação da FromSoftware para as Terras Intermédias, com exploração aberta, masmorras, chefes e enorme liberdade de build. No MGP, Shadow of the Erdtree permanece ligado ao jogo base como expansão, para que perfil, guias e comunidade não sejam fragmentados artificialmente.",
+      en: "Elden Ring takes FromSoftware's action-RPG formula to the Lands Between with open exploration, dungeons, bosses and broad build freedom. On MGP, Shadow of the Erdtree remains attached to the base game as an expansion so profiles, guides and community are not artificially fragmented.",
+      es: "Elden Ring lleva la fórmula de RPG de acción de FromSoftware a las Tierras Intermedias con exploración abierta, mazmorras, jefes y gran libertad de builds. En MGP, Shadow of the Erdtree permanece unido al juego base como expansión.",
+    },
+    release: { "pt-BR": "25 fev 2022", en: "Feb 25, 2022", es: "25 feb 2022" },
+    developer: "FromSoftware",
+    publisher: "Bandai Namco Entertainment · FromSoftware",
+    latestVersion: "1.17 · base game (2026)",
+    featured: [],
+  },
+  "elden-ring-nightreign": {
+    synopsis: {
+      "pt-BR": "Elden Ring Nightreign é um jogo standalone, não uma DLC do Elden Ring base. A experiência gira em torno de runs cooperativas, Nightfarers e encontros com Nightlords; por isso recebe Game Profile, comunidade e identidade próprias no MGP, enquanto suas DLCs continuam dentro deste hub.",
+      en: "Elden Ring Nightreign is a standalone game rather than DLC for base Elden Ring. Its cooperative runs, Nightfarers and Nightlord encounters justify a separate MGP Game Profile and community, while Nightreign DLC remains inside this hub.",
+      es: "Elden Ring Nightreign es un juego independiente, no un DLC de Elden Ring base. Sus runs cooperativas, Nightfarers y Nightlords justifican un Game Profile y una comunidad propios en MGP.",
+    },
+    release: { "pt-BR": "30 mai 2025", en: "May 30, 2025", es: "30 may 2025" },
+    developer: "FromSoftware",
+    publisher: "Bandai Namco Entertainment",
+    latestVersion: "Live service · 2026",
+    featured: [],
+  },
   valorant: {
     synopsis: {
       "pt-BR": "VALORANT é um FPS tático 5v5 baseado em rodadas que combina precisão de armas, economia e habilidades de Agentes. Cada rodada coloca ataque e defesa em disputa por espaço, informação e tempo; utilitários podem redesenhar ângulos, bloquear visão, revelar posições e abrir execuções, mas tiro, decisão e coordenação continuam no centro da partida.",
@@ -121,5 +158,29 @@ export const GAME_EDITORIAL_OVERVIEW: Record<string, GameEditorialOverview | und
         module: "maps",
       },
     ],
+  },
+  "league-of-legends": {
+    synopsis: {
+      "pt-BR": "League of Legends é o MOBA 5v5 da Riot Games em que duas equipes escolhem campeões, disputam rotas e objetivos e tentam destruir o Nexus adversário. O hub do MGP nasce preparado para campeões, mapas, itens, skins, competitivo e futura conexão de conta via serviços aprovados pela Riot.",
+      en: "League of Legends is Riot Games' 5v5 MOBA where two teams choose champions, contest lanes and objectives and attempt to destroy the enemy Nexus. MGP's hub is prepared for champions, maps, items, skins, competitive play and future account linking through Riot-approved services.",
+      es: "League of Legends es el MOBA 5v5 de Riot Games donde dos equipos eligen campeones, disputan líneas y objetivos e intentan destruir el Nexus enemigo. El hub de MGP queda preparado para campeones, mapas, objetos, skins, competitivo y futura conexión de cuenta.",
+    },
+    release: { "pt-BR": "27 out 2009", en: "Oct 27, 2009", es: "27 oct 2009" },
+    developer: "Riot Games",
+    publisher: "Riot Games",
+    latestVersion: "Patch 26.18 · set 2026",
+    featured: [],
+  },
+  "ea-sports-fc": {
+    synopsis: {
+      "pt-BR": "EA SPORTS FC é tratado pelo MGP como um hub permanente da série anual de futebol da EA. Em vez de quebrar o histórico do usuário todo ano, edição, temporada e modo podem evoluir dentro do mesmo perfil. A edição ativa no momento desta fundação é FC 26, enquanto FC 27 já está no ciclo de lançamento de 2026.",
+      en: "MGP treats EA SPORTS FC as a permanent hub for EA's annual football series. Rather than breaking a user's history every year, edition, season and mode can evolve inside the same profile. FC 26 is the active edition at this foundation point, while FC 27 is already in the 2026 release cycle.",
+      es: "MGP trata EA SPORTS FC como un hub permanente de la serie anual de fútbol de EA. En lugar de romper el historial del usuario cada año, edición, temporada y modo pueden evolucionar dentro del mismo perfil.",
+    },
+    release: { "pt-BR": "Hub anual · edição FC 26 lançada em 26 set 2025", en: "Annual hub · FC 26 released Sep 26, 2025", es: "Hub anual · FC 26 lanzado el 26 sep 2025" },
+    developer: "EA Sports",
+    publisher: "Electronic Arts",
+    latestVersion: "FC 26 · live service",
+    featured: [],
   },
 };
