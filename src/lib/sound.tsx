@@ -1,6 +1,15 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
-type SoundEvent = "hover" | "click" | "navigation" | "open" | "close" | "success" | "error";
+type SoundEvent =
+  | "hover"
+  | "click"
+  | "navigation"
+  | "open"
+  | "close"
+  | "success"
+  | "error"
+  | "bonfire"
+  | "tactical";
 
 type AudioPreferences = {
   uiEnabled: boolean;
@@ -75,10 +84,69 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     const context = contextRef.current;
     if (!context || context.state !== "running" || !unlockedRef.current) return;
 
+    const now = context.currentTime;
+    const volumeScale = preferences.uiVolume / 100;
+
+    if (event === "bonfire") {
+      const duration = 0.58;
+      const frameCount = Math.max(1, Math.floor(context.sampleRate * duration));
+      const buffer = context.createBuffer(1, frameCount, context.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let index = 0; index < frameCount; index += 1) {
+        const progress = index / frameCount;
+        const crackle = Math.random() > 0.985 ? (Math.random() * 2 - 1) * 1.8 : 0;
+        const bed = (Math.random() * 2 - 1) * 0.34;
+        data[index] = (bed + crackle) * Math.pow(1 - progress, 1.55);
+      }
+
+      const source = context.createBufferSource();
+      const filter = context.createBiquadFilter();
+      const gain = context.createGain();
+      source.buffer = buffer;
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(760, now);
+      filter.Q.setValueAtTime(0.72, now);
+      const peak = Math.min(0.075, volumeScale * 0.11);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(peak, now + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      source.connect(filter).connect(gain).connect(context.destination);
+      source.start(now);
+      source.stop(now + duration + 0.02);
+
+      const ember = context.createOscillator();
+      const emberGain = context.createGain();
+      ember.type = "triangle";
+      ember.frequency.setValueAtTime(118, now);
+      ember.frequency.exponentialRampToValueAtTime(78, now + 0.32);
+      emberGain.gain.setValueAtTime(0.0001, now);
+      emberGain.gain.exponentialRampToValueAtTime(Math.min(0.022, volumeScale * 0.035), now + 0.02);
+      emberGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.36);
+      ember.connect(emberGain).connect(context.destination);
+      ember.start(now);
+      ember.stop(now + 0.38);
+      return;
+    }
+
+    if (event === "tactical") {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "triangle";
+      oscillator.frequency.setValueAtTime(280, now);
+      oscillator.frequency.exponentialRampToValueAtTime(920, now + 0.09);
+      const peak = Math.min(0.034, volumeScale * 0.075);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(peak, now + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.11);
+      oscillator.connect(gain).connect(context.destination);
+      oscillator.start(now);
+      oscillator.stop(now + 0.12);
+      return;
+    }
+
     const oscillator = context.createOscillator();
     const gain = context.createGain();
-    const now = context.currentTime;
-    const tones: Record<SoundEvent, [number, number]> = {
+    const tones: Record<Exclude<SoundEvent, "bonfire" | "tactical">, [number, number]> = {
       hover: [720, 0.025],
       click: [410, 0.045],
       navigation: [520, 0.06],
@@ -91,7 +159,7 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     oscillator.type = event === "error" ? "triangle" : "sine";
     oscillator.frequency.setValueAtTime(frequency, now);
     if (event === "success") oscillator.frequency.exponentialRampToValueAtTime(1040, now + duration);
-    const peak = Math.min(0.035, (preferences.uiVolume / 100) * 0.09);
+    const peak = Math.min(0.035, volumeScale * 0.09);
     gain.gain.setValueAtTime(0.0001, now);
     gain.gain.exponentialRampToValueAtTime(peak, now + 0.008);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
