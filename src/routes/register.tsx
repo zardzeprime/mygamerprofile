@@ -10,6 +10,15 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 
+const PROD_SITE_URL = (import.meta.env["VITE_SITE_URL"] || "https://mygamerprofile.lovable.app").replace(/\/$/, "");
+
+function getConfirmationRedirect() {
+  if (typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname)) {
+    return `${window.location.origin}/onboarding`;
+  }
+  return `${PROD_SITE_URL}/onboarding`;
+}
+
 export const Route = createFileRoute("/register")({
   component: RegisterPage,
   head: () => ({
@@ -43,26 +52,31 @@ function RegisterPage() {
       return;
     }
     setLoading(true);
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/onboarding`,
-        data: { i18n: locale },
-      },
-    });
-    setLoading(false);
-    if (signUpError) {
-      setError(signUpError.message || t("auth.errors.generic"));
-      return;
-    }
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: getConfirmationRedirect(),
+          data: { i18n: locale },
+        },
+      });
+      if (signUpError) {
+        setError(signUpError.message || t("auth.errors.generic"));
+        return;
+      }
 
-    if (!data.session) {
-      setPendingEmail(email);
-      return;
-    }
+      if (!data.session) {
+        setPendingEmail(email);
+        return;
+      }
 
-    router.navigate({ to: "/onboarding" });
+      await router.navigate({ to: "/onboarding" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("auth.errors.generic"));
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (pendingEmail) {

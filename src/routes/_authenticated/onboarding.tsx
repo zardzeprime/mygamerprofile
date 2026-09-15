@@ -17,8 +17,8 @@ import {
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { GAMES } from "@/config/games";
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
-import { checkUsernameAvailable, createProfile } from "@/lib/profiles.functions";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   component: OnboardingPage,
@@ -50,6 +50,7 @@ function OnboardingPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
     const normalized = username.trim().toLowerCase();
     if (!/^[a-z0-9_]{3,20}$/.test(normalized)) {
       setError(t("auth.errors.invalidUsername"));
@@ -59,27 +60,78 @@ function OnboardingPage() {
       setError(t("auth.errors.generic"));
       return;
     }
+
     setLoading(true);
-    const { available } = await checkUsernameAvailable({ data: { username: normalized } });
-    if (!available) {
-      setLoading(false);
-      setError(t("auth.errors.usernameTaken"));
-      return;
-    }
     try {
-      const profile = await createProfile({
-        data: {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const user = userData.user;
+      if (userError || !user) {
+        throw new Error(copy("Sua sessão expirou. Entre novamente.", "Your session expired. Sign in again.", "Tu sesión expiró. Inicia sesión de nuevo."));
+      }
+
+      const { data: usernameRows, error: usernameError } = await supabase
+        .from("profile_usernames")
+        .select("user_id")
+        .ilike("username", normalized)
+        .limit(1);
+      if (usernameError) throw usernameError;
+      if ((usernameRows?.length ?? 0) > 0) {
+        setError(t("auth.errors.usernameTaken"));
+        return;
+      }
+
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .insert({
+          id: user.id,
           username: normalized,
           display_name: displayName.trim(),
           language,
-          favorite_game_ids: favoriteGameIds,
-        },
-      });
+          theme_preference: "system",
+          visibility: "public",
+          profile_background: "mgp-grid",
+        })
+        .select("username")
+        .single();
+
+      if (profileError) {
+        if (profileError.code === "23505") {
+          setError(t("auth.errors.usernameTaken"));
+          return;
+        }
+        throw profileError;
+      }
+
+      if (favoriteGameIds.length > 0) {
+        const rows = favoriteGameIds.map((gameId) => ({
+          user_id: user.id,
+          game_id: gameId,
+          profile_data: { favorite: true },
+          visibility: "public",
+        }));
+        const { error: favoritesError } = await supabase
+          .from("game_profiles")
+          .upsert(rows, { onConflict: "user_id,game_id" });
+
+        // Favorite-game selection must never trap a user after the profile itself was created.
+        if (favoritesError) console.error("[MGP onboarding] favorite games:", favoritesError);
+      }
+
       setLocale(language);
-      router.navigate({ to: "/u/$username", params: { username: profile.username } });
+      await router.navigate({ to: "/u/$username", params: { username: profile.username } });
     } catch (err) {
+      console.error("[MGP onboarding] profile creation:", err);
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : copy(
+              "Não foi possível concluir seu perfil. Tente novamente.",
+              "Could not finish your profile. Try again.",
+              "No se pudo completar tu perfil. Inténtalo de nuevo.",
+            ),
+      );
+    } finally {
       setLoading(false);
-      setError(err instanceof Error ? err.message : t("auth.errors.generic"));
     }
   };
 
