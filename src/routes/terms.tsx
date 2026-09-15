@@ -56,19 +56,30 @@ const sections: LegalSection[] = [
   },
   {
     id: "idade",
-    title: "Idade e capacidade",
+    title: "Idade, supervisão e experiência adequada",
     content: (
       <>
         <p>
-          Você deve ter pelo menos 13 anos para criar uma conta. Pessoas entre
-          13 e 17 anos devem usar o MGP com ciência e assistência de seus pais
-          ou responsáveis. Ao autorizar o uso por um menor, o responsável
-          concorda em orientar e supervisionar sua atividade.
+          Você deve ter pelo menos 13 anos para criar uma conta. Pessoas de 13 a
+          17 anos estão sujeitas à política de supervisão do MGP. Para usuários
+          de até 16 anos, recursos sociais podem permanecer limitados até que o
+          vínculo ou a confirmação de responsável exigidos pela legislação e
+          pelo desenho de segurança da plataforma estejam atendidos.
+        </p>
+        <p>
+          A data de nascimento informada no onboarding é usada para aplicar
+          regras de faixa etária e não aparece no perfil público. Informar uma
+          data não transforma essa informação, por si só, em verificação forte
+          de idade. Quando a lei exigir mecanismo confiável de aferição para um
+          conteúdo ou serviço proibido a menores, o MGP não considerará um
+          simples botão “tenho 18 anos” suficiente.
         </p>
         <p>
           Cada jogo pode possuir classificação indicativa própria. Ter acesso ao
           MGP não substitui as regras de idade do jogo, da plataforma ou da
-          conta de terceiros correspondente.
+          conta de terceiros correspondente. O MGP poderá aplicar avisos,
+          desfoque e limitações adicionais a discussões legítimas sobre temas
+          maduros mesmo quando o conteúdo não for proibido.
         </p>
       </>
     ),
@@ -78,9 +89,7 @@ const sections: LegalSection[] = [
     title: "Conta e segurança",
     content: (
       <ul className={listClassName}>
-        <li>
-          Forneça informações verdadeiras e mantenha seu e-mail atualizado.
-        </li>
+        <li>Forneça informações verdadeiras e mantenha seu e-mail atualizado.</li>
         <li>
           Escolha um username que não viole direitos, não engane e não se passe
           por outra pessoa.
@@ -91,8 +100,10 @@ const sections: LegalSection[] = [
         </li>
         <li>Não venda, alugue, compartilhe ou automatize o acesso à conta.</li>
         <li>
-          Avise o MGP se suspeitar de acesso indevido ou falha de segurança.
+          Não tente alterar, apagar ou falsificar informações de idade,
+          supervisão ou verificação para contornar controles de segurança.
         </li>
+        <li>Avise o MGP se suspeitar de acesso indevido ou falha de segurança.</li>
       </ul>
     ),
   },
@@ -110,8 +121,17 @@ const sections: LegalSection[] = [
         <p>
           Dados informados manualmente — como rank, função, personagem, build ou
           experiência — são declarações do próprio usuário e não representam
-          verificação oficial. O MGP não promete matchmaking, habilidade,
-          identidade real, disponibilidade de equipe ou resultado de partida.
+          verificação oficial. Quando uma integração aprovada importar dados de
+          Steam, Riot Games, Google ou outro provedor, o MGP deverá indicar a
+          procedência e distinguir informação importada de informação declarada.
+        </p>
+        <p>
+          O MGP não promete que uma plataforma externa fornecerá todo dado que o
+          usuário deseja. Informações como horas jogadas, conquistas, partidas e
+          biblioteca dependem das APIs, permissões e configurações de privacidade
+          do provedor. Datas como “quando começou a jogar” podem ser derivadas de
+          eventos disponíveis e, se forem derivadas, deverão ser rotuladas como
+          estimativas/derivações em vez de dados oficiais.
         </p>
       </>
     ),
@@ -145,6 +165,29 @@ const sections: LegalSection[] = [
     ),
   },
   {
+    id: "conteudo-maduro",
+    title: "Jogos maduros, avisos e limites de conteúdo",
+    content: (
+      <>
+        <p>
+          O MGP pode hospedar comunidades de jogos com classificação indicativa
+          alta. Isso não significa que qualquer conteúdo permitido no jogo possa
+          ser republicado sem limites no fórum. Discussões sobre violência,
+          narrativa, personagens, cenas ou mecânicas maduras podem ser aceitas
+          em contexto legítimo, com aviso e classificação adequada quando
+          necessário.
+        </p>
+        <p>
+          Pornografia, sexo explícito, exploração sexual e gore gratuito ou
+          usado apenas para chocar não são permitidos no MGP, independentemente
+          da idade do usuário. Conteúdo permitido, mas sensível, poderá aparecer
+          borrado e exigir uma ação consciente para revelar; esse gesto funciona
+          como aviso de experiência, não como prova legal de maioridade.
+        </p>
+      </>
+    ),
+  },
+  {
     id: "conduta",
     title: "Condutas proibidas",
     content: (
@@ -156,9 +199,10 @@ const sections: LegalSection[] = [
             discriminatório ou de ódio;
           </li>
           <li>
-            publicar conteúdo sexual envolvendo menores ou explorar, incentivar
-            ou colocar menores em risco;
+            publicar pornografia, sexo explícito, conteúdo sexual envolvendo
+            menores, exploração sexual ou material que coloque menores em risco;
           </li>
+          <li>publicar gore gratuito ou conteúdo criado principalmente para chocar;</li>
           <li>
             divulgar dados pessoais de terceiros, ameaçar, perseguir ou tentar
             desanonimizar jogadores;
@@ -185,8 +229,8 @@ const sections: LegalSection[] = [
           </li>
           <li>
             criar vantagem competitiva injusta, cheats, scouting pré-partida,
-            cálculo alternativo de MMR/ELO ou qualquer uso que comprometa a
-            integridade de um jogo;
+            cálculo alternativo de MMR/ELO apresentado como oficial ou qualquer
+            uso que comprometa a integridade de um jogo;
           </li>
           <li>
             usar o MGP para infringir os termos de um jogo, console, loja ou
@@ -198,15 +242,15 @@ const sections: LegalSection[] = [
   },
   {
     id: "moderacao",
-    title: "Moderação e denúncias",
+    title: "Moderação, classificação e denúncias",
     content: (
       <>
         <p>
-          O MGP pode analisar denúncias e remover, limitar, ocultar ou preservar
-          conteúdo; restringir funções; suspender ou encerrar contas; e cooperar
-          com autoridades quando necessário. As medidas considerarão contexto,
-          gravidade, reincidência, segurança da comunidade e a legislação
-          aplicável.
+          O MGP pode analisar denúncias e remover, limitar, ocultar, desfocar,
+          classificar ou preservar conteúdo; restringir funções; suspender ou
+          encerrar contas; e cooperar com autoridades quando necessário. As
+          medidas considerarão contexto, faixa etária, gravidade, reincidência,
+          segurança da comunidade e a legislação aplicável.
         </p>
         <p>
           Não garantimos revisão prévia de tudo que usuários publicam. A
@@ -219,7 +263,7 @@ const sections: LegalSection[] = [
   },
   {
     id: "riot-terceiros",
-    title: "Riot Games e propriedade de terceiros",
+    title: "Riot Games, Steam, EA e propriedade de terceiros",
     content: (
       <>
         <p>
@@ -228,18 +272,45 @@ const sections: LegalSection[] = [
           or sponsor this project.
         </p>
         <p>
-          VALORANT, Riot Games e ativos relacionados pertencem aos respectivos
-          titulares. Dark Souls, Bandai Namco, FromSoftware e demais nomes,
-          imagens, marcas e conteúdos de jogos também pertencem aos seus
-          titulares. O uso no MGP é informativo, editorial e comunitário e não
-          cria afiliação, patrocínio ou aprovação oficial.
+          VALORANT, League of Legends, Riot Games, Steam/Valve, EA SPORTS FC,
+          Electronic Arts, Dark Souls, Elden Ring, Bandai Namco, FromSoftware e
+          demais nomes, imagens, marcas e conteúdos de jogos pertencem aos seus
+          respectivos titulares. O uso no MGP é informativo, editorial e
+          comunitário e não cria afiliação, patrocínio ou aprovação oficial.
         </p>
         <p>
-          Qualquer futura integração com dados de jogadores de VALORANT
-          dependerá de registro e aprovação aplicáveis no Riot Developer Portal,
-          Riot Sign On (RSO) e autorização expressa do jogador. O MGP não
-          solicitará a senha Riot do usuário nem exibirá dados pessoais Riot de
-          quem não tiver optado pelo compartilhamento.
+          Integrações com dados de jogadores dependem das APIs, termos,
+          registros e aprovações aplicáveis de cada fornecedor e da autorização
+          do usuário quando necessária. O MGP não solicitará a senha de Steam,
+          Riot, EA ou Google para conectar uma conta; a autenticação deve ocorrer
+          pelo fluxo oficial disponibilizado pelo provedor.
+        </p>
+        <p>
+          Recursos relacionados a Riot Games serão registrados e operados de
+          acordo com o Riot Developer Portal antes de uso público de chaves de
+          produção ou RSO. Recursos de EA SPORTS FC poderão existir de forma
+          editorial e manual mesmo quando a EA não estiver aceitando novos
+          parceiros de API.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "automacao",
+    title: "Conteúdo editorial e automação",
+    content: (
+      <>
+        <p>
+          O MGP pode usar automação ou modelos de IA para auxiliar a criação de
+          rascunhos editoriais, resumos e curiosidades sobre jogos. Conteúdo
+          automatizado deve ser identificado por procedência interna e submetido
+          a controles de segurança, duplicidade e fonte. Durante a fase inicial,
+          a publicação pode depender de revisão humana.
+        </p>
+        <p>
+          Automação não autoriza copiar artigos integrais, inventar fatos,
+          publicar vazamentos privados nem se passar por desenvolvedoras,
+          jornalistas ou usuários reais.
         </p>
       </>
     ),
@@ -323,9 +394,11 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          Estes Termos são regidos pelas leis da República Federativa do Brasil.
-          Ficam preservadas as regras obrigatórias de proteção do consumidor e o
-          foro legalmente competente para cada usuário.
+          Estes Termos são regidos pelas leis da República Federativa do Brasil,
+          incluindo, quando aplicável, LGPD, Marco Civil da Internet, Código de
+          Defesa do Consumidor e ECA Digital. Ficam preservadas as regras
+          obrigatórias de proteção do consumidor e o foro legalmente competente
+          para cada usuário.
         </p>
         <p>
           Podemos atualizar estes Termos por razões legais, técnicas ou de

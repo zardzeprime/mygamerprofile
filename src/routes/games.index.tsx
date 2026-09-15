@@ -8,7 +8,7 @@ import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
 
-type GenreFilter = "all" | "rpg" | "fps";
+type GenreFilter = "all" | "rpg" | "fps" | "moba" | "sports";
 
 export const Route = createFileRoute("/games/")({
   head: () => ({
@@ -37,13 +37,19 @@ function GamesCatalog() {
   const results = useMemo(() => {
     const term = query.trim().toLowerCase();
     return GAMES.filter((game) => {
+      const aliases = game.aliases?.join(" ").toLowerCase() ?? "";
       const matchesQuery =
-        !term || game.name.toLowerCase().includes(term) || game.genre.toLowerCase().includes(term);
+        !term ||
+        game.name.toLowerCase().includes(term) ||
+        game.genre.toLowerCase().includes(term) ||
+        aliases.includes(term);
       const normalizedGenre = game.genre.toLowerCase();
       const matchesGenre =
         genreFilter === "all" ||
         (genreFilter === "rpg" && normalizedGenre.includes("rpg")) ||
-        (genreFilter === "fps" && normalizedGenre.includes("fps"));
+        (genreFilter === "fps" && normalizedGenre.includes("fps")) ||
+        (genreFilter === "moba" && normalizedGenre.includes("moba")) ||
+        (genreFilter === "sports" && normalizedGenre.includes("sports"));
       return matchesQuery && matchesGenre;
     });
   }, [genreFilter, query]);
@@ -52,6 +58,8 @@ function GamesCatalog() {
     { value: "all", label: t("common.all") },
     { value: "rpg", label: "RPG" },
     { value: "fps", label: "FPS" },
+    { value: "moba", label: "MOBA" },
+    { value: "sports", label: copy("Esportes", "Sports", "Deportes") },
   ];
 
   return (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { Check, Gamepad2 } from "lucide-react";
+import { Check, Gamepad2, ShieldCheck } from "lucide-react";
 import { useI18n, LOCALES, LOCALE_LABELS, type Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { Button } from "@/components/ui/button";
@@ -30,16 +30,47 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
   }),
 });
 
+type AgeDataRow = {
+  user_id: string;
+  birth_date: string;
+  guardian_status: "not_applicable" | "required" | "pending" | "confirmed";
+  age_assurance_method: "self_reported_birth_date" | "guardian_confirmed" | "provider_assured";
+};
+
+type AgeDataClient = {
+  from: (table: "account_age_data") => {
+    insert: (values: AgeDataRow) => Promise<{ error: { code?: string; message?: string } | null }>;
+  };
+};
+
+function ageFromBirthDate(value: string, today = new Date()) {
+  const [year, month, day] = value.split("-").map(Number);
+  if (!year || !month || !day) return null;
+  const birthDate = new Date(year, month - 1, day);
+  if (Number.isNaN(birthDate.getTime())) return null;
+
+  let age = today.getFullYear() - year;
+  const beforeBirthday =
+    today.getMonth() < month - 1 ||
+    (today.getMonth() === month - 1 && today.getDate() < day);
+  if (beforeBirthday) age -= 1;
+  return age;
+}
+
 function OnboardingPage() {
   const { t, locale, setLocale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [language, setLanguage] = useState<Locale>(locale);
   const [favoriteGameSlugs, setFavoriteGameSlugs] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const age = birthDate ? ageFromBirthDate(birthDate) : null;
+  const minorNeedsSupervision = age !== null && age >= 13 && age < 18;
 
   const toggleFavorite = (gameSlug: string) => {
     setFavoriteGameSlugs((current) =>
@@ -63,6 +94,22 @@ function OnboardingPage() {
       return;
     }
 
+    const calculatedAge = ageFromBirthDate(birthDate);
+    if (calculatedAge === null || calculatedAge > 120 || calculatedAge < 0) {
+      setError(copy("Informe uma data de nascimento válida.", "Enter a valid birth date.", "Ingresa una fecha de nacimiento válida."));
+      return;
+    }
+    if (calculatedAge < 13) {
+      setError(
+        copy(
+          "O MGP não permite criação de conta para menores de 13 anos.",
+          "MGP does not allow account creation for users under 13.",
+          "MGP no permite crear cuentas a menores de 13 años.",
+        ),
+      );
+      return;
+    }
+
     setLoading(true);
     try {
       const { data: userData, error: userError } = await supabase.auth.getUser();
@@ -80,6 +127,26 @@ function OnboardingPage() {
       if ((usernameRows?.length ?? 0) > 0) {
         setError(t("auth.errors.usernameTaken"));
         return;
+      }
+
+      const ageDataClient = supabase as unknown as AgeDataClient;
+      const { error: ageDataError } = await ageDataClient.from("account_age_data").insert({
+        user_id: user.id,
+        birth_date: birthDate,
+        guardian_status: calculatedAge < 18 ? "required" : "not_applicable",
+        age_assurance_method: "self_reported_birth_date",
+      });
+      // A previous onboarding attempt may already have created the immutable client-side record.
+      // Any later correction/guardian confirmation must happen through a trusted server flow.
+      if (ageDataError && ageDataError.code !== "23505") {
+        throw new Error(
+          ageDataError.message ||
+            copy(
+              "Não foi possível salvar sua informação de idade com segurança.",
+              "Could not securely save your age information.",
+              "No se pudo guardar de forma segura tu información de edad.",
+            ),
+        );
       }
 
       let favoriteGames: Array<{ id: string; slug: string }> = [];
@@ -197,6 +264,37 @@ function OnboardingPage() {
                   required
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="birthDate">{copy("Data de nascimento", "Date of birth", "Fecha de nacimiento")}</Label>
+                <Input
+                  id="birthDate"
+                  type="date"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                  autoComplete="bday"
+                  required
+                />
+                <p className="text-xs leading-5 text-muted-foreground">
+                  {copy(
+                    "Usada de forma privada para segurança etária e regras da comunidade. Ela não aparece no seu perfil e não deve ser usada para personalizar anúncios.",
+                    "Used privately for age safety and community rules. It is not shown on your profile and must not be used to personalize ads.",
+                    "Se usa de forma privada para seguridad por edad y reglas de la comunidad. No aparece en tu perfil ni debe usarse para personalizar anuncios.",
+                  )}
+                </p>
+              </div>
+              {minorNeedsSupervision ? (
+                <div className="rounded-xl border border-amber-500/25 bg-amber-500/5 p-4 text-sm leading-relaxed text-muted-foreground">
+                  <div className="mb-2 flex items-center gap-2 font-semibold text-foreground">
+                    <ShieldCheck className="size-4 text-amber-500" />
+                    {copy("Conta de adolescente", "Teen account", "Cuenta adolescente")}
+                  </div>
+                  {copy(
+                    "Contas de 13 a 17 anos ficam sujeitas às regras de supervisão do MGP. Recursos sociais sensíveis podem permanecer restritos até a confirmação de um responsável conforme a faixa etária e a legislação aplicável.",
+                    "Accounts ages 13–17 are subject to MGP supervision rules. Sensitive social features may remain restricted until guardian confirmation according to age and applicable law.",
+                    "Las cuentas de 13 a 17 años están sujetas a las reglas de supervisión de MGP. Algunas funciones sociales pueden permanecer restringidas hasta la confirmación de un responsable.",
+                  )}
+                </div>
+              ) : null}
               <div className="space-y-2">
                 <Label htmlFor="language">{t("settings.language")}</Label>
                 <Select value={language} onValueChange={(value) => setLanguage(value as Locale)}>
