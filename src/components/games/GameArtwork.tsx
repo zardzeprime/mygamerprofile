@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { GameConfig } from "@/config/games";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +21,10 @@ export function GameArtwork({
   const [source, setSource] = useState(configuredSource);
   const objectPosition =
     variant === "hero" ? game.visual.heroObjectPosition : game.visual.cardObjectPosition;
+
+  useEffect(() => {
+    setSource(configuredSource);
+  }, [configuredSource]);
 
   return (
     <div className={cn("game-artwork relative h-full w-full overflow-hidden bg-muted", className)}>
