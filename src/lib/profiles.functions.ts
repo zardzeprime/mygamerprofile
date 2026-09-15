@@ -4,17 +4,32 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { getSupabasePublic } from "./supabase.server";
 
 const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/;
+const APP_LANGUAGES = ["pt-BR", "en", "es"] as const;
+const THEME_PREFERENCES = ["light", "dark", "system"] as const;
+const PROFILE_VISIBILITIES = ["public", "private"] as const;
 
-const usernameSchema = z.object({ username: z.string() });
-const usernameCheckSchema = z.object({ username: z.string(), excludeUserId: z.string().optional() });
-const createProfileSchema = z.object({
-  username: z.string(),
-  display_name: z.string(),
-  language: z.string().optional(),
-  theme_preference: z.string().optional(),
+const usernameSchema = z.object({ username: z.string().trim().min(3).max(20) });
+const usernameCheckSchema = z.object({
+  username: z.string().trim().min(3).max(20),
+  excludeUserId: z.string().uuid().optional(),
 });
-const updateProfileSchema = z.record(z.unknown());
-const followSchema = z.object({ following_id: z.string() });
+const createProfileSchema = z.object({
+  username: z.string().regex(USERNAME_REGEX),
+  display_name: z.string().trim().min(1).max(80),
+  language: z.enum(APP_LANGUAGES).optional(),
+  theme_preference: z.enum(THEME_PREFERENCES).optional(),
+});
+const updateProfileSchema = z.object({
+  username: z.string().regex(USERNAME_REGEX).optional(),
+  display_name: z.string().trim().min(1).max(80).optional(),
+  bio: z.string().max(500).nullable().optional(),
+  avatar_url: z.string().url().nullable().optional(),
+  banner_url: z.string().url().nullable().optional(),
+  language: z.enum(APP_LANGUAGES).optional(),
+  theme_preference: z.enum(THEME_PREFERENCES).optional(),
+  visibility: z.enum(PROFILE_VISIBILITIES).optional(),
+});
+const followSchema = z.object({ following_id: z.string().uuid() });
 
 export const getProfileByUsername = createServerFn({ method: "GET" })
   .inputValidator((data) => usernameSchema.parse(data))
@@ -34,8 +49,7 @@ export const getProfileByUsername = createServerFn({ method: "GET" })
 export const getCurrentProfile = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const supabase = getSupabasePublic();
-    const { data: profile, error } = await supabase
+    const { data: profile, error } = await context.supabase
       .from("profiles")
       .select("*")
       .eq("id", context.userId)
@@ -61,9 +75,7 @@ export const createProfile = createServerFn({ method: "POST" })
   .inputValidator((data) => createProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { username, display_name, language = "pt-BR", theme_preference = "system" } = data;
-    if (!USERNAME_REGEX.test(username)) throw new Error("invalid_username");
-    const supabase = context.supabase;
-    const { data: profile, error } = await supabase
+    const { data: profile, error } = await context.supabase
       .from("profiles")
       .insert({
         id: context.userId,
@@ -82,14 +94,9 @@ export const updateProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => updateProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const payload = data as Record<string, unknown>;
-    if (payload["username"] && !USERNAME_REGEX.test(payload["username"] as string)) {
-      throw new Error("invalid_username");
-    }
-    const supabase = context.supabase;
-    const { data: profile, error } = await supabase
+    const { data: profile, error } = await context.supabase
       .from("profiles")
-      .update(payload as any)
+      .update({ ...data, updated_at: new Date().toISOString() })
       .eq("id", context.userId)
       .select()
       .single();
@@ -102,8 +109,7 @@ export const followUser = createServerFn({ method: "POST" })
   .inputValidator((data) => followSchema.parse(data))
   .handler(async ({ context, data }) => {
     if (data.following_id === context.userId) throw new Error("cannot_follow_self");
-    const supabase = context.supabase;
-    const { error } = await supabase.from("follows").insert({
+    const { error } = await context.supabase.from("follows").insert({
       follower_id: context.userId,
       following_id: data.following_id,
     });
@@ -115,8 +121,7 @@ export const unfollowUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => followSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const supabase = context.supabase;
-    const { error } = await supabase
+    const { error } = await context.supabase
       .from("follows")
       .delete()
       .eq("follower_id", context.userId)
@@ -129,8 +134,7 @@ export const isFollowing = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => followSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const supabase = context.supabase;
-    const { data: rows, error } = await supabase
+    const { data: rows, error } = await context.supabase
       .from("follows")
       .select("id")
       .eq("follower_id", context.userId)
