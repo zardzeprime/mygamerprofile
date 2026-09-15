@@ -15,6 +15,7 @@ import { GameLivePanel } from "@/components/games/GameLivePanel";
 import { FutureCollection } from "@/components/games/FutureCollection";
 import { ChevronRight, Headphones, Shield, Sparkles } from "lucide-react";
 import { useSound } from "@/lib/sound";
+import { useGameAmbience } from "@/hooks/useGameAmbience";
 
 export const Route = createFileRoute("/games/$slug")({
   loader: async ({ params }) => {
@@ -65,6 +66,7 @@ function GameHub() {
   const { locale, t } = useI18n();
   const { user } = useAuth();
   const { ambienceEnabled } = useSound();
+  useGameAmbience(game.visual.ambientAudio);
   const [active, setActive] = useState<GameModuleKey>("overview");
   const [posts, setPosts] = useState<any[]>([]);
   const [lfgPosts, setLfgPosts] = useState<any[]>([]);

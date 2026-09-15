@@ -46,7 +46,7 @@ export const Route = createFileRoute("/u/$username")({
 });
 
 function ProfilePage() {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const { profile, posts, gameProfiles } = Route.useLoaderData();
   const { user } = useAuth();
   const isOwn = user?.id === profile.id;
@@ -158,9 +158,9 @@ function ProfilePage() {
             </dl>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            <Showcase icon={Gamepad2} title={localeCopy(t("settings.language"), "Jogos favoritos", "Favorite games")} />
-            <Showcase icon={Award} title={localeCopy(t("settings.language"), "Conquistas", "Achievements")} />
-            <Showcase icon={History} title={localeCopy(t("settings.language"), "Jogados recentemente", "Recently played")} />
+            <Showcase icon={Gamepad2} title={locale === "pt-BR" ? "Jogos favoritos" : "Favorite games"} />
+            <Showcase icon={Award} title={locale === "pt-BR" ? "Conquistas" : "Achievements"} />
+            <Showcase icon={History} title={locale === "pt-BR" ? "Jogados recentemente" : "Recently played"} />
           </div>
         </aside>
       </div>
@@ -168,7 +168,6 @@ function ProfilePage() {
   );
 }
 
-function localeCopy(languageLabel: string, pt: string, en: string) { return languageLabel === "Idioma" ? pt : en; }
 function Showcase({ icon: Icon, title }: { icon: typeof Sparkles; title: string }) {
   return <div className="surface-panel p-4"><div className="flex items-center gap-2"><Icon className="size-4 text-gold-strong" /><h3 className="text-sm font-semibold">{title}</h3></div><p className="mt-3 text-xs text-muted-foreground">Em breve</p></div>;
 }

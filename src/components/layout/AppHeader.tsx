@@ -79,7 +79,7 @@ export function AppHeader() {
         <nav aria-label={t("navigation.menu")} className="hidden items-center gap-1 md:flex">
           {NAV.map((item) => (
             <Link
-              key={item.to}
+              key={item.key}
               to={item.to}
               activeOptions={{ exact: item.to === "/" }}
               activeProps={{ className: "bg-gold-soft/60 text-gold-strong" }}
@@ -129,7 +129,7 @@ export function AppHeader() {
           <nav aria-label={t("navigation.menu")} className="flex flex-col gap-1">
             {NAV.map((item) => (
               <Link
-                key={item.to}
+                key={item.key}
                 to={item.to}
                 onClick={() => setOpen(false)}
                 activeOptions={{ exact: item.to === "/" }}
