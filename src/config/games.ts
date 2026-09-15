@@ -1,6 +1,4 @@
 import type { Locale } from "@/i18n/translations";
-import darkSoulsAtmosphere from "@/assets/dark-souls-atmosphere.jpg";
-import valorantAtmosphere from "@/assets/valorant-atmosphere.jpg";
 
 export type GameThemeKey = "dark_souls" | "valorant";
 
@@ -60,6 +58,11 @@ export const MODULE_LABELS: Record<GameModuleKey, Record<Locale, string>> = {
   clips: { "pt-BR": "Clipes", en: "Clips" },
   lfg: { "pt-BR": "LFG", en: "LFG" },
 };
+
+const DARK_SOULS_REMASTERED_COVER =
+  "https://static.actugaming.net/media/2018/01/dark-souls-remastered-jaquette.jpg";
+const VALORANT_COVER =
+  "https://images.stopgame.ru/games/logos/19592/c560x560/62PEyFi2MwDpL91qF8_FsA/valorant-square_1.jpg";
 
 export const GAMES: GameConfig[] = [
   {
@@ -140,11 +143,11 @@ export const GAMES: GameConfig[] = [
       },
     ],
     visual: {
-      coverImage: darkSoulsAtmosphere,
-      heroImage: darkSoulsAtmosphere,
-      backgroundImage: darkSoulsAtmosphere,
-      assetSource: "Original MGP artwork",
-      assetLicense: "Project-owned generated artwork",
+      coverImage: DARK_SOULS_REMASTERED_COVER,
+      heroImage: DARK_SOULS_REMASTERED_COVER,
+      backgroundImage: DARK_SOULS_REMASTERED_COVER,
+      assetSource: "Dark Souls Remastered public cover-art reference",
+      assetLicense: "Third-party promotional cover art; source attribution tracked by MGP",
     },
   },
   {
@@ -206,11 +209,11 @@ export const GAMES: GameConfig[] = [
       },
     ],
     visual: {
-      coverImage: valorantAtmosphere,
-      heroImage: valorantAtmosphere,
-      backgroundImage: valorantAtmosphere,
-      assetSource: "Original MGP artwork",
-      assetLicense: "Project-owned generated artwork",
+      coverImage: VALORANT_COVER,
+      heroImage: VALORANT_COVER,
+      backgroundImage: VALORANT_COVER,
+      assetSource: "VALORANT public promotional key art reference",
+      assetLicense: "Riot Games promotional artwork; source attribution tracked by MGP",
     },
   },
 ];
