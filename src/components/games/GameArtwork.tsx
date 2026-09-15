@@ -30,7 +30,10 @@ export function GameArtwork({
           width={1600}
           height={1000}
           loading={loading}
-          className={cn("game-artwork-base h-full w-full object-cover", imageClassName)}
+          className={cn(
+            "game-artwork-base h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.065]",
+            imageClassName,
+          )}
         />
       </div>
     );
@@ -41,8 +44,7 @@ export function GameArtwork({
   return (
     <div
       className={cn(
-        "game-artwork game-artwork-valorant relative h-full w-full overflow-hidden bg-[#121722]",
-        variant === "hero" ? "game-artwork-valorant-hero" : "game-artwork-valorant-card",
+        "game-artwork relative h-full w-full overflow-hidden bg-[#121722]",
         className,
       )}
     >
@@ -52,22 +54,31 @@ export function GameArtwork({
         width={1600}
         height={1000}
         loading={loading}
-        className={cn("game-artwork-base absolute inset-0 h-full w-full object-cover opacity-30", imageClassName)}
+        className={cn(
+          "game-artwork-base absolute inset-0 h-full w-full object-cover opacity-30 transition-transform duration-700 group-hover:scale-[1.055]",
+          imageClassName,
+        )}
       />
-      <div className="game-artwork-valorant-glow absolute inset-0" aria-hidden="true" />
-      <div className="game-artwork-agent-stage absolute inset-0" aria-hidden="true">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#30466f]/70 via-[#151b28]/20 to-[#5b1f35]/55" aria-hidden="true" />
+      <div className="absolute inset-0" aria-hidden="true">
         {agents.map((agent, index) => (
           <img
             key={agent!.name}
             src={agent!.image}
             alt=""
             loading={loading}
-            className="game-artwork-agent absolute bottom-[-7%] w-[43%] max-w-none select-none object-contain"
-            style={{ left: `${-15 + index * 20}%`, zIndex: index + 1 }}
+            className={cn(
+              "absolute bottom-[-7%] max-w-none select-none object-contain drop-shadow-[0_18px_28px_rgba(0,0,0,0.45)] transition-transform duration-700 group-hover:-translate-y-1 group-hover:scale-[1.035]",
+              variant === "hero" ? "w-[31%]" : "w-[43%]",
+            )}
+            style={{
+              left: variant === "hero" ? `${-4 + index * 16}%` : `${-15 + index * 20}%`,
+              zIndex: index + 1,
+            }}
           />
         ))}
       </div>
-      <div className="game-artwork-valorant-vignette absolute inset-0" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" aria-hidden="true" />
     </div>
   );
 }
