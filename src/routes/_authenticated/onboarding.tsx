@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useI18n } from "@/i18n";
+import { useI18n, LOCALES, LOCALE_LABELS, type Locale } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/select";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { checkUsernameAvailable, createProfile } from "@/lib/profiles.functions";
-import { LOCALES, type Locale } from "@/i18n/translations";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   component: OnboardingPage,
@@ -102,17 +101,14 @@ function OnboardingPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="language">{t("settings.language")}</Label>
-              <Select
-                value={language}
-                onValueChange={(value) => setLanguage(value as Locale)}
-              >
+              <Select value={language} onValueChange={(value) => setLanguage(value as Locale)}>
                 <SelectTrigger id="language">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {LOCALES.map((loc) => (
                     <SelectItem key={loc} value={loc}>
-                      {loc === "pt-BR" ? "Português (Brasil)" : "English"}
+                      {LOCALE_LABELS[loc]}
                     </SelectItem>
                   ))}
                 </SelectContent>
