@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, Search, X, User, Settings, LogOut } from "lucide-react";
+import { Menu, Search, X, Settings, LogOut } from "lucide-react";
 import { useState } from "react";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
@@ -15,10 +15,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/common/UserAvatar";
+import { AudioControl } from "@/components/common/AudioControl";
 
 const NAV: { to: string; key: TranslationKey }[] = [
   { to: "/", key: "navigation.home" },
   { to: "/games", key: "navigation.games" },
+  { to: "/games", key: "navigation.communities" },
   { to: "/lfg", key: "navigation.lfg" },
 ];
 
@@ -70,14 +72,14 @@ export function AppHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-4 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/88 backdrop-blur-xl">
+      <div className="mx-auto grid h-16 w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6">
         <BrandLogoPlaceholder />
 
         <nav aria-label={t("navigation.menu")} className="hidden items-center gap-1 md:flex">
           {NAV.map((item) => (
             <Link
-              key={item.to}
+              key={item.key}
               to={item.to}
               activeOptions={{ exact: item.to === "/" }}
               activeProps={{ className: "bg-gold-soft/60 text-gold-strong" }}
@@ -88,7 +90,7 @@ export function AppHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex items-center justify-end gap-1 sm:gap-2">
           <label className="hidden items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 sm:flex">
             <Search aria-hidden="true" className="size-4 text-muted-foreground" />
             <span className="sr-only">{t("common.search")}</span>
@@ -102,6 +104,7 @@ export function AppHeader() {
             <LanguageSelector />
             <ThemeSelector />
           </div>
+          <AudioControl />
           <div className="hidden lg:block">
             <AuthSection />
           </div>
@@ -126,7 +129,7 @@ export function AppHeader() {
           <nav aria-label={t("navigation.menu")} className="flex flex-col gap-1">
             {NAV.map((item) => (
               <Link
-                key={item.to}
+                key={item.key}
                 to={item.to}
                 onClick={() => setOpen(false)}
                 activeOptions={{ exact: item.to === "/" }}
@@ -141,6 +144,7 @@ export function AppHeader() {
             <div className="flex flex-wrap items-center gap-3">
               <LanguageSelector />
               <ThemeSelector />
+              <AudioControl />
             </div>
             {!loading && !user && (
               <div className="flex flex-col gap-2">

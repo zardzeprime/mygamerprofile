@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Gamepad2, Users2, UsersRound } from "lucide-react";
+import { ArrowRight, Gamepad2, Trophy, Users2, UsersRound } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { GameCard } from "@/components/games/GameCard";
 import { GAMES } from "@/config/games";
@@ -54,29 +54,32 @@ function Home() {
   ];
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-      <section className="surface-panel relative overflow-hidden px-6 py-12 sm:px-10 sm:py-16">
-        <span aria-hidden="true" className="hub-atmosphere-valorant absolute inset-0 opacity-10" />
-        <div className="relative max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-strong">
-            {t("brand.full")}
-          </p>
-          <h1 className="mt-4 font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
+    <div className="pb-16">
+      <section className="home-hero relative isolate min-h-[min(76vh,46rem)] overflow-hidden border-b border-border">
+        <div className="absolute inset-0 grid grid-cols-2" aria-hidden="true">
+          <img src={GAMES[0]?.visual.heroImage} alt="" width={1600} height={1000} className="h-full w-full object-cover opacity-70" />
+          <img src={GAMES[1]?.visual.heroImage} alt="" width={1600} height={1000} className="h-full w-full object-cover opacity-60" />
+        </div>
+        <div className="home-hero-scrim absolute inset-0" />
+        <div className="relative mx-auto flex min-h-[min(76vh,46rem)] w-full max-w-7xl items-end px-4 pb-14 pt-28 sm:px-6 sm:pb-20">
+          <div className="max-w-3xl animate-fade-in">
+          <p className="mb-5 flex items-center gap-2 text-xs font-semibold uppercase text-gold"><Trophy className="size-4" />{t("brand.full")}</p>
+          <h1 className="font-display text-4xl font-bold leading-[1.05] text-hero-foreground sm:text-6xl lg:text-7xl">
             {t("home.hero.title")}
           </h1>
-          <p className="mt-4 text-base text-muted-foreground sm:text-lg">{t("home.hero.subtitle")}</p>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-hero-muted sm:text-lg">{t("home.hero.subtitle")}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             {user ? (
               <>
                 <Link
                   to="/settings/profile"
-                  className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                  className="brand-button"
                 >
                   {t("home.cta.myProfile")}
                 </Link>
                 <Link
                   to="/games"
-                  className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+                  className="brand-button-secondary"
                 >
                   {t("home.cta.exploreGames")}
                 </Link>
@@ -85,40 +88,39 @@ function Home() {
               <>
                 <Link
                   to="/register"
-                  className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                  className="brand-button"
                 >
                   {t("home.cta.createProfile")}
                 </Link>
                 <Link
                   to="/login"
-                  className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+                  className="brand-button-secondary"
                 >
                   {t("home.cta.login")}
                 </Link>
                 <Link
                   to="/games"
-                  className="inline-flex items-center justify-center rounded-full border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+                  className="brand-button-secondary"
                 >
                   {t("home.cta.exploreGames")}
                 </Link>
               </>
             )}
           </div>
+          </div>
         </div>
       </section>
-
-      <section className="mt-14" aria-labelledby="featured-games">
-        <h2 id="featured-games" className="font-display text-2xl font-semibold text-foreground">
-          {t("home.featured.title")}
-        </h2>
-        <div className="mt-5 grid gap-5 sm:grid-cols-2">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
+      <section className="py-14" aria-labelledby="featured-games">
+        <div className="flex items-end justify-between gap-4"><div><p className="section-kicker">MGP / 01</p><h2 id="featured-games" className="mt-2 font-display text-2xl font-semibold text-foreground sm:text-3xl">{t("home.featured.title")}</h2></div><Link to="/games" className="hidden items-center gap-2 text-sm font-semibold text-gold-strong sm:flex">{t("home.cta.exploreGames")}<ArrowRight className="size-4" /></Link></div>
+        <div className="mt-7 grid gap-6 sm:grid-cols-2">
           {GAMES.map((game) => (
             <GameCard key={game.slug} game={game} />
           ))}
         </div>
       </section>
 
-      <section className="mt-14" aria-labelledby="community-activity">
+      <section className="border-t border-border py-14" aria-labelledby="community-activity">
         <h2 id="community-activity" className="font-display text-2xl font-semibold text-foreground">
           {t("home.activity.title")}
         </h2>
@@ -132,7 +134,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="mt-14" aria-labelledby="discover-mgp">
+      <section className="border-t border-border py-14" aria-labelledby="discover-mgp">
         <h2 id="discover-mgp" className="font-display text-2xl font-semibold text-foreground">
           {t("home.discover.title")}
         </h2>
@@ -148,6 +150,7 @@ function Home() {
           ))}
         </div>
       </section>
+      </div>
     </div>
   );
 }

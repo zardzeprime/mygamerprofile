@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getProfileByUsername } from "@/lib/profiles.functions";
 import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,6 +15,7 @@ import { listPosts } from "@/lib/posts.functions";
 import { getGameProfile } from "@/lib/games.functions";
 import { GAMES } from "@/config/games";
 import { useServerFn } from "@tanstack/react-start";
+import { Award, Gamepad2, History, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/u/$username")({
   loader: async ({ params }) => {
@@ -45,7 +46,7 @@ export const Route = createFileRoute("/u/$username")({
 });
 
 function ProfilePage() {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const { profile, posts, gameProfiles } = Route.useLoaderData();
   const { user } = useAuth();
   const isOwn = user?.id === profile.id;
@@ -58,10 +59,10 @@ function ProfilePage() {
   const doFollow = useServerFn(followUser);
   const doUnfollow = useServerFn(unfollowUser);
 
-  useState(() => {
+  useEffect(() => {
     if (!user || isOwn) return;
     checkFollow({ data: { following_id: profile.id } }).then((res) => setFollowing(res.following));
-  });
+  }, [checkFollow, isOwn, profile.id, user]);
 
   const handleFollow = async () => {
     if (!user || isOwn) return;
@@ -77,22 +78,22 @@ function ProfilePage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
-      <div className="relative h-40 overflow-hidden rounded-2xl sm:h-56">
+    <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-10">
+      <div className="profile-banner relative h-44 overflow-hidden rounded-lg border border-border sm:h-72">
         {profile.banner_url ? (
           <img src={profile.banner_url} alt="" className="h-full w-full object-cover" />
         ) : (
-          <div className="h-full w-full bg-gradient-to-br from-gold/30 via-surface to-surface" />
+          <div className="h-full w-full profile-banner-placeholder" />
         )}
       </div>
 
-      <div className="relative z-10 -mt-12 flex flex-col gap-4 px-4 sm:-mt-16 sm:flex-row sm:items-end sm:gap-6">
+      <div className="relative z-10 -mt-12 grid grid-cols-[auto_minmax(0,1fr)] gap-4 px-4 sm:-mt-16 sm:flex sm:items-end sm:gap-6">
         <UserAvatar src={profile.avatar_url} name={profile.display_name} size="lg" className="border-4 border-background" />
         <div className="flex-1">
           <h1 className="font-display text-2xl font-semibold">{profile.display_name}</h1>
           <p className="text-muted-foreground">@{profile.username}</p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+         <div className="col-span-2 flex flex-wrap items-center gap-2 sm:col-span-1">
           {!isOwn && user && (
             <Button onClick={handleFollow} variant={following ? "outline" : "default"}>
               {following ? t("profile.unfollow") : t("profile.follow")}
@@ -107,9 +108,9 @@ function ProfilePage() {
         </div>
       </div>
 
-      <div className="mt-6 grid gap-6 sm:grid-cols-[1fr_18rem]">
+      <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-6">
-          <div className="surface-panel rounded-xl p-4">
+          <div className="surface-panel p-5">
             <p className="text-sm text-foreground">{profile.bio || t("profile.noBio")}</p>
           </div>
 
@@ -138,7 +139,7 @@ function ProfilePage() {
         </div>
 
         <aside className="space-y-4">
-          <div className="surface-panel rounded-xl p-4">
+          <div className="surface-panel p-5">
             <dl className="grid grid-cols-2 gap-4 text-center">
               <div>
                 <dt className="text-2xl font-semibold">{followerCount}</dt>
@@ -156,8 +157,17 @@ function ProfilePage() {
               </div>
             </dl>
           </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <Showcase icon={Gamepad2} title={locale === "pt-BR" ? "Jogos favoritos" : "Favorite games"} />
+            <Showcase icon={Award} title={locale === "pt-BR" ? "Conquistas" : "Achievements"} />
+            <Showcase icon={History} title={locale === "pt-BR" ? "Jogados recentemente" : "Recently played"} />
+          </div>
         </aside>
       </div>
     </main>
   );
+}
+
+function Showcase({ icon: Icon, title }: { icon: typeof Sparkles; title: string }) {
+  return <div className="surface-panel p-4"><div className="flex items-center gap-2"><Icon className="size-4 text-gold-strong" /><h3 className="text-sm font-semibold">{title}</h3></div><p className="mt-3 text-xs text-muted-foreground">Em breve</p></div>;
 }

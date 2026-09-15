@@ -1,36 +1,31 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/i18n";
 import type { GameConfig } from "@/config/games";
-import { cn } from "@/lib/utils";
-
-const ATMOSPHERE: Record<GameConfig["themeKey"], string> = {
-  dark_souls: "hub-atmosphere-dark-souls",
-  valorant: "hub-atmosphere-valorant",
-};
+import { ArrowUpRight, Play } from "lucide-react";
 
 export function GameCard({ game }: { game: GameConfig }) {
   const { locale, t } = useI18n();
 
   return (
-    <article className="surface-panel group overflow-hidden">
-      <div
-        aria-hidden="true"
-        className={cn("h-28 w-full opacity-70 transition-opacity group-hover:opacity-90", ATMOSPHERE[game.themeKey])}
-      />
+    <article className="game-card group overflow-hidden">
+      <div className="relative aspect-[16/10] overflow-hidden">
+        <img src={game.visual.coverImage} alt="" width={1600} height={1000} loading="lazy" className="game-card-image h-full w-full object-cover" />
+        <div className="game-card-scrim absolute inset-0" />
+        <div className="absolute left-4 top-4 flex items-center gap-2">
+          <span className="rounded-sm border border-border-strong bg-background/80 px-2 py-1 text-[0.65rem] font-bold uppercase text-foreground backdrop-blur">{game.genre}</span>
+          <span className="rounded-sm bg-background/80 px-2 py-1 text-[0.65rem] font-semibold text-muted-foreground backdrop-blur">{game.ageRating}</span>
+        </div>
+        <span className="absolute bottom-4 right-4 grid size-9 translate-y-2 place-items-center rounded-full bg-primary text-primary-foreground opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100" aria-hidden="true"><Play className="size-4 fill-current" /></span>
+      </div>
       <div className="p-5">
         <div className="flex items-start justify-between gap-3">
           <h3 className="font-display text-lg font-semibold text-foreground">{game.name}</h3>
-          <span className="shrink-0 rounded-full border border-border-strong px-2 py-0.5 text-[0.7rem] font-semibold text-muted-foreground">
-            {game.ageRating}
-          </span>
+          <ArrowUpRight className="size-4 shrink-0 text-gold-strong transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </div>
         <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
           {game.description[locale]}
         </p>
         <ul className="mt-4 flex flex-wrap gap-1.5">
-          <li className="rounded-full bg-gold-soft/60 px-2 py-0.5 text-[0.7rem] font-semibold text-gold-strong">
-            {game.genre}
-          </li>
           {game.platforms.map((platform) => (
             <li
               key={platform}
@@ -43,7 +38,7 @@ export function GameCard({ game }: { game: GameConfig }) {
         <Link
           to="/games/$slug"
           params={{ slug: game.slug }}
-          className="mt-5 inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-gold-strong story-link"
         >
           {t("games.openHub")}
         </Link>

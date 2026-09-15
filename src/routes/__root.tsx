@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../i18n";
 import { ThemeProvider, themeBootstrapScript } from "../lib/theme";
+import { SoundProvider } from "../lib/sound";
 import { AppHeader } from "../components/layout/AppHeader";
 import { AppFooter } from "../components/layout/AppFooter";
 
@@ -129,14 +130,16 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
         <ThemeProvider>
-          <div className="flex min-h-screen flex-col bg-background">
-            <AppHeader />
-            <main className="flex-1">
-              {/* Required: nested routes render here. */}
-              <Outlet />
-            </main>
-            <AppFooter />
-          </div>
+          <SoundProvider>
+            <div className="flex min-h-screen flex-col bg-background">
+              <AppHeader />
+              <main className="flex-1">
+                {/* Required: nested routes render here. */}
+                <Outlet />
+              </main>
+              <AppFooter />
+            </div>
+          </SoundProvider>
         </ThemeProvider>
       </I18nProvider>
     </QueryClientProvider>

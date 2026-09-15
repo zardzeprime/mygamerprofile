@@ -1,4 +1,6 @@
 import type { Locale } from "@/i18n/translations";
+import darkSoulsAtmosphere from "@/assets/dark-souls-atmosphere.jpg";
+import valorantAtmosphere from "@/assets/valorant-atmosphere.jpg";
 
 export type GameThemeKey = "dark_souls" | "valorant";
 
@@ -36,6 +38,15 @@ export type GameConfig = {
   themeKey: GameThemeKey;
   modules: GameModuleKey[];
   profileFields: GameProfileField[];
+  visual: {
+    coverImage: string;
+    heroImage: string;
+    backgroundImage: string;
+    hoverPreviewVideo?: string;
+    ambientAudio?: string;
+    assetSource: string;
+    assetLicense: string;
+  };
 };
 
 export const MODULE_LABELS: Record<GameModuleKey, Record<Locale, string>> = {
@@ -128,6 +139,13 @@ export const GAMES: GameConfig[] = [
         label: { "pt-BR": "Notas pessoais", en: "Personal notes" },
       },
     ],
+    visual: {
+      coverImage: darkSoulsAtmosphere,
+      heroImage: darkSoulsAtmosphere,
+      backgroundImage: darkSoulsAtmosphere,
+      assetSource: "Original MGP artwork",
+      assetLicense: "Project-owned generated artwork",
+    },
   },
   {
     id: "00000000-0000-0000-0000-000000000002",
@@ -187,6 +205,13 @@ export const GAMES: GameConfig[] = [
         label: { "pt-BR": "Notas pessoais", en: "Personal notes" },
       },
     ],
+    visual: {
+      coverImage: valorantAtmosphere,
+      heroImage: valorantAtmosphere,
+      backgroundImage: valorantAtmosphere,
+      assetSource: "Original MGP artwork",
+      assetLicense: "Project-owned generated artwork",
+    },
   },
 ];
 
