@@ -12,6 +12,7 @@ import { PostComposer } from "@/components/posts/PostComposer";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { GameLivePanel } from "@/components/games/GameLivePanel";
+import { GameArtwork } from "@/components/games/GameArtwork";
 import { FutureCollection } from "@/components/games/FutureCollection";
 import { ChevronRight, Headphones, Shield, Sparkles } from "lucide-react";
 import { useSound } from "@/lib/sound";
@@ -95,7 +96,7 @@ function GameHub() {
   return (
     <div className={cn("game-hub pb-10", game.themeKey === "dark_souls" ? "game-hub-ember" : "game-hub-tactical")}>
       <section className="game-hub-hero relative isolate overflow-hidden border-b border-border">
-        <img src={game.visual.heroImage} alt="" width={1600} height={1000} className="absolute inset-0 h-full w-full object-cover" />
+        <GameArtwork game={game} variant="hero" loading="eager" className="game-hub-artwork absolute inset-0 h-full w-full" />
         <div className="game-hub-scrim absolute inset-0" />
         <div className="relative mx-auto grid min-h-[32rem] w-full max-w-7xl items-end gap-7 px-4 pb-10 pt-24 sm:px-6 lg:grid-cols-[13rem_minmax(0,1fr)_auto]">
           <div className="hidden aspect-[3/4] overflow-hidden rounded-md border border-hero-border shadow-lift lg:block"><img src={game.visual.coverImage} alt="" width={1600} height={1000} className="h-full w-full object-cover" /></div>
@@ -213,4 +214,3 @@ function GameHub() {
 function Feature({ icon: Icon, label }: { icon: typeof Shield; label: string }) {
   return <div className="flex items-center gap-3 rounded-md border border-border bg-muted/40 px-4 py-3"><Icon className="size-4 text-gold-strong" /><span className="text-sm font-semibold">{label}</span></div>;
 }
-
