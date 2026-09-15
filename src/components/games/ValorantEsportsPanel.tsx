@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { CalendarClock, ExternalLink, Radio, Trophy } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { CalendarClock, ExternalLink, Radio } from "lucide-react";
 import {
   VALORANT_ESPORTS_MATCHES,
   type ValorantEsportsFilter,
@@ -8,18 +8,37 @@ import {
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
+import { getValorantOfficialBroadcasts, type ValorantBroadcast } from "@/lib/valorant-broadcast.functions";
 
 const FILTERS: ValorantEsportsFilter[] = ["all", "champions", "americas", "emea", "pacific", "china"];
 
 export function ValorantEsportsPanel({ locale }: { locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [filter, setFilter] = useState<ValorantEsportsFilter>("all");
+  const [broadcasts, setBroadcasts] = useState<ValorantBroadcast[]>([]);
+  const [broadcastProviderConfigured, setBroadcastProviderConfigured] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    void getValorantOfficialBroadcasts()
+      .then((result) => {
+        if (cancelled) return;
+        setBroadcastProviderConfigured(result.configured);
+        setBroadcasts(result.broadcasts);
+      })
+      .catch(() => {
+        if (!cancelled) setBroadcastProviderConfigured(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
   const matches = useMemo(
     () => VALORANT_ESPORTS_MATCHES.filter((match) => filter === "all" || match.circuit === filter),
     [filter],
   );
   const liveMatches = matches.filter((match) => match.status === "live");
   const upcoming = matches.filter((match) => match.status === "upcoming").slice(0, 6);
+  const officialLive = broadcasts.find((broadcast) => broadcast.status === "live");
 
   return (
     <section className="surface-panel overflow-hidden">
@@ -30,7 +49,7 @@ export function ValorantEsportsPanel({ locale }: { locale: Locale }) {
             {copy("Cenário competitivo", "Competitive scene", "Escena competitiva")}
           </h2>
         </div>
-        <span className={cn("size-2 rounded-full", liveMatches.length ? "animate-pulse bg-red-500" : "bg-tactical/70")} aria-hidden="true" />
+        <span className={cn("size-2 rounded-full", liveMatches.length || officialLive ? "animate-pulse bg-red-500" : "bg-tactical/70")} aria-hidden="true" />
       </div>
 
       <div className="flex gap-1.5 overflow-x-auto border-b border-border px-4 py-3">
@@ -50,6 +69,16 @@ export function ValorantEsportsPanel({ locale }: { locale: Locale }) {
           </button>
         ))}
       </div>
+
+      {officialLive ? (
+        <div className="border-b border-border bg-red-500/[0.045] p-4">
+          <p className="mb-2 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-red-400">{copy("Transmissão oficial ao vivo", "Official live broadcast", "Transmisión oficial en vivo")}</p>
+          <a href={officialLive.url} target="_blank" rel="noreferrer" className="group block rounded-xl border border-red-500/20 bg-background/55 p-3 transition-colors hover:border-red-400/40">
+            <p className="line-clamp-2 text-sm font-semibold leading-5 text-foreground">{officialLive.title}</p>
+            <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-red-400">{copy("Abrir no YouTube", "Open on YouTube", "Abrir en YouTube")}<ExternalLink className="size-3.5 transition-transform group-hover:translate-x-0.5" /></span>
+          </a>
+        </div>
+      ) : null}
 
       {liveMatches.length ? (
         <div className="border-b border-border bg-red-500/[0.035] p-4">
@@ -73,11 +102,17 @@ export function ValorantEsportsPanel({ locale }: { locale: Locale }) {
         )}
 
         <div className="mt-4 rounded-xl border border-dashed border-border px-3.5 py-3 text-[0.68rem] leading-5 text-muted-foreground">
-          {copy(
-            "Agenda inicial baseada no calendário oficial do VALORANT Esports. O status ao vivo e o vídeo serão automatizados quando o provedor de transmissão estiver conectado.",
-            "Initial schedule based on the official VALORANT Esports calendar. Live status and video will be automated when the broadcast provider is connected.",
-            "Agenda inicial basada en el calendario oficial de VALORANT Esports. El estado en vivo y el video se automatizarán cuando se conecte el proveedor de transmisión.",
-          )}
+          {broadcastProviderConfigured
+            ? copy(
+                "Agenda editorial baseada no calendário oficial. O MGP já consulta o canal oficial do VCT para detectar transmissões ao vivo.",
+                "Editorial schedule based on the official calendar. MGP is already checking the official VCT channel for live broadcasts.",
+                "Agenda editorial basada en el calendario oficial. MGP ya consulta el canal oficial de VCT para detectar transmisiones en vivo.",
+              )
+            : copy(
+                "Agenda inicial baseada no calendário oficial do VALORANT Esports. A descoberta automática de lives fica pronta assim que a chave da API do YouTube for configurada no servidor.",
+                "Initial schedule based on the official VALORANT Esports calendar. Automatic live discovery becomes active as soon as the YouTube API key is configured on the server.",
+                "Agenda inicial basada en el calendario oficial de VALORANT Esports. El descubrimiento automático de directos se activa cuando la clave de la API de YouTube se configura en el servidor.",
+              )}
         </div>
       </div>
     </section>
