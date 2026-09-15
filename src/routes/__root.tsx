@@ -11,10 +11,12 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import responsiveCss from "../responsive.css?url";
+import routeTransitionCss from "../route-transition.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../i18n";
 import { ThemeProvider, themeBootstrapScript } from "../lib/theme";
 import { SoundProvider } from "../lib/sound";
+import { RouteTransitionLoader } from "../components/common/RouteTransitionLoader";
 import { AppHeader } from "../components/layout/AppHeader";
 import { AppFooter } from "../components/layout/AppFooter";
 
@@ -95,6 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "stylesheet", href: responsiveCss },
+      { rel: "stylesheet", href: routeTransitionCss },
       { rel: "icon", href: "/brand/mgp-logo.png", type: "image/png" },
       { rel: "apple-touch-icon", href: "/brand/mgp-logo.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -133,6 +136,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <SoundProvider>
+          <RouteTransitionLoader />
           <div className="flex min-h-screen flex-col bg-background">
             <AppHeader />
             <main className="flex-1">
