@@ -44,12 +44,12 @@ export function AppFooter() {
               </a>
             </nav>
             <p className="text-xs text-muted-foreground">
-              {t("brand.tagline")} · MGP v0.1.4C · © {new Date().getFullYear()}
+              {t("brand.tagline")} · MG Profile v0.1.6B · © {new Date().getFullYear()}
             </p>
           </div>
         </div>
         <p className="mt-5 max-w-4xl border-t border-border pt-4 text-[0.68rem] leading-5 text-muted-foreground/75">
-          MGP was created under Riot Games&apos; &quot;Legal Jibber Jabber&quot;
+          MG Profile was created under Riot Games&apos; &quot;Legal Jibber Jabber&quot;
           policy using assets owned by Riot Games. Riot Games does not endorse
           or sponsor this project.
         </p>
