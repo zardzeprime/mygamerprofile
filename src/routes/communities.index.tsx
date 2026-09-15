@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { MessageCircle, ShieldCheck, Sparkles, Users } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, MessageCircle, ShieldCheck, Sparkles, Users } from "lucide-react";
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { GAMES } from "@/config/games";
 import { useI18n } from "@/i18n";
@@ -41,9 +41,9 @@ function CommunitiesCatalog() {
 
       <div className="mt-9 grid gap-6 md:grid-cols-2">
         {GAMES.map((game) => (
-          <article key={game.slug} className="surface-panel group overflow-hidden rounded-2xl">
+          <article key={game.slug} className="surface-panel group overflow-hidden rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-gold/30 hover:shadow-soft">
             <div className="relative h-48 overflow-hidden border-b border-border">
-              <GameArtwork game={game} variant="hero" className="h-full w-full" />
+              <GameArtwork game={game} variant="hero" className="h-full w-full transition-transform duration-500 group-hover:scale-[1.025]" />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5">
                 <div className="flex flex-wrap items-center gap-2">
@@ -51,8 +51,8 @@ function CommunitiesCatalog() {
                     <ShieldCheck className="size-3.5" />
                     {copy("Comunidade MGP", "MGP community", "Comunidad MGP")}
                   </span>
-                  <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-amber-300">
-                    {copy("Em formação", "Forming", "En formación")}
+                  <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-emerald-200">
+                    {copy("Aberta", "Open", "Abierta")}
                   </span>
                 </div>
                 <h2 className="mt-3 font-display text-2xl font-bold text-white">{game.name}</h2>
@@ -62,9 +62,9 @@ function CommunitiesCatalog() {
             <div className="p-5 sm:p-6">
               <p className="text-sm leading-6 text-muted-foreground">
                 {copy(
-                  `Espaço social para jogadores de ${game.name}: discussões, posts, criadores e conteúdo da comunidade ficarão reunidos aqui.`,
-                  `Social space for ${game.name} players: discussions, posts, creators and community content will live here.`,
-                  `Espacio social para jugadores de ${game.name}: debates, publicaciones, creadores y contenido de la comunidad estarán reunidos aquí.`,
+                  `Espaço social para jogadores de ${game.name}: discussões, posts editoriais e, na próxima etapa, conteúdo publicado pela comunidade.`,
+                  `Social space for ${game.name} players: discussions, editorial posts and, in the next stage, community-published content.`,
+                  `Espacio social para jugadores de ${game.name}: debates, publicaciones editoriales y, en la próxima etapa, contenido publicado por la comunidad.`,
                 )}
               </p>
 
@@ -74,13 +74,14 @@ function CommunitiesCatalog() {
                 <CommunityFeature icon={Sparkles} label={copy("Destaques", "Highlights", "Destacados")} />
               </div>
 
-              <div className="mt-5 rounded-xl border border-dashed border-border bg-muted/20 px-4 py-3 text-xs leading-5 text-muted-foreground">
-                {copy(
-                  "A página individual da comunidade será ativada quando começarmos a publicar atividade social real.",
-                  "The individual community page will be enabled once real social activity starts being published.",
-                  "La página individual de la comunidad se activará cuando empecemos a publicar actividad social real.",
-                )}
-              </div>
+              <Link
+                to="/communities/$slug"
+                params={{ slug: game.slug }}
+                className="mt-5 inline-flex w-full items-center justify-between rounded-xl border border-border bg-muted/20 px-4 py-3 text-sm font-semibold text-foreground transition hover:border-gold/35 hover:bg-gold/5"
+              >
+                <span>{copy("Entrar na comunidade", "Enter community", "Entrar en la comunidad")}</span>
+                <ArrowRight className="size-4 text-gold-strong transition-transform group-hover:translate-x-0.5" />
+              </Link>
             </div>
           </article>
         ))}
