@@ -25,6 +25,8 @@ export function GameArtwork({
 }: GameArtworkProps) {
   const configuredSource = variant === "hero" ? game.visual.heroImage : game.visual.coverImage;
   const source = COVER_OVERRIDES[game.slug] ?? configuredSource;
+  const objectPosition =
+    game.slug === "dark-souls-remastered" && variant === "card" ? "center 18%" : undefined;
 
   return (
     <div className={cn("game-artwork relative h-full w-full overflow-hidden", className)}>
@@ -34,10 +36,10 @@ export function GameArtwork({
         width={1600}
         height={1000}
         loading={loading}
+        style={objectPosition ? { objectPosition } : undefined}
         className={cn(
           "game-artwork-base h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.065]",
           game.slug === "valorant" && "object-center",
-          game.slug === "dark-souls-remastered" && "object-center",
           imageClassName,
         )}
       />
