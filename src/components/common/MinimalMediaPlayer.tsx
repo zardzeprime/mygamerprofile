@@ -36,7 +36,6 @@ type YouTubeApi = {
   PlayerState: {
     ENDED: number;
     PLAYING: number;
-    PAUSED: number;
   };
 };
 
@@ -120,7 +119,7 @@ export function MinimalYouTubePlayer({
           },
           events: {
             onReady: ({ target }) => {
-              target.setVolume(volume);
+              target.setVolume(72);
               setDuration(target.getDuration() || 0);
               setReady(true);
               if (autoPlay) target.playVideo();
@@ -175,7 +174,6 @@ export function MinimalYouTubePlayer({
     <div className={cn("relative isolate h-full w-full overflow-hidden bg-black", className)}>
       <div ref={mountRef} className="pointer-events-none absolute inset-0 h-full w-full [&>iframe]:h-full [&>iframe]:w-full" />
       <PlayerControls
-        locale={locale}
         playing={playing}
         ready={ready}
         currentTime={currentTime}
@@ -223,19 +221,21 @@ export function MinimalVideoPlayer({
 
   useEffect(() => {
     const video = videoRef.current;
+    if (!video || !autoPlay) return;
+    void video.play().catch(() => undefined);
+  }, [autoPlay, src]);
+
+  useEffect(() => {
+    const video = videoRef.current;
     if (!video) return;
+    video.muted = volume === 0;
     video.volume = volume / 100;
-    if (autoPlay) void video.play().catch(() => undefined);
-  }, [autoPlay, src, volume]);
+  }, [volume]);
 
   const setVolume = useCallback((nextVolume: number) => {
-    const video = videoRef.current;
     const safeVolume = Math.max(0, Math.min(100, nextVolume));
     setVolumeState(safeVolume);
     if (safeVolume > 0) lastAudibleVolumeRef.current = safeVolume;
-    if (!video) return;
-    video.muted = safeVolume === 0;
-    video.volume = safeVolume / 100;
   }, []);
 
   const toggleMute = () => setVolume(volume === 0 ? lastAudibleVolumeRef.current || 72 : 0);
@@ -265,7 +265,6 @@ export function MinimalVideoPlayer({
         }}
       />
       <PlayerControls
-        locale={locale}
         playing={playing}
         ready={ready}
         currentTime={currentTime}
@@ -307,7 +306,6 @@ function PlayerControls({
   pauseLabel,
   volumeLabel,
 }: {
-  locale: Locale;
   playing: boolean;
   ready: boolean;
   currentTime: number;
