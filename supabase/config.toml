@@ -1,1 +1,5 @@
 project_id = "gudvdgpjfapshzqyfcpj"
+
+[auth.email.template.confirmation]
+subject = "Confirme seu e-mail e monte seu perfil no MGP"
+content_path = "./templates/confirmation.html"

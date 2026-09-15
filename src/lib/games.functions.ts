@@ -1,15 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { GAMES, type GameProfileField } from "@/config/games";
+import { GAMES } from "@/config/games";
 import { getSupabasePublic } from "./supabase.server";
 
-const slugSchema = z.object({ slug: z.string() });
-const gameProfileSchema = z.object({ username: z.string(), slug: z.string() });
+const slugSchema = z.object({ slug: z.string().trim().min(1).max(100) });
+const gameProfileSchema = z.object({
+  username: z.string().trim().min(3).max(20),
+  slug: z.string().trim().min(1).max(100),
+});
 const upsertGameProfileSchema = z.object({
-  game_id: z.string(),
+  game_id: z.string().uuid(),
   profile_data: z.record(z.unknown()),
-  visibility: z.string().optional(),
+  visibility: z.enum(["public", "private"]).optional(),
 });
 
 export const getGames = createServerFn({ method: "GET" }).handler(async () => {
@@ -48,7 +51,7 @@ export const getGameProfile = createServerFn({ method: "GET" })
       .single();
     if (profileError) throw new Error(profileError.message);
 
-    const game = GAMES.find((g) => g.slug === data.slug);
+    const game = GAMES.find((candidate) => candidate.slug === data.slug);
     if (!game) throw new Error("game_not_found");
 
     const { data: gameProfile, error: gpError } = await supabase
@@ -70,31 +73,48 @@ export const upsertGameProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => upsertGameProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const supabase = context.supabase;
     const { game_id, profile_data, visibility = "public" } = data;
-    const jsonData = profile_data as unknown as Record<string, unknown>;
 
-    const { data: existing } = await supabase
+    const configuredGame = GAMES.find((game) => game.id === game_id);
+    if (!configuredGame) throw new Error("game_not_supported");
+
+    const allowedKeys = new Set(configuredGame.profileFields.map((field) => field.key));
+    const sanitizedData = Object.fromEntries(
+      Object.entries(profile_data).filter(([key]) => allowedKeys.has(key)),
+    );
+
+    const { data: existing, error: existingError } = await context.supabase
       .from("game_profiles")
       .select("id")
       .eq("user_id", context.userId)
       .eq("game_id", game_id)
       .maybeSingle();
+    if (existingError) throw new Error(existingError.message);
 
     if (existing) {
-      const { data: updated, error } = await supabase
+      const { data: updated, error } = await context.supabase
         .from("game_profiles")
-        .update({ profile_data: jsonData as any, visibility })
+        .update({
+          profile_data: sanitizedData,
+          visibility,
+          updated_at: new Date().toISOString(),
+        })
         .eq("id", existing.id)
+        .eq("user_id", context.userId)
         .select()
         .single();
       if (error) throw new Error(error.message);
       return updated;
     }
 
-    const { data: inserted, error } = await supabase
+    const { data: inserted, error } = await context.supabase
       .from("game_profiles")
-      .insert({ user_id: context.userId, game_id, profile_data: jsonData as any, visibility })
+      .insert({
+        user_id: context.userId,
+        game_id,
+        profile_data: sanitizedData,
+        visibility,
+      })
       .select()
       .single();
     if (error) throw new Error(error.message);

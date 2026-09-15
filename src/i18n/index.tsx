@@ -11,12 +11,13 @@ import {
   LOCALES,
   LOCALE_LABELS,
   translations,
-  type Locale,
+  type AppLocale,
   type TranslationKey,
 } from "./translations";
 
 export { LOCALES, LOCALE_LABELS };
-export type { Locale, TranslationKey };
+export type { TranslationKey };
+export type Locale = AppLocale;
 
 export const LOCALE_STORAGE_KEY = "mgp-locale";
 export const DEFAULT_LOCALE: Locale = "pt-BR";

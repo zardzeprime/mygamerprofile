@@ -1,9 +1,14 @@
-export const LOCALES = ["pt-BR", "en"] as const;
-export type Locale = (typeof LOCALES)[number];
+export const LOCALES = ["pt-BR", "en", "es"] as const;
+export type AppLocale = (typeof LOCALES)[number];
 
-export const LOCALE_LABELS: Record<Locale, string> = {
+// Editorial game data currently ships in Portuguese and English. Keeping this
+// narrower type lets Spanish fall back safely until each long-form entry is translated.
+export type Locale = Exclude<AppLocale, "es">;
+
+export const LOCALE_LABELS: Record<AppLocale, string> = {
   "pt-BR": "Português (Brasil)",
   en: "English",
+  es: "Español",
 };
 
 const ptBR = {
@@ -352,7 +357,180 @@ const en: Record<TranslationKey, string> = {
   "common.all": "All",
 };
 
-export const translations: Record<Locale, Record<TranslationKey, string>> = {
+const es: Record<TranslationKey, string> = {
+  "brand.name": "MGP",
+  "brand.full": "My Gamer Profile",
+  "brand.tagline": "Tu identidad en los juegos.",
+
+  "navigation.home": "Inicio",
+  "navigation.games": "Juegos",
+  "navigation.communities": "Comunidades",
+  "navigation.lfg": "LFG",
+  "navigation.menu": "Menú",
+  "navigation.openMenu": "Abrir menú",
+  "navigation.closeMenu": "Cerrar menú",
+  "navigation.search": "Buscar",
+  "navigation.settings": "Configuración",
+
+  "auth.login": "Iniciar sesión",
+  "auth.register": "Crear perfil",
+  "auth.logout": "Cerrar sesión",
+  "auth.forgotPassword": "Olvidé mi contraseña",
+  "auth.email": "Correo electrónico",
+  "auth.password": "Contraseña",
+  "auth.confirmPassword": "Confirmar contraseña",
+  "auth.displayName": "Nombre público",
+  "auth.username": "Nombre de usuario",
+  "auth.bio": "Bio",
+  "auth.submitLogin": "Iniciar sesión",
+  "auth.submitRegister": "Crear cuenta",
+  "auth.submitReset": "Enviar enlace de recuperación",
+  "auth.alreadyHaveAccount": "¿Ya tienes una cuenta? Inicia sesión",
+  "auth.needAccount": "¿No tienes una cuenta? Crea una",
+  "auth.backToLogin": "Volver al inicio de sesión",
+  "auth.onboarding.title": "Completa tu perfil",
+  "auth.onboarding.subtitle": "Elige cómo quieres aparecer en MGP.",
+  "auth.onboarding.finish": "Finalizar",
+  "auth.errors.invalidCredentials": "Correo o contraseña incorrectos.",
+  "auth.errors.usernameTaken": "Ese nombre de usuario ya está en uso.",
+  "auth.errors.invalidUsername": "Usa entre 3 y 20 caracteres: minúsculas, números y guion bajo.",
+  "auth.errors.passwordMismatch": "Las contraseñas no coinciden.",
+  "auth.errors.weakPassword": "La contraseña debe tener al menos 6 caracteres.",
+  "auth.errors.generic": "Algo salió mal. Inténtalo de nuevo.",
+  "auth.resetSent": "Si el correo existe, enviamos instrucciones de recuperación.",
+
+  "home.hero.title": "Tu identidad en los juegos.",
+  "home.hero.subtitle":
+    "MGP reúne tu perfil, tus juegos, tus logros y tu comunidad en un solo lugar.",
+  "home.cta.createProfile": "Crear perfil",
+  "home.cta.login": "Iniciar sesión",
+  "home.cta.exploreGames": "Explorar juegos",
+  "home.cta.myProfile": "Ver mi perfil",
+  "home.cta.createPost": "Crear publicación",
+  "home.featured.title": "Juegos destacados",
+  "home.activity.title": "Actividad de la comunidad",
+  "home.activity.empty": "Todavía no hay publicaciones. Sé la primera persona en publicar.",
+  "home.discover.title": "Descubre MGP",
+  "home.discover.profiles.title": "Game Profiles",
+  "home.discover.profiles.body":
+    "Crea un perfil por juego con tus armas, builds, mapas y notas personales.",
+  "home.discover.communities.title": "Comunidades",
+  "home.discover.communities.body":
+    "Cada juego tiene su hub con publicaciones, guías y personas que juegan lo mismo que tú.",
+  "home.discover.lfg.title": "LFG",
+  "home.discover.lfg.body": "Encuentra un grupo por juego, plataforma, región e idioma.",
+
+  "games.title": "Catálogo de juegos",
+  "games.subtitle": "Juegos compatibles oficialmente con MGP en esta versión.",
+  "games.search": "Buscar juegos",
+  "games.hoursPlayed": "Horas jugadas",
+  "games.ageRating": "Clasificación",
+  "games.openHub": "Abrir hub",
+  "games.empty": "No se encontraron juegos.",
+  "games.hub.community": "Comunidad",
+  "games.hub.lfg": "LFG",
+  "games.hub.comingSoon": "Próximamente",
+
+  "profile.follow": "Seguir",
+  "profile.unfollow": "Dejar de seguir",
+  "profile.followers": "Seguidores",
+  "profile.following": "Siguiendo",
+  "profile.games": "Juegos",
+  "profile.editProfile": "Editar perfil",
+  "profile.report": "Denunciar",
+  "profile.noBio": "Todavía no hay bio.",
+  "profile.gameProfiles": "Game Profiles",
+  "profile.posts": "Publicaciones",
+  "profile.platforms": "Plataformas",
+
+  "settings.title": "Configuración",
+  "settings.profile": "Perfil",
+  "settings.account": "Cuenta",
+  "settings.appearance": "Apariencia",
+  "settings.language": "Idioma",
+  "settings.theme": "Tema",
+  "settings.save": "Guardar cambios",
+  "settings.saved": "Guardado",
+  "settings.account.email": "Correo electrónico",
+  "settings.account.changePassword": "Cambiar contraseña",
+  "settings.account.currentPassword": "Contraseña actual",
+  "settings.account.newPassword": "Nueva contraseña",
+  "settings.account.passwordMismatch": "Las contraseñas no coinciden.",
+  "settings.account.passwordUpdated": "Contraseña actualizada.",
+  "settings.account.passwordError": "No fue posible cambiar la contraseña.",
+
+  "theme.light": "Claro",
+  "theme.dark": "Oscuro",
+  "theme.system": "Sistema",
+
+  "dataSource.verified": "Verificado",
+  "dataSource.player_provided": "Informado por el jugador",
+  "dataSource.mock": "Datos de demostración",
+  "dataSource.unavailable": "No disponible",
+
+  "post.placeholder": "¿Qué estás jugando?",
+  "post.submit": "Publicar",
+  "post.edit": "Editar",
+  "post.delete": "Eliminar",
+  "post.comment": "Comentar",
+  "post.comments": "Comentarios",
+  "post.like": "Me gusta",
+  "post.unlike": "Quitar me gusta",
+  "post.writeComment": "Escribe un comentario…",
+  "post.deleteConfirm": "¿Eliminar esta publicación?",
+
+  "lfg.title": "LFG — Encuentra un grupo",
+  "lfg.filter.game": "Juego",
+  "lfg.filter.platform": "Plataforma",
+  "lfg.filter.language": "Idioma",
+  "lfg.filter.status": "Estado",
+  "lfg.create": "Crear LFG",
+  "lfg.platform": "Plataforma",
+  "lfg.region": "Región",
+  "lfg.mode": "Modo",
+  "lfg.description": "Descripción",
+  "lfg.micRequired": "Micrófono obligatorio",
+  "lfg.slots": "Plazas",
+  "lfg.status.open": "Abierto",
+  "lfg.status.closed": "Cerrado",
+  "lfg.status.expired": "Expirado",
+  "lfg.close": "Cerrar",
+  "lfg.viewProfile": "Ver perfil",
+
+  "report.title": "Denunciar",
+  "report.reason": "Motivo",
+  "report.details": "Detalles",
+  "report.submit": "Enviar denuncia",
+  "report.sent": "Denuncia enviada.",
+  "report.reasons.spam": "Spam",
+  "report.reasons.harassment": "Acoso",
+  "report.reasons.hate": "Discurso de odio",
+  "report.reasons.sexual_content": "Contenido sexual",
+  "report.reasons.extreme_violence": "Violencia extrema",
+  "report.reasons.scam": "Estafa",
+  "report.reasons.other": "Otro",
+
+  "admin.title": "Cola de denuncias",
+  "admin.status.pending": "Pendiente",
+  "admin.status.reviewing": "En revisión",
+  "admin.status.resolved": "Resuelto",
+  "admin.status.rejected": "Rechazado",
+  "admin.noReports": "No hay denuncias pendientes.",
+
+  "common.search": "Buscar",
+  "common.loading": "Cargando…",
+  "common.comingSoon": "Próximamente",
+  "common.save": "Guardar",
+  "common.cancel": "Cancelar",
+  "common.retry": "Intentar de nuevo",
+  "common.error": "Algo salió mal.",
+  "common.empty": "Todavía no hay nada aquí.",
+  "common.close": "Cerrar",
+  "common.all": "Todos",
+};
+
+export const translations: Record<AppLocale, Record<TranslationKey, string>> = {
   "pt-BR": ptBR,
   en,
+  es,
 };

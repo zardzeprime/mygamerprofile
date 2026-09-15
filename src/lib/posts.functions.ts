@@ -4,21 +4,21 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { getSupabasePublic } from "./supabase.server";
 
 const listPostsSchema = z.object({
-  gameId: z.string().optional(),
-  authorId: z.string().optional(),
-  page: z.number().default(1),
+  gameId: z.string().uuid().optional(),
+  authorId: z.string().uuid().optional(),
+  page: z.number().int().min(1).default(1),
 });
 const createPostSchema = z.object({
-  body: z.string().max(2000),
-  game_id: z.string().optional(),
-  image_url: z.string().optional(),
+  body: z.string().trim().min(1).max(2000),
+  game_id: z.string().uuid().optional(),
+  image_url: z.string().url().optional(),
 });
-const updatePostSchema = z.object({ id: z.string(), body: z.string().max(2000) });
-const deletePostSchema = z.object({ id: z.string() });
-const listCommentsSchema = z.object({ postId: z.string() });
-const createCommentSchema = z.object({ post_id: z.string(), body: z.string().max(2000) });
-const deleteCommentSchema = z.object({ id: z.string() });
-const reactionSchema = z.object({ post_id: z.string() });
+const updatePostSchema = z.object({ id: z.string().uuid(), body: z.string().trim().min(1).max(2000) });
+const deletePostSchema = z.object({ id: z.string().uuid() });
+const listCommentsSchema = z.object({ postId: z.string().uuid() });
+const createCommentSchema = z.object({ post_id: z.string().uuid(), body: z.string().trim().min(1).max(2000) });
+const deleteCommentSchema = z.object({ id: z.string().uuid() });
+const reactionSchema = z.object({ post_id: z.string().uuid() });
 
 export const listPosts = createServerFn({ method: "GET" })
   .inputValidator((data) => listPostsSchema.parse(data ?? {}))
@@ -45,8 +45,7 @@ export const createPost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => createPostSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const supabase = context.supabase;
-    const { data: post, error } = await supabase
+    const { data: post, error } = await context.supabase
       .from("posts")
       .insert({
         author_id: context.userId,
@@ -66,8 +65,7 @@ export const updatePost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => updatePostSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const supabase = context.supabase;
-    const { data: post, error } = await supabase
+    const { data: post, error } = await context.supabase
       .from("posts")
       .update({ body: data.body, updated_at: new Date().toISOString() })
       .eq("id", data.id)
@@ -82,10 +80,9 @@ export const deletePost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => deletePostSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const supabase = context.supabase;
-    const { error } = await supabase
+    const { error } = await context.supabase
       .from("posts")
-      .update({ deleted_at: new Date().toISOString() })
+      .update({ deleted_at: new Date().toISOString(), updated_at: new Date().toISOString() })
       .eq("id", data.id)
       .eq("author_id", context.userId);
     if (error) throw new Error(error.message);
@@ -112,8 +109,7 @@ export const createComment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => createCommentSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const supabase = context.supabase;
-    const { data: comment, error } = await supabase
+    const { data: comment, error } = await context.supabase
       .from("comments")
       .insert({
         post_id: data.post_id,
@@ -132,10 +128,9 @@ export const deleteComment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => deleteCommentSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const supabase = context.supabase;
-    const { error } = await supabase
+    const { error } = await context.supabase
       .from("comments")
-      .update({ deleted_at: new Date().toISOString() })
+      .update({ deleted_at: new Date().toISOString(), updated_at: new Date().toISOString() })
       .eq("id", data.id)
       .eq("author_id", context.userId);
     if (error) throw new Error(error.message);
@@ -146,21 +141,21 @@ export const toggleReaction = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => reactionSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const supabase = context.supabase;
-    const { data: existing } = await supabase
+    const { data: existing, error: lookupError } = await context.supabase
       .from("reactions")
       .select("id")
       .eq("post_id", data.post_id)
       .eq("user_id", context.userId)
       .maybeSingle();
+    if (lookupError) throw new Error(lookupError.message);
 
     if (existing) {
-      const { error } = await supabase.from("reactions").delete().eq("id", existing.id);
+      const { error } = await context.supabase.from("reactions").delete().eq("id", existing.id);
       if (error) throw new Error(error.message);
       return { liked: false };
     }
 
-    const { error } = await supabase.from("reactions").insert({
+    const { error } = await context.supabase.from("reactions").insert({
       post_id: data.post_id,
       user_id: context.userId,
       reaction_type: "like",
@@ -173,8 +168,7 @@ export const getUserReactions = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => reactionSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const supabase = context.supabase;
-    const { data: rows, error } = await supabase
+    const { data: rows, error } = await context.supabase
       .from("reactions")
       .select("post_id")
       .eq("user_id", context.userId)

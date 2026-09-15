@@ -2,7 +2,8 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState, useRef } from "react";
 import { getCurrentProfile, updateProfile, checkUsernameAvailable } from "@/lib/profiles.functions";
 import { uploadImage } from "@/lib/uploads";
-import { useI18n, LOCALES, type Locale } from "@/i18n";
+import { useI18n, LOCALES, LOCALE_LABELS, type Locale } from "@/i18n";
+import { localeCopy } from "@/i18n/locale-utils";
 import { SettingsLayout } from "@/components/settings/SettingsLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,7 @@ export const Route = createFileRoute("/_authenticated/settings/profile")({
 
 function SettingsProfilePage() {
   const { t, locale, setLocale } = useI18n();
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const router = useRouter();
   const { profile } = Route.useLoaderData();
   const [displayName, setDisplayName] = useState(profile.display_name ?? "");
@@ -94,15 +96,29 @@ function SettingsProfilePage() {
   const handleAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = await uploadImage("avatars", file);
-    setAvatarUrl(url);
+    setError("");
+    try {
+      const url = await uploadImage("avatars", file);
+      setAvatarUrl(url);
+    } catch {
+      setError(copy("Não foi possível enviar o avatar.", "Could not upload the avatar.", "No se pudo subir el avatar."));
+    } finally {
+      e.target.value = "";
+    }
   };
 
   const handleBanner = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = await uploadImage("banners", file);
-    setBannerUrl(url);
+    setError("");
+    try {
+      const url = await uploadImage("banners", file);
+      setBannerUrl(url);
+    } catch {
+      setError(copy("Não foi possível enviar o banner.", "Could not upload the banner.", "No se pudo subir el banner."));
+    } finally {
+      e.target.value = "";
+    }
   };
 
   return (
@@ -112,7 +128,7 @@ function SettingsProfilePage() {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <div className="space-y-2">
-              <Label>{t("auth.username")}</Label>
+              <Label>{copy("Avatar", "Avatar", "Avatar")}</Label>
               <UserAvatar src={avatarUrl} name={displayName} size="lg" />
               <input
                 ref={avatarInput}
@@ -122,17 +138,17 @@ function SettingsProfilePage() {
                 onChange={handleAvatar}
               />
               <Button type="button" variant="outline" size="sm" onClick={() => avatarInput.current?.click()}>
-                Alterar avatar
+                {copy("Alterar avatar", "Change avatar", "Cambiar avatar")}
               </Button>
             </div>
             <div className="flex-1 space-y-2">
-              <Label htmlFor="banner">Banner</Label>
-              <div className="h-24 overflow-hidden rounded-lg bg-muted">
+              <Label htmlFor="banner">{copy("Banner", "Banner", "Banner")}</Label>
+              <div className="h-24 overflow-hidden rounded-lg border border-border bg-muted">
                 {bannerUrl ? (
                   <img src={bannerUrl} alt="" className="h-full w-full object-cover" />
                 ) : (
                   <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-                    Sem banner
+                    {copy("Sem banner", "No banner", "Sin banner")}
                   </div>
                 )}
               </div>
@@ -144,14 +160,14 @@ function SettingsProfilePage() {
                 onChange={handleBanner}
               />
               <Button type="button" variant="outline" size="sm" onClick={() => bannerInput.current?.click()}>
-                Alterar banner
+                {copy("Alterar banner", "Change banner", "Cambiar banner")}
               </Button>
             </div>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="displayName">{t("auth.displayName")}</Label>
-            <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required />
+            <Input id="displayName" value={displayName} onChange={(e) => setDisplayName(e.target.value)} required maxLength={80} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="username">{t("auth.username")}</Label>
@@ -160,12 +176,14 @@ function SettingsProfilePage() {
               value={username}
               onChange={(e) => setUsername(e.target.value.toLowerCase())}
               required
+              maxLength={20}
             />
             <p className="text-xs text-muted-foreground">{t("auth.errors.invalidUsername")}</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="bio">{t("auth.bio")}</Label>
-            <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={4} />
+            <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} rows={4} maxLength={500} />
+            <p className="text-right text-xs tabular-nums text-muted-foreground">{bio.length}/500</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="language">{t("settings.language")}</Label>
@@ -176,7 +194,7 @@ function SettingsProfilePage() {
               <SelectContent>
                 {LOCALES.map((loc) => (
                   <SelectItem key={loc} value={loc}>
-                    {loc === "pt-BR" ? "Português (Brasil)" : "English"}
+                    {LOCALE_LABELS[loc]}
                   </SelectItem>
                 ))}
               </SelectContent>

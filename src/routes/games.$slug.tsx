@@ -3,6 +3,7 @@ import { useState } from "react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { MODULE_LABELS, getGameConfig, type GameModuleKey } from "@/config/games";
 import { useI18n } from "@/i18n";
+import { localeCopy } from "@/i18n/locale-utils";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { listPosts } from "@/lib/posts.functions";
@@ -15,8 +16,10 @@ import { GameLivePanel } from "@/components/games/GameLivePanel";
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { FutureCollection } from "@/components/games/FutureCollection";
 import { ChevronRight, Headphones, Shield, Sparkles } from "lucide-react";
-import { useSound } from "@/lib/sound";
 import { useGameAmbience } from "@/hooks/useGameAmbience";
+
+type CommunityPost = Awaited<ReturnType<typeof listPosts>>[number];
+type LfgPost = Awaited<ReturnType<typeof listLfgPosts>>[number];
 
 export const Route = createFileRoute("/games/$slug")({
   loader: async ({ params }) => {
@@ -65,60 +68,85 @@ function HubMissing() {
 function GameHub() {
   const { game } = Route.useLoaderData();
   const { locale, t } = useI18n();
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const { user } = useAuth();
-  const { ambienceEnabled } = useSound();
   useGameAmbience(game.visual.ambientAudio);
   const [active, setActive] = useState<GameModuleKey>("overview");
-  const [posts, setPosts] = useState<any[]>([]);
-  const [lfgPosts, setLfgPosts] = useState<any[]>([]);
-  const [loaded, setLoaded] = useState<Record<GameModuleKey, boolean>>({ overview: true, community: false, lfg: false, builds: false, bosses: false, guides: false, agents: false, competitive: false, clips: false });
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
+  const [lfgPosts, setLfgPosts] = useState<LfgPost[]>([]);
+  const [loaded, setLoaded] = useState<Record<GameModuleKey, boolean>>({
+    overview: true,
+    community: false,
+    lfg: false,
+    builds: false,
+    bosses: false,
+    guides: false,
+    agents: false,
+    competitive: false,
+    clips: false,
+  });
 
   const loadCommunity = async () => {
     if (loaded.community) return;
     const rows = await listPosts({ data: { gameId: game.id } });
     setPosts(rows);
-    setLoaded((l) => ({ ...l, community: true }));
+    setLoaded((current) => ({ ...current, community: true }));
   };
 
   const loadLfg = async () => {
     if (loaded.lfg) return;
     const rows = await listLfgPosts({ data: { gameId: game.id } });
     setLfgPosts(rows);
-    setLoaded((l) => ({ ...l, lfg: true }));
+    setLoaded((current) => ({ ...current, lfg: true }));
   };
 
   const handleTab = (moduleKey: GameModuleKey) => {
     setActive(moduleKey);
-    if (moduleKey === "community") loadCommunity();
-    if (moduleKey === "lfg") loadLfg();
+    if (moduleKey === "community") void loadCommunity();
+    if (moduleKey === "lfg") void loadLfg();
   };
 
   return (
     <div className={cn("game-hub pb-10", game.themeKey === "dark_souls" ? "game-hub-ember" : "game-hub-tactical")}>
       <section className="game-hub-hero relative isolate overflow-hidden border-b border-border">
-        <GameArtwork game={game} variant="hero" loading="eager" className="game-hub-artwork absolute inset-0 h-full w-full" />
+        <GameArtwork
+          game={game}
+          variant="hero"
+          loading="eager"
+          className="game-hub-artwork absolute inset-0 h-full w-full"
+        />
         <div className="game-hub-scrim absolute inset-0" />
-        <div className="relative mx-auto grid min-h-[32rem] w-full max-w-7xl items-end gap-7 px-4 pb-10 pt-24 sm:px-6 lg:grid-cols-[13rem_minmax(0,1fr)_auto]">
-          <div className="hidden aspect-[3/4] overflow-hidden rounded-md border border-hero-border shadow-lift lg:block"><img src={game.visual.coverImage} alt="" width={1600} height={1000} className="h-full w-full object-cover" /></div>
-          <div className="max-w-2xl">
-          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase text-hero-muted"><span>MGP</span><ChevronRight className="size-3" /><span>{game.genre}</span></div>
-          <h1 className="mt-3 font-display text-4xl font-bold leading-tight text-hero-foreground sm:text-6xl">{game.name}</h1>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-hero-muted sm:text-base">{game.description[locale]}</p>
-          <ul className="mt-5 flex flex-wrap gap-1.5">
-            <li className="rounded-sm border border-hero-border bg-hero-surface px-2.5 py-1 text-xs font-semibold text-hero-muted backdrop-blur">
-              {t("games.ageRating")}: {game.ageRating}
-            </li>
-            {game.platforms.map((platform) => (
-              <li
-                key={platform}
-                className="rounded-sm border border-hero-border bg-hero-surface px-2.5 py-1 text-xs font-medium text-hero-muted backdrop-blur"
-              >
-                {platform}
-              </li>
-            ))}
-          </ul>
+        <div className="game-hub-grain absolute inset-0" aria-hidden="true" />
+        <div className="relative mx-auto grid min-h-[32rem] w-full max-w-7xl items-end gap-7 px-4 pb-10 pt-24 sm:px-6 lg:grid-cols-[13rem_minmax(0,1fr)]">
+          <div className="group hidden aspect-[3/4] overflow-hidden rounded-lg border border-hero-border bg-hero-surface shadow-lift lg:block">
+            <GameArtwork game={game} variant="card" className="h-full w-full" />
           </div>
-          <div className="flex items-center gap-2 self-end text-xs font-medium text-hero-muted"><Headphones className="size-4 text-gold" />{ambienceEnabled ? (locale === "pt-BR" ? "Ambiente habilitado" : "Ambience enabled") : (locale === "pt-BR" ? "Ambiente disponível" : "Ambience available")}</div>
+          <div className="max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-hero-muted">
+              <span>MGP</span>
+              <ChevronRight className="size-3" />
+              <span>{game.genre}</span>
+            </div>
+            <h1 className="mt-3 font-display text-4xl font-bold leading-tight text-hero-foreground sm:text-6xl">
+              {game.name}
+            </h1>
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-hero-muted sm:text-base">
+              {game.description[locale]}
+            </p>
+            <ul className="mt-5 flex flex-wrap gap-1.5">
+              <li className="rounded-full border border-hero-border bg-hero-surface px-3 py-1 text-xs font-semibold text-hero-muted backdrop-blur">
+                {t("games.ageRating")}: {game.ageRating}
+              </li>
+              {game.platforms.map((platform) => (
+                <li
+                  key={platform}
+                  className="rounded-full border border-hero-border bg-hero-surface px-3 py-1 text-xs font-medium text-hero-muted backdrop-blur"
+                >
+                  {platform}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -126,42 +154,71 @@ function GameHub() {
         <div
           role="tablist"
           aria-label={game.name}
-          className="-mx-4 flex gap-1 overflow-x-auto border-b border-border px-4 py-3 sm:mx-0 sm:px-0"
+          className="hub-tablist -mx-4 flex gap-1 overflow-x-auto border-b border-border px-4 py-3 sm:mx-0 sm:px-0"
         >
-          {game.modules.map((moduleKey) => (
-            <button
-              key={moduleKey}
-              type="button"
-              role="tab"
-              aria-selected={active === moduleKey}
-              onClick={() => handleTab(moduleKey)}
-              className={cn(
-                "hub-tab shrink-0 px-3.5 py-3 text-sm font-semibold transition-colors",
-                active === moduleKey
-                   ? "hub-tab-active text-gold-strong"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
-              )}
-            >
-              {MODULE_LABELS[moduleKey][locale]}
-            </button>
-          ))}
+          {game.modules.map((moduleKey) => {
+            const selected = active === moduleKey;
+            return (
+              <button
+                key={moduleKey}
+                id={`hub-tab-${moduleKey}`}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                aria-controls={`hub-panel-${active}`}
+                tabIndex={selected ? 0 : -1}
+                onClick={() => handleTab(moduleKey)}
+                className={cn(
+                  "hub-tab shrink-0 px-3.5 py-3 text-sm font-semibold",
+                  selected ? "hub-tab-active text-foreground" : "text-muted-foreground",
+                )}
+              >
+                <span>{MODULE_LABELS[moduleKey][locale]}</span>
+              </button>
+            );
+          })}
         </div>
 
-        <div className="py-8">
+        <div
+          id={`hub-panel-${active}`}
+          role="tabpanel"
+          aria-labelledby={`hub-tab-${active}`}
+          className="py-8 outline-none"
+        >
           {active === "overview" ? (
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
               <div className="space-y-5">
                 <article className="surface-panel p-6 sm:p-8">
-                  <div className="mb-5 flex items-center gap-2"><Sparkles className="size-4 text-gold-strong" /><span className="section-kicker">{locale === "pt-BR" ? "IDENTIDADE DO JOGO" : "GAME IDENTITY"}</span></div>
-                  <h2 className="font-display text-2xl font-semibold text-foreground">{MODULE_LABELS.overview[locale]}</h2>
-                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">{game.description[locale]}</p>
+                  <div className="mb-5 flex items-center gap-2">
+                    <Sparkles className="size-4 text-gold-strong" />
+                    <span className="section-kicker">
+                      {copy("IDENTIDADE DO JOGO", "GAME IDENTITY", "IDENTIDAD DEL JUEGO")}
+                    </span>
+                  </div>
+                  <h2 className="font-display text-2xl font-semibold text-foreground">
+                    {MODULE_LABELS.overview[locale]}
+                  </h2>
+                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                    {game.description[locale]}
+                  </p>
                   <div className="mt-7 grid gap-3 sm:grid-cols-3">
-                    <Feature icon={Shield} label={locale === "pt-BR" ? "Game Profiles" : "Game Profiles"} />
-                    <Feature icon={Sparkles} label={locale === "pt-BR" ? "Comunidade" : "Community"} />
+                    <Feature icon={Shield} label="Game Profiles" />
+                    <Feature icon={Sparkles} label={copy("Comunidade", "Community", "Comunidad")} />
                     <Feature icon={Headphones} label="LFG" />
                   </div>
                 </article>
-                <EmptyState title={locale === "pt-BR" ? "Conteúdo da comunidade em preparação" : "Community content in preparation"} description={locale === "pt-BR" ? "Este espaço crescerá com perfis, guias e atividade real." : "This space will grow with profiles, guides and real activity."} />
+                <EmptyState
+                  title={copy(
+                    "Conteúdo da comunidade em preparação",
+                    "Community content in preparation",
+                    "Contenido de la comunidad en preparación",
+                  )}
+                  description={copy(
+                    "Este espaço crescerá com perfis, guias e atividade real.",
+                    "This space will grow with profiles, guides and real activity.",
+                    "Este espacio crecerá con perfiles, guías y actividad real.",
+                  )}
+                />
               </div>
               <GameLivePanel themeKey={game.themeKey} locale={locale} />
             </div>
@@ -212,5 +269,12 @@ function GameHub() {
 }
 
 function Feature({ icon: Icon, label }: { icon: typeof Shield; label: string }) {
-  return <div className="flex items-center gap-3 rounded-md border border-border bg-muted/40 px-4 py-3"><Icon className="size-4 text-gold-strong" /><span className="text-sm font-semibold">{label}</span></div>;
+  return (
+    <div className="hub-feature flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3">
+      <span className="grid size-8 place-items-center rounded-full bg-gold-soft/50 text-gold-strong">
+        <Icon className="size-4" />
+      </span>
+      <span className="text-sm font-semibold">{label}</span>
+    </div>
+  );
 }

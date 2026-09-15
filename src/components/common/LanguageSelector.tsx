@@ -8,7 +8,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
-const SHORT_LABELS: Record<Locale, string> = { "pt-BR": "PT", en: "EN" };
+const SHORT_LABELS: Record<Locale, string> = { "pt-BR": "PT", en: "EN", es: "ES" };
+const CODE_LABELS: Record<Locale, string> = { "pt-BR": "PT-BR", en: "EN", es: "ES" };
 
 export function LanguageSelector({ variant = "compact" }: { variant?: "compact" | "full" }) {
   const { locale, setLocale, t } = useI18n();
@@ -70,7 +71,7 @@ export function LanguageSelector({ variant = "compact" }: { variant?: "compact" 
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="truncate text-sm font-semibold">{LOCALE_LABELS[value]}</span>
                 <span className="text-[0.65rem] font-medium uppercase tracking-[0.16em] text-muted-foreground">
-                  {value === "pt-BR" ? "PT-BR" : "EN"}
+                  {CODE_LABELS[value]}
                 </span>
               </span>
               {selected ? <Check aria-hidden="true" className="size-4 shrink-0 text-gold-strong" /> : null}
