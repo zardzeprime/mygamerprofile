@@ -18,12 +18,13 @@ type SoundContextValue = AudioPreferences & {
 };
 
 const STORAGE_KEY = "mgp-audio";
-const DEFAULTS: AudioPreferences = { uiEnabled: false, ambienceEnabled: false, uiVolume: 12, ambienceVolume: 18 };
+const DEFAULTS: AudioPreferences = { uiEnabled: true, ambienceEnabled: false, uiVolume: 24, ambienceVolume: 18 };
 const SoundContext = createContext<SoundContextValue | null>(null);
 
 export function SoundProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState<AudioPreferences>(DEFAULTS);
   const contextRef = useRef<AudioContext | null>(null);
+  const unlockedRef = useRef(false);
 
   useEffect(() => {
     try {
@@ -38,18 +39,53 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
   }, [preferences]);
 
-  const play = useCallback((event: SoundEvent) => {
-    if (!preferences.uiEnabled || preferences.uiVolume === 0) return;
+  const ensureContext = useCallback(async () => {
     const AudioContextClass = window.AudioContext ?? window.webkitAudioContext;
-    if (!AudioContextClass) return;
+    if (!AudioContextClass) return null;
     const context = contextRef.current ?? new AudioContextClass();
     contextRef.current = context;
+    if (context.state === "suspended") {
+      try {
+        await context.resume();
+      } catch {
+        return null;
+      }
+    }
+    unlockedRef.current = context.state === "running";
+    return context;
+  }, []);
+
+  useEffect(() => {
+    if (!preferences.uiEnabled) return;
+    const unlock = () => {
+      void ensureContext();
+    };
+    window.addEventListener("pointerdown", unlock, { once: true, passive: true });
+    window.addEventListener("keydown", unlock, { once: true });
+    window.addEventListener("touchstart", unlock, { once: true, passive: true });
+    return () => {
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+      window.removeEventListener("touchstart", unlock);
+    };
+  }, [ensureContext, preferences.uiEnabled]);
+
+  const play = useCallback((event: SoundEvent) => {
+    if (!preferences.uiEnabled || preferences.uiVolume === 0) return;
+    const context = contextRef.current;
+    if (!context || context.state !== "running" || !unlockedRef.current) return;
+
     const oscillator = context.createOscillator();
     const gain = context.createGain();
     const now = context.currentTime;
     const tones: Record<SoundEvent, [number, number]> = {
-      hover: [720, 0.025], click: [410, 0.045], navigation: [520, 0.06], open: [560, 0.07],
-      close: [360, 0.055], success: [760, 0.12], error: [190, 0.09],
+      hover: [720, 0.025],
+      click: [410, 0.045],
+      navigation: [520, 0.06],
+      open: [560, 0.07],
+      close: [360, 0.055],
+      success: [760, 0.12],
+      error: [190, 0.09],
     };
     const [frequency, duration] = tones[event];
     oscillator.type = event === "error" ? "triangle" : "sine";
@@ -70,7 +106,7 @@ export function SoundProvider({ children }: { children: ReactNode }) {
     const onPointerOver = (event: PointerEvent) => {
       if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
       const target = event.target instanceof Element ? event.target.closest("a,button,[role='button'],input,select") : null;
-      if (!target || Date.now() - lastHover < 90) return;
+      if (!target || Date.now() - lastHover < 120) return;
       lastHover = Date.now();
       play("hover");
     };
