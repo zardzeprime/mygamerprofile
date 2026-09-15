@@ -4,16 +4,28 @@ import { MailCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
+import { LEGAL_ACCEPTANCE_VERSION } from "@/config/legal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 
-const PROD_SITE_URL = (import.meta.env["VITE_SITE_URL"] || "https://mygamerprofile.lovable.app").replace(/\/$/, "");
+const PROD_SITE_URL = (
+  import.meta.env["VITE_SITE_URL"] || "https://mygamerprofile.lovable.app"
+).replace(/\/$/, "");
 
 function getConfirmationRedirect() {
-  if (typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname)) {
+  if (
+    typeof window !== "undefined" &&
+    ["localhost", "127.0.0.1"].includes(window.location.hostname)
+  ) {
     return `${window.location.origin}/onboarding`;
   }
   return `${PROD_SITE_URL}/onboarding`;
@@ -31,11 +43,13 @@ export const Route = createFileRoute("/register")({
 
 function RegisterPage() {
   const { t, locale } = useI18n();
-  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const copy = (pt: string, en: string, es: string) =>
+    localeCopy(locale, pt, en, es);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
@@ -43,6 +57,16 @@ function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    if (!acceptedLegal) {
+      setError(
+        copy(
+          "Você precisa aceitar os Termos de Uso e a Política de Privacidade.",
+          "You need to accept the Terms of Use and Privacy Policy.",
+          "Debes aceptar los Términos de Uso y la Política de Privacidad.",
+        ),
+      );
+      return;
+    }
     if (password.length < 6) {
       setError(t("auth.errors.weakPassword"));
       return;
@@ -58,7 +82,11 @@ function RegisterPage() {
         password,
         options: {
           emailRedirectTo: getConfirmationRedirect(),
-          data: { i18n: locale },
+          data: {
+            i18n: locale,
+            legal_terms_version: LEGAL_ACCEPTANCE_VERSION,
+            legal_accepted_at: new Date().toISOString(),
+          },
         },
       });
       if (signUpError) {
@@ -89,7 +117,11 @@ function RegisterPage() {
               <MailCheck className="size-6" />
             </div>
             <CardTitle className="font-display text-2xl">
-              {copy("Confere seu e-mail", "Check your email", "Revisa tu correo")}
+              {copy(
+                "Confere seu e-mail",
+                "Check your email",
+                "Revisa tu correo",
+              )}
             </CardTitle>
             <CardDescription className="mx-auto max-w-md leading-relaxed">
               {copy(
@@ -121,7 +153,9 @@ function RegisterPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <BrandLogoPlaceholder size="lg" className="mx-auto mb-4" />
-          <CardTitle className="font-display text-2xl">{t("auth.register")}</CardTitle>
+          <CardTitle className="font-display text-2xl">
+            {t("auth.register")}
+          </CardTitle>
           <CardDescription>MGP — {t("brand.full")}</CardDescription>
         </CardHeader>
         <CardContent>
@@ -159,6 +193,50 @@ function RegisterPage() {
                 autoComplete="new-password"
               />
             </div>
+
+            <div className="flex items-start gap-3 rounded-xl border border-border bg-muted/15 p-3">
+              <input
+                id="legal-acceptance"
+                type="checkbox"
+                checked={acceptedLegal}
+                onChange={(event) => setAcceptedLegal(event.target.checked)}
+                required
+                className="mt-1 size-4 shrink-0 accent-[var(--color-gold)]"
+              />
+              <Label
+                htmlFor="legal-acceptance"
+                className="text-xs font-normal leading-5 text-muted-foreground"
+              >
+                {copy(
+                  "Li e aceito os",
+                  "I have read and accept the",
+                  "He leído y acepto los",
+                )}{" "}
+                <Link
+                  to="/terms"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-gold-strong underline-offset-4 hover:underline"
+                >
+                  {copy("Termos de Uso", "Terms of Use", "Términos de Uso")}
+                </Link>{" "}
+                {copy("e a", "and the", "y la")}{" "}
+                <Link
+                  to="/privacy"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-gold-strong underline-offset-4 hover:underline"
+                >
+                  {copy(
+                    "Política de Privacidade",
+                    "Privacy Policy",
+                    "Política de Privacidad",
+                  )}
+                </Link>
+                .
+              </Label>
+            </div>
+
             {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? t("common.loading") : t("auth.submitRegister")}
