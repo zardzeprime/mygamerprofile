@@ -7,6 +7,14 @@ const USERNAME_REGEX = /^[a-z0-9_]{3,20}$/;
 const APP_LANGUAGES = ["pt-BR", "en", "es"] as const;
 const THEME_PREFERENCES = ["light", "dark", "system"] as const;
 const PROFILE_VISIBILITIES = ["public", "private"] as const;
+const PROFILE_BACKGROUNDS = ["mgp-grid", "ember", "tactical", "midnight"] as const;
+const AVATAR_PUBLIC_PREFIX =
+  "https://gudvdgpjfapshzqyfcpj.supabase.co/storage/v1/object/public/avatars/";
+
+const avatarUrlSchema = z
+  .string()
+  .url()
+  .refine((value) => value.startsWith(AVATAR_PUBLIC_PREFIX), "invalid_avatar_url");
 
 const usernameSchema = z.object({ username: z.string().trim().min(3).max(20) });
 const usernameCheckSchema = z.object({
@@ -23,12 +31,12 @@ const createProfileSchema = z.object({
 const updateProfileSchema = z.object({
   username: z.string().regex(USERNAME_REGEX).optional(),
   display_name: z.string().trim().min(1).max(80).optional(),
-  bio: z.string().max(500).nullable().optional(),
-  avatar_url: z.string().url().nullable().optional(),
-  banner_url: z.string().url().nullable().optional(),
+  bio: z.string().trim().max(500).nullable().optional(),
+  avatar_url: avatarUrlSchema.nullable().optional(),
   language: z.enum(APP_LANGUAGES).optional(),
   theme_preference: z.enum(THEME_PREFERENCES).optional(),
   visibility: z.enum(PROFILE_VISIBILITIES).optional(),
+  profile_background: z.enum(PROFILE_BACKGUNDS).optional(),
 });
 const followSchema = z.object({ following_id: z.string().uuid() });
 
@@ -39,12 +47,29 @@ export const getProfileByUsername = createServerFn({ method: "GET" })
     const { data: profile, error } = await supabase
       .from("profiles")
       .select(
-        "*, followers:follows!follows_following_id_fkey(count), following:follows!follows_follower_id_fkey(count)",
+        "id,username,display_name,bio,avatar_url,language,theme_preference,visibility,profile_background,created_at,updated_at",
       )
       .ilike("username", data.username)
-      .single();
+      .maybeSingle();
     if (error) throw new Error(error.message);
-    return profile;
+    if (!profile) return null;
+
+    const [followersResult, followingResult] = await Promise.all([
+      supabase
+        .from("follows")
+        .select("id", { count: "exact", head: true })
+        .eq("following_id", profile.id),
+      supabase
+        .from("follows")
+        .select("id", { count: "exact", head: true })
+        .eq("follower_id", profile.id),
+    ]);
+
+    return {
+      ...profile,
+      followers: followersResult.error ? 0 : (followersResult.count ?? 0),
+      following: followingResult.error ? 0 : (followingResult.count ?? 0),
+    };
   });
 
 export const getCurrentProfile = createServerFn({ method: "GET" })
@@ -54,8 +79,9 @@ export const getCurrentProfile = createServerFn({ method: "GET" })
       .from("profiles")
       .select("*")
       .eq("id", context.userId)
-      .single();
+      .maybeSingle();
     if (error) throw new Error(error.message);
+    if (!profile) throw new Error("profile_not_found");
     return profile;
   });
 
@@ -91,6 +117,7 @@ export const createProfile = createServerFn({ method: "POST" })
         display_name,
         language,
         theme_preference,
+        profile_background: "mgp-grid",
       })
       .select()
       .single();
