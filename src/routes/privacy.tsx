@@ -71,6 +71,13 @@ const sections: LegalSection[] = [
             legível.
           </li>
           <li>
+            <strong className="text-foreground">Idade e segurança:</strong>{" "}
+            data de nascimento informada no onboarding, faixa etária derivada,
+            estado de supervisão/participação de responsável e método de
+            aferição aplicável. A data de nascimento fica separada dos dados
+            públicos do perfil e não é exibida a outros usuários.
+          </li>
+          <li>
             <strong className="text-foreground">Perfil:</strong> username, nome
             de exibição, biografia, avatar, banner, idioma, tema, visibilidade e
             preferências de aparência.
@@ -78,12 +85,21 @@ const sections: LegalSection[] = [
           <li>
             <strong className="text-foreground">Identidade gamer:</strong> jogos
             favoritos e dados que você informar manualmente nos Game Profiles,
-            como função, agente, arma, mapa, build ou rank declarado.
+            como função, agente, campeão, arma, mapa, build, clube ou rank
+            declarado.
+          </li>
+          <li>
+            <strong className="text-foreground">Contas conectadas:</strong>{" "}
+            quando uma integração oficial estiver disponível e você optar por
+            conectá-la, identificadores do provedor, tokens protegidos no
+            servidor e os dados mínimos necessários para a função autorizada,
+            como biblioteca, conquistas, estatísticas ou informações públicas
+            disponibilizadas pelo respectivo serviço.
           </li>
           <li>
             <strong className="text-foreground">Conteúdo e comunidade:</strong>{" "}
-            posts, imagens, comentários, reações, seguidores, denúncias e
-            informações inseridas em anúncios de LFG.
+            posts, imagens, comentários, reações, seguidores, denúncias,
+            avisos de conteúdo e informações inseridas em anúncios de LFG.
           </li>
           <li>
             <strong className="text-foreground">Dados técnicos:</strong>{" "}
@@ -98,9 +114,11 @@ const sections: LegalSection[] = [
           </li>
         </ul>
         <p>
-          Não solicitamos dados pessoais sensíveis. Evite publicar documentos,
-          informações financeiras, localização precisa, dados de saúde ou
-          qualquer informação desnecessária sobre você ou terceiros.
+          Evite publicar documentos, informações financeiras, localização
+          precisa, dados de saúde ou qualquer informação desnecessária sobre
+          você ou terceiros. Informações usadas para aferição de idade são
+          tratadas apenas para segurança, adequação etária e cumprimento de
+          obrigações aplicáveis.
         </p>
       </>
     ),
@@ -122,8 +140,16 @@ const sections: LegalSection[] = [
           </li>
           <li>personalizar idioma, tema, jogos e experiência de navegação;</li>
           <li>
+            adequar recursos, avisos e interações sociais à faixa etária e
+            aplicar medidas de supervisão e proteção de menores;
+          </li>
+          <li>
             viabilizar interações sociais, LFG, moderação, denúncias e prevenção
             a abuso ou fraude;
+          </li>
+          <li>
+            sincronizar dados de plataformas externas apenas após conexão
+            voluntária e dentro das permissões concedidas;
           </li>
           <li>
             diagnosticar falhas, manter a segurança e melhorar desempenho e
@@ -137,8 +163,10 @@ const sections: LegalSection[] = [
           As bases legais podem incluir execução de contrato e procedimentos
           preliminares, cumprimento de obrigação legal ou regulatória, exercício
           regular de direitos, legítimo interesse avaliado com respeito às suas
-          expectativas e, quando aplicável, consentimento. Se o tratamento
-          depender de consentimento, você poderá revogá-lo para o futuro.
+          expectativas e, quando aplicável, consentimento. Tratamentos de dados
+          de crianças e adolescentes observarão o melhor interesse e as regras
+          específicas aplicáveis. Se o tratamento depender de consentimento,
+          você poderá revogá-lo para o futuro.
         </p>
       </>
     ),
@@ -156,17 +184,39 @@ const sections: LegalSection[] = [
           páginas.
         </p>
         <p>
-          Não publicamos seu e-mail de acesso. Antes de postar, considere que
-          outras pessoas podem copiar ou compartilhar conteúdo público fora do
-          MGP. Configurações de privacidade reduzem a exposição futura, mas não
-          apagam cópias já feitas por terceiros.
+          Não publicamos seu e-mail de acesso nem sua data de nascimento. Antes
+          de postar, considere que outras pessoas podem copiar ou compartilhar
+          conteúdo público fora do MGP. Configurações de privacidade reduzem a
+          exposição futura, mas não apagam cópias já feitas por terceiros.
         </p>
         <p>
-          Dados de conta ou partidas de VALORANT obtidos por integrações
-          oficiais somente poderão ser exibidos após autorização expressa do
-          próprio jogador por Riot Sign On (RSO) e com aviso claro sobre a
-          visibilidade resultante. Campos atualmente informados de forma manual
-          não são dados verificados pela Riot Games.
+          Dados de conta ou partidas obtidos por integrações oficiais somente
+          serão exibidos após autorização do próprio jogador quando o provedor
+          exigir ou oferecer esse fluxo, e com indicação clara de origem e
+          visibilidade. Campos informados manualmente continuam identificados
+          como declarações do usuário, não como dados verificados pelo provedor.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "integracoes",
+    title: "Contas conectadas e APIs de jogos",
+    content: (
+      <>
+        <p>
+          O MGP pretende permitir conexão opcional com serviços como Steam,
+          Riot Games e Google. A disponibilidade depende das políticas,
+          aprovações e capacidades técnicas de cada fornecedor. Conectar uma
+          conta nunca deve exigir que você entregue ao MGP a senha desse
+          serviço; a autenticação deve ocorrer pelo fluxo oficial do provedor.
+        </p>
+        <p>
+          Antes da conexão, o MGP informará quais dados pretende acessar e para
+          qual finalidade. Você poderá desconectar a integração e interromper
+          novas sincronizações. Tokens e credenciais de integração são mantidos
+          no servidor e não devem ser expostos em perfis, código cliente ou
+          repositórios públicos/privados de desenvolvimento.
         </p>
       </>
     ),
@@ -191,8 +241,15 @@ const sections: LegalSection[] = [
             entrega e operação da aplicação web;
           </li>
           <li>
-            <strong className="text-foreground">Google Fonts:</strong>{" "}
-            carregamento das fontes exibidas na interface;
+            <strong className="text-foreground">Google:</strong> recursos que
+            você escolher usar, como autenticação e, futuramente, publicidade,
+            sempre conforme as configurações e políticas aplicáveis;
+          </li>
+          <li>
+            <strong className="text-foreground">Plataformas de jogos:</strong>{" "}
+            Steam, Riot Games e outros provedores apenas quando necessário para
+            uma integração solicitada por você e de acordo com as permissões
+            aprovadas;
           </li>
           <li>
             autoridades ou terceiros, quando houver obrigação legal, ordem
@@ -224,26 +281,23 @@ const sections: LegalSection[] = [
         </p>
         <p>
           Na data desta versão, o MGP não integra o Google AdSense. Se a
-          publicidade for ativada, esta Política será atualizada antes da
-          veiculação. O Google e seus parceiros poderão usar cookies ou
-          identificadores para entregar, limitar e medir anúncios, inclusive com
-          base em visitas a este e a outros sites. As escolhas de personalização
-          poderão ser gerenciadas na{" "}
-          <a
-            className={linkClassName}
-            href="https://myadcenter.google.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Minha Central de Anúncios do Google
-          </a>
-          .
+          publicidade for ativada, esta Política e os controles de consentimento
+          serão atualizados antes da veiculação. O MGP não usará dados de
+          aferição de idade para criar perfis publicitários.
         </p>
         <p>
-          Onde a lei exigir consentimento prévio, o MGP exibirá uma plataforma
-          de gestão de consentimento adequada antes de usar cookies
-          publicitários não essenciais. Recusar publicidade personalizada não
-          bloqueará o acesso gratuito ao conteúdo principal.
+          Crianças e adolescentes não receberão publicidade comercial baseada
+          em perfilamento comportamental por parte do MGP. Quando a plataforma
+          identificar uma conta como pertencente a menor, solicitações de
+          publicidade deverão receber tratamento adequado à idade e sem
+          personalização comportamental, de acordo com a legislação e as
+          ferramentas oferecidas pelo fornecedor de anúncios.
+        </p>
+        <p>
+          Onde a lei ou a política do fornecedor exigir consentimento prévio, o
+          MGP exibirá ferramenta de gestão de consentimento antes de usar
+          cookies publicitários não essenciais. Recusar publicidade
+          personalizada não bloqueará o acesso gratuito ao conteúdo principal.
         </p>
       </>
     ),
@@ -256,16 +310,18 @@ const sections: LegalSection[] = [
         <p>
           Mantemos dados enquanto a conta estiver ativa e pelo período
           necessário para prestar o serviço, cumprir obrigações, prevenir
-          fraude, resolver disputas e exercer direitos. Conteúdo excluído pode
-          permanecer temporariamente em cópias de segurança e registros técnicos
-          até a rotação segura desses sistemas.
+          fraude, resolver disputas e exercer direitos. Dados de idade devem ser
+          reduzidos ao necessário e não reutilizados para finalidades
+          incompatíveis. Conteúdo excluído pode permanecer temporariamente em
+          cópias de segurança e registros técnicos até a rotação segura desses
+          sistemas.
         </p>
         <p>
           Adotamos controles técnicos e organizacionais compatíveis com o porte
-          do projeto, incluindo autenticação, regras de acesso no banco e
-          conexões criptografadas. Nenhum sistema é totalmente imune a
-          incidentes; por isso, use senha exclusiva e proteja sua conta de
-          e-mail.
+          do projeto, incluindo autenticação, regras de acesso no banco,
+          conexões criptografadas e armazenamento de segredos apenas no lado do
+          servidor. Nenhum sistema é totalmente imune a incidentes; por isso,
+          use senha exclusiva e proteja sua conta de e-mail.
         </p>
       </>
     ),
@@ -324,16 +380,36 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          O MGP não é destinado a crianças menores de 13 anos e não busca
-          coletar conscientemente dados delas. Pessoas entre 13 e 17 anos devem
-          usar a plataforma com ciência e assistência de seus pais ou
-          responsáveis, respeitando também a classificação indicativa dos jogos
-          acessados.
+          O MGP não permite criação de conta por menores de 13 anos. Usuários
+          de 13 a 17 anos são tratados como contas de adolescentes para fins de
+          segurança. O MGP adota como política própria a necessidade de ciência
+          e assistência de responsável nessa faixa, além das exigências
+          específicas previstas pelo ECA Digital (Lei nº 15.211/2025) e demais
+          normas aplicáveis.
         </p>
         <p>
-          Se você acredita que uma criança forneceu dados indevidamente, entre
-          em contato para que possamos avaliar e adotar as medidas cabíveis,
-          sempre considerando o melhor interesse do menor.
+          Para contas de usuários de até 16 anos, recursos sociais podem ficar
+          restritos até que exista vínculo ou confirmação do responsável em
+          nível compatível com a obrigação aplicável. A simples informação da
+          data de nascimento funciona como sinal de idade e não é apresentada
+          como verificação forte para acesso a conteúdo que a lei proíba a
+          menores.
+        </p>
+        <p>
+          O MGP proíbe conteúdo sexual explícito/pornográfico e gore gratuito
+          para todos os usuários. Discussões legítimas sobre jogos com temas
+          maduros podem receber aviso, desfoque ou restrição etária. Um botão de
+          confirmação para revelar conteúdo permitido pode ser usado como aviso
+          adicional de experiência, mas não substitui mecanismo confiável de
+          aferição quando a lei exigir verificação de idade.
+        </p>
+        <p>
+          O projeto busca aplicar privacidade e segurança por padrão, não usar
+          perfilamento publicitário para crianças e adolescentes e oferecer
+          ferramentas de supervisão adequadas à evolução da plataforma. Se você
+          acredita que uma criança forneceu dados indevidamente, entre em
+          contato para avaliação e adoção das medidas cabíveis, sempre
+          considerando o melhor interesse do menor.
         </p>
       </>
     ),
@@ -345,9 +421,9 @@ const sections: LegalSection[] = [
       <p>
         O MGP pode exibir links, vídeos, capas e referências a jogos ou serviços
         de terceiros. Ao sair da plataforma, aplicam-se os termos e políticas do
-        destino. Riot Games, Bandai Namco, FromSoftware, Google, Supabase e
-        Lovable não controlam esta Política e não são responsáveis pelas
-        práticas do MGP.
+        destino. Riot Games, Valve/Steam, Electronic Arts, Bandai Namco,
+        FromSoftware, Google, Supabase e Lovable não controlam esta Política e
+        não são responsáveis pelas práticas do MGP.
       </p>
     ),
   },
@@ -360,7 +436,7 @@ const sections: LegalSection[] = [
           Podemos atualizar esta Política para refletir mudanças legais,
           técnicas ou de produto. A data e a versão no topo serão alteradas e,
           quando a mudança for relevante, apresentaremos aviso destacado ou
-          solicitaremos novo consentimento, se necessário.
+          solicitaremos nova aceitação/consentimento quando necessário.
         </p>
         <p>
           Para exercer direitos ou esclarecer dúvidas, use o canal indicado na
