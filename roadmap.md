@@ -37,10 +37,24 @@
 - [x] Add a detailed Weapons arsenal with economy, penetration and range-based damage tables
 - [x] Add an official Champions Shanghai schedule snapshot with competition filters
 - [x] Stack competitive schedule and featured MGP content in the VALORANT Overview sidebar
+- [x] Prepare server-side official YouTube live-broadcast discovery behind YOUTUBE_API_KEY
 - [x] Keep Competitive and Lineups as expandable foundations for later releases
-- [ ] Connect official live-broadcast discovery so active matches can open the correct YouTube stream automatically
 - [ ] Replace the temporary static content mirror/provider with Riot Public Content Catalog / approved Riot API integration where practical
 - [ ] Persist esports match/provider sync in Supabase when live automation is enabled
+
+# MGP v0.1.3B — VALORANT Skins & Esports Polish
+
+- [x] Normalize Agent ability labels to Ability/Habilidade/Habilidad 1–3 + Ultimate
+- [x] Add team and event logo references to VALORANT esports match cards with readable fallbacks
+- [x] Add a dedicated Skins tab to the VALORANT game hub
+- [x] Add weapon-first skin browsing and an interactive desktop skin wheel
+- [x] Add mobile-friendly horizontal skin browsing
+- [x] Show skin edition/rarity, color variants, upgrade levels and VP reference pricing
+- [x] Add transparent Radianite estimates for common level/variant upgrade patterns
+- [x] Preserve available streamed-video metadata for a later animation-preview update
+- [ ] Replace fragile external esports-logo hotlinks with approved/official hosted assets when available
+- [ ] Add exact historical per-skin VP pricing from an approved provider/editorial dataset
+- [ ] Add opt-in skin animation/video previews with rights and bandwidth safeguards
 
 # Future — VALORANT Competitive + Lineups
 
