@@ -9,7 +9,7 @@ export function AppFooter() {
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-8 sm:px-6 md:flex-row md:items-center md:justify-between">
         <BrandLogoPlaceholder withFullName />
         <p className="text-xs text-muted-foreground">
-          {t("brand.tagline")} · MGP v0.1 · © {new Date().getFullYear()}
+          {t("brand.tagline")} · MGP v0.1.2A · © {new Date().getFullYear()}
         </p>
       </div>
     </footer>
