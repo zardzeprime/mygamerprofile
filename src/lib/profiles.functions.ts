@@ -41,7 +41,7 @@ const updateProfileSchema = z.object({
 const followSchema = z.object({ following_id: z.string().uuid() });
 
 export const getProfileByUsername = createServerFn({ method: "GET" })
-  .inputValidator((data) => usernameSchema.parse(data))
+  .validator((data) => usernameSchema.parse(data))
   .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
     const { data: profile, error } = await supabase
@@ -54,21 +54,14 @@ export const getProfileByUsername = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     if (!profile) return null;
 
-    const [followersResult, followingResult] = await Promise.all([
-      supabase
-        .from("follows")
-        .select("id", { count: "exact", head: true })
-        .eq("following_id", profile.id),
-      supabase
-        .from("follows")
-        .select("id", { count: "exact", head: true })
-        .eq("follower_id", profile.id),
-    ]);
+    const { data: counts, error: countsError } = await supabase
+      .rpc("profile_follow_counts", { target_user_id: profile.id })
+      .maybeSingle();
 
     return {
       ...profile,
-      followers: followersResult.error ? 0 : (followersResult.count ?? 0),
-      following: followingResult.error ? 0 : (followingResult.count ?? 0),
+      followers: countsError ? 0 : Number(counts?.followers ?? 0),
+      following: countsError ? 0 : Number(counts?.following ?? 0),
     };
   });
 
@@ -86,20 +79,21 @@ export const getCurrentProfile = createServerFn({ method: "GET" })
   });
 
 export const checkUsernameAvailable = createServerFn({ method: "GET" })
-  .inputValidator((data) => usernameCheckSchema.parse(data))
+  .validator((data) => usernameCheckSchema.parse(data))
   .handler(async ({ data }) => {
     if (!USERNAME_REGEX.test(data.username)) return { available: false };
     const supabase = getSupabasePublic();
-    let query = supabase.from("profiles").select("id").ilike("username", data.username);
-    if (data.excludeUserId) query = query.neq("id", data.excludeUserId);
-    const { data: rows, error } = await query;
+    const { data: available, error } = await supabase.rpc("is_username_available", {
+      candidate: data.username,
+      exclude_user_id: data.excludeUserId ?? null,
+    });
     if (error) throw new Error(error.message);
-    return { available: rows.length === 0 };
+    return { available: available === true };
   });
 
 export const createProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => createProfileSchema.parse(data))
+  .validator((data) => createProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
     const {
       username,
@@ -141,7 +135,7 @@ export const createProfile = createServerFn({ method: "POST" })
 
 export const updateProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => updateProfileSchema.parse(data))
+  .validator((data) => updateProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { data: profile, error } = await context.supabase
       .from("profiles")
@@ -155,7 +149,7 @@ export const updateProfile = createServerFn({ method: "POST" })
 
 export const followUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => followSchema.parse(data))
+  .validator((data) => followSchema.parse(data))
   .handler(async ({ context, data }) => {
     if (data.following_id === context.userId) throw new Error("cannot_follow_self");
     const { error } = await context.supabase.from("follows").insert({
@@ -168,7 +162,7 @@ export const followUser = createServerFn({ method: "POST" })
 
 export const unfollowUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => followSchema.parse(data))
+  .validator((data) => followSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { error } = await context.supabase
       .from("follows")
@@ -181,7 +175,7 @@ export const unfollowUser = createServerFn({ method: "POST" })
 
 export const isFollowing = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => followSchema.parse(data))
+  .validator((data) => followSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { data: rows, error } = await context.supabase
       .from("follows")
