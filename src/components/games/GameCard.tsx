@@ -2,9 +2,10 @@ import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/i18n";
 import type { GameConfig } from "@/config/games";
-import { ArrowUpRight, Pause, Play } from "lucide-react";
+import { ArrowUpRight, Play, X } from "lucide-react";
 import { useSound } from "@/lib/sound";
 import { GameArtwork } from "@/components/games/GameArtwork";
+import { MinimalYouTubePlayer } from "@/components/common/MinimalMediaPlayer";
 
 export function GameCard({ game }: { game: GameConfig }) {
   const { locale } = useI18n();
@@ -126,31 +127,27 @@ export function GameCard({ game }: { game: GameConfig }) {
       <div className="game-card-media relative aspect-[16/10] overflow-hidden">
         {trailerOpen && game.visual.trailerYoutubeId ? (
           <div
-            className="absolute inset-0 z-10 animate-in fade-in zoom-in-95 duration-300 bg-black"
+            className="absolute inset-0 z-10 animate-in fade-in zoom-in-95 bg-black duration-300"
             data-card-control
             onClick={(event) => event.stopPropagation()}
           >
-            <iframe
-              className="h-full w-full"
-              src={`https://www.youtube-nocookie.com/embed/${game.visual.trailerYoutubeId}?autoplay=1&rel=0&modestbranding=1`}
-              title={`${game.name} trailer`}
-              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-              allowFullScreen
-            />
+            <MinimalYouTubePlayer videoId={game.visual.trailerYoutubeId} locale={locale} autoPlay />
           </div>
         ) : (
           <GameArtwork game={game} className="game-card-image" />
         )}
         {!trailerOpen ? <div className="game-card-scrim absolute inset-0" /> : null}
         {!trailerOpen ? <div className="game-card-sheen absolute inset-0" aria-hidden="true" /> : null}
-        <div className="absolute left-4 top-4 z-20 flex items-center gap-2">
-          <span className="rounded-sm border border-border-strong bg-background/80 px-2 py-1 text-[0.65rem] font-bold uppercase text-foreground backdrop-blur">
-            {game.genre}
-          </span>
-          <span className="rounded-sm bg-background/80 px-2 py-1 text-[0.65rem] font-semibold text-muted-foreground backdrop-blur">
-            {game.ageRating}
-          </span>
-        </div>
+        {!trailerOpen ? (
+          <div className="absolute left-4 top-4 z-20 flex items-center gap-2">
+            <span className="rounded-sm border border-border-strong bg-background/80 px-2 py-1 text-[0.65rem] font-bold uppercase text-foreground backdrop-blur">
+              {game.genre}
+            </span>
+            <span className="rounded-sm bg-background/80 px-2 py-1 text-[0.65rem] font-semibold text-muted-foreground backdrop-blur">
+              {game.ageRating}
+            </span>
+          </div>
+        ) : null}
         {game.visual.trailerYoutubeId ? (
           <button
             type="button"
@@ -159,10 +156,10 @@ export function GameCard({ game }: { game: GameConfig }) {
               event.stopPropagation();
               toggleTrailer();
             }}
-            className="absolute bottom-4 right-4 z-20 grid size-10 place-items-center rounded-full bg-primary text-primary-foreground shadow-lift transition-all duration-200 hover:scale-110 active:scale-95"
+            className="absolute right-4 top-4 z-30 grid size-10 place-items-center rounded-full bg-black/70 text-white shadow-lift backdrop-blur transition-all duration-200 hover:scale-105 hover:bg-black/85 active:scale-95"
             aria-label={trailerOpen ? `Fechar trailer de ${game.name}` : `Assistir trailer de ${game.name}`}
           >
-            {trailerOpen ? <Pause className="size-4 fill-current" /> : <Play className="size-4 fill-current" />}
+            {trailerOpen ? <X className="size-4" /> : <Play className="size-4 fill-current" />}
           </button>
         ) : null}
       </div>
@@ -176,7 +173,7 @@ export function GameCard({ game }: { game: GameConfig }) {
               target="_blank"
               rel="noreferrer"
               onClick={(event) => event.stopPropagation()}
-              className="grid size-8 shrink-0 place-items-center rounded-full text-gold-strong transition-all hover:bg-gold-soft/20 hover:-translate-y-0.5 hover:translate-x-0.5"
+              className="grid size-8 shrink-0 place-items-center rounded-full text-gold-strong transition-all hover:-translate-y-0.5 hover:translate-x-0.5 hover:bg-gold-soft/20"
               aria-label={`Abrir trailer oficial de ${game.name} em nova guia`}
               title="Trailer oficial"
             >
