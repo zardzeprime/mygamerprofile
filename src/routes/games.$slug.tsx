@@ -192,7 +192,7 @@ function GameHub() {
                           <GameFact icon={CalendarDays} label={copy("Lançamento", "Release", "Lanzamiento")} value={editorial.release[locale]} />
                           <GameFact icon={Building2} label={copy("Desenvolvimento", "Developer", "Desarrollo")} value={editorial.developer} />
                           <GameFact icon={Building2} label={copy("Publicação", "Publisher", "Publicación")} value={editorial.publisher} />
-                          <GameFact icon={RefreshCw} label={copy("Última atualização oficial", "Latest official update", "Última actualización oficial")} value={editorial.latestUpdate[locale]} />
+                          <GameFact icon={RefreshCw} label={copy("Versão", "Version", "Versión")} value={editorial.latestVersion} />
                         </div>
                       ) : null}
                     </div>
