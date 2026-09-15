@@ -18,6 +18,7 @@ const createProfileSchema = z.object({
   display_name: z.string().trim().min(1).max(80),
   language: z.enum(APP_LANGUAGES).optional(),
   theme_preference: z.enum(THEME_PREFERENCES).optional(),
+  favorite_game_ids: z.array(z.string().uuid()).max(20).optional(),
 });
 const updateProfileSchema = z.object({
   username: z.string().regex(USERNAME_REGEX).optional(),
@@ -74,7 +75,14 @@ export const createProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => createProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const { username, display_name, language = "pt-BR", theme_preference = "system" } = data;
+    const {
+      username,
+      display_name,
+      language = "pt-BR",
+      theme_preference = "system",
+      favorite_game_ids = [],
+    } = data;
+
     const { data: profile, error } = await context.supabase
       .from("profiles")
       .insert({
@@ -87,6 +95,20 @@ export const createProfile = createServerFn({ method: "POST" })
       .select()
       .single();
     if (error) throw new Error(error.message);
+
+    if (favorite_game_ids.length > 0) {
+      const rows = favorite_game_ids.map((gameId) => ({
+        user_id: context.userId,
+        game_id: gameId,
+        profile_data: { favorite: true },
+        visibility: "public",
+      }));
+      const { error: favoritesError } = await context.supabase
+        .from("game_profiles")
+        .upsert(rows, { onConflict: "user_id,game_id" });
+      if (favoritesError) throw new Error(favoritesError.message);
+    }
+
     return profile;
   });
 
