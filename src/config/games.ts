@@ -1,4 +1,6 @@
-import type { Locale } from "@/i18n/translations";
+import type { AppLocale as Locale } from "@/i18n/translations";
+import darkSoulsAtmosphere from "@/assets/dark-souls-atmosphere.jpg";
+import valorantAtmosphere from "@/assets/valorant-atmosphere.jpg";
 
 export type GameThemeKey = "dark_souls" | "valorant";
 
@@ -40,6 +42,9 @@ export type GameConfig = {
     coverImage: string;
     heroImage: string;
     backgroundImage: string;
+    fallbackImage: string;
+    cardObjectPosition?: string;
+    heroObjectPosition?: string;
     hoverPreviewVideo?: string;
     ambientAudio?: string;
     assetSource: string;
@@ -48,15 +53,15 @@ export type GameConfig = {
 };
 
 export const MODULE_LABELS: Record<GameModuleKey, Record<Locale, string>> = {
-  overview: { "pt-BR": "Visão geral", en: "Overview" },
-  community: { "pt-BR": "Comunidade", en: "Community" },
-  builds: { "pt-BR": "Builds", en: "Builds" },
-  bosses: { "pt-BR": "Chefes", en: "Bosses" },
-  guides: { "pt-BR": "Guias", en: "Guides" },
-  agents: { "pt-BR": "Agentes", en: "Agents" },
-  competitive: { "pt-BR": "Competitivo", en: "Competitive" },
-  clips: { "pt-BR": "Clipes", en: "Clips" },
-  lfg: { "pt-BR": "LFG", en: "LFG" },
+  overview: { "pt-BR": "Visão geral", en: "Overview", es: "Vista general" },
+  community: { "pt-BR": "Comunidade", en: "Community", es: "Comunidad" },
+  builds: { "pt-BR": "Builds", en: "Builds", es: "Builds" },
+  bosses: { "pt-BR": "Chefes", en: "Bosses", es: "Jefes" },
+  guides: { "pt-BR": "Guias", en: "Guides", es: "Guías" },
+  agents: { "pt-BR": "Agentes", en: "Agents", es: "Agentes" },
+  competitive: { "pt-BR": "Competitivo", en: "Competitive", es: "Competitivo" },
+  clips: { "pt-BR": "Clipes", en: "Clips", es: "Clips" },
+  lfg: { "pt-BR": "LFG", en: "LFG", es: "LFG" },
 };
 
 const DARK_SOULS_REMASTERED_COVER =
@@ -73,6 +78,7 @@ export const GAMES: GameConfig[] = [
       "pt-BR":
         "Um RPG de ação sombrio e implacável, feito de descobertas, atalhos secretos e chefes memoráveis.",
       en: "A dark, unforgiving action RPG built on discovery, secret shortcuts and memorable bosses.",
+      es: "Un RPG de acción oscuro e implacable, construido sobre descubrimientos, atajos secretos y jefes memorables.",
     },
     genre: "Action RPG",
     platforms: ["PC", "PlayStation", "Xbox", "Nintendo Switch"],
@@ -84,25 +90,25 @@ export const GAMES: GameConfig[] = [
         key: "favorite_weapon",
         type: "text",
         maxLength: 60,
-        label: { "pt-BR": "Arma favorita", en: "Favorite weapon" },
+        label: { "pt-BR": "Arma favorita", en: "Favorite weapon", es: "Arma favorita" },
       },
       {
         key: "favorite_build",
         type: "text",
         maxLength: 60,
-        label: { "pt-BR": "Build favorita", en: "Favorite build" },
+        label: { "pt-BR": "Build favorita", en: "Favorite build", es: "Build favorita" },
       },
       {
         key: "favorite_boss",
         type: "text",
         maxLength: 60,
-        label: { "pt-BR": "Chefe favorito", en: "Favorite boss" },
+        label: { "pt-BR": "Chefe favorito", en: "Favorite boss", es: "Jefe favorito" },
       },
       {
         key: "hardest_boss",
         type: "text",
         maxLength: 60,
-        label: { "pt-BR": "Chefe mais difícil", en: "Hardest boss" },
+        label: { "pt-BR": "Chefe mais difícil", en: "Hardest boss", es: "Jefe más difícil" },
       },
       {
         key: "starting_class",
@@ -119,33 +125,37 @@ export const GAMES: GameConfig[] = [
           "Cleric",
           "Deprived",
         ],
-        label: { "pt-BR": "Classe inicial", en: "Starting class" },
+        label: { "pt-BR": "Classe inicial", en: "Starting class", es: "Clase inicial" },
       },
       {
         key: "runs_count",
         type: "number",
         min: 0,
         max: 9999,
-        label: { "pt-BR": "Runs concluídas", en: "Completed runs" },
+        label: { "pt-BR": "Runs concluídas", en: "Completed runs", es: "Runs completadas" },
       },
       {
         key: "highest_ng",
         type: "number",
         min: 0,
         max: 99,
-        label: { "pt-BR": "NG+ mais alto", en: "Highest NG+" },
+        label: { "pt-BR": "NG+ mais alto", en: "Highest NG+", es: "NG+ más alto" },
       },
       {
         key: "personal_notes",
         type: "textarea",
         maxLength: 1000,
-        label: { "pt-BR": "Notas pessoais", en: "Personal notes" },
+        label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" },
       },
     ],
     visual: {
       coverImage: DARK_SOULS_REMASTERED_COVER,
       heroImage: DARK_SOULS_REMASTERED_COVER,
       backgroundImage: DARK_SOULS_REMASTERED_COVER,
+      fallbackImage: darkSoulsAtmosphere,
+      cardObjectPosition: "center 18%",
+      heroObjectPosition: "center 20%",
+      ambientAudio: "/audio/dark-souls-campfire.mp3",
       assetSource: "Dark Souls Remastered public cover-art reference",
       assetLicense: "Third-party promotional cover art; source attribution tracked by MGP",
     },
@@ -158,6 +168,7 @@ export const GAMES: GameConfig[] = [
       "pt-BR":
         "FPS tático 5v5 com agentes, habilidades e economia de rodada. Precisão e coordenação decidem a partida.",
       en: "A 5v5 tactical FPS with agents, abilities and round economy. Aim and coordination decide the match.",
+      es: "FPS táctico 5v5 con agentes, habilidades y economía por rondas. La precisión y la coordinación deciden la partida.",
     },
     genre: "Tactical FPS",
     platforms: ["PC"],
@@ -169,49 +180,52 @@ export const GAMES: GameConfig[] = [
         key: "favorite_agent",
         type: "text",
         maxLength: 40,
-        label: { "pt-BR": "Agente favorito", en: "Favorite agent" },
+        label: { "pt-BR": "Agente favorito", en: "Favorite agent", es: "Agente favorito" },
       },
       {
         key: "preferred_role",
         type: "select",
         options: ["Duelist", "Initiator", "Controller", "Sentinel", "Flex"],
-        label: { "pt-BR": "Função preferida", en: "Preferred role" },
+        label: { "pt-BR": "Função preferida", en: "Preferred role", es: "Rol preferido" },
       },
       {
         key: "favorite_map",
         type: "text",
         maxLength: 40,
-        label: { "pt-BR": "Mapa favorito", en: "Favorite map" },
+        label: { "pt-BR": "Mapa favorito", en: "Favorite map", es: "Mapa favorito" },
       },
       {
         key: "favorite_weapon",
         type: "text",
         maxLength: 40,
-        label: { "pt-BR": "Arma favorita", en: "Favorite weapon" },
+        label: { "pt-BR": "Arma favorita", en: "Favorite weapon", es: "Arma favorita" },
       },
       {
         key: "current_rank_manual",
         type: "text",
         maxLength: 40,
-        label: { "pt-BR": "Rank atual (informado)", en: "Current rank (declared)" },
+        label: { "pt-BR": "Rank atual (informado)", en: "Current rank (declared)", es: "Rango actual (declarado)" },
       },
       {
         key: "peak_rank_manual",
         type: "text",
         maxLength: 40,
-        label: { "pt-BR": "Rank mais alto (informado)", en: "Peak rank (declared)" },
+        label: { "pt-BR": "Rank mais alto (informado)", en: "Peak rank (declared)", es: "Rango máximo (declarado)" },
       },
       {
         key: "personal_notes",
         type: "textarea",
         maxLength: 1000,
-        label: { "pt-BR": "Notas pessoais", en: "Personal notes" },
+        label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" },
       },
     ],
     visual: {
       coverImage: VALORANT_COVER,
       heroImage: VALORANT_COVER,
       backgroundImage: VALORANT_COVER,
+      fallbackImage: valorantAtmosphere,
+      cardObjectPosition: "center",
+      heroObjectPosition: "center",
       assetSource: "VALORANT public promotional key art reference",
       assetLicense: "Riot Games promotional artwork; source attribution tracked by MGP",
     },
