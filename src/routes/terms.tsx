@@ -7,6 +7,7 @@ import {
   LEGAL_CONTACT_LABEL,
   LEGAL_CONTACT_URL,
   LEGAL_EFFECTIVE_DATE,
+  LEGAL_OPERATOR_NAME,
   LEGAL_VERSION,
 } from "@/config/legal";
 
@@ -36,9 +37,10 @@ const sections: LegalSection[] = [
       <>
         <p>
           Estes Termos regulam o uso do My Gamer Profile (MGP), um hub gamer
-          independente mantido no Brasil por zardzeprime. Ao criar uma conta ou
-          continuar usando a plataforma, você declara que leu e aceita estes
-          Termos e a{" "}
+          independente mantido no Brasil por{" "}
+          <strong className="text-foreground">{LEGAL_OPERATOR_NAME}</strong>. Ao
+          criar uma conta ou continuar usando a plataforma, você declara que leu
+          e aceita estes Termos e a{" "}
           <Link to="/privacy" className={linkClassName}>
             Política de Privacidade
           </Link>
@@ -341,12 +343,7 @@ const sections: LegalSection[] = [
       <p>
         Para dúvidas, denúncias jurídicas ou solicitações relacionadas a estes
         Termos, use o canal público do projeto em{" "}
-        <a
-          className={linkClassName}
-          href={LEGAL_CONTACT_URL}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a className={linkClassName} href={LEGAL_CONTACT_URL}>
           {LEGAL_CONTACT_LABEL}
         </a>
         . Não envie senhas ou códigos de autenticação.

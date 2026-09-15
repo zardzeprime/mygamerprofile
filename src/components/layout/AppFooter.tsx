@@ -37,8 +37,6 @@ export function AppFooter() {
               </Link>
               <a
                 href={LEGAL_CONTACT_URL}
-                target="_blank"
-                rel="noreferrer"
                 className="transition-colors hover:text-gold-strong"
                 aria-label={`${copy("Contato", "Contact", "Contacto")}: ${LEGAL_CONTACT_LABEL}`}
               >

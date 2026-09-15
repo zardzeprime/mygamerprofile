@@ -7,6 +7,7 @@ import {
   LEGAL_CONTACT_LABEL,
   LEGAL_CONTACT_URL,
   LEGAL_EFFECTIVE_DATE,
+  LEGAL_OPERATOR_NAME,
   LEGAL_VERSION,
 } from "@/config/legal";
 
@@ -36,20 +37,17 @@ const sections: LegalSection[] = [
       <>
         <p>
           O My Gamer Profile (MGP) é um projeto independente de comunidade
-          gamer, mantido no Brasil por zardzeprime. Para os tratamentos
-          descritos nesta Política, o responsável pelo MGP determina as
-          finalidades e os meios de uso dos dados e atua como controlador nos
-          termos da Lei Geral de Proteção de Dados Pessoais (LGPD).
+          gamer, mantido no Brasil por{" "}
+          <strong className="text-foreground">{LEGAL_OPERATOR_NAME}</strong>.
+          Para os tratamentos descritos nesta Política, o responsável pelo MGP
+          determina as finalidades e os meios de uso dos dados e atua como
+          controlador nos termos da Lei Geral de Proteção de Dados Pessoais
+          (LGPD).
         </p>
         <p>
           Dúvidas, solicitações de privacidade e pedidos relacionados aos seus
           dados podem ser enviados pelo canal público do projeto em{" "}
-          <a
-            className={linkClassName}
-            href={LEGAL_CONTACT_URL}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a className={linkClassName} href={LEGAL_CONTACT_URL}>
             {LEGAL_CONTACT_LABEL}
           </a>
           . Nunca envie senhas, códigos de autenticação ou outros segredos nesse
