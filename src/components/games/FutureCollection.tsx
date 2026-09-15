@@ -13,7 +13,8 @@ import { ValorantWeapons } from "@/components/games/ValorantWeapons";
 import { ValorantSkins } from "@/components/games/ValorantSkins";
 import { LeagueChampionExplorer } from "@/components/games/LeagueChampionExplorer";
 import { LeagueItemsExplorer } from "@/components/games/LeagueItemsExplorer";
-import { LeagueMapsExplorer } from "@/components/games/LeagueMapsExplorer";
+import { LeagueModesExplorer } from "@/components/games/LeagueModesExplorer";
+import { LeagueEsportsPanel } from "@/components/games/LeagueEsportsPanel";
 import { SoulsBossExplorer } from "@/components/games/SoulsBossExplorer";
 import { SoulsGameGuides } from "@/components/games/SoulsGameGuides";
 
@@ -53,7 +54,8 @@ export function FutureCollection({
     if (moduleKey === "champions") return <LeagueChampionExplorer locale={locale} />;
     if (moduleKey === "skins") return <LeagueChampionExplorer locale={locale} mode="skins" />;
     if (moduleKey === "items") return <LeagueItemsExplorer locale={locale} />;
-    if (moduleKey === "maps") return <LeagueMapsExplorer locale={locale} />;
+    if (moduleKey === "modes") return <LeagueModesExplorer locale={locale} />;
+    if (moduleKey === "competitive") return <LeagueEsportsPanel locale={locale} />;
   }
 
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
@@ -116,7 +118,7 @@ export function FutureCollection({
     ],
     lfg: [
       copy("Procurando grupo", "Looking for group", "Buscando grupo"),
-      copy("O LFG global do MGP poderá ser filtrado por este jogo.", "MGP's global LFG can be filtered by this game.", "El LFG global de MGP podrá filtrarse por este juego."),
+      copy("O LFG global do MG Profile poderá ser filtrado por este jogo.", "MG Profile's global LFG can be filtered by this game.", "El LFG global de MG Profile podrá filtrarse por este juego."),
     ],
   };
 
