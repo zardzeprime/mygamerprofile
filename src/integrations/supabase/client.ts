@@ -34,14 +34,19 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
   };
 }
 
+function getServerEnv(name: 'SUPABASE_URL' | 'SUPABASE_PUBLISHABLE_KEY'): string | undefined {
+  if (typeof process === 'undefined') return undefined;
+  return process.env?.[name];
+}
+
 function createSupabaseClient() {
-  // Prefer deployment-provided values when present. The committed fallback is
-  // limited to the public/publishable browser credential and project URL.
+  // Prefer deployment-provided values when present. Browser builds must never
+  // dereference Node's `process` global when it is unavailable.
   const SUPABASE_URL =
-    import.meta.env['VITE_SUPABASE_URL'] || process.env['SUPABASE_URL'] || PUBLIC_SUPABASE_URL;
+    import.meta.env['VITE_SUPABASE_URL'] || getServerEnv('SUPABASE_URL') || PUBLIC_SUPABASE_URL;
   const SUPABASE_PUBLISHABLE_KEY =
     import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'] ||
-    process.env['SUPABASE_PUBLISHABLE_KEY'] ||
+    getServerEnv('SUPABASE_PUBLISHABLE_KEY') ||
     PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
