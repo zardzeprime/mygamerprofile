@@ -39,10 +39,7 @@ type AgeDataRow = {
 
 type AgeDataClient = {
   from: (table: "account_age_data") => {
-    upsert: (
-      values: AgeDataRow,
-      options: { onConflict: "user_id" },
-    ) => Promise<{ error: { message?: string } | null }>;
+    insert: (values: AgeDataRow) => Promise<{ error: { code?: string; message?: string } | null }>;
   };
 };
 
@@ -121,27 +118,6 @@ function OnboardingPage() {
         throw new Error(copy("Sua sessão expirou. Entre novamente.", "Your session expired. Sign in again.", "Tu sesión expiró. Inicia sesión de nuevo."));
       }
 
-      const ageDataClient = supabase as unknown as AgeDataClient;
-      const { error: ageDataError } = await ageDataClient.from("account_age_data").upsert(
-        {
-          user_id: user.id,
-          birth_date: birthDate,
-          guardian_status: calculatedAge < 18 ? "required" : "not_applicable",
-          age_assurance_method: "self_reported_birth_date",
-        },
-        { onConflict: "user_id" },
-      );
-      if (ageDataError) {
-        throw new Error(
-          ageDataError.message ||
-            copy(
-              "Não foi possível salvar sua informação de idade com segurança.",
-              "Could not securely save your age information.",
-              "No se pudo guardar de forma segura tu información de edad.",
-            ),
-        );
-      }
-
       const { data: usernameRows, error: usernameError } = await supabase
         .from("profile_usernames")
         .select("user_id")
@@ -151,6 +127,26 @@ function OnboardingPage() {
       if ((usernameRows?.length ?? 0) > 0) {
         setError(t("auth.errors.usernameTaken"));
         return;
+      }
+
+      const ageDataClient = supabase as unknown as AgeDataClient;
+      const { error: ageDataError } = await ageDataClient.from("account_age_data").insert({
+        user_id: user.id,
+        birth_date: birthDate,
+        guardian_status: calculatedAge < 18 ? "required" : "not_applicable",
+        age_assurance_method: "self_reported_birth_date",
+      });
+      // A previous onboarding attempt may already have created the immutable client-side record.
+      // Any later correction/guardian confirmation must happen through a trusted server flow.
+      if (ageDataError && ageDataError.code !== "23505") {
+        throw new Error(
+          ageDataError.message ||
+            copy(
+              "Não foi possível salvar sua informação de idade com segurança.",
+              "Could not securely save your age information.",
+              "No se pudo guardar de forma segura tu información de edad.",
+            ),
+        );
       }
 
       let favoriteGames: Array<{ id: string; slug: string }> = [];
