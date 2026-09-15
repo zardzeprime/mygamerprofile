@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import type { Locale } from "@/i18n";
 import { DARK_SOULS_BOSSES, type DarkSoulsBoss } from "@/data/darkSoulsBosses";
 import { DARK_SOULS_BOSS_WIKI } from "@/data/darkSoulsBossWiki";
+import { getDarkSoulsBossImage } from "@/data/darkSoulsBossImages";
 
 type Filter = "all" | "required" | "optional" | "dlc";
 
@@ -47,6 +48,8 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
 
   const selected =
     DARK_SOULS_BOSSES.find((boss) => boss.slug === selectedSlug) ?? filtered[0] ?? DARK_SOULS_BOSSES[0];
+  const selectedImage = getDarkSoulsBossImage(selected?.slug);
+  const selectedImageUrl = selectedImage?.url ?? selected?.image_url ?? null;
 
   const selectBoss = (boss: DarkSoulsBoss) => {
     setSelectedSlug(boss.slug);
@@ -99,28 +102,50 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <p className="section-kicker">{pt ? "ARTE" : "ART"}</p>
-                <p className="mt-1 text-sm font-semibold text-foreground">{pt ? "Asset seguro em preparação" : "Rights-safe asset in preparation"}</p>
+                <p className="mt-1 text-sm font-semibold text-foreground">
+                  {selectedImage
+                    ? pt
+                      ? "Imagem de referência disponível"
+                      : "Reference image available"
+                    : pt
+                      ? "Asset em preparação"
+                      : "Asset in preparation"}
+                </p>
               </div>
               <Sparkles className="size-5 text-gold-strong" />
             </div>
             <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-border bg-background">
               <img
-                src={selected?.image_url ?? darkSoulsAtmosphere}
-                alt={selected?.image_url ? selected.name : ""}
-                className={cn("h-full w-full object-cover", !selected?.image_url && "scale-110 opacity-45 blur-[1px]")}
+                src={selectedImageUrl ?? darkSoulsAtmosphere}
+                alt={selectedImageUrl ? selected?.name ?? "" : ""}
+                referrerPolicy="no-referrer"
+                className={cn(
+                  "h-full w-full object-cover",
+                  !selectedImageUrl && "scale-110 opacity-45 blur-[1px]",
+                )}
               />
-              {!selected?.image_url ? (
+              {!selectedImageUrl ? (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-background via-background/40 to-transparent p-6 text-center">
                   <Skull className="size-10 text-gold-strong" />
                   <p className="mt-4 font-display text-2xl font-bold text-foreground">{selected?.name}</p>
                   <p className="mt-2 max-w-xs text-xs leading-relaxed text-muted-foreground">
                     {pt
-                      ? "A imagem individual será adicionada apenas com asset oficial/licenciado ou arte original MGP."
-                      : "Individual artwork will be added only with an official/licensed asset or original MGP artwork."}
+                      ? "A imagem individual ainda não foi adicionada."
+                      : "Individual artwork has not been added yet."}
                   </p>
                 </div>
               ) : null}
             </div>
+            {selectedImage ? (
+              <a
+                href={selectedImage.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 block text-xs leading-relaxed text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                {selectedImage.sourceLabel[locale]}
+              </a>
+            ) : null}
           </aside>
         </div>
       </section>
@@ -159,7 +184,11 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((boss) => {
             const wiki = DARK_SOULS_BOSS_WIKI[boss.slug];
+            const imageAsset = getDarkSoulsBossImage(boss.slug);
+            const imageUrl = imageAsset?.url ?? boss.image_url ?? darkSoulsAtmosphere;
+            const hasImage = Boolean(imageAsset || boss.image_url);
             const active = boss.slug === selected?.slug;
+
             return (
               <button
                 key={boss.slug}
@@ -171,7 +200,16 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                 )}
               >
                 <div className="relative h-28 overflow-hidden border-b border-border bg-muted">
-                  <img src={boss.image_url ?? darkSoulsAtmosphere} alt="" className="h-full w-full object-cover opacity-40 transition duration-300 group-hover:scale-105 group-hover:opacity-55" />
+                  <img
+                    src={imageUrl}
+                    alt=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    className={cn(
+                      "h-full w-full object-cover transition duration-300 group-hover:scale-105",
+                      hasImage ? "opacity-75 group-hover:opacity-90" : "opacity-40 group-hover:opacity-55",
+                    )}
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
                   <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3">
                     <span className="text-xs font-bold uppercase tracking-[0.16em] text-gold-strong">#{String(boss.order).padStart(2, "0")}</span>
@@ -206,8 +244,8 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
 
       <p className="text-xs leading-relaxed text-muted-foreground">
         {pt
-          ? "Nota editorial: os textos do MGP são resumos originais baseados em fatos do jogo e referências consolidadas. Teorias não confirmadas são identificadas como teoria. Imagens de terceiros não são copiadas ou hotlinkadas sem permissão."
-          : "Editorial note: MGP copy is original summary text based on in-game facts and established references. Unconfirmed theories are identified as theory. Third-party images are not copied or hotlinked without permission."}
+          ? "Nota editorial: os textos do MGP são resumos originais baseados em fatos do jogo e referências consolidadas. Teorias não confirmadas são identificadas como teoria. Parte das imagens desta versão usa screenshots promocionais e de Prepare to Die Edition catalogados pela Dark Souls Wiki (Fandom), com a página-fonte indicada no painel de arte. Chefes ainda sem imagem continuam com o placeholder do MGP."
+          : "Editorial note: MGP copy is original summary text based on in-game facts and established references. Unconfirmed theories are identified as theory. Part of this version uses promotional and Prepare to Die Edition screenshots catalogued by the Dark Souls Wiki (Fandom), with the source file page linked in the art panel. Bosses without an image still use the MGP placeholder."}
       </p>
     </div>
   );
