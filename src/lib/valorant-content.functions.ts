@@ -62,6 +62,44 @@ export type ValorantWeapon = {
   damageRanges: Array<{ start: number; end: number; head: number; body: number; legs: number }>;
 };
 
+export type ValorantSkinChroma = {
+  uuid: string;
+  name: string;
+  fullRender: string | null;
+  swatch: string | null;
+  streamedVideo: string | null;
+};
+
+export type ValorantSkinLevel = {
+  uuid: string;
+  name: string;
+  item: string | null;
+  icon: string | null;
+  streamedVideo: string | null;
+};
+
+export type ValorantSkin = {
+  uuid: string;
+  name: string;
+  icon: string | null;
+  wallpaper: string | null;
+  rarity: string | null;
+  rarityIcon: string | null;
+  rarityColor: string | null;
+  referenceVp: number | null;
+  levels: ValorantSkinLevel[];
+  chromas: ValorantSkinChroma[];
+};
+
+export type ValorantSkinWeapon = {
+  uuid: string;
+  name: string;
+  icon: string | null;
+  category: string;
+  isMelee: boolean;
+  skins: ValorantSkin[];
+};
+
 type AgentApi = {
   uuid: string;
   displayName: string;
@@ -85,6 +123,30 @@ type MapApi = {
   displayIcon: string | null;
 };
 
+type WeaponSkinApi = {
+  uuid: string;
+  displayName: string;
+  themeUuid: string | null;
+  contentTierUuid: string | null;
+  displayIcon: string | null;
+  wallpaper: string | null;
+  chromas: Array<{
+    uuid: string;
+    displayName: string;
+    displayIcon: string | null;
+    fullRender: string | null;
+    swatch: string | null;
+    streamedVideo: string | null;
+  }>;
+  levels: Array<{
+    uuid: string;
+    displayName: string;
+    levelItem: string | null;
+    displayIcon: string | null;
+    streamedVideo: string | null;
+  }>;
+};
+
 type WeaponApi = {
   uuid: string;
   displayName: string;
@@ -105,6 +167,15 @@ type WeaponApi = {
       legDamage: number;
     }>;
   } | null;
+  skins: WeaponSkinApi[];
+};
+
+type ContentTierApi = {
+  uuid: string;
+  displayName: string;
+  devName: string;
+  highlightColor: string;
+  displayIcon: string | null;
 };
 
 export const getValorantAgents = createServerFn({ method: "GET" })
@@ -178,3 +249,72 @@ export const getValorantWeapons = createServerFn({ method: "GET" })
       }))
       .sort((a, b) => (a.cost ?? 0) - (b.cost ?? 0) || a.name.localeCompare(b.name));
   });
+
+export const getValorantSkins = createServerFn({ method: "GET" })
+  .inputValidator((data) => localeSchema.parse(data))
+  .handler(async ({ data }) => {
+    const [weapons, tiers] = await Promise.all([
+      fetchValorantApi<WeaponApi[]>("weapons", data.locale),
+      fetchValorantApi<ContentTierApi[]>("contenttiers", data.locale),
+    ]);
+    const tierById = new Map(tiers.map((tier) => [tier.uuid, tier]));
+
+    return weapons
+      .map<ValorantSkinWeapon>((weapon) => {
+        const category = weapon.shopData?.category ?? weapon.category.replace("EEquippableCategory::", "");
+        const isMelee = category.toLowerCase().includes("melee") || weapon.displayName.toLowerCase().includes("melee");
+        const skins = weapon.skins
+          .filter((skin) => skin.displayName && skin.contentTierUuid)
+          .map<ValorantSkin>((skin) => {
+            const tier = skin.contentTierUuid ? tierById.get(skin.contentTierUuid) : undefined;
+            return {
+              uuid: skin.uuid,
+              name: skin.displayName,
+              icon: skin.displayIcon ?? skin.chromas[0]?.fullRender ?? skin.levels[0]?.displayIcon ?? null,
+              wallpaper: skin.wallpaper,
+              rarity: tier?.displayName ?? null,
+              rarityIcon: tier?.displayIcon ?? null,
+              rarityColor: tier?.highlightColor ?? null,
+              referenceVp: tier ? referenceVpForTier(tier.devName, isMelee) : null,
+              levels: skin.levels.map((level) => ({
+                uuid: level.uuid,
+                name: level.displayName,
+                item: level.levelItem?.replace("EEquippableSkinLevelItem::", "") ?? null,
+                icon: level.displayIcon,
+                streamedVideo: level.streamedVideo,
+              })),
+              chromas: skin.chromas.map((chroma) => ({
+                uuid: chroma.uuid,
+                name: chroma.displayName,
+                fullRender: chroma.fullRender,
+                swatch: chroma.swatch,
+                streamedVideo: chroma.streamedVideo,
+              })),
+            };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        return {
+          uuid: weapon.uuid,
+          name: weapon.displayName,
+          icon: weapon.displayIcon,
+          category,
+          isMelee,
+          skins,
+        };
+      })
+      .filter((weapon) => weapon.skins.length > 0)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  });
+
+function referenceVpForTier(tierName: string, isMelee: boolean): number | null {
+  const normalized = tierName.toLowerCase();
+  let base: number | null = null;
+  if (normalized.includes("select")) base = 875;
+  else if (normalized.includes("deluxe")) base = 1275;
+  else if (normalized.includes("premium")) base = 1775;
+  else if (normalized.includes("exclusive")) base = 2175;
+  else if (normalized.includes("ultra")) base = 2475;
+  if (base == null) return null;
+  return isMelee ? base * 2 : base;
+}

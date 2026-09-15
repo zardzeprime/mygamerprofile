@@ -116,12 +116,12 @@ export function ValorantAgents({ locale }: { locale: Locale }) {
 
               <h4 className="mt-7 text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">{copy("Kit de habilidades", "Ability kit", "Kit de habilidades")}</h4>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                {selected.abilities.filter((ability) => ability.name).map((ability) => (
+                {selected.abilities.filter((ability) => ability.name).map((ability, index, abilities) => (
                   <div key={`${ability.slot}-${ability.name}`} className="rounded-xl border border-border bg-muted/15 p-4">
                     <div className="flex items-center gap-3">
                       {ability.icon ? <img src={ability.icon} alt="" className="size-9 rounded-lg bg-background/60 p-1.5" /> : null}
                       <div>
-                        <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-tactical">{ability.slot}</p>
+                        <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-tactical">{abilityLabel(ability.slot, index, abilities, locale)}</p>
                         <p className="font-semibold">{ability.name}</p>
                       </div>
                     </div>
@@ -151,6 +151,15 @@ export function ValorantAgents({ locale }: { locale: Locale }) {
       </div>
     </div>
   );
+}
+
+function abilityLabel(slot: string, index: number, abilities: ValorantAgent["abilities"], locale: Locale) {
+  if (slot.toLowerCase().includes("ultimate")) return "Ultimate";
+  const basicAbilities = abilities.filter((ability) => !ability.slot.toLowerCase().includes("ultimate"));
+  const basicIndex = Math.max(0, basicAbilities.findIndex((ability) => ability === abilities[index]));
+  if (locale === "pt-BR") return `Habilidade ${basicIndex + 1}`;
+  if (locale === "es") return `Habilidad ${basicIndex + 1}`;
+  return `Ability ${basicIndex + 1}`;
 }
 
 function CollectionSkeleton({ label }: { label: string }) {

@@ -13,6 +13,7 @@ export type GameModuleKey =
   | "agents"
   | "maps"
   | "weapons"
+  | "skins"
   | "competitive"
   | "lineups"
   | "clips"
@@ -65,6 +66,7 @@ export const MODULE_LABELS: Record<GameModuleKey, Record<Locale, string>> = {
   agents: { "pt-BR": "Agentes", en: "Agents", es: "Agentes" },
   maps: { "pt-BR": "Mapas", en: "Maps", es: "Mapas" },
   weapons: { "pt-BR": "Armas", en: "Weapons", es: "Armas" },
+  skins: { "pt-BR": "Skins", en: "Skins", es: "Skins" },
   competitive: { "pt-BR": "Competitivo", en: "Competitive", es: "Competitivo" },
   lineups: { "pt-BR": "Lineups", en: "Lineups", es: "Lineups" },
   clips: { "pt-BR": "Clipes", en: "Clips", es: "Clips" },
@@ -131,7 +133,7 @@ export const GAMES: GameConfig[] = [
     platforms: ["PC", "PlayStation 5", "Xbox Series X|S"],
     ageRating: "16+",
     themeKey: "valorant",
-    modules: ["overview", "agents", "maps", "weapons", "competitive", "lineups"],
+    modules: ["overview", "agents", "maps", "weapons", "skins", "competitive", "lineups"],
     profileFields: [
       { key: "favorite_agent", type: "text", maxLength: 40, label: { "pt-BR": "Agente favorito", en: "Favorite agent", es: "Agente favorito" } },
       { key: "preferred_role", type: "select", options: ["Duelist", "Initiator", "Controller", "Sentinel", "Flex"], label: { "pt-BR": "Função preferida", en: "Preferred role", es: "Rol preferido" } },
