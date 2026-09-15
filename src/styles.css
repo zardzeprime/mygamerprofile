@@ -56,9 +56,14 @@
 
   --color-ember: var(--ember);
   --color-tactical: var(--tactical);
+  --color-hero-foreground: var(--hero-foreground);
+  --color-hero-muted: var(--hero-muted);
+  --color-hero-border: var(--hero-border);
+  --color-hero-surface: var(--hero-surface);
 
   --shadow-soft: var(--shadow-soft-value);
   --shadow-lift: var(--shadow-lift-value);
+  --shadow-hero: var(--shadow-hero-value);
 }
 
 :root {
@@ -105,8 +110,14 @@
   --ember: oklch(0.55 0.13 45);
   --tactical: oklch(0.55 0.09 240);
 
+  --hero-foreground: oklch(0.98 0.004 95);
+  --hero-muted: oklch(0.83 0.01 95);
+  --hero-border: oklch(1 0 0 / 18%);
+  --hero-surface: oklch(0.15 0.01 260 / 68%);
+
   --shadow-soft-value: 0 1px 2px oklch(0.22 0.01 260 / 0.06), 0 8px 24px oklch(0.22 0.01 260 / 0.06);
   --shadow-lift-value: 0 2px 6px oklch(0.22 0.01 260 / 0.08), 0 18px 40px oklch(0.22 0.01 260 / 0.1);
+  --shadow-hero-value: 0 22px 60px oklch(0.12 0.01 260 / 0.28);
 }
 
 .dark {
@@ -150,8 +161,14 @@
   --ember: oklch(0.68 0.15 48);
   --tactical: oklch(0.7 0.11 245);
 
+  --hero-foreground: oklch(0.98 0.004 95);
+  --hero-muted: oklch(0.82 0.01 95);
+  --hero-border: oklch(1 0 0 / 18%);
+  --hero-surface: oklch(0.12 0.008 260 / 72%);
+
   --shadow-soft-value: 0 1px 2px oklch(0 0 0 / 0.4), 0 10px 30px oklch(0 0 0 / 0.35);
   --shadow-lift-value: 0 2px 8px oklch(0 0 0 / 0.5), 0 24px 60px oklch(0 0 0 / 0.45);
+  --shadow-hero-value: 0 24px 70px oklch(0 0 0 / 0.5);
 }
 
 @layer base {
@@ -164,6 +181,8 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    min-width: 320px;
+    overflow-x: hidden;
   }
 
   h1,
@@ -171,13 +190,20 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    letter-spacing: 0;
   }
 
   :focus-visible {
     outline: 2px solid var(--color-ring);
     outline-offset: 2px;
   }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html { cursor: url('/cursor-light.svg') 4 4, default; }
+  html.dark { cursor: url('/cursor-dark.svg') 4 4, default; }
+  a, button, [role="button"], input, select, textarea, label[for] { cursor: url('/cursor-pointer-light.svg') 15 15, pointer; }
+  html.dark a, html.dark button, html.dark [role="button"], html.dark input, html.dark select, html.dark textarea, html.dark label[for] { cursor: url('/cursor-pointer-dark.svg') 15 15, pointer; }
 }
 
 @utility text-gradient-gold {
@@ -191,6 +217,123 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-soft);
+}
+
+@utility brand-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+  padding-inline: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-soft);
+  transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+  &:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+  &:active { transform: translateY(0) scale(0.98); }
+}
+
+@utility brand-button-secondary {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-hero-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-hero-surface);
+  color: var(--color-hero-foreground);
+  padding-inline: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  backdrop-filter: blur(12px);
+  transition: transform 180ms ease, background-color 180ms ease;
+  &:hover { transform: translateY(-2px); background-color: color-mix(in oklab, var(--color-hero-surface) 75%, var(--color-gold) 25%); }
+}
+
+@utility section-kicker {
+  color: var(--color-gold-strong);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.brand-mark {
+  position: relative;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--color-gold) 68%, transparent);
+  background: color-mix(in oklab, var(--color-gold-soft) 55%, transparent);
+  box-shadow: inset 0 0 0 3px var(--color-background), 0 0 0 1px color-mix(in oklab, var(--color-gold) 18%, transparent);
+}
+
+.brand-mark::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: 32%;
+  height: 36%;
+  width: 4px;
+  background: var(--color-background);
+}
+
+.home-hero-scrim {
+  background:
+    linear-gradient(90deg, oklch(0.1 0.01 260 / 0.96) 0%, oklch(0.1 0.01 260 / 0.8) 42%, oklch(0.1 0.01 260 / 0.35) 76%, oklch(0.1 0.01 260 / 0.6) 100%),
+    linear-gradient(0deg, oklch(0.1 0.01 260 / 0.76), transparent 54%);
+}
+
+.game-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  transition: transform 280ms cubic-bezier(.2,.8,.2,1), border-color 220ms ease, box-shadow 280ms ease;
+}
+
+.game-card-image { transition: transform 700ms cubic-bezier(.2,.8,.2,1), filter 350ms ease; }
+.game-card-scrim { background: linear-gradient(0deg, oklch(0.12 0.01 260 / 0.6), transparent 55%); }
+
+@media (hover: hover) and (pointer: fine) {
+  .game-card:hover { transform: translateY(-7px) scale(1.012); border-color: color-mix(in oklab, var(--color-gold) 45%, var(--color-border)); box-shadow: var(--shadow-lift); }
+  .game-card:hover .game-card-image { transform: scale(1.045); filter: saturate(1.08) contrast(1.04); }
+}
+
+.catalog-filter, .catalog-filter-active { border-radius: var(--radius-sm); padding: 0.45rem 0.7rem; }
+.catalog-filter { border: 1px solid var(--color-border); }
+.catalog-filter-active { background: var(--color-gold-soft); color: var(--color-gold-strong); }
+
+.game-hub { min-height: 70vh; }
+.game-hub-hero { min-height: 32rem; background: var(--color-background); }
+.game-hub-scrim {
+  background:
+    linear-gradient(90deg, oklch(0.1 0.01 260 / 0.95) 0%, oklch(0.1 0.01 260 / 0.76) 48%, oklch(0.1 0.01 260 / 0.2) 82%),
+    linear-gradient(0deg, oklch(0.1 0.01 260 / 0.72), transparent 55%);
+}
+.game-hub-ember { --game-accent: var(--color-ember); }
+.game-hub-tactical { --game-accent: var(--color-tactical); }
+.hub-tab { position: relative; }
+.hub-tab::after { content: ""; position: absolute; inset-inline: 0.85rem; bottom: -0.8rem; height: 2px; transform: scaleX(0); background: var(--game-accent); transition: transform 180ms ease; }
+.hub-tab-active::after { transform: scaleX(1); }
+.status-dot { width: 0.45rem; height: 0.45rem; border-radius: 999px; background: var(--game-accent); box-shadow: 0 0 0 4px color-mix(in oklab, var(--game-accent) 18%, transparent); }
+.future-card { display: flex; aspect-ratio: 16/10; align-items: center; justify-content: space-between; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 1.25rem; color: var(--color-muted-foreground); background: linear-gradient(135deg, var(--color-surface), var(--color-muted)); }
+.future-card-ember { border-top-color: var(--color-ember); }
+.future-card-tactical { border-top-color: var(--color-tactical); }
+.profile-banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, var(--color-background), transparent 58%); }
+.profile-banner-placeholder { background: radial-gradient(70% 140% at 15% 15%, var(--color-gold-soft), transparent 60%), linear-gradient(135deg, var(--color-elevated), var(--color-surface)); }
+
+@keyframes mgp-fade-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in { animation: mgp-fade-in 500ms ease-out both; }
+
+@media (max-width: 640px) {
+  .home-hero-scrim { background: linear-gradient(0deg, oklch(0.1 0.01 260 / 0.96) 0%, oklch(0.1 0.01 260 / 0.75) 75%, oklch(0.1 0.01 260 / 0.45)); }
+  .game-hub-scrim { background: linear-gradient(0deg, oklch(0.1 0.01 260 / 0.96) 0%, oklch(0.1 0.01 260 / 0.58) 100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 
 /* Game hub atmospheres: MGP gold stays, game personality is decorative only */
