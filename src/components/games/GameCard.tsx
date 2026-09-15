@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useI18n } from "@/i18n";
 import type { GameConfig } from "@/config/games";
 import { ArrowUpRight, Play } from "lucide-react";
@@ -8,32 +8,99 @@ import { GameArtwork } from "@/components/games/GameArtwork";
 
 export function GameCard({ game }: { game: GameConfig }) {
   const { locale, t } = useI18n();
-  const { play } = useSound();
-  const bonfireTimerRef = useRef<number | null>(null);
+  const { uiEnabled, uiVolume } = useSound();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const fadeFrameRef = useRef<number | null>(null);
+  const hoveredRef = useRef(false);
 
-  const stopBonfire = () => {
-    if (bonfireTimerRef.current !== null) {
-      window.clearInterval(bonfireTimerRef.current);
-      bonfireTimerRef.current = null;
+  const clearFade = useCallback(() => {
+    if (fadeFrameRef.current !== null) {
+      window.cancelAnimationFrame(fadeFrameRef.current);
+      fadeFrameRef.current = null;
     }
-  };
+  }, []);
+
+  const fadeAudio = useCallback(
+    (target: number, duration: number, onDone?: () => void) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      clearFade();
+      const startVolume = audio.volume;
+      const startedAt = performance.now();
+
+      const step = (now: number) => {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        audio.volume = Math.max(0, Math.min(1, startVolume + (target - startVolume) * eased));
+        if (progress < 1) {
+          fadeFrameRef.current = window.requestAnimationFrame(step);
+        } else {
+          fadeFrameRef.current = null;
+          onDone?.();
+        }
+      };
+
+      fadeFrameRef.current = window.requestAnimationFrame(step);
+    },
+    [clearFade],
+  );
+
+  const targetVolume = Math.min(0.12, Math.max(0.025, (uiVolume / 100) * 0.16));
+
+  useEffect(() => {
+    const source = game.themeKey === "dark_souls" ? game.visual.ambientAudio : undefined;
+    if (!source) return;
+
+    const audio = new Audio(source);
+    audio.loop = true;
+    audio.preload = "auto";
+    audio.volume = 0;
+    audioRef.current = audio;
+
+    return () => {
+      clearFade();
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+      audioRef.current = null;
+    };
+  }, [clearFade, game.themeKey, game.visual.ambientAudio]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (!uiEnabled) {
+      fadeAudio(0, 180, () => audio.pause());
+    } else if (hoveredRef.current && !audio.paused) {
+      fadeAudio(targetVolume, 180);
+    }
+  }, [fadeAudio, targetVolume, uiEnabled]);
 
   const handlePointerEnter = () => {
-    if (game.themeKey !== "dark_souls") return;
+    if (game.themeKey !== "dark_souls" || !game.visual.ambientAudio || !uiEnabled) return;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
-    stopBonfire();
-    play("bonfire");
-    bonfireTimerRef.current = window.setInterval(() => play("bonfire"), 430);
+    const audio = audioRef.current;
+    if (!audio) return;
+    hoveredRef.current = true;
+    audio.volume = Math.min(audio.volume, targetVolume);
+    void audio.play().then(() => fadeAudio(targetVolume, 280)).catch(() => undefined);
   };
 
-  useEffect(() => () => stopBonfire(), []);
+  const handlePointerLeave = () => {
+    hoveredRef.current = false;
+    const audio = audioRef.current;
+    if (!audio || audio.paused) return;
+    fadeAudio(0, 320, () => {
+      if (!hoveredRef.current) audio.pause();
+    });
+  };
 
   return (
     <article
       className="game-card group overflow-hidden"
       onPointerEnter={handlePointerEnter}
-      onPointerLeave={stopBonfire}
+      onPointerLeave={handlePointerLeave}
     >
       <div className="game-card-media relative aspect-[16/10] overflow-hidden">
         <GameArtwork game={game} className="game-card-image" />
