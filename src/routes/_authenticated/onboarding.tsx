@@ -43,6 +43,23 @@ type AgeDataClient = {
   };
 };
 
+type GenderIdentity = "male" | "female" | "non_binary" | "custom" | "prefer_not_to_say";
+
+type DemographicsRow = {
+  user_id: string;
+  gender_identity: GenderIdentity;
+  gender_custom_label: string | null;
+};
+
+type DemographicsClient = {
+  from: (table: "account_demographics") => {
+    upsert: (
+      values: DemographicsRow,
+      options: { onConflict: "user_id" },
+    ) => Promise<{ error: { message?: string } | null }>;
+  };
+};
+
 function ageFromBirthDate(value: string, today = new Date()) {
   const [year, month, day] = value.split("-").map(Number);
   if (!year || !month || !day) return null;
@@ -64,6 +81,8 @@ function OnboardingPage() {
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  const [genderIdentity, setGenderIdentity] = useState<GenderIdentity>("prefer_not_to_say");
+  const [customGender, setCustomGender] = useState("");
   const [language, setLanguage] = useState<Locale>(locale);
   const [favoriteGameSlugs, setFavoriteGameSlugs] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -91,6 +110,11 @@ function OnboardingPage() {
     }
     if (!displayName.trim()) {
       setError(t("auth.errors.generic"));
+      return;
+    }
+
+    if (genderIdentity === "custom" && !customGender.trim()) {
+      setError(copy("Descreva seu gênero personalizado ou escolha outra opção.", "Describe your custom gender or choose another option.", "Describe tu género personalizado o elige otra opción."));
       return;
     }
 
@@ -145,6 +169,26 @@ function OnboardingPage() {
               "Não foi possível salvar sua informação de idade com segurança.",
               "Could not securely save your age information.",
               "No se pudo guardar de forma segura tu información de edad.",
+            ),
+        );
+      }
+
+      const demographicsClient = supabase as unknown as DemographicsClient;
+      const { error: demographicsError } = await demographicsClient.from("account_demographics").upsert(
+        {
+          user_id: user.id,
+          gender_identity: genderIdentity,
+          gender_custom_label: genderIdentity === "custom" ? customGender.trim().slice(0, 60) : null,
+        },
+        { onConflict: "user_id" },
+      );
+      if (demographicsError) {
+        throw new Error(
+          demographicsError.message ||
+            copy(
+              "Não foi possível salvar seus dados privados da conta.",
+              "Could not save your private account data.",
+              "No se pudieron guardar los datos privados de tu cuenta.",
             ),
         );
       }
@@ -282,6 +326,38 @@ function OnboardingPage() {
                   )}
                 </p>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="genderIdentity">{copy("Gênero", "Gender", "Género")}</Label>
+                <Select value={genderIdentity} onValueChange={(value) => setGenderIdentity(value as GenderIdentity)}>
+                  <SelectTrigger id="genderIdentity">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">{copy("Masculino", "Male", "Masculino")}</SelectItem>
+                    <SelectItem value="female">{copy("Feminino", "Female", "Femenino")}</SelectItem>
+                    <SelectItem value="non_binary">{copy("Não binário", "Non-binary", "No binario")}</SelectItem>
+                    <SelectItem value="custom">{copy("Personalizado", "Custom", "Personalizado")}</SelectItem>
+                    <SelectItem value="prefer_not_to_say">{copy("Prefiro não dizer", "Prefer not to say", "Prefiero no decirlo")}</SelectItem>
+                  </SelectContent>
+                </Select>
+                {genderIdentity === "custom" ? (
+                  <Input
+                    value={customGender}
+                    onChange={(e) => setCustomGender(e.target.value.slice(0, 60))}
+                    placeholder={copy("Como você prefere descrever", "How you prefer to describe it", "Cómo prefieres describirlo")}
+                    maxLength={60}
+                  />
+                ) : null}
+                <p className="text-xs leading-5 text-muted-foreground">
+                  {copy(
+                    "Opcional para sua experiência de conta, mantido de forma privada e fora da segmentação de anúncios.",
+                    "Optional account information, kept private and excluded from ad targeting.",
+                    "Información opcional de la cuenta, privada y excluida de la segmentación publicitaria.",
+                  )}
+                </p>
+              </div>
+
               {minorNeedsSupervision ? (
                 <div className="rounded-xl border border-amber-500/25 bg-amber-500/5 p-4 text-sm leading-relaxed text-muted-foreground">
                   <div className="mb-2 flex items-center gap-2 font-semibold text-foreground">
