@@ -4,6 +4,7 @@ import { useI18n } from "@/i18n";
 import { SettingsLayout } from "@/components/settings/SettingsLayout";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { AudioControl } from "@/components/common/AudioControl";
 
 export const Route = createFileRoute("/_authenticated/settings/appearance")({
   head: () => ({
@@ -40,6 +41,10 @@ function SettingsAppearancePage() {
                 <Label htmlFor="theme-system">{t("theme.system")}</Label>
               </div>
             </RadioGroup>
+          </div>
+          <div className="border-t border-border pt-4">
+            <Label className="mb-3 block">Áudio</Label>
+            <AudioControl />
           </div>
         </div>
       </div>

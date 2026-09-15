@@ -28,7 +28,7 @@ export function BrandLogoPlaceholder({
     >
       <span
         aria-hidden="true"
-        className={cn("grid place-items-center rounded-full border border-gold/60 bg-gold-soft/40 font-display font-bold tracking-tight text-gold-strong transition-colors group-hover:border-gold", markSize)}
+        className={cn("brand-mark grid place-items-center font-display font-bold text-gold-strong transition-transform duration-200 group-hover:scale-105", markSize)}
       >
         MGP
       </span>
