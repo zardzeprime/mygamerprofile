@@ -5,10 +5,15 @@ import type { GameModuleKey, GameThemeKey } from "@/config/games";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { DarkSoulsBossWiki } from "@/components/games/DarkSoulsBossWiki";
+import { DarkSoulsStatsGuide } from "@/components/games/DarkSoulsStatsGuide";
 
 export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: GameModuleKey; themeKey: GameThemeKey; locale: Locale }) {
   if (moduleKey === "bosses" && themeKey === "dark_souls") {
     return <DarkSoulsBossWiki locale={locale} />;
+  }
+
+  if (moduleKey === "guides" && themeKey === "dark_souls") {
+    return <DarkSoulsStatsGuide locale={locale} />;
   }
 
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
