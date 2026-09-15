@@ -28,8 +28,22 @@
 - [x] Add interactive stat selection and build-direction suggestions
 - [x] Ship the guide in Portuguese, English and Spanish
 
-# Future — Valorant Agent Wiki
+# MGP v0.1.3A — VALORANT Foundation
 
-- [ ] Build the Valorant agent encyclopedia as a dedicated content update
-- [ ] Add canonical agent profiles, roles and abilities
-- [ ] Keep unknown personal information explicitly marked as not officially disclosed
+- [x] Rebuild the VALORANT Overview with editorial synopsis, release, developer, publisher, latest patch and critic reference score
+- [x] Refocus VALORANT tabs on Overview / Agents / Maps / Weapons / Competitive / Lineups
+- [x] Add an interactive Agent encyclopedia with roles and ability kits
+- [x] Add a tactical Map atlas with the current competitive rotation marked
+- [x] Add a detailed Weapons arsenal with economy, penetration and range-based damage tables
+- [x] Add an official Champions Shanghai schedule snapshot with competition filters
+- [x] Stack competitive schedule and featured MGP content in the VALORANT Overview sidebar
+- [x] Keep Competitive and Lineups as expandable foundations for later releases
+- [ ] Connect official live-broadcast discovery so active matches can open the correct YouTube stream automatically
+- [ ] Replace the temporary static content mirror/provider with Riot Public Content Catalog / approved Riot API integration where practical
+- [ ] Persist esports match/provider sync in Supabase when live automation is enabled
+
+# Future — VALORANT Competitive + Lineups
+
+- [ ] Add official/approved live VCT provider sync and match status updates
+- [ ] Add community-created lineup publishing with map, Agent, ability, side, position and provenance
+- [ ] Add moderation and verified MGP lineup curation
