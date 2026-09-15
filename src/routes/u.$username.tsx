@@ -18,7 +18,7 @@ import {
   unfollowUser,
 } from "@/lib/profiles.functions";
 import { listPosts } from "@/lib/posts.functions";
-import { getGameProfile } from "@/lib/games.functions";
+import { getPublicGameProfilesByUserId } from "@/lib/games.functions";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -38,31 +38,24 @@ export const Route = createFileRoute("/u/$username")({
     const profile = await getProfileByUsername({ data: { username: params.username } });
     if (!profile) throw notFound();
 
-    const posts = await listPosts({ data: { authorId: profile.id } }).catch(() => []);
-    const gameProfiles = await Promise.all(
-      GAMES.map((game) =>
-        getGameProfile({ data: { username: params.username, slug: game.slug } })
-          .then((result) => result?.gameProfile ?? null)
-          .catch(() => null),
-      ),
-    );
+    const [posts, gameProfiles] = await Promise.all([
+      listPosts({ data: { authorId: profile.id } }).catch((error) => {
+        console.warn("[Profile] Could not load posts; rendering profile without activity.", error);
+        return [];
+      }),
+      getPublicGameProfilesByUserId({ data: { userId: profile.id } }).catch((error) => {
+        console.warn("[Profile] Could not load game profiles; rendering profile without game cards.", error);
+        return [];
+      }),
+    ]);
 
-    return {
-      profile,
-      posts,
-      gameProfiles: gameProfiles
-        .filter((gameProfile): gameProfile is NonNullable<typeof gameProfile> => Boolean(gameProfile))
-        .map((gameProfile) => ({
-          ...gameProfile,
-          profile_data: (gameProfile.profile_data ?? {}) as Record<string, unknown>,
-        })),
-    };
+    return { profile, posts, gameProfiles };
   },
   notFoundComponent: ProfileNotFound,
   head: ({ params }) => ({
     meta: [
-      { title: `@${params.username} — MGP` },
-      { name: "description", content: `Perfil de @${params.username} no My Gamer Profile.` },
+      { title: `@${params.username} — MG Profile` },
+      { name: "description", content: `Perfil de @${params.username} no MG Profile.` },
     ],
   }),
   component: ProfilePage,
@@ -145,7 +138,7 @@ function ProfilePage() {
         <div className={cn("profile-hero relative min-h-52 overflow-hidden sm:min-h-72 lg:min-h-80", background.className)}>
           <div className="absolute inset-0 profile-hero-scrim" />
           <div className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-white/75 backdrop-blur sm:left-6 sm:top-6">
-            MGP Profile
+            MG Profile
           </div>
         </div>
 
