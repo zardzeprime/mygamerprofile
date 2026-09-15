@@ -10,6 +10,7 @@ export type GameModuleKey =
   | "builds"
   | "bosses"
   | "guides"
+  | "news"
   | "agents"
   | "maps"
   | "weapons"
@@ -52,6 +53,8 @@ export type GameConfig = {
     hoverPreviewVideo?: string;
     hoverAudio?: string;
     ambientAudio?: string;
+    trailerYoutubeId?: string;
+    trailerUrl?: string;
     assetSource: string;
     assetLicense: string;
   };
@@ -63,6 +66,7 @@ export const MODULE_LABELS: Record<GameModuleKey, Record<Locale, string>> = {
   builds: { "pt-BR": "Builds", en: "Builds", es: "Builds" },
   bosses: { "pt-BR": "Chefes", en: "Bosses", es: "Jefes" },
   guides: { "pt-BR": "Guias", en: "Guides", es: "Guías" },
+  news: { "pt-BR": "Novidades", en: "News", es: "Novedades" },
   agents: { "pt-BR": "Agentes", en: "Agents", es: "Agentes" },
   maps: { "pt-BR": "Mapas", en: "Maps", es: "Mapas" },
   weapons: { "pt-BR": "Armas", en: "Weapons", es: "Armas" },
@@ -116,6 +120,8 @@ export const GAMES: GameConfig[] = [
       cardObjectPosition: "center 18%",
       heroObjectPosition: "center 20%",
       hoverAudio: "/audio/dark-souls-campfire.mp3",
+      trailerYoutubeId: "YWEk9TzLa50",
+      trailerUrl: "https://www.youtube.com/watch?v=YWEk9TzLa50",
       assetSource: "Dark Souls Remastered public cover-art reference",
       assetLicense: "Third-party promotional cover art; source attribution tracked by MGP",
     },
@@ -133,7 +139,7 @@ export const GAMES: GameConfig[] = [
     platforms: ["PC", "PlayStation 5", "Xbox Series X|S"],
     ageRating: "16+",
     themeKey: "valorant",
-    modules: ["overview", "agents", "maps", "weapons", "skins", "competitive", "lineups"],
+    modules: ["overview", "news", "agents", "maps", "weapons", "skins", "competitive", "lineups"],
     profileFields: [
       { key: "favorite_agent", type: "text", maxLength: 40, label: { "pt-BR": "Agente favorito", en: "Favorite agent", es: "Agente favorito" } },
       { key: "preferred_role", type: "select", options: ["Duelist", "Initiator", "Controller", "Sentinel", "Flex"], label: { "pt-BR": "Função preferida", en: "Preferred role", es: "Rol preferido" } },
@@ -150,6 +156,8 @@ export const GAMES: GameConfig[] = [
       fallbackImage: valorantAtmosphere,
       cardObjectPosition: "center",
       heroObjectPosition: "center",
+      trailerYoutubeId: "e_E9W2vsRbQ",
+      trailerUrl: "https://www.youtube.com/watch?v=e_E9W2vsRbQ",
       assetSource: "VALORANT public promotional key art reference",
       assetLicense: "Riot Games promotional artwork; source attribution tracked by MGP",
     },
