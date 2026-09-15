@@ -58,22 +58,7 @@ export const Route = createFileRoute("/u/$username")({
         })),
     };
   },
-  notFoundComponent: () => {
-    const { locale } = useI18n();
-    const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-    return (
-      <div className="mx-auto w-full max-w-3xl px-4 py-16 text-center sm:px-6">
-        <EmptyState
-          title={copy("Perfil não encontrado", "Profile not found", "Perfil no encontrado")}
-          description={copy(
-            "Esse username não existe ou o perfil não está público.",
-            "This username does not exist or the profile is not public.",
-            "Este nombre de usuario no existe o el perfil no es público.",
-          )}
-        />
-      </div>
-    );
-  },
+  notFoundComponent: ProfileNotFound,
   head: ({ params }) => ({
     meta: [
       { title: `@${params.username} — MGP` },
@@ -82,6 +67,23 @@ export const Route = createFileRoute("/u/$username")({
   }),
   component: ProfilePage,
 });
+
+function ProfileNotFound() {
+  const { locale } = useI18n();
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  return (
+    <div className="mx-auto w-full max-w-3xl px-4 py-16 text-center sm:px-6">
+      <EmptyState
+        title={copy("Perfil não encontrado", "Profile not found", "Perfil no encontrado")}
+        description={copy(
+          "Esse username não existe ou o perfil não está público.",
+          "This username does not exist or the profile is not public.",
+          "Este nombre de usuario no existe o el perfil no es público.",
+        )}
+      />
+    </div>
+  );
+}
 
 function ProfilePage() {
   const { locale, t } = useI18n();
