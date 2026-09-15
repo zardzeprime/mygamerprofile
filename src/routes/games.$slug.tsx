@@ -1,25 +1,23 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import {
+  Building2,
+  CalendarDays,
+  ChevronRight,
+  RefreshCw,
+  Sparkles,
+  Star,
+} from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { MODULE_LABELS, getGameConfig, type GameModuleKey } from "@/config/games";
+import { GAME_EDITORIAL_OVERVIEW } from "@/data/gameEditorialOverview";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
-import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
-import { listPosts } from "@/lib/posts.functions";
-import { listLfgPosts } from "@/lib/lfg.functions";
-import { PostCard } from "@/components/posts/PostCard";
-import { PostComposer } from "@/components/posts/PostComposer";
-import { UserAvatar } from "@/components/common/UserAvatar";
-import { Button } from "@/components/ui/button";
 import { GameLivePanel } from "@/components/games/GameLivePanel";
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { FutureCollection } from "@/components/games/FutureCollection";
-import { ChevronRight, Headphones, Shield, Sparkles } from "lucide-react";
 import { useGameAmbience } from "@/hooks/useGameAmbience";
-
-type CommunityPost = Awaited<ReturnType<typeof listPosts>>[number];
-type LfgPost = Awaited<ReturnType<typeof listLfgPosts>>[number];
 
 export const Route = createFileRoute("/games/$slug")({
   loader: async ({ params }) => {
@@ -31,8 +29,8 @@ export const Route = createFileRoute("/games/$slug")({
     if (!loaderData) {
       return { meta: [{ title: "Jogo não encontrado — MGP" }, { name: "robots", content: "noindex" }] };
     }
-    const title = `${loaderData.game.name} — Hub MGP`;
-    const description = `Comunidade, Game Profiles e LFG de ${loaderData.game.name} no MGP.`;
+    const title = `${loaderData.game.name} — MGP`;
+    const description = `Informações, guias, builds e conteúdo editorial de ${loaderData.game.name} no MGP.`;
     return {
       meta: [
         { title },
@@ -69,41 +67,24 @@ function GameHub() {
   const { game } = Route.useLoaderData();
   const { locale, t } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const { user } = useAuth();
+  const panelRef = useRef<HTMLDivElement>(null);
   useGameAmbience(game.visual.ambientAudio);
+
   const [active, setActive] = useState<GameModuleKey>("overview");
-  const [posts, setPosts] = useState<CommunityPost[]>([]);
-  const [lfgPosts, setLfgPosts] = useState<LfgPost[]>([]);
-  const [loaded, setLoaded] = useState<Record<GameModuleKey, boolean>>({
-    overview: true,
-    community: false,
-    lfg: false,
-    builds: false,
-    bosses: false,
-    guides: false,
-    agents: false,
-    competitive: false,
-    clips: false,
-  });
+  const visibleModules = useMemo(
+    () => game.modules.filter((moduleKey) => moduleKey !== "community" && moduleKey !== "lfg"),
+    [game.modules],
+  );
+  const editorial = GAME_EDITORIAL_OVERVIEW[game.slug];
 
-  const loadCommunity = async () => {
-    if (loaded.community) return;
-    const rows = await listPosts({ data: { gameId: game.id } });
-    setPosts(rows);
-    setLoaded((current) => ({ ...current, community: true }));
-  };
-
-  const loadLfg = async () => {
-    if (loaded.lfg) return;
-    const rows = await listLfgPosts({ data: { gameId: game.id } });
-    setLfgPosts(rows);
-    setLoaded((current) => ({ ...current, lfg: true }));
-  };
-
-  const handleTab = (moduleKey: GameModuleKey) => {
+  const handleTab = (moduleKey: GameModuleKey, scrollToPanel = false) => {
     setActive(moduleKey);
-    if (moduleKey === "community") void loadCommunity();
-    if (moduleKey === "lfg") void loadLfg();
+    if (!scrollToPanel) return;
+
+    requestAnimationFrame(() => {
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      panelRef.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+    });
   };
 
   return (
@@ -156,7 +137,7 @@ function GameHub() {
           aria-label={game.name}
           className="hub-tablist -mx-4 flex gap-1 overflow-x-auto border-b border-border px-4 py-3 sm:mx-0 sm:px-0"
         >
-          {game.modules.map((moduleKey) => {
+          {visibleModules.map((moduleKey) => {
             const selected = active === moduleKey;
             return (
               <button
@@ -165,7 +146,7 @@ function GameHub() {
                 type="button"
                 role="tab"
                 aria-selected={selected}
-                aria-controls={`hub-panel-${active}`}
+                aria-controls="hub-panel-content"
                 tabIndex={selected ? 0 : -1}
                 onClick={() => handleTab(moduleKey)}
                 className={cn(
@@ -180,84 +161,80 @@ function GameHub() {
         </div>
 
         <div
-          id={`hub-panel-${active}`}
+          ref={panelRef}
+          id="hub-panel-content"
           role="tabpanel"
           aria-labelledby={`hub-tab-${active}`}
-          className="py-8 outline-none"
+          className="scroll-mt-24 py-8 outline-none"
         >
           {active === "overview" ? (
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-              <div className="space-y-5">
-                <article className="surface-panel p-6 sm:p-8">
-                  <div className="mb-5 flex items-center gap-2">
-                    <Sparkles className="size-4 text-gold-strong" />
-                    <span className="section-kicker">
-                      {copy("IDENTIDADE DO JOGO", "GAME IDENTITY", "IDENTIDAD DEL JUEGO")}
-                    </span>
-                  </div>
-                  <h2 className="font-display text-2xl font-semibold text-foreground">
-                    {MODULE_LABELS.overview[locale]}
-                  </h2>
-                  <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                    {game.description[locale]}
-                  </p>
-                  <div className="mt-7 grid gap-3 sm:grid-cols-3">
-                    <Feature icon={Shield} label="Game Profiles" />
-                    <Feature icon={Sparkles} label={copy("Comunidade", "Community", "Comunidad")} />
-                    <Feature icon={Headphones} label="LFG" />
-                  </div>
-                </article>
-                <EmptyState
-                  title={copy(
-                    "Conteúdo da comunidade em preparação",
-                    "Community content in preparation",
-                    "Contenido de la comunidad en preparación",
-                  )}
-                  description={copy(
-                    "Este espaço crescerá com perfis, guias e atividade real.",
-                    "This space will grow with profiles, guides and real activity.",
-                    "Este espacio crecerá con perfiles, guías y actividad real.",
-                  )}
-                />
-              </div>
-              <GameLivePanel themeKey={game.themeKey} locale={locale} />
-            </div>
-          ) : active === "community" ? (
-            <div className="space-y-4">
-              {user && <PostComposer gameId={game.id} onCreated={(post) => setPosts((prev) => [post, ...prev])} />}
-              {posts.length === 0 ? (
-                <EmptyState title={t("home.activity.empty")} />
-              ) : (
-                posts.map((post) => <PostCard key={post.id} post={post} />)
-              )}
-            </div>
-          ) : active === "lfg" ? (
-            <div className="space-y-4">
-              {lfgPosts.length === 0 ? (
-                <EmptyState title={t("common.empty")} />
-              ) : (
-                lfgPosts.map((post) => (
-                  <article key={post.id} className="surface-panel rounded-xl p-4">
-                    <div className="flex items-center gap-3">
-                      <UserAvatar src={post.author?.avatar_url} name={post.author?.display_name} size="md" />
-                      <div>
-                        <p className="font-semibold">{post.author?.display_name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {post.platform} · {post.mode}
-                        </p>
+              <article className="surface-panel p-6 sm:p-8">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="size-4 text-gold-strong" />
+                  <span className="section-kicker">
+                    {copy("FICHA DO JOGO", "GAME PROFILE", "FICHA DEL JUEGO")}
+                  </span>
+                </div>
+
+                <div className="mt-4 grid gap-7 xl:grid-cols-[minmax(0,1fr)_13rem]">
+                  <div>
+                    <h2 className="font-display text-2xl font-semibold text-foreground">
+                      {copy("Sobre o jogo", "About the game", "Sobre el juego")}
+                    </h2>
+                    <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
+                      {editorial?.synopsis[locale] ?? game.description[locale]}
+                    </p>
+
+                    {editorial ? (
+                      <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                        <GameFact
+                          icon={CalendarDays}
+                          label={copy("Lançamento", "Release", "Lanzamiento")}
+                          value={editorial.release[locale]}
+                        />
+                        <GameFact
+                          icon={Building2}
+                          label={copy("Desenvolvimento", "Developer", "Desarrollo")}
+                          value={editorial.developer}
+                        />
+                        <GameFact
+                          icon={Building2}
+                          label={copy("Publicação", "Publisher", "Publicación")}
+                          value={editorial.publisher}
+                        />
+                        <GameFact
+                          icon={RefreshCw}
+                          label={copy("Última atualização oficial", "Latest official update", "Última actualización oficial")}
+                          value={editorial.latestUpdate[locale]}
+                        />
                       </div>
+                    ) : null}
+                  </div>
+
+                  {editorial?.score ? (
+                    <div className="self-start rounded-2xl border border-gold/25 bg-[radial-gradient(circle_at_top,rgba(212,167,44,0.14),transparent_65%),hsl(var(--muted)/0.2)] p-5 text-center">
+                      <Star className="mx-auto size-5 fill-current text-gold-strong" />
+                      <p className="mt-3 font-display text-4xl font-bold text-foreground">
+                        {editorial.score.value.toFixed(1)}
+                        <span className="text-base font-semibold text-muted-foreground">/10</span>
+                      </p>
+                      <p className="mt-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                        {copy("Média de referência", "Reference average", "Promedio de referencia")}
+                      </p>
+                      <p className="mt-3 text-xs leading-5 text-muted-foreground">{editorial.score.sourceLabel}</p>
+                      <p className="mt-2 text-[0.7rem] leading-5 text-muted-foreground">{editorial.score.note[locale]}</p>
                     </div>
-                    <p className="mt-2 text-sm">{post.description}</p>
-                    <div className="mt-3 flex gap-2">
-                      <Button variant="outline" size="sm" asChild>
-                        <Link to="/u/$username" params={{ username: post.author?.username ?? "" }}>
-                          {t("lfg.viewProfile")}
-                        </Link>
-                      </Button>
-                    </div>
-                  </article>
-                ))
-              )}
+                  ) : null}
+                </div>
+              </article>
+
+              <GameLivePanel
+                gameSlug={game.slug}
+                themeKey={game.themeKey}
+                locale={locale}
+                onOpenModule={(moduleKey) => handleTab(moduleKey, true)}
+              />
             </div>
           ) : (
             <FutureCollection moduleKey={active} themeKey={game.themeKey} locale={locale} />
@@ -268,13 +245,22 @@ function GameHub() {
   );
 }
 
-function Feature({ icon: Icon, label }: { icon: typeof Shield; label: string }) {
+function GameFact({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof CalendarDays;
+  label: string;
+  value: string;
+}) {
   return (
-    <div className="hub-feature flex items-center gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3">
-      <span className="grid size-8 place-items-center rounded-full bg-gold-soft/50 text-gold-strong">
+    <div className="rounded-xl border border-border bg-muted/20 p-4">
+      <div className="flex items-center gap-2 text-gold-strong">
         <Icon className="size-4" />
-      </span>
-      <span className="text-sm font-semibold">{label}</span>
+        <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em]">{label}</span>
+      </div>
+      <p className="mt-2 text-sm font-semibold leading-6 text-foreground">{value}</p>
     </div>
   );
 }

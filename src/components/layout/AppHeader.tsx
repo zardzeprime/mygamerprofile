@@ -20,7 +20,7 @@ import { AudioControl } from "@/components/common/AudioControl";
 const NAV: { to: string; key: TranslationKey }[] = [
   { to: "/", key: "navigation.home" },
   { to: "/games", key: "navigation.games" },
-  { to: "/games", key: "navigation.communities" },
+  { to: "/communities", key: "navigation.communities" },
   { to: "/lfg", key: "navigation.lfg" },
 ];
 
