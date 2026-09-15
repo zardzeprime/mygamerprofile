@@ -3,8 +3,13 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { Input } from "@/components/ui/input";
 import type { GameModuleKey, GameThemeKey } from "@/config/games";
 import type { Locale } from "@/i18n";
+import { DarkSoulsBossWiki } from "@/components/games/DarkSoulsBossWiki";
 
 export function FutureCollection({ moduleKey, themeKey, locale }: { moduleKey: GameModuleKey; themeKey: GameThemeKey; locale: Locale }) {
+  if (moduleKey === "bosses" && themeKey === "dark_souls") {
+    return <DarkSoulsBossWiki locale={locale} />;
+  }
+
   const pt = locale === "pt-BR";
   const copy: Partial<Record<GameModuleKey, [string, string]>> = {
     bosses: [pt ? "Enciclopédia de bosses" : "Boss encyclopedia", pt ? "Chefes, filtros e páginas individuais chegam na próxima atualização." : "Bosses, filters and individual pages arrive in the next update."],
