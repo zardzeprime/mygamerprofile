@@ -6,7 +6,7 @@ import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
 import { getValorantWeapons, type ValorantWeapon } from "@/lib/valorant-content.functions";
 
-const CATEGORY_ORDER = ["Sidearms", "SMGs", "Shotguns", "Rifles", "Sniper Rifles", "Machine Guns", "Melee"];
+const CATEGORY_ORDER = ["Sidearms", "SMGs", "Shotguns", "Rifles", "Sniper Rifles", "Heavy Weapons", "Machine Guns", "Melee"];
 
 export function ValorantWeapons({ locale }: { locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
@@ -112,7 +112,7 @@ export function ValorantWeapons({ locale }: { locale: Locale }) {
       ) : null}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filtered.map((weapon) => <button key={weapon.uuid} type="button" onClick={() => selectWeapon(weapon)} className={cn("group rounded-xl border bg-surface p-4 text-left transition-all hover:-translate-y-1 hover:border-tactical/40", selected?.uuid === weapon.uuid ? "border-tactical/55 ring-1 ring-tactical/20" : "border-border")}><div className="flex items-center justify-between gap-3"><span className="text-[0.62rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">{translateCategory(weapon.category, locale)}</span><span className="text-xs font-semibold text-muted-foreground">{weapon.cost != null ? weapon.cost.toLocaleString() : "—"}</span></div>{weapon.icon ? <img src={weapon.icon} alt={weapon.name} loading="lazy" className="my-5 h-20 w-full object-contain transition-transform duration-300 group-hover:scale-105" /> : <div className="my-5 h-20" />}<p className="font-display text-xl font-semibold">{weapon.name}</p><p className="mt-1 text-xs text-muted-foreground">{weapon.magazineSize != null ? `${copy("Pente", "Magazine", "Cargador")}: ${weapon.magazineSize}` : copy("Corpo a corpo", "Melee", "Cuerpo a cuerpo")}</p></button>)}
+        {filtered.map((weapon) => <button key={weapon.uuid} type="button" onClick={() => selectWeapon(weapon)} className={cn("group rounded-xl border border-border bg-surface p-4 text-left transition-all hover:-translate-y-1 hover:border-tactical/40", selected?.uuid === weapon.uuid ? "border-tactical/55 ring-1 ring-tactical/20" : "border-border")}><div className="flex items-center justify-between gap-3"><span className="text-[0.62rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">{translateCategory(weapon.category, locale)}</span><span className="text-xs font-semibold text-muted-foreground">{weapon.cost != null ? weapon.cost.toLocaleString() : "—"}</span></div>{weapon.icon ? <img src={weapon.icon} alt={weapon.name} loading="lazy" className="my-5 h-20 w-full object-contain transition-transform duration-300 group-hover:scale-105" /> : <div className="my-5 h-20" />}<p className="font-display text-xl font-semibold">{weapon.name}</p><p className="mt-1 text-xs text-muted-foreground">{weapon.magazineSize != null ? `${copy("Pente", "Magazine", "Cargador")}: ${weapon.magazineSize}` : copy("Corpo a corpo", "Melee", "Cuerpo a cuerpo")}</p></button>)}
       </div>
     </div>
   );
@@ -133,6 +133,7 @@ function translateCategory(category: string, locale: Locale) {
     Shotguns: ["Escopetas", "Shotguns", "Escopetas"],
     Rifles: ["Fuzis", "Rifles", "Rifles"],
     "Sniper Rifles": ["Fuzis de precisão", "Sniper Rifles", "Francotiradores"],
+    "Heavy Weapons": ["Metralhadoras", "Heavy Weapons", "Ametralladoras"],
     "Machine Guns": ["Metralhadoras", "Machine Guns", "Ametralladoras"],
     Melee: ["Corpo a corpo", "Melee", "Cuerpo a cuerpo"],
   };
