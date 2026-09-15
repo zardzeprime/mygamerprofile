@@ -17,8 +17,19 @@
 - [x] Add search and Required / Optional / DLC filters
 - [x] Keep third-party boss artwork out until an official/licensed or original MGP asset is available
 
-# MGP v0.1.2B — Valorant Agent Wiki
+# MGP v0.1.2B — Dark Souls Stats & Scaling Guide
 
-- [ ] Build the Valorant agent encyclopedia separately from the Dark Souls boss release
+- [x] Publish the first MGP editorial guide inside the Dark Souls Guides tab
+- [x] Explain all eight core attributes and their important soft caps / breakpoints
+- [x] Explain requirements versus scaling and the S / A / B / C / D / E grading system
+- [x] Explain the 1.5x effective Strength rule while two-handing
+- [x] Cover STR, DEX, INT and FAI scaling and how upgrade paths change them
+- [x] Explain the Pyromancy Flame exception and why INT / FAI do not raise pyromancy damage
+- [x] Add interactive stat selection and build-direction suggestions
+- [x] Ship the guide in Portuguese, English and Spanish
+
+# Future — Valorant Agent Wiki
+
+- [ ] Build the Valorant agent encyclopedia as a dedicated content update
 - [ ] Add canonical agent profiles, roles and abilities
 - [ ] Keep unknown personal information explicitly marked as not officially disclosed
