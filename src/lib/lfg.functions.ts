@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
 import { getSupabasePublic } from "./supabase.server";
 
 const LFG_STATUSES = ["open", "closed", "expired"] as const;
@@ -97,9 +98,21 @@ export const updateLfgPost = createServerFn({ method: "POST" })
     if (updates.slots_total !== undefined && updates.slots_open !== undefined && updates.slots_open > updates.slots_total) {
       throw new Error("invalid_slot_count");
     }
+    const updatePayload: Database["public"]["Tables"]["lfg_posts"]["Update"] = {
+      updated_at: new Date().toISOString(),
+    };
+    if (updates.platform !== undefined) updatePayload.platform = updates.platform;
+    if (updates.region !== undefined) updatePayload.region = updates.region;
+    if (updates.language !== undefined) updatePayload.language = updates.language;
+    if (updates.mode !== undefined) updatePayload.mode = updates.mode;
+    if (updates.description !== undefined) updatePayload.description = updates.description;
+    if (updates.mic_required !== undefined) updatePayload.mic_required = updates.mic_required;
+    if (updates.slots_total !== undefined) updatePayload.slots_total = updates.slots_total;
+    if (updates.slots_open !== undefined) updatePayload.slots_open = updates.slots_open;
+    if (updates.expires_at !== undefined) updatePayload.expires_at = updates.expires_at;
     const { data: post, error } = await context.supabase
       .from("lfg_posts")
-      .update({ ...updates, updated_at: new Date().toISOString() })
+      .update(updatePayload)
       .eq("id", id)
       .eq("user_id", context.userId)
       .select()

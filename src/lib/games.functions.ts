@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Json } from "@/integrations/supabase/types";
 import { GAMES } from "@/config/games";
 import { getSupabasePublic } from "./supabase.server";
 
@@ -12,7 +13,7 @@ const gameProfileSchema = z.object({
 const publicGameProfilesSchema = z.object({ userId: z.string().uuid() });
 const upsertGameProfileSchema = z.object({
   game_id: z.string().uuid(),
-  profile_data: z.record(z.unknown()),
+  profile_data: z.record(z.union([z.string(), z.number(), z.boolean(), z.null()])),
   visibility: z.enum(["public", "private"]).optional(),
 });
 
@@ -116,7 +117,7 @@ export const getPublicGameProfilesByUserId = createServerFn({ method: "GET" })
             gameProfile.profile_data &&
             typeof gameProfile.profile_data === "object" &&
             !Array.isArray(gameProfile.profile_data)
-              ? (gameProfile.profile_data as Record<string, unknown>)
+              ? gameProfile.profile_data
               : {},
         },
       ];
@@ -141,7 +142,7 @@ export const upsertGameProfile = createServerFn({ method: "POST" })
     if (!configuredGame || !databaseGame) throw new Error("game_not_supported");
 
     const allowedKeys = new Set(configuredGame.profileFields.map((field) => field.key));
-    const sanitizedData = Object.fromEntries(
+    const sanitizedData: Record<string, Json | undefined> = Object.fromEntries(
       Object.entries(profile_data).filter(([key]) => allowedKeys.has(key)),
     );
 

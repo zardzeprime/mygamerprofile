@@ -55,6 +55,7 @@ export function DarkSoulsStatsGuide({ locale }: { locale: Locale }) {
     [selectedStatId],
   );
   const selectedBuild = BUILD_DIRECTIONS.find((build) => build.id === selectedBuildId) ?? BUILD_DIRECTIONS[0];
+  if (!selectedStat || !selectedBuild) return null;
   const SelectedStatIcon = STAT_ICONS[selectedStat.id];
 
   const selectStat = (id: DarkSoulsStatId) => {

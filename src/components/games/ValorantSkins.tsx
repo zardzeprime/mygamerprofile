@@ -93,7 +93,7 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
   useEffect(() => {
     if (!skinPool.length) return;
     if (skinId && skinPool.some((skin) => skin.uuid === skinId)) return;
-    setSkinId(skinPool[0].uuid);
+    setSkinId(skinPool[0]?.uuid ?? null);
     setChromaId(null);
   }, [skinId, skinPool]);
 
@@ -125,7 +125,8 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
       const current = selectedSkin ? skinPool.findIndex((skin) => skin.uuid === selectedSkin.uuid) : -1;
       const safeCurrent = current >= 0 ? current : 0;
       const next = (safeCurrent + direction + skinPool.length) % skinPool.length;
-      chooseSkin(skinPool[next]);
+      const nextSkin = skinPool[next];
+      if (nextSkin) chooseSkin(nextSkin);
     },
     [chooseSkin, selectedSkin, skinPool],
   );
@@ -393,6 +394,8 @@ function SkinPreviewModal({
     return () => window.removeEventListener("keydown", handleKey);
   }, [activeIndex, clips.length, onClose, onIndex]);
 
+  if (!active) return null;
+
   return (
     <div
       className="fixed inset-0 z-[120] grid place-items-center bg-black/75 p-3 backdrop-blur-md animate-in fade-in duration-200 sm:p-4"
@@ -495,7 +498,7 @@ function getSkinPreviewClips(skin: ValorantSkin): PreviewClip[] {
   return clips;
 }
 
-function getWheelItems(skins: ValorantSkin[], selectedIndex: number, slots: number) {
+function getWheelItems(skins: ValorantSkin[], selectedIndex: number, slots: number): Array<{ skin: ValorantSkin; offset: number }> {
   if (skins.length <= 1 || selectedIndex < 0) return [];
   const count = Math.min(slots, skins.length - 1);
   const offsets: number[] = [];
@@ -504,9 +507,10 @@ function getWheelItems(skins: ValorantSkin[], selectedIndex: number, slots: numb
     if (offsets.length < count) offsets.push(distance);
   }
   offsets.sort((left, right) => left - right);
-  return offsets.map((offset) => {
+  return offsets.flatMap((offset) => {
     const index = (selectedIndex + offset + skins.length * 10) % skins.length;
-    return { skin: skins[index], offset };
+    const skin = skins[index];
+    return skin ? [{ skin, offset }] : [];
   });
 }
 

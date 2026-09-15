@@ -285,7 +285,7 @@ function BossDetail({
   showSpoilers,
   setShowSpoilers,
 }: {
-  boss?: DarkSoulsBoss;
+  boss: DarkSoulsBoss | undefined;
   locale: Locale;
   showSpoilers: boolean;
   setShowSpoilers: (value: boolean) => void;

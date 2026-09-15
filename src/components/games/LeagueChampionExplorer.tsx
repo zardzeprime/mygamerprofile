@@ -166,6 +166,7 @@ export function LeagueChampionExplorer({
       setDetail(null);
       return;
     }
+    const championId = selectedId;
 
     const controller = new AbortController();
     async function loadDetail() {
@@ -173,12 +174,12 @@ export function LeagueChampionExplorer({
       setSelectedSkin(0);
       try {
         const response = await fetch(
-          `${DDRAGON}/cdn/${version}/data/${DATA_DRAGON_LOCALE[locale]}/champion/${selectedId}.json`,
+          `${DDRAGON}/cdn/${version}/data/${DATA_DRAGON_LOCALE[locale]}/champion/${championId}.json`,
           { signal: controller.signal },
         );
         if (!response.ok) throw new Error(`Data Dragon returned ${response.status}`);
         const payload = (await response.json()) as ChampionPayload<ChampionDetail>;
-        setDetail(payload.data[selectedId] ?? Object.values(payload.data)[0] ?? null);
+        setDetail(payload.data[championId] ?? Object.values(payload.data)[0] ?? null);
       } catch (loadError) {
         if (!controller.signal.aborted) console.error("[League] Champion detail failed.", loadError);
       } finally {

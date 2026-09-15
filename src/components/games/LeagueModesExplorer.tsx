@@ -183,6 +183,7 @@ export function LeagueModesExplorer({ locale }: { locale: Locale }) {
   }, [locale]);
 
   const selected = useMemo(() => MODES.find((mode) => mode.key === selectedKey) ?? MODES[0], [selectedKey]);
+  if (!selected) return null;
   const selectedCopy = modeCopy(locale, selected.key);
   const selectedMap = selected.mapId ? maps[selected.mapId] : undefined;
 

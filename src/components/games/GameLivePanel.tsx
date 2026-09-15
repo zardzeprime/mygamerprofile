@@ -16,7 +16,7 @@ export function GameLivePanel({
   gameSlug: string;
   themeKey: GameThemeKey;
   locale: Locale;
-  onOpenModule?: (module: GameModuleKey) => void;
+  onOpenModule?: ((module: GameModuleKey) => void) | undefined;
 }) {
   if (themeKey === "valorant") {
     return (
@@ -39,7 +39,7 @@ function FeaturedPanel({
   gameSlug: string;
   themeKey: GameThemeKey;
   locale: Locale;
-  onOpenModule?: (module: GameModuleKey) => void;
+  onOpenModule?: ((module: GameModuleKey) => void) | undefined;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const overview = GAME_EDITORIAL_OVERVIEW[gameSlug];
@@ -92,7 +92,7 @@ function FeaturedCard({
   item: FeaturedContentItem;
   locale: Locale;
   themeKey: GameThemeKey;
-  onOpenModule?: (module: GameModuleKey) => void;
+  onOpenModule?: ((module: GameModuleKey) => void) | undefined;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const OfficialIcon = item.origin === "official" ? BadgeCheck : Users;
