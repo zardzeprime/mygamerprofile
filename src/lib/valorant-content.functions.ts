@@ -275,7 +275,7 @@ export const getValorantSkins = createServerFn({ method: "GET" })
               rarity: tier?.displayName ?? null,
               rarityIcon: tier?.displayIcon ?? null,
               rarityColor: tier?.highlightColor ?? null,
-              referenceVp: tier ? referenceVpForTier(tier.displayName, isMelee) : null,
+              referenceVp: tier ? referenceVpForTier(tier.devName, isMelee) : null,
               levels: skin.levels.map((level) => ({
                 uuid: level.uuid,
                 name: level.displayName,
