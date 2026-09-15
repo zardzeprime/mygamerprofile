@@ -1,19 +1,34 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/i18n";
 import type { GameConfig } from "@/config/games";
-import { ArrowUpRight, Play } from "lucide-react";
+import { ArrowUpRight, Flame, Play, Radio } from "lucide-react";
+import { useSound } from "@/lib/sound";
+import { GameArtwork } from "@/components/games/GameArtwork";
 
 export function GameCard({ game }: { game: GameConfig }) {
   const { locale, t } = useI18n();
+  const { play } = useSound();
+
+  const handlePointerEnter = () => {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    play(game.themeKey === "dark_souls" ? "bonfire" : "tactical");
+  };
 
   return (
-    <article className="game-card group overflow-hidden">
-      <div className="relative aspect-[16/10] overflow-hidden">
-        <img src={game.visual.coverImage} alt="" width={1600} height={1000} loading="lazy" className="game-card-image h-full w-full object-cover" />
+    <article className="game-card group overflow-hidden" onPointerEnter={handlePointerEnter}>
+      <div className="game-card-media relative aspect-[16/10] overflow-hidden">
+        <GameArtwork game={game} className="game-card-image" />
         <div className="game-card-scrim absolute inset-0" />
+        <div className="game-card-sheen absolute inset-0" aria-hidden="true" />
         <div className="absolute left-4 top-4 flex items-center gap-2">
           <span className="rounded-sm border border-border-strong bg-background/80 px-2 py-1 text-[0.65rem] font-bold uppercase text-foreground backdrop-blur">{game.genre}</span>
           <span className="rounded-sm bg-background/80 px-2 py-1 text-[0.65rem] font-semibold text-muted-foreground backdrop-blur">{game.ageRating}</span>
+        </div>
+        <div className="absolute bottom-4 left-4 flex translate-y-2 items-center gap-1.5 rounded-full border border-hero-border bg-hero-surface px-2.5 py-1 text-[0.65rem] font-semibold text-hero-muted opacity-0 backdrop-blur transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
+          {game.themeKey === "dark_souls" ? <Flame className="size-3.5 text-ember" /> : <Radio className="size-3.5 text-tactical" />}
+          {game.themeKey === "dark_souls"
+            ? locale === "pt-BR" ? "Som de fogueira" : "Bonfire sound"
+            : locale === "pt-BR" ? "Pulso tático" : "Tactical pulse"}
         </div>
         <span className="absolute bottom-4 right-4 grid size-9 translate-y-2 place-items-center rounded-full bg-primary text-primary-foreground opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100" aria-hidden="true"><Play className="size-4 fill-current" /></span>
       </div>
