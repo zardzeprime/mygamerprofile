@@ -93,7 +93,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/brand/mgp-logo.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/brand/mgp-logo.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -116,7 +117,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
       </head>
       <body>
-        {children}
+        <I18nProvider>{children}</I18nProvider>
         <Scripts />
       </body>
     </html>
@@ -128,20 +129,18 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nProvider>
-        <ThemeProvider>
-          <SoundProvider>
-            <div className="flex min-h-screen flex-col bg-background">
-              <AppHeader />
-              <main className="flex-1">
-                {/* Required: nested routes render here. */}
-                <Outlet />
-              </main>
-              <AppFooter />
-            </div>
-          </SoundProvider>
-        </ThemeProvider>
-      </I18nProvider>
+      <ThemeProvider>
+        <SoundProvider>
+          <div className="flex min-h-screen flex-col bg-background">
+            <AppHeader />
+            <main className="flex-1">
+              {/* Required: nested routes render here. */}
+              <Outlet />
+            </main>
+            <AppFooter />
+          </div>
+        </SoundProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
