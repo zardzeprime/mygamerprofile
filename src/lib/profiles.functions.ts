@@ -36,7 +36,7 @@ const updateProfileSchema = z.object({
   language: z.enum(APP_LANGUAGES).optional(),
   theme_preference: z.enum(THEME_PREFERENCES).optional(),
   visibility: z.enum(PROFILE_VISIBILITIES).optional(),
-  profile_background: z.enum(PROFILE_BACKGUNDS).optional(),
+  profile_background: z.enum(PROFILE_BACKGROUNDS).optional(),
 });
 const followSchema = z.object({ following_id: z.string().uuid() });
 
