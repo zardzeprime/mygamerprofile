@@ -17,7 +17,7 @@ export type GameEditorialOverview = {
   release: Record<Locale, string>;
   developer: string;
   publisher: string;
-  latestUpdate: Record<Locale, string>;
+  latestVersion: string;
   score?: {
     value: number;
     sourceLabel: string;
@@ -40,11 +40,7 @@ export const GAME_EDITORIAL_OVERVIEW: Record<string, GameEditorialOverview | und
     },
     developer: "FromSoftware · QLOC (remaster)",
     publisher: "Bandai Namco Entertainment · FromSoftware",
-    latestUpdate: {
-      "pt-BR": "09 nov 2022 · recursos online da versão de PC reativados",
-      en: "Nov 9, 2022 · PC online features reactivated",
-      es: "9 nov 2022 · funciones online de PC reactivadas",
-    },
+    latestVersion: "1.03",
     score: {
       value: 8.4,
       sourceLabel: "Metacritic 84 · OpenCritic 84",
@@ -87,11 +83,7 @@ export const GAME_EDITORIAL_OVERVIEW: Record<string, GameEditorialOverview | und
     },
     developer: "Riot Games",
     publisher: "Riot Games",
-    latestUpdate: {
-      "pt-BR": "01 set 2026 · Atualização 13.05 — Bolão do Champions, combate a stream sniping/instalock e preparação para Equipamentos de Agente 13.06",
-      en: "Sep 1, 2026 · Patch 13.05 — Champions Pick'Ems, stream-sniping/instalock enforcement and preparation for Agent Gear 13.06",
-      es: "1 sep 2026 · Versión 13.05 — Pick'Ems de Champions, medidas contra stream sniping/instalock y preparación para Equipamiento de Agente 13.06",
-    },
+    latestVersion: "13.05",
     score: {
       value: 8.1,
       sourceLabel: "Metacritic 80 · OpenCritic 81",
