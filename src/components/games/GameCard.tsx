@@ -1,14 +1,16 @@
-import { Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/i18n";
 import type { GameConfig } from "@/config/games";
-import { ArrowUpRight, Play } from "lucide-react";
+import { ArrowUpRight, Pause, Play } from "lucide-react";
 import { useSound } from "@/lib/sound";
 import { GameArtwork } from "@/components/games/GameArtwork";
 
 export function GameCard({ game }: { game: GameConfig }) {
-  const { locale, t } = useI18n();
+  const { locale } = useI18n();
+  const navigate = useNavigate();
   const { uiEnabled, uiVolume } = useSound();
+  const [trailerOpen, setTrailerOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const fadeFrameRef = useRef<number | null>(null);
   const hoveredRef = useRef(false);
@@ -69,20 +71,20 @@ export function GameCard({ game }: { game: GameConfig }) {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    if (!uiEnabled) {
+    if (!uiEnabled || trailerOpen) {
       fadeAudio(0, 180, () => audio.pause());
     } else if (hoveredRef.current && !audio.paused) {
       fadeAudio(targetVolume, 180);
     }
-  }, [fadeAudio, targetVolume, uiEnabled]);
+  }, [fadeAudio, targetVolume, trailerOpen, uiEnabled]);
 
   const handlePointerEnter = () => {
-    if (!game.visual.hoverAudio || !uiEnabled) return;
+    hoveredRef.current = true;
+    if (trailerOpen || !game.visual.hoverAudio || !uiEnabled) return;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
     const audio = audioRef.current;
     if (!audio) return;
-    hoveredRef.current = true;
     audio.volume = Math.min(audio.volume, targetVolume);
     void audio.play().then(() => fadeAudio(targetVolume, 320)).catch(() => undefined);
   };
@@ -96,17 +98,52 @@ export function GameCard({ game }: { game: GameConfig }) {
     });
   };
 
+  const openHub = () => {
+    void navigate({ to: "/games/$slug", params: { slug: game.slug } });
+  };
+
+  const toggleTrailer = () => {
+    const audio = audioRef.current;
+    if (audio && !audio.paused) {
+      fadeAudio(0, 120, () => audio.pause());
+    }
+    setTrailerOpen((current) => !current);
+  };
+
   return (
     <article
-      className="game-card group overflow-hidden"
+      className="game-card group overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      role="link"
+      tabIndex={0}
+      aria-label={`${game.name} hub`}
+      onClick={openHub}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") openHub();
+      }}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
     >
       <div className="game-card-media relative aspect-[16/10] overflow-hidden">
-        <GameArtwork game={game} className="game-card-image" />
-        <div className="game-card-scrim absolute inset-0" />
-        <div className="game-card-sheen absolute inset-0" aria-hidden="true" />
-        <div className="absolute left-4 top-4 flex items-center gap-2">
+        {trailerOpen && game.visual.trailerYoutubeId ? (
+          <div
+            className="absolute inset-0 z-10 animate-in fade-in zoom-in-95 duration-300 bg-black"
+            data-card-control
+            onClick={(event) => event.stopPropagation()}
+          >
+            <iframe
+              className="h-full w-full"
+              src={`https://www.youtube-nocookie.com/embed/${game.visual.trailerYoutubeId}?autoplay=1&rel=0&modestbranding=1`}
+              title={`${game.name} trailer`}
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+            />
+          </div>
+        ) : (
+          <GameArtwork game={game} className="game-card-image" />
+        )}
+        {!trailerOpen ? <div className="game-card-scrim absolute inset-0" /> : null}
+        {!trailerOpen ? <div className="game-card-sheen absolute inset-0" aria-hidden="true" /> : null}
+        <div className="absolute left-4 top-4 z-20 flex items-center gap-2">
           <span className="rounded-sm border border-border-strong bg-background/80 px-2 py-1 text-[0.65rem] font-bold uppercase text-foreground backdrop-blur">
             {game.genre}
           </span>
@@ -114,17 +151,40 @@ export function GameCard({ game }: { game: GameConfig }) {
             {game.ageRating}
           </span>
         </div>
-        <span
-          className="absolute bottom-4 right-4 grid size-9 translate-y-2 place-items-center rounded-full bg-primary text-primary-foreground opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100"
-          aria-hidden="true"
-        >
-          <Play className="size-4 fill-current" />
-        </span>
+        {game.visual.trailerYoutubeId ? (
+          <button
+            type="button"
+            data-card-control
+            onClick={(event) => {
+              event.stopPropagation();
+              toggleTrailer();
+            }}
+            className="absolute bottom-4 right-4 z-20 grid size-10 place-items-center rounded-full bg-primary text-primary-foreground shadow-lift transition-all duration-200 hover:scale-110 active:scale-95"
+            aria-label={trailerOpen ? `Fechar trailer de ${game.name}` : `Assistir trailer de ${game.name}`}
+          >
+            {trailerOpen ? <Pause className="size-4 fill-current" /> : <Play className="size-4 fill-current" />}
+          </button>
+        ) : null}
       </div>
       <div className="p-5">
         <div className="flex items-start justify-between gap-3">
           <h3 className="font-display text-lg font-semibold text-foreground">{game.name}</h3>
-          <ArrowUpRight className="size-4 shrink-0 text-gold-strong transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          {game.visual.trailerUrl ? (
+            <a
+              data-card-control
+              href={game.visual.trailerUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(event) => event.stopPropagation()}
+              className="grid size-8 shrink-0 place-items-center rounded-full text-gold-strong transition-all hover:bg-gold-soft/20 hover:-translate-y-0.5 hover:translate-x-0.5"
+              aria-label={`Abrir trailer oficial de ${game.name} em nova guia`}
+              title="Trailer oficial"
+            >
+              <ArrowUpRight className="size-4" />
+            </a>
+          ) : (
+            <ArrowUpRight className="size-4 shrink-0 text-gold-strong transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          )}
         </div>
         <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{game.description[locale]}</p>
         <ul className="mt-4 flex flex-wrap gap-1.5">
@@ -137,13 +197,9 @@ export function GameCard({ game }: { game: GameConfig }) {
             </li>
           ))}
         </ul>
-        <Link
-          to="/games/$slug"
-          params={{ slug: game.slug }}
-          className="story-link mt-5 inline-flex items-center gap-2 text-sm font-semibold text-gold-strong"
-        >
-          {t("games.openHub")}
-        </Link>
+        <p className="mt-5 text-xs font-semibold uppercase tracking-[0.1em] text-gold-strong opacity-70 transition-opacity group-hover:opacity-100">
+          {locale === "pt-BR" ? "Clique no card para entrar" : locale === "es" ? "Haz clic para entrar" : "Click the card to enter"}
+        </p>
       </div>
     </article>
   );
