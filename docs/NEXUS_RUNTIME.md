@@ -28,13 +28,30 @@ These systems provide context/actions rather than generic inference:
 
 Lovable's Agent can therefore become a tool NEXUS delegates build work to, but it is not modeled as a drop-in generic LLM endpoint.
 
-## 2. Chat modes
+## 2. Chat experiences
 
-### Gamer
+### Global Gamer mode
 
-Available to authenticated MGP users. NEXUS can discuss games, mechanics, builds, communities and MGP product usage. Internal repository/administrative context is not exposed in this mode.
+The NEXUS launcher is global across the MGP site.
 
-### Development
+Visitors who are not signed in can use a **10-response anonymous trial**. The first visible chat message is a local NEXUS greeting and does not consume the quota. Each successfully generated assistant response consumes one of the ten trial responses. Once the quota reaches zero, the composer locks and the visitor is asked to sign in or create an MGP profile.
+
+Guest chat characteristics:
+
+- no email is required;
+- an HTTP-only, SameSite=Lax server session stores only an opaque guest UUID;
+- the server-side guest record expires after 30 days;
+- direct browser access to guest chat tables is denied;
+- the quota is incremented atomically when an assistant response is recorded;
+- a per-session short-window rate limit reduces abuse and accidental rapid retries;
+- MGP does not use raw device fingerprinting merely to enforce the free trial;
+- messages can be sent to the official AI provider selected by the NEXUS model router.
+
+Clearing browser cookies may produce a new anonymous session. Preventing that completely would require stronger identity or device tracking, which is intentionally not part of the guest MVP.
+
+Authenticated users continue using Gamer mode with persistent account-scoped conversation history. Gamer mode uses a relaxed gaming-native personality while keeping internal repository and administrative details private.
+
+### Development mode
 
 Restricted to users with the `admin` role in `public.user_roles`. Development mode can discuss MGP internals and routes work to specialist cores (AEGIS, VEIL, ATLAS, PULSE, GEAR, VECTOR).
 
@@ -42,12 +59,21 @@ Development mode does **not** automatically grant external GitHub/Supabase/Lovab
 
 ## 3. Persistence
 
-Conversation history is stored in:
+Authenticated conversation history is stored in:
 
 - `public.nexus_threads`
 - `public.nexus_messages`
 
-Both tables use RLS and are scoped to the authenticated user. Messages store:
+Both tables use RLS and are scoped to the authenticated user.
+
+Anonymous trial state is stored separately in:
+
+- `public.nexus_guest_sessions`
+- `public.nexus_guest_messages`
+
+Guest tables are server-only: RLS deny policies and revoked `anon`/`authenticated` table grants prevent the client from reading or writing them directly. The trusted backend uses the service-role client only for this narrowly scoped workflow.
+
+Messages may store:
 
 - role/content;
 - selected specialist cores;
@@ -55,7 +81,7 @@ Both tables use RLS and are scoped to the authenticated user. Messages store:
 - basic runtime metadata;
 - timestamp.
 
-Do not store provider API keys, OAuth refresh tokens or other secrets in these chat tables.
+Do not store provider API keys, OAuth refresh tokens or other secrets in chat tables.
 
 ## 4. Human approval boundary
 
@@ -70,7 +96,7 @@ NEXUS may discuss and prepare changes autonomously, but destructive or productio
 
 Prefer reversible workflows: branch -> diff/review -> merge, and migration -> review -> apply.
 
-## 5. Provider configuration
+## 5. Provider and guest-session configuration
 
 Server-only environment variables:
 
@@ -82,9 +108,12 @@ NEXUS_PROVIDER_ORDER=openai,gemini,anthropic
 NEXUS_OPENAI_MODEL=gpt-5.6-sol
 NEXUS_GEMINI_MODEL=gemini-3.8-flash
 NEXUS_ANTHROPIC_MODEL=claude-sonnet-4-6
+NEXUS_GUEST_SESSION_SECRET=
 ```
 
-At least one inference provider must be configured for NEXUS to generate responses.
+`NEXUS_GUEST_SESSION_SECRET` should be a random value with at least 32 characters. The runtime can temporarily derive the guest-cookie secret from the server-only Supabase service-role credential when the dedicated secret is absent, but a dedicated secret is preferred for key separation.
+
+At least one inference provider must be configured for NEXUS to generate live responses. The local first-message greeting can render without a model call.
 
 ## 6. Model strategy
 
@@ -92,9 +121,15 @@ The default strategy is **failover**, not sending every prompt to every model. T
 
 Later, NEXUS may support an explicit `council` mode for difficult admin-only tasks. In council mode, a bounded number of providers can independently analyze the same problem and NEXUS can synthesize their outputs. It must be opt-in because it multiplies inference cost and data disclosure.
 
-## 7. Current limitations
+## 7. Brand provenance
+
+The NEXUS brand/provenance boundary is documented in `docs/NEXUS_BRAND_PROVENANCE.md`. Personal legal identifiers such as CPF, private phone numbers and identity documents must not be committed to the repository merely to prove ownership.
+
+## 8. Current limitations
 
 - The MGP runtime does not inherit ChatGPT account memory, ChatGPT Plus quotas or ChatGPT connectors.
+- Anonymous guest history is not automatically merged into an account after sign-in; that can become an explicit opt-in feature later.
+- A scheduled expired-guest cleanup job is still pending; expiry is already recorded in the schema.
 - The Lovable MCP OAuth client is registered architecturally but still needs a runtime MCP client + user authorization before NEXUS can invoke it from the MGP server.
 - GitHub and Supabase administrative bridges likewise need their own scoped credentials before in-product execution is enabled.
 - Specialist cores are routing contracts today; they become independent agents only when a real worker/runtime is implemented for them.
