@@ -30,11 +30,11 @@
 
 # MGP — Souls Visual & Editorial Foundation
 
-- [ ] Optimize the repository artwork for Dark Souls III, Elden Ring, and EA SPORTS FC
-- [ ] Connect the three local covers with reviewed card and hero framing
-- [ ] Move Dark Souls III and Elden Ring boss research into a dedicated data module
-- [ ] Rebuild the shared Souls boss explorer with selectable details, filters, mechanics, and licensed-art placeholders
-- [ ] Validate changed files, automatic build health, and responsive presentation
+- [x] Optimize the repository artwork for Dark Souls III, Elden Ring, and EA SPORTS FC
+- [x] Connect the three local covers with reviewed card and hero framing
+- [x] Move Dark Souls III and Elden Ring boss research into a dedicated data module
+- [x] Rebuild the shared Souls boss explorer with selectable details, filters, mechanics, and licensed-art placeholders
+- [x] Validate changed files, automatic build health, and responsive presentation
 
 # MGP v0.1.3A — VALORANT Foundation
 

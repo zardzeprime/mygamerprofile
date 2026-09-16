@@ -21,11 +21,9 @@ export function GameArtwork({
   loading = "lazy",
 }: GameArtworkProps) {
   const isLeagueArtwork = game.slug === "league-of-legends";
-  const usesUpscaledRepositoryArtwork = [
-    "dark-souls-iii",
-    "elden-ring",
-    "ea-sports-fc",
-  ].includes(game.slug);
+  const usesUpscaledRepositoryArtwork = ["dark-souls-iii", "elden-ring", "ea-sports-fc"].includes(
+    game.slug,
+  );
   const configuredSource = isLeagueArtwork
     ? LEAGUE_OFFICIAL_LOGO
     : variant === "hero"
