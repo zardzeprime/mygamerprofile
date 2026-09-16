@@ -3,7 +3,7 @@ import { ArrowRight, Gamepad2, Trophy, Users2, UsersRound } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { GameCard } from "@/components/games/GameCard";
 import { GameArtwork } from "@/components/games/GameArtwork";
-import { GAMES } from "@/config/games";
+import { ACTIVE_GAMES } from "@/config/gameAvailability";
 import { useI18n } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { listPosts } from "@/lib/posts.functions";
@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/carousel";
 import { useState } from "react";
 
-const SORTED_GAMES = [...GAMES].sort((first, second) =>
+const SORTED_GAMES = [...ACTIVE_GAMES].sort((first, second) =>
   first.name.localeCompare(second.name, "en", { sensitivity: "base" }),
 );
 
@@ -70,17 +70,17 @@ function Home() {
     <div className="pb-16">
       <section className="home-hero relative isolate min-h-[min(76vh,46rem)] overflow-hidden border-b border-border">
         <div className="absolute inset-0 grid grid-cols-2" aria-hidden="true">
-          {GAMES[0] ? (
+          {ACTIVE_GAMES[0] ? (
             <GameArtwork
-              game={GAMES[0]}
+              game={ACTIVE_GAMES[0]}
               variant="hero"
               loading="eager"
               className="h-full w-full opacity-70"
             />
           ) : null}
-          {GAMES[1] ? (
+          {ACTIVE_GAMES[1] ? (
             <GameArtwork
-              game={GAMES[1]}
+              game={ACTIVE_GAMES[1]}
               variant="hero"
               loading="eager"
               className="h-full w-full opacity-65"
@@ -131,7 +131,7 @@ function Home() {
         <section className="py-14" aria-labelledby="featured-games">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="section-kicker">MG PROFILE / 01</p>
+              <p className="section-kicker">MG PROFILE / 0.1.9</p>
               <h2
                 id="featured-games"
                 className="mt-2 font-display text-2xl font-semibold text-foreground sm:text-3xl"
