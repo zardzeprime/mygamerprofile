@@ -41,6 +41,7 @@ Guest chat characteristics:
 - no email is required;
 - an HTTP-only, SameSite=Lax server session stores only an opaque guest UUID;
 - the server-side guest record expires after 30 days;
+- a daily `pg_cron` retention job deletes expired guest sessions and their cascading message history;
 - direct browser access to guest chat tables is denied;
 - the quota is incremented atomically when an assistant response is recorded;
 - a per-session short-window rate limit reduces abuse and accidental rapid retries;
@@ -129,7 +130,6 @@ The NEXUS brand/provenance boundary is documented in `docs/NEXUS_BRAND_PROVENANC
 
 - The MGP runtime does not inherit ChatGPT account memory, ChatGPT Plus quotas or ChatGPT connectors.
 - Anonymous guest history is not automatically merged into an account after sign-in; that can become an explicit opt-in feature later.
-- A scheduled expired-guest cleanup job is still pending; expiry is already recorded in the schema.
 - The Lovable MCP OAuth client is registered architecturally but still needs a runtime MCP client + user authorization before NEXUS can invoke it from the MGP server.
 - GitHub and Supabase administrative bridges likewise need their own scoped credentials before in-product execution is enabled.
 - Specialist cores are routing contracts today; they become independent agents only when a real worker/runtime is implemented for them.
