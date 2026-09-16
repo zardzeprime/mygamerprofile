@@ -36,5 +36,15 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
     },
   },
+  {
+    // NEXUS currently bridges tables/RPCs added after the checked-in generated
+    // Supabase schema. Keep the exception isolated to this adapter instead of
+    // weakening the repository-wide rule; runtime validation and CI build still
+    // cover the module while generated database types are synchronized.
+    files: ["src/lib/nexus.functions.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
   eslintPluginPrettier,
 );
