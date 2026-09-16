@@ -1,14 +1,18 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { Bot, Code2, Gamepad2, Loader2, Plus, Send, Sparkles, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Code2, Gamepad2, Loader2, LockKeyhole, Plus, Send, X } from "lucide-react";
 
+import { NexusMark } from "@/components/nexus/NexusMark";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import {
+  getNexusGuestStatus,
   getNexusStatus,
   listNexusMessages,
   listNexusThreads,
+  sendNexusGuestMessage,
   sendNexusMessage,
 } from "@/lib/nexus.functions";
 import { cn } from "@/lib/utils";
@@ -30,6 +34,14 @@ type NexusStatus = {
   tools: Array<{ id: string; name: string; status: string }>;
 };
 
+type NexusGuestStatus = {
+  responsesUsed: number;
+  maxResponses: number;
+  remaining: number;
+  locked: boolean;
+  messages: NexusMessage[];
+};
+
 export function NexusChat() {
   const { user, loading: authLoading } = useAuth();
   const { locale } = useI18n();
@@ -39,6 +51,7 @@ export function NexusChat() {
   const [threadId, setThreadId] = useState<string | undefined>();
   const [messages, setMessages] = useState<NexusMessage[]>([]);
   const [status, setStatus] = useState<NexusStatus | null>(null);
+  const [guestStatus, setGuestStatus] = useState<NexusGuestStatus | null>(null);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
@@ -51,27 +64,52 @@ export function NexusChat() {
   );
 
   useEffect(() => {
-    if (!open || !user || status) return;
+    setStatus(null);
+    setGuestStatus(null);
+    setThreadId(undefined);
+    setMessages([]);
+    setMode("gaming");
+    setError("");
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (!open || authLoading) return;
 
     let active = true;
     setLoadingChat(true);
-    Promise.all([getNexusStatus(), listNexusThreads()])
-      .then(async ([nextStatus, threads]) => {
-        if (!active) return;
-        setStatus(nextStatus as NexusStatus);
+    setError("");
 
-        const preferred = (threads as Array<{ id: string; mode: NexusMode }>).find(
-          (thread) => thread.mode === mode,
+    const load = async () => {
+      if (!user) {
+        const nextGuest = (await getNexusGuestStatus()) as NexusGuestStatus;
+        if (!active) return;
+        setGuestStatus(nextGuest);
+        setMessages(
+          (nextGuest.messages ?? []).filter(
+            (message) => message.role === "user" || message.role === "assistant",
+          ),
         );
-        if (!preferred) return;
+        return;
+      }
 
-        const history = (await listNexusMessages({ data: { threadId: preferred.id } })) as NexusMessage[];
-        if (!active) return;
-        setThreadId(preferred.id);
-        setMessages(history.filter((message) => message.role === "user" || message.role === "assistant"));
-      })
+      const [nextStatus, threads] = await Promise.all([getNexusStatus(), listNexusThreads()]);
+      if (!active) return;
+      setStatus(nextStatus as NexusStatus);
+
+      const preferred = (threads as Array<{ id: string; mode: NexusMode }>).find(
+        (thread) => thread.mode === mode,
+      );
+      if (!preferred) return;
+
+      const history = (await listNexusMessages({ data: { threadId: preferred.id } })) as NexusMessage[];
+      if (!active) return;
+      setThreadId(preferred.id);
+      setMessages(history.filter((message) => message.role === "user" || message.role === "assistant"));
+    };
+
+    load()
       .catch((reason) => {
-        if (active) setError(reason instanceof Error ? reason.message : String(reason));
+        if (active) setError(formatNexusError(reason, Boolean(user), copy));
       })
       .finally(() => {
         if (active) setLoadingChat(false);
@@ -80,14 +118,15 @@ export function NexusChat() {
     return () => {
       active = false;
     };
-  }, [open, user, status, mode]);
+  }, [open, authLoading, user?.id]);
 
   useEffect(() => {
     if (!open) return;
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, open, sending]);
+  }, [messages, open, sending, guestStatus?.locked]);
 
   const startNewChat = (nextMode = mode) => {
+    if (!user) return;
     setMode(nextMode);
     setThreadId(undefined);
     setMessages([]);
@@ -96,6 +135,7 @@ export function NexusChat() {
   };
 
   const changeMode = (nextMode: NexusMode) => {
+    if (!user) return;
     if (nextMode === "development" && !status?.isAdmin) return;
     startNewChat(nextMode);
   };
@@ -103,7 +143,8 @@ export function NexusChat() {
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     const message = input.trim();
-    if (!message || sending || !user) return;
+    if (!message || sending || authLoading) return;
+    if (!user && (!guestStatus || guestStatus.locked)) return;
 
     setInput("");
     setError("");
@@ -111,8 +152,26 @@ export function NexusChat() {
     setSending(true);
 
     try {
+      if (!user) {
+        const response = await sendNexusGuestMessage({
+          data: { message, locale },
+        });
+
+        if (response.message) {
+          setMessages((current) => [...current, response.message as NexusMessage]);
+        }
+        setGuestStatus((current) => ({
+          responsesUsed: response.maxResponses - response.remaining,
+          maxResponses: response.maxResponses,
+          remaining: response.remaining,
+          locked: response.locked,
+          messages: current?.messages ?? [],
+        }));
+        return;
+      }
+
       const response = await sendNexusMessage({
-        data: { threadId, mode, message },
+        data: { threadId, mode, message, locale },
       });
       setThreadId(response.threadId);
       setMessages((current) => [
@@ -126,30 +185,57 @@ export function NexusChat() {
         },
       ]);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : String(reason));
+      setError(formatNexusError(reason, Boolean(user), copy));
     } finally {
       setSending(false);
     }
   };
+
+  const greeting: NexusMessage = {
+    id: `nexus-greeting-${mode}-${user ? "member" : "guest"}`,
+    role: "assistant",
+    content:
+      mode === "development"
+        ? copy(
+            "NEXUS online. Manda o que você quer construir, revisar ou consertar no MGP. Eu organizo o problema e puxo os núcleos certos quando precisar.",
+            "NEXUS online. Tell me what you want to build, review or fix in MGP. I'll organize the problem and pull in the right cores when needed.",
+            "NEXUS en línea. Dime qué quieres construir, revisar o arreglar en MGP. Organizo el problema y activo los núcleos adecuados cuando haga falta.",
+          )
+        : user
+          ? copy(
+              "E aí! Eu sou a NEXUS, a IA gamer do MGP. Pode chegar com boss, build, lore, competitivo, setup ou só pra trocar ideia. 🎮",
+              "Yo! I'm NEXUS, MGP's gamer AI. Hit me with bosses, builds, lore, competitive play, setups or just come hang out. 🎮",
+              "¡Hey! Soy NEXUS, la IA gamer de MGP. Puedes venir con bosses, builds, lore, competitivo, setup o simplemente a charlar. 🎮",
+            )
+          : copy(
+              "E aí! Eu sou a NEXUS, a IA gamer do MGP. Pode chegar com boss, build, lore, competitivo, setup ou só pra trocar ideia. 🎮 Sem login, você tem 10 respostas grátis comigo.",
+              "Yo! I'm NEXUS, MGP's gamer AI. Hit me with bosses, builds, lore, competitive play, setups or just come hang out. 🎮 You get 10 free replies before signing in.",
+              "¡Hey! Soy NEXUS, la IA gamer de MGP. Puedes venir con bosses, builds, lore, competitivo, setup o simplemente a charlar. 🎮 Tienes 10 respuestas gratis antes de iniciar sesión.",
+            ),
+  };
+
+  const visibleMessages = [greeting, ...messages];
+  const guestLocked = !user && Boolean(guestStatus?.locked);
+  const canSend = Boolean(user || (guestStatus && !guestStatus.locked));
 
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="fixed bottom-5 right-5 z-[70] grid size-14 place-items-center rounded-full border border-gold/40 bg-foreground text-background shadow-lift transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+        className="fixed bottom-5 right-5 z-[70] grid size-14 place-items-center rounded-full border border-gold/45 bg-foreground text-gold shadow-lift transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
         aria-label={copy("Abrir NEXUS", "Open NEXUS", "Abrir NEXUS")}
       >
-        {open ? <X className="size-5" /> : <Sparkles className="size-5" />}
+        {open ? <X className="size-5 text-background" /> : <NexusMark className="size-7" />}
       </button>
 
       {open ? (
-        <section className="fixed bottom-24 right-4 z-[69] flex h-[min(680px,calc(100vh-8rem))] w-[min(430px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl border border-border bg-background shadow-lift">
+        <section className="fixed bottom-24 right-4 z-[69] flex h-[min(700px,calc(100vh-8rem))] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl border border-border bg-background shadow-lift">
           <header className="border-b border-border bg-surface px-4 py-3">
             <div className="flex items-center justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
-                <div className="grid size-10 shrink-0 place-items-center rounded-2xl bg-gold/15 text-gold-strong">
-                  <Bot className="size-5" />
+                <div className="grid size-10 shrink-0 place-items-center rounded-2xl border border-gold/20 bg-gold/10 text-gold-strong">
+                  <NexusMark className="size-6" title="NEXUS" />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
@@ -159,20 +245,37 @@ export function NexusChat() {
                     </span>
                   </div>
                   <p className="truncate text-xs text-muted-foreground">
-                    {configuredProviders.length
-                      ? copy(
-                          `${configuredProviders.length} provedor(es) disponível(is)`,
-                          `${configuredProviders.length} provider(s) available`,
-                          `${configuredProviders.length} proveedor(es) disponible(s)`,
-                        )
-                      : copy("Aguardando provedor de IA", "Waiting for an AI provider", "Esperando proveedor de IA")}
+                    {!user
+                      ? guestStatus
+                        ? copy(
+                            `${guestStatus.remaining} de ${guestStatus.maxResponses} respostas grátis`,
+                            `${guestStatus.remaining} of ${guestStatus.maxResponses} free replies left`,
+                            `${guestStatus.remaining} de ${guestStatus.maxResponses} respuestas gratis`,
+                          )
+                        : copy("Conectando sessão guest...", "Connecting guest session...", "Conectando sesión invitada...")
+                      : configuredProviders.length
+                        ? copy(
+                            `${configuredProviders.length} provedor(es) disponível(is)`,
+                            `${configuredProviders.length} provider(s) available`,
+                            `${configuredProviders.length} proveedor(es) disponible(s)`,
+                          )
+                        : copy("NEXUS online", "NEXUS online", "NEXUS en línea")}
                   </p>
                 </div>
               </div>
 
-              <Button type="button" variant="ghost" size="icon" onClick={() => startNewChat()} title="Nova conversa">
-                <Plus className="size-4" />
-              </Button>
+              {user ? (
+                <Button type="button" variant="ghost" size="icon" onClick={() => startNewChat()} title={copy("Nova conversa", "New chat", "Nueva conversación")}>
+                  <Plus className="size-4" />
+                </Button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+                >
+                  {copy("Entrar", "Sign in", "Entrar")}
+                </Link>
+              )}
             </div>
 
             {user && status ? (
@@ -200,7 +303,7 @@ export function NexusChat() {
                   title={!status.isAdmin ? "Admin only" : undefined}
                 >
                   <Code2 className="size-3.5" />
-                  Desenvolvimento
+                  {copy("Desenvolvimento", "Development", "Desarrollo")}
                 </button>
               </div>
             ) : null}
@@ -211,73 +314,78 @@ export function NexusChat() {
               <div className="grid h-full place-items-center text-muted-foreground">
                 <Loader2 className="size-5 animate-spin" />
               </div>
-            ) : !user ? (
-              <div className="grid h-full place-items-center text-center">
-                <div className="max-w-xs space-y-2">
-                  <Bot className="mx-auto size-8 text-gold-strong" />
-                  <p className="font-semibold text-foreground">
-                    {copy("Entre no MGP para conversar com a NEXUS.", "Sign in to chat with NEXUS.", "Inicia sesión para hablar con NEXUS.")}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {copy(
-                      "As conversas ficam vinculadas à sua conta.",
-                      "Conversations stay linked to your account.",
-                      "Las conversaciones quedan vinculadas a tu cuenta.",
-                    )}
-                  </p>
-                </div>
-              </div>
-            ) : messages.length === 0 ? (
-              <div className="grid h-full place-items-center text-center">
-                <div className="max-w-xs space-y-2">
-                  <Sparkles className="mx-auto size-8 text-gold-strong" />
-                  <p className="font-semibold text-foreground">
-                    {mode === "development"
-                      ? copy("O que vamos construir no MGP?", "What are we building in MGP?", "¿Qué vamos a construir en MGP?")
-                      : copy("Sobre o que vamos jogar ou conversar?", "What are we playing or discussing?", "¿Sobre qué vamos a jugar o hablar?")}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {mode === "development"
-                      ? copy(
-                          "NEXUS pode discutir arquitetura e coordenar os núcleos especializados.",
-                          "NEXUS can discuss architecture and coordinate specialist cores.",
-                          "NEXUS puede discutir arquitectura y coordinar núcleos especializados.",
-                        )
-                      : copy(
-                          "Pergunte sobre jogos, builds, mecânicas e o próprio MGP.",
-                          "Ask about games, builds, mechanics and MGP itself.",
-                          "Pregunta sobre juegos, builds, mecánicas y el propio MGP.",
-                        )}
-                  </p>
-                </div>
-              </div>
             ) : (
-              messages.map((message, index) => (
-                <article
-                  key={message.id ?? `${message.role}-${index}`}
-                  className={cn(
-                    "max-w-[88%] rounded-2xl px-3.5 py-3 text-sm leading-6",
-                    message.role === "user"
-                      ? "ml-auto bg-foreground text-background"
-                      : "mr-auto border border-border bg-surface text-foreground",
-                  )}
-                >
-                  <p className="whitespace-pre-wrap">{message.content}</p>
-                  {message.role === "assistant" && (message.model || message.provider) ? (
-                    <p className="mt-2 text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                      {[message.provider, message.model].filter(Boolean).join(" · ")}
-                    </p>
-                  ) : null}
-                </article>
-              ))
-            )}
+              <>
+                {visibleMessages.map((message, index) => (
+                  <article
+                    key={message.id ?? `${message.role}-${index}`}
+                    className={cn(
+                      "max-w-[88%] rounded-2xl px-3.5 py-3 text-sm leading-6",
+                      message.role === "user"
+                        ? "ml-auto bg-foreground text-background"
+                        : "mr-auto border border-border bg-surface text-foreground",
+                    )}
+                  >
+                    {message.role === "assistant" ? (
+                      <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-gold-strong">
+                        <NexusMark className="size-3.5" />
+                        NEXUS
+                      </div>
+                    ) : null}
+                    <p className="whitespace-pre-wrap">{message.content}</p>
+                    {message.role === "assistant" && (message.model || message.provider) ? (
+                      <p className="mt-2 text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                        {[message.provider, message.model].filter(Boolean).join(" · ")}
+                      </p>
+                    ) : null}
+                  </article>
+                ))}
 
-            {sending ? (
-              <div className="mr-auto flex items-center gap-2 rounded-2xl border border-border bg-surface px-3.5 py-3 text-sm text-muted-foreground">
-                <Loader2 className="size-4 animate-spin" />
-                NEXUS...
-              </div>
-            ) : null}
+                {sending ? (
+                  <div className="mr-auto flex items-center gap-2 rounded-2xl border border-border bg-surface px-3.5 py-3 text-sm text-muted-foreground">
+                    <NexusMark className="size-4 text-gold-strong" />
+                    <Loader2 className="size-3.5 animate-spin" />
+                    NEXUS...
+                  </div>
+                ) : null}
+
+                {guestLocked ? (
+                  <div className="mt-4 rounded-2xl border border-gold/30 bg-gold/5 p-4 text-center">
+                    <div className="mx-auto mb-2 grid size-9 place-items-center rounded-full bg-gold/10 text-gold-strong">
+                      <LockKeyhole className="size-4" />
+                    </div>
+                    <p className="font-semibold text-foreground">
+                      {copy(
+                        "As 10 respostas grátis acabaram por aqui.",
+                        "Your 10 free NEXUS replies are used up.",
+                        "Tus 10 respuestas gratis de NEXUS se terminaron.",
+                      )}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                      {copy(
+                        "Entra no MGP para continuar a conversa e manter seu histórico na conta.",
+                        "Sign in to keep chatting and save your NEXUS history to your account.",
+                        "Inicia sesión para seguir hablando y guardar tu historial de NEXUS en tu cuenta.",
+                      )}
+                    </p>
+                    <div className="mt-3 flex justify-center gap-2">
+                      <Link
+                        to="/login"
+                        className="rounded-xl bg-foreground px-3.5 py-2 text-xs font-semibold text-background"
+                      >
+                        {copy("Entrar", "Sign in", "Entrar")}
+                      </Link>
+                      <Link
+                        to="/register"
+                        className="rounded-xl border border-border bg-background px-3.5 py-2 text-xs font-semibold text-foreground"
+                      >
+                        {copy("Criar perfil", "Create profile", "Crear perfil")}
+                      </Link>
+                    </div>
+                  </div>
+                ) : null}
+              </>
+            )}
           </div>
 
           <footer className="border-t border-border bg-surface p-3">
@@ -292,26 +400,75 @@ export function NexusChat() {
                     event.currentTarget.form?.requestSubmit();
                   }
                 }}
-                disabled={!user || sending}
+                disabled={!canSend || sending}
                 rows={1}
-                maxLength={6000}
-                placeholder={copy("Fale com a NEXUS...", "Talk to NEXUS...", "Habla con NEXUS...")}
+                maxLength={user ? 6000 : 2500}
+                placeholder={
+                  guestLocked
+                    ? copy("Entre para continuar com a NEXUS", "Sign in to keep chatting", "Inicia sesión para continuar")
+                    : copy("Fale com a NEXUS...", "Talk to NEXUS...", "Habla con NEXUS...")
+                }
                 className="max-h-32 min-h-11 flex-1 resize-none rounded-2xl border border-input bg-background px-3.5 py-3 text-sm text-foreground outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-gold/30 disabled:opacity-50"
               />
-              <Button type="submit" size="icon" disabled={!user || sending || !input.trim()} className="size-11 rounded-2xl">
+              <Button type="submit" size="icon" disabled={!canSend || sending || !input.trim()} className="size-11 rounded-2xl">
                 <Send className="size-4" />
               </Button>
             </form>
-            <p className="mt-2 px-1 text-[10px] leading-4 text-muted-foreground">
-              {copy(
-                "NEXUS usa provedores oficiais configurados no servidor. Ações administrativas exigem autorização própria.",
-                "NEXUS uses official providers configured on the server. Administrative actions require their own authorization.",
-                "NEXUS usa proveedores oficiales configurados en el servidor. Las acciones administrativas requieren autorización propia.",
-              )}
-            </p>
+            <div className="mt-2 flex items-start justify-between gap-3 px-1 text-[10px] leading-4 text-muted-foreground">
+              <p>
+                {user
+                  ? copy(
+                      "As mensagens podem ser processadas por provedores oficiais de IA configurados pelo MGP.",
+                      "Messages may be processed by official AI providers configured by MGP.",
+                      "Los mensajes pueden ser procesados por proveedores oficiales de IA configurados por MGP.",
+                    )
+                  : copy(
+                      "Teste guest: até 10 respostas. As mensagens podem ser processadas por provedores oficiais de IA do MGP.",
+                      "Guest trial: up to 10 replies. Messages may be processed by MGP's configured official AI providers.",
+                      "Prueba invitada: hasta 10 respuestas. Los mensajes pueden ser procesados por proveedores oficiales de IA de MGP.",
+                    )}
+              </p>
+              {!user && guestStatus ? (
+                <span className="shrink-0 font-semibold text-gold-strong">{guestStatus.remaining}/10</span>
+              ) : null}
+            </div>
           </footer>
         </section>
       ) : null}
     </>
   );
+}
+
+function formatNexusError(
+  reason: unknown,
+  authenticated: boolean,
+  copy: (pt: string, en: string, es: string) => string,
+) {
+  const raw = reason instanceof Error ? reason.message : String(reason);
+
+  if (raw.includes("NEXUS_GUEST_RATE_LIMIT")) {
+    return copy(
+      "Mandou rápido demais 😅 espera alguns segundos e tenta de novo.",
+      "That was fast 😅 wait a few seconds and try again.",
+      "Eso fue rápido 😅 espera unos segundos e inténtalo de nuevo.",
+    );
+  }
+
+  if (raw.includes("no official model API configured") || raw.includes("All configured NEXUS providers failed")) {
+    return copy(
+      "A NEXUS está com o cérebro de IA indisponível agora. Tenta novamente daqui a pouco.",
+      "NEXUS's AI brain is unavailable right now. Try again in a bit.",
+      "El cerebro de IA de NEXUS no está disponible ahora. Inténtalo de nuevo en un momento.",
+    );
+  }
+
+  if (!authenticated) {
+    return copy(
+      "A NEXUS tropeçou nessa mensagem. Tenta de novo em alguns segundos.",
+      "NEXUS stumbled on that message. Try again in a few seconds.",
+      "NEXUS tropezó con ese mensaje. Inténtalo de nuevo en unos segundos.",
+    );
+  }
+
+  return raw;
 }
