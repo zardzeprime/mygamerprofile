@@ -1,262 +1,64 @@
 import type { Locale } from "@/i18n";
 
 export type ValorantNewsCategory = "patch" | "announcement" | "esports" | "media" | "dev";
+export type ValorantNewsItem = { id: string; category: ValorantNewsCategory; publishedAt: string; upcoming?: boolean; official: true; title: Record<Locale, string>; summary: Record<Locale, string>; url: string; sourceLabel: string };
 
-export type ValorantNewsItem = {
-  id: string;
-  category: ValorantNewsCategory;
-  publishedAt: string;
-  upcoming?: boolean;
-  official: true;
-  title: Record<Locale, string>;
-  summary: Record<Locale, string>;
-  url: string;
-  sourceLabel: string;
-};
+const localized = (pt: string, en: string, es: string): Record<Locale, string> => ({ "pt-BR": pt, en, es });
+const patch = (version: string, publishedAt: string, pt: string, en: string, es: string): ValorantNewsItem => ({
+  id: `patch-${version.replace(".", "-")}`, category: "patch", publishedAt, official: true,
+  title: localized(`Atualização ${version} do VALORANT`, `VALORANT Patch Notes ${version}`, `Notas de la versión ${version} de VALORANT`),
+  summary: localized(pt, en, es), url: `https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-${version.replace(".", "-")}/`, sourceLabel: "Riot Games",
+});
 
 // Editorial snapshot sourced only from Riot Games / VALORANT Esports official channels.
-// This file is intentionally plain data so the automated news watcher can update it
-// through reviewable GitHub pull requests instead of writing directly to production.
+// Historical patches are backfilled in chronological batches through reviewable pull requests.
 export const VALORANT_NEWS: ValorantNewsItem[] = [
   {
-    id: "patch-13-06-announced",
-    category: "announcement",
-    publishedAt: "2026-09-22T13:00:00.000Z",
-    upcoming: true,
-    official: true,
-    title: {
-      "pt-BR": "Atualização 13.06 está prevista para 22 de setembro",
-      en: "Patch 13.06 is planned for September 22",
-      es: "La versión 13.06 está prevista para el 22 de septiembre",
-    },
-    summary: {
-      "pt-BR": "A Riot antecipou uma atualização maior para o sistema de Equipamentos de Agentes, vinculando a progressão ao tempo jogado com cada Agente.",
-      en: "Riot previewed a larger Agent Gear system update that will tie progression more directly to time played on each Agent.",
-      es: "Riot adelantó una actualización mayor del sistema de Equipamiento de Agentes, vinculando la progresión al tiempo jugado con cada Agente.",
-    },
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-05/",
-    sourceLabel: "Riot Games · Patch 13.05",
+    id: "patch-13-06-announced", category: "announcement", publishedAt: "2026-09-22T13:00:00.000Z", upcoming: true, official: true,
+    title: localized("Atualização 13.06 está prevista para 22 de setembro", "Patch 13.06 is planned for September 22", "La versión 13.06 está prevista para el 22 de septiembre"),
+    summary: localized("A Riot antecipou uma atualização maior para o sistema de Equipamentos de Agentes, vinculando a progressão ao tempo jogado com cada Agente.", "Riot previewed a larger Agent Gear system update that will tie progression more directly to time played on each Agent.", "Riot adelantó una actualización mayor del sistema de Equipamiento de Agentes, vinculando la progresión al tiempo jugado con cada Agente."),
+    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-05/", sourceLabel: "Riot Games · Patch 13.05",
   },
   {
-    id: "gauntlet-glitched-reveal",
-    category: "media",
-    publishedAt: "2026-09-14T14:00:00.000Z",
-    official: true,
-    title: {
-      "pt-BR": "GAUNTLET: GLITCHED — trailer de revelação do modo",
-      en: "GAUNTLET: GLITCHED — Game Mode Reveal Trailer",
-      es: "GAUNTLET: GLITCHED — tráiler de presentación del modo",
-    },
-    summary: {
-      "pt-BR": "16 jogadores, 8 equipes e caos total no novo modo apresentado pela Riot.",
-      en: "16 players, 8 teams and pure chaos in Riot's newly revealed game mode.",
-      es: "16 jugadores, 8 equipos y caos total en el nuevo modo presentado por Riot.",
-    },
-    url: "https://www.youtube.com/watch?v=V_uHGQUvLPw",
-    sourceLabel: "VALORANT · YouTube",
+    id: "gauntlet-glitched-reveal", category: "media", publishedAt: "2026-09-14T14:00:00.000Z", official: true,
+    title: localized("GAUNTLET: GLITCHED — trailer de revelação do modo", "GAUNTLET: GLITCHED — Game Mode Reveal Trailer", "GAUNTLET: GLITCHED — tráiler de presentación del modo"),
+    summary: localized("16 jogadores, 8 equipes e caos total no novo modo apresentado pela Riot.", "16 players, 8 teams and pure chaos in Riot's newly revealed game mode.", "16 jugadores, 8 equipos y caos total en el nuevo modo presentado por Riot."),
+    url: "https://www.youtube.com/watch?v=V_uHGQUvLPw", sourceLabel: "VALORANT · YouTube",
   },
   {
-    id: "champions-shanghai-everything",
-    category: "esports",
-    publishedAt: "2026-09-11T15:00:00.000Z",
-    official: true,
-    title: {
-      "pt-BR": "Champions Shanghai: tudo o que você precisa saber",
-      en: "Champions Shanghai: Everything You Need To Know",
-      es: "Champions Shanghai: todo lo que necesitas saber",
-    },
-    summary: {
-      "pt-BR": "Formato, calendário e contexto oficial do maior evento internacional do fim da temporada.",
-      en: "Official format, schedule and context for the season-ending international event.",
-      es: "Formato, calendario y contexto oficial del gran evento internacional de final de temporada.",
-    },
-    url: "https://valorantesports.com/",
-    sourceLabel: "VALORANT Esports",
+    id: "champions-shanghai-pickems", category: "esports", publishedAt: "2026-09-12T15:00:00.000Z", official: true,
+    title: localized("Champions Shanghai: Pick’Ems powered by AWS", "Champions Shanghai: Pick’Ems powered by AWS", "Champions Shanghai: Pick’Ems powered by AWS"),
+    summary: localized("Os Pick’Ems do Champions Shanghai abriram no site e no cliente, com previsões e recompensas oficiais.", "Champions Shanghai Pick’Ems opened on the website and in-client with official predictions and rewards.", "Los Pick’Ems de Champions Shanghai abrieron en la web y el cliente con predicciones y recompensas oficiales."),
+    url: "https://valorantesports.com/news/champions-shanghai-pickems-powered-by-aws", sourceLabel: "VALORANT Esports",
   },
   {
-    id: "vct-2027-open-qualifiers",
-    category: "esports",
-    publishedAt: "2026-09-08T15:00:00.000Z",
-    official: true,
-    title: {
-      "pt-BR": "Primeiros detalhes das Eliminatórias Abertas do VCT 2027",
-      en: "First details for the 2027 VCT Open Qualifiers",
-      es: "Primeros detalles de los clasificatorios abiertos del VCT 2027",
-    },
-    summary: {
-      "pt-BR": "A Riot começou a apresentar o caminho competitivo para a temporada de 2027.",
-      en: "Riot began outlining the competitive path into the 2027 season.",
-      es: "Riot empezó a presentar el camino competitivo hacia la temporada 2027.",
-    },
-    url: "https://valorantesports.com/",
-    sourceLabel: "VALORANT Esports",
+    id: "champions-shanghai-everything", category: "esports", publishedAt: "2026-09-11T15:00:00.000Z", official: true,
+    title: localized("Champions Shanghai: tudo o que você precisa saber", "Champions Shanghai: Everything You Need To Know", "Champions Shanghai: todo lo que necesitas saber"),
+    summary: localized("Formato, calendário e contexto oficial do maior evento internacional do fim da temporada.", "Official format, schedule and context for the season-ending international event.", "Formato, calendario y contexto oficial del gran evento internacional de final de temporada."),
+    url: "https://valorantesports.com/news/champions-shanghai-everything-you-need-to-know", sourceLabel: "VALORANT Esports",
   },
   {
-    id: "patch-13-05",
-    category: "patch",
-    publishedAt: "2026-09-01T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Atualização 13.05 do VALORANT", en: "VALORANT Patch Notes 13.05", es: "Notas de la versión 13.05 de VALORANT" },
-    summary: {
-      "pt-BR": "Bolão do Champions, novas penalidades contra espionagem de stream e ferramentas de instalock, correções e preparação para mudanças no Equipamento de Agentes.",
-      en: "Champions Pick’Ems, penalties for stream sniping and instalock tools, bug fixes, and preparation for Agent Gear changes.",
-      es: "Pick’Ems de Champions, penalizaciones por stream sniping y herramientas de instalock, correcciones y cambios futuros al Equipamiento de Agentes.",
-    },
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-05/",
-    sourceLabel: "Riot Games",
+    id: "vct-2027-open-qualifiers", category: "esports", publishedAt: "2026-09-08T15:00:00.000Z", official: true,
+    title: localized("Primeiros detalhes das Eliminatórias Abertas do VCT 2027", "First details for the 2027 VCT Open Qualifiers", "Primeros detalles de los clasificatorios abiertos del VCT 2027"),
+    summary: localized("A Riot começou a apresentar o caminho competitivo para a temporada de 2027.", "Riot began outlining the competitive path into the 2027 season.", "Riot empezó a presentar el camino competitivo hacia la temporada 2027."),
+    url: "https://valorantesports.com/news/get-ready-for-vct-2027-open-qualifiers", sourceLabel: "VALORANT Esports",
   },
-  {
-    id: "patch-13-04",
-    category: "patch",
-    publishedAt: "2026-08-18T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Atualização 13.04 do VALORANT", en: "VALORANT Patch Notes 13.04", es: "Notas de la versión 13.04 de VALORANT" },
-    summary: {
-      "pt-BR": "Abyss entrou na rotação Competitiva e Breeze saiu, além de correções de Agentes e armas corpo a corpo transformáveis.",
-      en: "Abyss entered the Competitive rotation while Breeze left, alongside Agent and transforming-melee bug fixes.",
-      es: "Abyss entró en la rotación Competitiva y Breeze salió, junto con correcciones de Agentes y melees transformables.",
-    },
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-04/",
-    sourceLabel: "Riot Games",
-  },
-  {
-    id: "aeris-skin-reveal",
-    category: "media",
-    publishedAt: "2026-08-17T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Aeris — trailer de revelação de skins", en: "PLAY YOUR HAND — Aeris Skin Reveal Trailer", es: "Aeris — tráiler de presentación de skins" },
-    summary: {
-      "pt-BR": "A Riot revelou oficialmente a linha Aeris e sua estética inspirada em cartas e floreios mágicos.",
-      en: "Riot officially revealed the Aeris skin line and its card-magic visual identity.",
-      es: "Riot reveló oficialmente la línea Aeris y su estética inspirada en cartas y magia.",
-    },
-    url: "https://www.youtube.com/watch?v=PoogGcJjsFU",
-    sourceLabel: "VALORANT · YouTube",
-  },
-  {
-    id: "patch-13-02",
-    category: "patch",
-    publishedAt: "2026-07-28T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Atualização 13.02 do VALORANT", en: "VALORANT Patch Notes 13.02", es: "Notas de la versión 13.02 de VALORANT" },
-    summary: {
-      "pt-BR": "Mudança na Ultimate do Phoenix, Split, Corrode e Lotus adicionados ao Retake e diversas correções de Agentes.",
-      en: "Phoenix ultimate adjustment, Split, Corrode and Lotus added to Retake, plus multiple Agent fixes.",
-      es: "Cambio en la definitiva de Phoenix, Split, Corrode y Lotus añadidos a Retake y varias correcciones de Agentes.",
-    },
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-02/",
-    sourceLabel: "Riot Games",
-  },
-  {
-    id: "neo-frontier-2026",
-    category: "media",
-    publishedAt: "2026-07-27T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Neo Oeste retorna ao VALORANT", en: "Neo Frontier returns", es: "Neo Frontier regresa a VALORANT" },
-    summary: {
-      "pt-BR": "A linha retornou com Vandal, Shorty e uma nova arma corpo a corpo Laço.",
-      en: "The line returned with the Vandal, Shorty and a new Lasso melee.",
-      es: "La línea regresó con Vandal, Shorty y un nuevo melee Lasso.",
-    },
-    url: "https://www.youtube.com/watch?v=iYfYrsd09lo",
-    sourceLabel: "VALORANT · YouTube",
-  },
-  {
-    id: "patch-13-01",
-    category: "patch",
-    publishedAt: "2026-07-14T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Atualização 13.01 do VALORANT", en: "VALORANT Patch Notes 13.01", es: "Notas de la versión 13.01 de VALORANT" },
-    summary: {
-      "pt-BR": "Ajustes de Iso, Yoru e Outlaw, além de medidas contra manipulação de ranque.",
-      en: "Iso, Yoru and Outlaw adjustments plus measures against rank manipulation.",
-      es: "Ajustes de Iso, Yoru y Outlaw, además de medidas contra la manipulación de rango.",
-    },
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-01/",
-    sourceLabel: "Riot Games",
-  },
-  {
-    id: "patch-13-00",
-    category: "patch",
-    publishedAt: "2026-06-23T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Atualização 13.00 — início do Ato 4", en: "VALORANT Patch Notes 13.00 — Act 4", es: "Notas 13.00 — inicio del Acto 4" },
-    summary: {
-      "pt-BR": "Buffs de Sentinelas, ajustes de Iniciadores, Summit na rotação Competitiva, mudanças no RR e várias novidades de sistema.",
-      en: "Sentinel buffs, Initiator adjustments, Summit in Competitive rotation, RR changes and multiple systems updates.",
-      es: "Mejoras a Centinelas, ajustes de Iniciadores, Summit en Competitivo, cambios de RR y varias novedades de sistema.",
-    },
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-00/",
-    sourceLabel: "Riot Games",
-  },
-  {
-    id: "patch-12-11",
-    category: "patch",
-    publishedAt: "2026-06-09T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Atualização 12.11 do VALORANT", en: "VALORANT Patch Notes 12.11", es: "Notas de la versión 12.11 de VALORANT" },
-    summary: {
-      "pt-BR": "Última atualização do Ato 3, lançamento do My VALORANT Card, correções e mudanças no Premier.",
-      en: "The final Act 3 patch, launch of My VALORANT Card, bug fixes and Premier changes.",
-      es: "La última actualización del Acto 3, lanzamiento de My VALORANT Card, correcciones y cambios en Premier.",
-    },
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-12-11/",
-    sourceLabel: "Riot Games",
-  },
-  {
-    id: "patch-12-10",
-    category: "patch",
-    publishedAt: "2026-05-27T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Atualização 12.10 do VALORANT", en: "VALORANT Patch Notes 12.10", es: "Notas de la versión 12.10 de VALORANT" },
-    summary: {
-      "pt-BR": "Compartilhamento de Replays de amigos, novos mapas de Skirmish e Pick’Ems do Masters London.",
-      en: "Friend replay sharing, new Skirmish maps and Masters London Pick’Ems.",
-      es: "Replays de amigos, nuevos mapas de Skirmish y Pick’Ems de Masters London.",
-    },
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-12-10/",
-    sourceLabel: "Riot Games",
-  },
-  {
-    id: "patch-12-09",
-    category: "patch",
-    publishedAt: "2026-05-12T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Atualização 12.09 do VALORANT", en: "VALORANT Patch Notes 12.09", es: "Notas de la versión 12.09 de VALORANT" },
-    summary: {
-      "pt-BR": "Nerfs de Neon e escopetas, testes de MMR e uma grande rodada de correções.",
-      en: "Neon and shotgun nerfs, MMR testing and a large batch of fixes.",
-      es: "Nerfs a Neon y escopetas, pruebas de MMR y una gran tanda de correcciones.",
-    },
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-12-09/",
-    sourceLabel: "Riot Games",
-  },
-  {
-    id: "patch-12-08",
-    category: "patch",
-    publishedAt: "2026-04-28T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Atualização 12.08 do VALORANT", en: "VALORANT Patch Notes 12.08", es: "Notas de la versión 12.08 de VALORANT" },
-    summary: {
-      "pt-BR": "Introdução de Skirmish: Ascension, nova rotação de mapas e retorno do Premier.",
-      en: "Introduction of Skirmish: Ascension, a new map rotation and Premier's return.",
-      es: "Introducción de Skirmish: Ascension, nueva rotación de mapas y regreso de Premier.",
-    },
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-12-08/",
-    sourceLabel: "Riot Games",
-  },
-  {
-    id: "patch-12-07",
-    category: "patch",
-    publishedAt: "2026-04-14T13:00:00.000Z",
-    official: true,
-    title: { "pt-BR": "Atualização 12.07 do VALORANT", en: "VALORANT Patch Notes 12.07", es: "Notas de la versión 12.07 de VALORANT" },
-    summary: {
-      "pt-BR": "Parceria com Discord, página de Configurações reformulada e outras melhorias do jogo.",
-      en: "Discord partnership, a revamped Settings page and other game improvements.",
-      es: "Colaboración con Discord, página de Ajustes renovada y otras mejoras del juego.",
-    },
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-12-07/",
-    sourceLabel: "Riot Games",
-  },
+  patch("13.05", "2026-09-01T13:00:00.000Z", "Pick’Ems do Champions, penalidades contra stream sniping e ferramentas de instalock, correções e preparação para mudanças no Equipamento de Agentes.", "Champions Pick’Ems, penalties for stream sniping and instalock tools, bug fixes, and preparation for Agent Gear changes.", "Pick’Ems de Champions, penalizaciones por stream sniping y herramientas de instalock, correcciones y cambios futuros al Equipamiento de Agentes."),
+  patch("13.04", "2026-08-18T13:00:00.000Z", "Abyss entrou na rotação Competitiva e Breeze saiu, além de correções de Agentes e armas corpo a corpo transformáveis.", "Abyss entered the Competitive rotation while Breeze left, alongside Agent and transforming-melee bug fixes.", "Abyss entró en la rotación Competitiva y Breeze salió, junto con correcciones de Agentes y melees transformables."),
+  { id: "aeris-skin-reveal", category: "media", publishedAt: "2026-08-17T13:00:00.000Z", official: true, title: localized("Aeris — trailer de revelação de skins", "PLAY YOUR HAND — Aeris Skin Reveal Trailer", "Aeris — tráiler de presentación de skins"), summary: localized("A Riot revelou oficialmente a linha Aeris e sua estética inspirada em cartas e floreios mágicos.", "Riot officially revealed the Aeris skin line and its card-magic visual identity.", "Riot reveló oficialmente la línea Aeris y su estética inspirada en cartas y magia."), url: "https://www.youtube.com/watch?v=PoogGcJjsFU", sourceLabel: "VALORANT · YouTube" },
+  patch("13.02", "2026-07-28T13:00:00.000Z", "Mudança na Ultimate do Phoenix, Split, Corrode e Lotus adicionados ao Retake e diversas correções de Agentes.", "Phoenix ultimate adjustment, Split, Corrode and Lotus added to Retake, plus multiple Agent fixes.", "Cambio en la definitiva de Phoenix, Split, Corrode y Lotus añadidos a Retake y varias correcciones de Agentes."),
+  { id: "neo-frontier-2026", category: "media", publishedAt: "2026-07-27T13:00:00.000Z", official: true, title: localized("Neo Oeste retorna ao VALORANT", "Neo Frontier returns", "Neo Frontier regresa a VALORANT"), summary: localized("A linha retornou com Vandal, Shorty e uma nova arma corpo a corpo Laço.", "The line returned with the Vandal, Shorty and a new Lasso melee.", "La línea regresó con Vandal, Shorty y un nuevo melee Lasso."), url: "https://www.youtube.com/watch?v=iYfYrsd09lo", sourceLabel: "VALORANT · YouTube" },
+  patch("13.01", "2026-07-14T13:00:00.000Z", "Ajustes de Iso, Yoru e Outlaw, além de medidas contra manipulação de ranque.", "Iso, Yoru and Outlaw adjustments plus measures against rank manipulation.", "Ajustes de Iso, Yoru y Outlaw, además de medidas contra la manipulación de rango."),
+  patch("13.00", "2026-06-23T13:00:00.000Z", "Buffs de Sentinelas, ajustes de Iniciadores, Summit na rotação Competitiva, mudanças no RR e várias novidades de sistema.", "Sentinel buffs, Initiator adjustments, Summit in Competitive rotation, RR changes and multiple systems updates.", "Mejoras a Centinelas, ajustes de Iniciadores, Summit en Competitivo, cambios de RR y varias novedades de sistema."),
+  patch("12.11", "2026-06-09T13:00:00.000Z", "Última atualização do Ato 3, lançamento do My VALORANT Card, correções e mudanças no Premier.", "The final Act 3 patch, launch of My VALORANT Card, bug fixes and Premier changes.", "La última actualización del Acto 3, lanzamiento de My VALORANT Card, correcciones y cambios en Premier."),
+  patch("12.10", "2026-05-27T13:00:00.000Z", "Compartilhamento de Replays de amigos, novos mapas de Skirmish e Pick’Ems do Masters London.", "Friend replay sharing, new Skirmish maps and Masters London Pick’Ems.", "Replays de amigos, nuevos mapas de Skirmish y Pick’Ems de Masters London."),
+  patch("12.09", "2026-05-12T13:00:00.000Z", "Nerfs de Neon e escopetas, testes de MMR e uma grande rodada de correções.", "Neon and shotgun nerfs, MMR testing and a large batch of fixes.", "Nerfs a Neon y escopetas, pruebas de MMR y una gran tanda de correcciones."),
+  patch("12.08", "2026-04-28T13:00:00.000Z", "Introdução de Skirmish: Ascension, nova rotação de mapas e retorno do Premier.", "Introduction of Skirmish: Ascension, a new map rotation and Premier's return.", "Introducción de Skirmish: Ascension, nueva rotación de mapas y regreso de Premier."),
+  patch("12.07", "2026-04-14T13:00:00.000Z", "Parceria com Discord, página de Configurações reformulada e outras melhorias do jogo.", "Discord partnership, a revamped Settings page and other game improvements.", "Colaboración con Discord, página de Ajustes renovada y otras mejoras del juego."),
+  patch("11.11", "2025-12-02T14:00:00.000Z", "Melhorias de UI, correções, presente de VP e a última atualização de 2025.", "Minor UI updates, bug fixes, VP gifting, and the final patch of 2025.", "Mejoras de interfaz, correcciones, regalos de VP y la última actualización de 2025."),
+  patch("11.10", "2025-11-11T14:00:00.000Z", "Rework completo do Harbor, ajustes de Clove, melhorias de HUD e Replays nos consoles.", "Harbor rework, Clove balance changes, HUD improvements, and Replays on console.", "Rework de Harbor, ajustes de Clove, mejoras del HUD y Replays en consola."),
+  patch("11.09", "2025-10-28T13:00:00.000Z", "MFA para contas compartilhadas, melhorias de qualidade de vida e correções.", "MFA for shared accounts, quality-of-life updates, and bug fixes.", "MFA para cuentas compartidas, mejoras de calidad de vida y correcciones."),
+  patch("11.08", "2025-10-14T13:00:00.000Z", "Grande atualização de balanceamento de Agentes, mapas e armas para reforçar a visão tática de longo prazo.", "Major Agent, map, and weapon balance update aligned with VALORANT's long-term tactical vision.", "Gran actualización de balance de Agentes, mapas y armas alineada con la visión táctica a largo plazo."),
+  patch("11.07", "2025-09-30T13:00:00.000Z", "Clareza visual, informações mais consistentes para habilidades e um novo modo apenas para partidas personalizadas.", "Visual clarity, more consistent ability information, and a new customs-only mode.", "Claridad visual, información más consistente para habilidades y un nuevo modo solo para personalizadas."),
+  patch("11.06", "2025-09-16T13:00:00.000Z", "O sistema de Replays chegou para Competitivo, Sem Classificação, Disputa da Spike e Premier no PC.", "The Replay System arrived for Competitive, Unrated, Swiftplay, and Premier on PC.", "El sistema de Replays llegó a Competitivo, No Clasificatoria, Swiftplay y Premier en PC."),
 ];
