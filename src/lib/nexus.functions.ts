@@ -6,7 +6,8 @@ import { getSupabasePublic } from "@/lib/supabase.server";
 import { buildNexusSystemPrompt, selectNexusCores, type NexusLocale } from "@/lib/nexus/prompt";
 import {
   completeWithNexusRouter,
-  getNexusProviderStatus,
+  getNexusRuntimeHealth,
+  hasNexusInferenceTransport,
   type NexusChatMessage,
 } from "@/lib/nexus/provider-router.server";
 import { NEXUS_TOOL_BRIDGES } from "@/lib/nexus/tool-bridges";
@@ -32,7 +33,7 @@ const guestSendSchema = z.object({
 const GUEST_HISTORY_LIMIT = 20;
 
 function hasConfiguredProvider() {
-  return getNexusProviderStatus().some((provider) => provider.configured);
+  return hasNexusInferenceTransport();
 }
 
 function assertInferenceReady() {
@@ -103,7 +104,10 @@ export const getNexusGuestStatus = createServerFn({ method: "GET" })
   .inputValidator((data) => guestStatusSchema.parse(data ?? {}))
   .handler(async ({ data }) => {
     const { db, guestId, guest } = await ensureGuestContext(data.guestId);
-    const messages = await loadGuestMessages(db, guestId, 40);
+    const [messages, runtime] = await Promise.all([
+      loadGuestMessages(db, guestId, 40),
+      getNexusRuntimeHealth(),
+    ]);
     const responsesUsed = Number(guest.responses_used ?? 0);
     const maxResponses = Number(guest.max_responses ?? 10);
     const remaining = Math.max(0, maxResponses - responsesUsed);
@@ -114,7 +118,8 @@ export const getNexusGuestStatus = createServerFn({ method: "GET" })
       maxResponses,
       remaining,
       locked: remaining <= 0,
-      aiReady: hasConfiguredProvider(),
+      aiReady: runtime.ready,
+      inferenceTransport: runtime.transport,
       messages,
     };
   });
@@ -127,12 +132,13 @@ export const sendNexusGuestMessage = createServerFn({ method: "POST" })
     const maxResponses = Number(guest.max_responses ?? 10);
 
     if (responsesUsed >= maxResponses) {
+      const runtime = await getNexusRuntimeHealth();
       return {
         guestId,
         locked: true as const,
         remaining: 0,
         maxResponses,
-        aiReady: hasConfiguredProvider(),
+        aiReady: runtime.ready,
         message: null,
       };
     }
@@ -223,16 +229,16 @@ export const getNexusStatus = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const db = context.supabase as any;
-    const admin = await isAdmin(db, context.userId);
-    const providers = getNexusProviderStatus().map((provider) => ({
-      id: provider.id,
-      configured: provider.configured,
-      model: provider.model,
-    }));
+    const [admin, runtime] = await Promise.all([
+      isAdmin(db, context.userId),
+      getNexusRuntimeHealth(),
+    ]);
 
     return {
       isAdmin: admin,
-      providers,
+      aiReady: runtime.ready,
+      inferenceTransport: runtime.transport,
+      providers: runtime.providers,
       tools: admin
         ? Object.values(NEXUS_TOOL_BRIDGES).map((tool) => ({
             id: tool.id,
