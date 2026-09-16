@@ -16,6 +16,11 @@ const ALLOWED_ORIGINS = new Set([
   "http://localhost:5173",
 ]);
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+// Supabase publishable keys are intentionally public project identifiers, not secrets.
+// Edge Runtime automatically exposes the legacy anon key, but does not always expose
+// the newer sb_publishable_* key. Pin this project's public key so requests emitted by
+// the generated Lovable/Supabase client can be authenticated without weakening the endpoint.
+const PROJECT_PUBLISHABLE_KEY = "sb_publishable_JXVaM-rr7Yu59l3x7WyHEg_qlR-uDMX";
 
 function env(name: string) {
   return Deno.env.get(name)?.trim() || undefined;
@@ -40,7 +45,7 @@ function hasValidProjectApiKey(req: Request) {
   if (!supplied) return false;
   const anon = env("SUPABASE_ANON_KEY");
   const publishable = env("SUPABASE_PUBLISHABLE_KEY");
-  return supplied === anon || supplied === publishable;
+  return supplied === anon || supplied === publishable || supplied === PROJECT_PUBLISHABLE_KEY;
 }
 
 function clientIp(req: Request) {
