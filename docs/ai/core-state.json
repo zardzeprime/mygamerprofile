@@ -6,31 +6,51 @@
       "name": "NEXUS",
       "role": "mother-orchestrator",
       "completed": [
-        "Established specialist-core routing architecture for AI-assisted development."
+        "Established specialist-core routing architecture for AI-assisted development.",
+        "Created persistent Nexus chat tables with per-user RLS in Supabase.",
+        "Created a global in-product Nexus chat with Gamer and admin-only Development modes.",
+        "Implemented official multi-provider inference routing with OpenAI, Gemini and Anthropic failover.",
+        "Separated inference providers from GitHub, Supabase and Lovable administrative tool bridges.",
+        "Configured GPT-5.6 Sol as the default OpenAI model while keeping provider/model selection environment-driven.",
+        "Persisted provider/model and relevant specialist cores with assistant messages."
       ],
-      "inProgress": [],
+      "inProgress": [
+        "Connect scoped GitHub, Supabase Management API and Lovable MCP credentials to executable Nexus tools."
+      ],
       "next": [
-        "Keep specialist context scoped and integrate cross-core decisions into one implementation."
+        "Configure at least one official inference API credential in deployment secrets and test the live chat.",
+        "Add the GitHub App bridge as the first write-capable Nexus development tool using branch/review/merge by default.",
+        "Add explicit human-approval gates before destructive or production-impacting tool actions.",
+        "Consider an opt-in multi-model council mode only for difficult admin tasks after normal failover is stable."
       ],
       "blocked": []
     },
     "aegis": {
       "name": "AEGIS",
       "role": "security",
-      "completed": [],
+      "completed": [
+        "Restricted Nexus Development mode to MGP administrators.",
+        "Kept model-provider credentials server-side and documented that consumer sessions must not be used as hidden API credentials.",
+        "Applied per-user RLS to Nexus conversations and optimized Nexus auth.uid() RLS evaluation."
+      ],
       "inProgress": [],
       "next": [
-        "Review security-sensitive changes when authentication, authorization, uploads, APIs, admin flows or third-party integrations change."
+        "Review GitHub App, Supabase Management API and Lovable MCP scopes before enabling Nexus write actions.",
+        "Add approval and audit records for privileged Nexus tool execution."
       ],
       "blocked": []
     },
     "veil": {
       "name": "VEIL",
       "role": "privacy",
-      "completed": [],
+      "completed": [
+        "Scoped Nexus chat history to the authenticated user through RLS.",
+        "Separated Gamer mode from internal Development context to avoid exposing repository/admin details to normal users."
+      ],
       "inProgress": [],
       "next": [
-        "Review privacy-sensitive changes when visibility, personal data, telemetry, connected accounts, retention or consent changes."
+        "Define retention/deletion controls for Nexus conversation history.",
+        "Document which message content is sent to each external model provider when optional multi-provider features are introduced."
       ],
       "blocked": []
     },
@@ -57,6 +77,7 @@
       "completed": [],
       "inProgress": [],
       "next": [
+        "Track model IDs and provider API changes so Nexus defaults do not become stale.",
         "Track game/editorial data that can become stale and define refresh expectations before automating it."
       ],
       "blocked": []
@@ -64,14 +85,17 @@
     "gear": {
       "name": "GEAR",
       "role": "automation",
-      "completed": [],
+      "completed": [
+        "Registered GitHub, Supabase and Lovable as separate Nexus tool bridges with explicit transports and approval requirements."
+      ],
       "inProgress": [],
       "next": [
+        "Implement scoped OAuth/App credential flows for Nexus administrative tools.",
         "Identify repeated manual project workflows that are stable enough to automate.",
         "Coordinate with PULSE when recurring content or data refreshes are introduced."
       ],
       "blocked": [
-        "No dedicated multi-agent or background-worker runtime is currently implemented."
+        "No dedicated multi-agent/background-worker runtime exists yet for independent specialist agents."
       ]
     },
     "vector": {
@@ -81,11 +105,13 @@
         "Separated boss-card framing from boss-detail framing so each context can use its own crop and scale.",
         "Added per-boss image position, scale and cover/contain controls for Dark Souls and Dark Souls III.",
         "Reduced poor letterboxing for landscape boss screenshots by allowing targeted crop/zoom.",
-        "Changed the games catalog to a denser responsive grid while preserving the homepage carousel."
+        "Changed the games catalog to a denser responsive grid while preserving the homepage carousel.",
+        "Made Nexus multi-provider behavior failover-first instead of querying every model for every message, limiting unnecessary latency and cost."
       ],
       "inProgress": [],
       "next": [
         "Review external boss-art delivery for image weight, caching and layout stability after visual approval.",
+        "Profile Nexus latency and provider failure rates before adding parallel council inference.",
         "Profile high-cost routes before proposing additional performance work."
       ],
       "blocked": []
