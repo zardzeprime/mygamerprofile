@@ -124,11 +124,20 @@ export function NexusChat() {
       setMessages(history.filter((message) => message.role === "user" || message.role === "assistant"));
     };
 
-    load()
+    const LOAD_TIMEOUT_MS = 12_000;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    Promise.race([
+      load(),
+      new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error("NEXUS_LOAD_TIMEOUT")), LOAD_TIMEOUT_MS);
+      }),
+    ])
       .catch((reason) => {
         if (active) setError(formatNexusError(reason, Boolean(user), copy));
       })
       .finally(() => {
+        if (timeoutId) clearTimeout(timeoutId);
         if (active) setLoadingChat(false);
       });
 
