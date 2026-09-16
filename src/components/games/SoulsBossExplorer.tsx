@@ -1,164 +1,421 @@
-import { useMemo, useState } from "react";
-import { Crown, Search, Sparkles, Swords } from "lucide-react";
+import { useMemo, useRef, useState, type ReactNode } from "react";
+import {
+  BookOpen,
+  CheckCircle2,
+  ChevronRight,
+  CircleDot,
+  ExternalLink,
+  Layers3,
+  MapPin,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Swords,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getGameConfig } from "@/config/games";
+import {
+  SOULS_BOSS_COLLECTIONS,
+  type SoulsBossKind,
+  type SoulsBossResearch,
+  type SoulsGameSlug,
+} from "@/data/soulsBossResearch";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
 
-type SoulsGameSlug = "dark-souls-iii" | "elden-ring";
-type BossKind = "story" | "optional" | "dlc";
+type Filter = "all" | SoulsBossKind;
 
-type BossEntry = {
-  name: string;
-  area: string;
-  kind: BossKind;
-  note?: Record<Locale, string>;
-};
-
-const DS3_BOSSES: BossEntry[] = [
-  { name: "Iudex Gundyr", area: "Cemetery of Ash", kind: "story" },
-  { name: "Vordt of the Boreal Valley", area: "High Wall of Lothric", kind: "story" },
-  { name: "Curse-Rotted Greatwood", area: "Undead Settlement", kind: "optional" },
-  { name: "Crystal Sage", area: "Road of Sacrifices", kind: "story" },
-  { name: "Deacons of the Deep", area: "Cathedral of the Deep", kind: "story" },
-  { name: "Abyss Watchers", area: "Farron Keep", kind: "story" },
-  { name: "High Lord Wolnir", area: "Catacombs of Carthus", kind: "story" },
-  { name: "Old Demon King", area: "Smouldering Lake", kind: "optional" },
-  { name: "Pontiff Sulyvahn", area: "Irithyll of the Boreal Valley", kind: "story" },
-  { name: "Yhorm the Giant", area: "Profaned Capital", kind: "story" },
-  { name: "Aldrich, Devourer of Gods", area: "Anor Londo", kind: "story" },
-  { name: "Dancer of the Boreal Valley", area: "High Wall of Lothric", kind: "story" },
-  { name: "Dragonslayer Armour", area: "Lothric Castle", kind: "story" },
-  { name: "Oceiros, the Consumed King", area: "Consumed King's Garden", kind: "optional" },
-  { name: "Champion Gundyr", area: "Untended Graves", kind: "optional" },
-  { name: "Lothric, Younger Prince & Lorian, Elder Prince", area: "Grand Archives", kind: "story" },
-  { name: "Ancient Wyvern", area: "Archdragon Peak", kind: "optional" },
-  { name: "The Nameless King", area: "Archdragon Peak", kind: "optional" },
-  { name: "Soul of Cinder", area: "Kiln of the First Flame", kind: "story" },
-  { name: "Champion's Gravetender & Gravetender Greatwolf", area: "Painted World of Ariandel", kind: "dlc" },
-  { name: "Sister Friede & Father Ariandel", area: "Painted World of Ariandel", kind: "dlc" },
-  { name: "Demon in Pain, Demon from Below & Demon Prince", area: "The Dreg Heap", kind: "dlc" },
-  { name: "Halflight, Spear of the Church", area: "The Ringed City", kind: "dlc" },
-  { name: "Darkeater Midir", area: "The Ringed City", kind: "dlc" },
-  { name: "Slave Knight Gael", area: "Filianore's Rest", kind: "dlc" },
-];
-
-const ELDEN_RING_BOSSES: BossEntry[] = [
-  { name: "Margit, the Fell Omen", area: "Stormhill", kind: "story" },
-  { name: "Godrick the Grafted", area: "Stormveil Castle", kind: "story" },
-  { name: "Rennala, Queen of the Full Moon", area: "Academy of Raya Lucaria", kind: "story" },
-  { name: "Starscourge Radahn", area: "Redmane Castle", kind: "story" },
-  { name: "Regal Ancestor Spirit", area: "Nokron, Eternal City", kind: "optional" },
-  { name: "Astel, Naturalborn of the Void", area: "Grand Cloister", kind: "optional" },
-  { name: "Lichdragon Fortissax", area: "Deeproot Depths", kind: "optional" },
-  { name: "Rykard, Lord of Blasphemy", area: "Volcano Manor", kind: "optional" },
-  { name: "Morgott, the Omen King", area: "Leyndell, Royal Capital", kind: "story" },
-  { name: "Fire Giant", area: "Mountaintops of the Giants", kind: "story" },
-  { name: "Mohg, Lord of Blood", area: "Mohgwyn Palace", kind: "optional" },
-  { name: "Malenia, Blade of Miquella", area: "Elphael, Brace of the Haligtree", kind: "optional" },
-  { name: "Dragonlord Placidusax", area: "Crumbling Farum Azula", kind: "optional" },
-  { name: "Godskin Duo", area: "Crumbling Farum Azula", kind: "story" },
-  { name: "Maliketh, the Black Blade", area: "Crumbling Farum Azula", kind: "story" },
-  { name: "Sir Gideon Ofnir, the All-Knowing", area: "Leyndell, Ashen Capital", kind: "story" },
-  { name: "Godfrey, First Elden Lord / Hoarah Loux", area: "Leyndell, Ashen Capital", kind: "story" },
-  { name: "Radagon of the Golden Order / Elden Beast", area: "Elden Throne", kind: "story" },
-  { name: "Divine Beast Dancing Lion", area: "Belurat, Tower Settlement", kind: "dlc" },
-  { name: "Rellana, Twin Moon Knight", area: "Castle Ensis", kind: "dlc" },
-  { name: "Putrescent Knight", area: "Stone Coffin Fissure", kind: "dlc" },
-  { name: "Commander Gaius", area: "Scaduview", kind: "dlc" },
-  { name: "Scadutree Avatar", area: "Scadutree Base", kind: "dlc" },
-  { name: "Metyr, Mother of Fingers", area: "Finger Ruins", kind: "dlc" },
-  { name: "Midra, Lord of Frenzied Flame", area: "Midra's Manse", kind: "dlc" },
-  { name: "Romina, Saint of the Bud", area: "Church of the Bud", kind: "dlc" },
-  { name: "Messmer the Impaler", area: "Shadow Keep", kind: "dlc" },
-  { name: "Bayle the Dread", area: "Jagged Peak", kind: "dlc" },
-  { name: "Promised Consort Radahn", area: "Enir-Ilim", kind: "dlc" },
-];
-
-const COLLECTIONS: Record<SoulsGameSlug, BossEntry[]> = {
-  "dark-souls-iii": DS3_BOSSES,
-  "elden-ring": ELDEN_RING_BOSSES,
-};
-
-export function SoulsBossExplorer({ gameSlug, locale }: { gameSlug: SoulsGameSlug; locale: Locale }) {
+export function SoulsBossExplorer({
+  gameSlug,
+  locale,
+}: {
+  gameSlug: SoulsGameSlug;
+  locale: Locale;
+}) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const detailRef = useRef<HTMLElement>(null);
+  const bosses = SOULS_BOSS_COLLECTIONS[gameSlug];
+  const game = getGameConfig(gameSlug);
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<"all" | BossKind>("all");
-  const bosses = COLLECTIONS[gameSlug];
-  const isEldenRing = gameSlug === "elden-ring";
+  const [filter, setFilter] = useState<Filter>("all");
+  const [selectedSlug, setSelectedSlug] = useState(bosses[0]?.slug ?? "");
 
   const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
+    const normalized = query.trim().toLocaleLowerCase(locale);
     return bosses.filter((boss) => {
-      const kindMatch = filter === "all" || boss.kind === filter;
-      const textMatch = !normalized || boss.name.toLowerCase().includes(normalized) || boss.area.toLowerCase().includes(normalized);
-      return kindMatch && textMatch;
+      if (filter !== "all" && boss.kind !== filter) return false;
+      if (!normalized) return true;
+      return [boss.name, boss.area, boss.mechanicTags.join(" ")]
+        .join(" ")
+        .toLocaleLowerCase(locale)
+        .includes(normalized);
     });
-  }, [bosses, filter, query]);
+  }, [bosses, filter, locale, query]);
+
+  const selected = bosses.find((boss) => boss.slug === selectedSlug) ?? filtered[0] ?? bosses[0];
+  const selectBoss = (boss: SoulsBossResearch) => {
+    setSelectedSlug(boss.slug);
+    requestAnimationFrame(() => {
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      detailRef.current?.scrollIntoView({
+        behavior: reducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    });
+  };
+
+  if (!game || !selected) return null;
+
+  const reviewedCount = bosses.filter((boss) => boss.researchStatus === "reviewed").length;
 
   return (
-    <section className="space-y-6">
-      <div className="surface-panel p-5 sm:p-6">
-        <div className="flex items-center gap-2 text-gold-strong">
-          <Crown className="size-4" />
-          <span className="section-kicker">{copy("ENCICLOPÉDIA MGP", "MGP ENCYCLOPEDIA", "ENCICLOPEDIA MGP")}</span>
-        </div>
-        <h2 className="mt-3 font-display text-2xl font-semibold text-foreground sm:text-3xl">
-          {isEldenRing ? copy("Chefes principais de Elden Ring", "Major Elden Ring bosses", "Jefes principales de Elden Ring") : copy("Chefes de Dark Souls III", "Dark Souls III bosses", "Jefes de Dark Souls III")}
-        </h2>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-          {isEldenRing
-            ? copy("Coleção editorial do MGP focada nos confrontos principais, opcionais de destaque e chefes de Shadow of the Erdtree. Não usa imagens copiadas de wikis de terceiros.", "MGP editorial collection focused on major encounters, standout optional fights and Shadow of the Erdtree bosses. It does not copy images from third-party wikis.", "Colección editorial de MGP centrada en los encuentros principales, opcionales destacados y jefes de Shadow of the Erdtree. No copia imágenes de wikis de terceros.")
-            : copy("Lista organizada do jogo base e das expansões Ashes of Ariandel e The Ringed City, com classificação por progressão.", "Organized list covering the base game plus Ashes of Ariandel and The Ringed City, classified by progression.", "Lista organizada del juego base y las expansiones Ashes of Ariandel y The Ringed City, clasificada por progresión.")}
-        </p>
+    <div className="space-y-6">
+      <section ref={detailRef} className="surface-panel scroll-mt-24 overflow-hidden">
+        <header className="relative isolate overflow-hidden border-b border-border px-5 py-7 sm:px-8">
+          <img
+            src={game.visual.heroImage}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 -z-20 h-full w-full object-cover opacity-35"
+            style={{ objectPosition: game.visual.heroObjectPosition }}
+          />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-background via-background/90 to-background/55" />
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl">
+              <p className="section-kicker flex items-center gap-2 text-gold-strong">
+                <BookOpen className="size-4" />
+                {copy("ENCICLOPÉDIA MGP", "MGP ENCYCLOPEDIA", "ENCICLOPEDIA MGP")}
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
+                {copy(`Chefes de ${game.name}`, `${game.name} bosses`, `Jefes de ${game.name}`)}
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
+                {copy(
+                  "Uma leitura editorial dos encontros, fases e sistemas de combate — sem números especulativos ou arte copiada de wikis.",
+                  "An editorial reading of encounters, phases, and combat systems—without speculative numbers or wiki artwork.",
+                  "Una lectura editorial de encuentros, fases y sistemas de combate, sin cifras especulativas ni arte copiado de wikis.",
+                )}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 text-xs font-semibold text-muted-foreground">
+              <Pill>
+                {bosses.length} {copy("chefes", "bosses", "jefes")}
+              </Pill>
+              <Pill>
+                {reviewedCount} {copy("revisados", "reviewed", "revisados")}
+              </Pill>
+            </div>
+          </div>
+        </header>
 
-        <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto]">
-          <label className="flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 focus-within:border-gold/50">
-            <Search className="size-4 text-muted-foreground" />
-            <Input value={query} onChange={(event) => setQuery(event.target.value)} className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0" placeholder={copy("Buscar chefe ou área…", "Search boss or area…", "Buscar jefe o zona…")} />
+        <div className="grid xl:grid-cols-[minmax(0,1fr)_22rem]">
+          <BossDetail boss={selected} locale={locale} gameSlug={gameSlug} />
+          <aside className="border-t border-border bg-muted/15 p-5 xl:border-l xl:border-t-0 sm:p-6">
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div>
+                <p className="section-kicker">
+                  {copy("ARTE DO ENCONTRO", "ENCOUNTER ART", "ARTE DEL ENCUENTRO")}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-foreground">
+                  {copy("Placeholder editorial", "Editorial placeholder", "Placeholder editorial")}
+                </p>
+              </div>
+              <Sparkles className="size-5 text-gold-strong" />
+            </div>
+            <div className="relative aspect-[3/4] overflow-hidden rounded-lg border border-border bg-background">
+              <img
+                src={game.visual.coverImage}
+                alt=""
+                aria-hidden="true"
+                className="h-full w-full object-cover opacity-55"
+                style={{ objectPosition: game.visual.cardObjectPosition }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-5">
+                <Swords className="size-7 text-gold-strong" />
+                <p className="mt-3 font-display text-2xl font-bold text-foreground">
+                  {selected.name}
+                </p>
+                <p className="mt-2 text-xs leading-5 text-muted-foreground">
+                  {copy(
+                    "A capa do jogo identifica temporariamente esta ficha.",
+                    "The game cover temporarily identifies this entry.",
+                    "La portada del juego identifica temporalmente esta ficha.",
+                  )}
+                </p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section
+        className="space-y-4"
+        aria-label={copy("Catálogo de chefes", "Boss catalog", "Catálogo de jefes")}
+      >
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <label className="flex w-full max-w-xl items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 transition-colors focus-within:border-gold/60 focus-within:ring-1 focus-within:ring-gold/20">
+            <Search className="size-4 shrink-0 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0"
+              placeholder={copy(
+                "Buscar chefe, área ou mecânica",
+                "Search boss, area, or mechanic",
+                "Buscar jefe, zona o mecánica",
+              )}
+            />
           </label>
-          <div className="flex gap-2 overflow-x-auto">
-            <FilterButton active={filter === "all"} onClick={() => setFilter("all")}>{copy("Todos", "All", "Todos")}</FilterButton>
-            <FilterButton active={filter === "story"} onClick={() => setFilter("story")}>{copy("Progressão", "Progression", "Progresión")}</FilterButton>
-            <FilterButton active={filter === "optional"} onClick={() => setFilter("optional")}>{copy("Opcionais", "Optional", "Opcionales")}</FilterButton>
-            <FilterButton active={filter === "dlc"} onClick={() => setFilter("dlc")}>DLC</FilterButton>
+          <div className="flex flex-wrap gap-2">
+            {(
+              [
+                ["all", copy("Todos", "All", "Todos")],
+                ["story", copy("Progressão", "Progression", "Progresión")],
+                ["optional", copy("Opcionais", "Optional", "Opcionales")],
+                ["dlc", "DLC"],
+              ] as const
+            ).map(([key, label]) => (
+              <Button
+                key={key}
+                type="button"
+                size="sm"
+                variant={filter === key ? "default" : "outline"}
+                onClick={() => setFilter(key)}
+              >
+                {label}
+              </Button>
+            ))}
           </div>
         </div>
-      </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filtered.map((boss, index) => (
-          <article key={boss.name} className="group overflow-hidden rounded-2xl border border-border bg-surface shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-gold/35 hover:shadow-lift">
-            <div className="relative grid aspect-[16/10] place-items-center overflow-hidden bg-[radial-gradient(circle_at_70%_20%,rgba(213,132,61,0.20),transparent_38%),linear-gradient(145deg,#120d0a,#2b1710_58%,#0c0a09)]">
-              <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.06)_1px,transparent_1px)] [background-size:32px_32px]" />
-              <div className="relative text-center">
-                {boss.kind === "dlc" ? <Sparkles className="mx-auto size-7 text-gold-strong" /> : <Swords className="mx-auto size-7 text-gold-strong" />}
-                <p className="mt-3 text-[0.65rem] font-black uppercase tracking-[0.18em] text-white/55">MGP · {String(index + 1).padStart(2, "0")}</p>
-              </div>
-            </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between gap-2">
-                <span className={cn("rounded-full border px-2 py-0.5 text-[0.62rem] font-bold uppercase tracking-[0.1em]", boss.kind === "dlc" ? "border-gold/35 bg-gold-soft/35 text-gold-strong" : "border-border bg-muted/30 text-muted-foreground")}>
-                  {boss.kind === "story" ? copy("Progressão", "Progression", "Progresión") : boss.kind === "optional" ? copy("Opcional", "Optional", "Opcional") : "DLC"}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((boss, index) => {
+            const active = boss.slug === selected.slug;
+            return (
+              <Button
+                key={boss.slug}
+                type="button"
+                variant="ghost"
+                onClick={() => selectBoss(boss)}
+                aria-pressed={active}
+                className={cn(
+                  "group h-auto min-h-52 overflow-hidden rounded-lg border border-border bg-surface p-0 text-left shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-gold/50 hover:bg-surface hover:shadow-lift",
+                  active && "border-gold/70 ring-1 ring-gold/20",
+                )}
+              >
+                <span className="grid h-full w-full grid-rows-[5.5rem_1fr]">
+                  <span className="relative block overflow-hidden border-b border-border bg-muted">
+                    <img
+                      src={game.visual.coverImage}
+                      alt=""
+                      aria-hidden="true"
+                      loading="lazy"
+                      className="h-full w-full object-cover opacity-45 transition-opacity duration-200 group-hover:opacity-60"
+                      style={{ objectPosition: game.visual.cardObjectPosition }}
+                    />
+                    <span className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+                    <span className="absolute inset-x-4 bottom-3 flex items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-gold-strong">
+                        #{String(index + 1).padStart(2, "0")}
+                      </span>
+                      <Pill>{kindLabel(boss.kind, locale)}</Pill>
+                    </span>
+                  </span>
+                  <span className="block p-4">
+                    <span className="flex items-start justify-between gap-3">
+                      <span className="min-w-0">
+                        <span className="block font-display text-lg font-bold leading-snug text-foreground">
+                          {boss.name}
+                        </span>
+                        <span className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <MapPin className="size-3.5 shrink-0" /> {boss.area}
+                        </span>
+                      </span>
+                      <ChevronRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                    </span>
+                    <span className="mt-3 line-clamp-2 block text-sm leading-6 text-muted-foreground">
+                      {boss.shortContext[locale]}
+                    </span>
+                    <span className="mt-3 flex flex-wrap gap-1.5">
+                      {boss.mechanicTags.slice(0, 3).map((tag) => (
+                        <MechanicChip key={tag}>{tag}</MechanicChip>
+                      ))}
+                    </span>
+                  </span>
                 </span>
-              </div>
-              <h3 className="mt-3 font-display text-lg font-semibold leading-snug text-foreground">{boss.name}</h3>
-              <p className="mt-2 text-xs leading-5 text-muted-foreground">{boss.area}</p>
-              {boss.note ? <p className="mt-3 text-xs leading-5 text-muted-foreground">{boss.note[locale]}</p> : null}
-            </div>
-          </article>
-        ))}
-      </div>
+              </Button>
+            );
+          })}
+        </div>
 
-      <div className="rounded-2xl border border-border bg-muted/15 p-4 text-xs leading-5 text-muted-foreground">
-        {copy("As fichas acima são conteúdo editorial original do MGP. Artes específicas dos chefes só serão adicionadas quando vierem de uma fonte oficial com uso autorizado ou de material claramente licenciado.", "The entries above are original MGP editorial content. Boss-specific artwork will only be added from an official authorized source or clearly licensed material.", "Las fichas anteriores son contenido editorial original de MGP. El arte específico de los jefes solo se añadirá desde una fuente oficial autorizada o material con licencia clara.")}
-      </div>
-    </section>
+        {filtered.length === 0 ? (
+          <div className="surface-panel p-8 text-center text-sm text-muted-foreground">
+            {copy(
+              "Nenhum chefe encontrado com esses filtros.",
+              "No bosses found with these filters.",
+              "No se encontraron jefes con estos filtros.",
+            )}
+          </div>
+        ) : null}
+      </section>
+
+      <p className="rounded-lg border border-border bg-muted/15 p-4 text-xs leading-5 text-muted-foreground">
+        {copy(
+          "Nota editorial: os textos do MG Profile são resumos próprios baseados em fatos do jogo e fontes de pesquisa. Artes individuais de chefes só serão adicionadas quando houver fonte oficial reutilizável ou licença individual claramente compatível.",
+          "Editorial note: MG Profile texts are original summaries based on game facts and research sources. Individual boss artwork will only be added when an official reusable source or clearly compatible individual license is available.",
+          "Nota editorial: los textos de MG Profile son resúmenes propios basados en hechos del juego y fuentes de investigación. El arte individual solo se añadirá con una fuente oficial reutilizable o una licencia claramente compatible.",
+        )}
+      </p>
+    </div>
   );
 }
 
-function FilterButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function BossDetail({
+  boss,
+  locale,
+  gameSlug,
+}: {
+  boss: SoulsBossResearch;
+  locale: Locale;
+  gameSlug: SoulsGameSlug;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const systemTitle =
+    gameSlug === "dark-souls-iii"
+      ? copy(
+          "Sistemas do combate em Dark Souls III",
+          "Dark Souls III combat systems",
+          "Sistemas de combate de Dark Souls III",
+        )
+      : copy(
+          "Sistemas do combate em Elden Ring",
+          "Elden Ring combat systems",
+          "Sistemas de combate de Elden Ring",
+        );
+
   return (
-    <button type="button" onClick={onClick} className={cn("shrink-0 rounded-full border px-3 py-2 text-xs font-semibold transition-colors", active ? "border-gold/50 bg-gold-soft/45 text-gold-strong" : "border-border bg-surface text-muted-foreground hover:text-foreground")}>{children}</button>
+    <article className="p-5 sm:p-8">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <div className="flex flex-wrap gap-2">
+            <Pill>{kindLabel(boss.kind, locale)}</Pill>
+            <Pill>
+              {boss.researchStatus === "reviewed"
+                ? copy("Revisado", "Reviewed", "Revisado")
+                : copy("Em revisão", "In review", "En revisión")}
+            </Pill>
+          </div>
+          <h3 className="mt-4 font-display text-3xl font-bold text-foreground sm:text-4xl">
+            {boss.name}
+          </h3>
+          <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+            <MapPin className="size-4 text-gold-strong" />
+            {boss.area}
+          </p>
+        </div>
+        <a
+          href={boss.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+        >
+          {copy("Fonte de pesquisa", "Research source", "Fuente de investigación")}{" "}
+          <ExternalLink className="size-3.5" />
+        </a>
+      </div>
+
+      <div className="mt-7 grid gap-4 md:grid-cols-2">
+        <InfoCard icon={BookOpen} title={copy("Contexto", "Context", "Contexto")}>
+          <p>{boss.shortContext[locale]}</p>
+        </InfoCard>
+        <InfoCard icon={Layers3} title={copy("Fases", "Phases", "Fases")}>
+          <p>{boss.phases[locale]}</p>
+        </InfoCard>
+      </div>
+
+      <section className="mt-4 rounded-lg border border-border bg-muted/20 p-5">
+        <h4 className="flex items-center gap-2 font-display text-lg font-bold text-foreground">
+          <Swords className="size-4 text-gold-strong" />
+          {systemTitle}
+        </h4>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {boss.mechanicTags.map((tag) => (
+            <MechanicChip key={tag}>{tag}</MechanicChip>
+          ))}
+        </div>
+        <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+          {boss.combatSystems.map((system, index) => (
+            <li key={index} className="flex gap-2.5 text-sm leading-6 text-muted-foreground">
+              <CircleDot className="mt-1.5 size-3.5 shrink-0 text-gold-strong" />
+              <span>{system[locale]}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
+        {boss.researchStatus === "reviewed" ? (
+          <CheckCircle2 className="size-4 text-success" />
+        ) : (
+          <ShieldCheck className="size-4 text-warning" />
+        )}
+        {boss.researchStatus === "reviewed"
+          ? copy(
+              "Ficha editorial revisada.",
+              "Editorial entry reviewed.",
+              "Ficha editorial revisada.",
+            )
+          : copy(
+              "Ficha seed: detalhes adicionais permanecem em revisão.",
+              "Seed entry: additional details remain under review.",
+              "Ficha seed: los detalles adicionales siguen en revisión.",
+            )}
+      </div>
+    </article>
+  );
+}
+
+function kindLabel(kind: SoulsBossKind, locale: Locale) {
+  if (kind === "dlc") return "DLC";
+  if (kind === "optional") return localeCopy(locale, "Opcional", "Optional", "Opcional");
+  return localeCopy(locale, "Progressão", "Progression", "Progresión");
+}
+
+function Pill({ children }: { children: ReactNode }) {
+  return (
+    <span className="rounded-full border border-border bg-background/75 px-2.5 py-1 text-[0.65rem] font-bold uppercase text-muted-foreground">
+      {children}
+    </span>
+  );
+}
+
+function MechanicChip({ children }: { children: ReactNode }) {
+  return (
+    <span className="rounded-md border border-gold/25 bg-gold-soft/25 px-2 py-1 text-[0.68rem] font-semibold text-gold-strong">
+      {children}
+    </span>
+  );
+}
+
+function InfoCard({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: typeof BookOpen;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-lg border border-border bg-muted/20 p-5">
+      <h4 className="flex items-center gap-2 font-display text-base font-bold text-foreground">
+        <Icon className="size-4 text-gold-strong" />
+        {title}
+      </h4>
+      <div className="mt-3 text-sm leading-6 text-muted-foreground">{children}</div>
+    </section>
   );
 }

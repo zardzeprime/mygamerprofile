@@ -101,8 +101,18 @@ function makeMgpPlaceholder(label: string, subtitle: string, from: string, to: s
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
-const NIGHTREIGN_PLACEHOLDER = makeMgpPlaceholder("ELDEN RING NIGHTREIGN", "MGP · STANDALONE HUB", "#080f18", "#244e73");
-const LOL_PLACEHOLDER = makeMgpPlaceholder("LEAGUE OF LEGENDS", "MGP · COMPETITIVE HUB", "#06151d", "#0d6671");
+const NIGHTREIGN_PLACEHOLDER = makeMgpPlaceholder(
+  "ELDEN RING NIGHTREIGN",
+  "MGP · STANDALONE HUB",
+  "#080f18",
+  "#244e73",
+);
+const LOL_PLACEHOLDER = makeMgpPlaceholder(
+  "LEAGUE OF LEGENDS",
+  "MGP · COMPETITIVE HUB",
+  "#06151d",
+  "#0d6671",
+);
 const DS3_COVER = "/game-covers/ds3.webp";
 const ELDEN_RING_COVER = "/game-covers/elden-ring.webp";
 const FC26_COVER = "/game-covers/fc26.webp";
@@ -113,7 +123,8 @@ export const GAMES: GameConfig[] = [
     name: "Dark Souls Remastered",
     aliases: ["Dark Souls", "DSR", "DS1"],
     description: {
-      "pt-BR": "Um RPG de ação sombrio e implacável, feito de descobertas, atalhos secretos e chefes memoráveis.",
+      "pt-BR":
+        "Um RPG de ação sombrio e implacável, feito de descobertas, atalhos secretos e chefes memoráveis.",
       en: "A dark, unforgiving action RPG built on discovery, secret shortcuts and memorable bosses.",
       es: "Un RPG de acción oscuro e implacable, construido sobre descubrimientos, atajos secretos y jefes memorables.",
     },
@@ -122,23 +133,69 @@ export const GAMES: GameConfig[] = [
     ageRating: "16+",
     themeKey: "dark_souls",
     modules: ["overview", "builds", "bosses", "guides"],
-    expansions: [
-      { slug: "artorias-of-the-abyss", name: "Artorias of the Abyss", kind: "dlc" },
-    ],
+    expansions: [{ slug: "artorias-of-the-abyss", name: "Artorias of the Abyss", kind: "dlc" }],
     profileFields: [
-      { key: "favorite_weapon", type: "text", maxLength: 60, label: { "pt-BR": "Arma favorita", en: "Favorite weapon", es: "Arma favorita" } },
-      { key: "favorite_build", type: "text", maxLength: 60, label: { "pt-BR": "Build favorita", en: "Favorite build", es: "Build favorita" } },
-      { key: "favorite_boss", type: "text", maxLength: 60, label: { "pt-BR": "Chefe favorito", en: "Favorite boss", es: "Jefe favorito" } },
-      { key: "hardest_boss", type: "text", maxLength: 60, label: { "pt-BR": "Chefe mais difícil", en: "Hardest boss", es: "Jefe más difícil" } },
+      {
+        key: "favorite_weapon",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Arma favorita", en: "Favorite weapon", es: "Arma favorita" },
+      },
+      {
+        key: "favorite_build",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Build favorita", en: "Favorite build", es: "Build favorita" },
+      },
+      {
+        key: "favorite_boss",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Chefe favorito", en: "Favorite boss", es: "Jefe favorito" },
+      },
+      {
+        key: "hardest_boss",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Chefe mais difícil", en: "Hardest boss", es: "Jefe más difícil" },
+      },
       {
         key: "starting_class",
         type: "select",
-        options: ["Warrior", "Knight", "Wanderer", "Thief", "Bandit", "Hunter", "Sorcerer", "Pyromancer", "Cleric", "Deprived"],
+        options: [
+          "Warrior",
+          "Knight",
+          "Wanderer",
+          "Thief",
+          "Bandit",
+          "Hunter",
+          "Sorcerer",
+          "Pyromancer",
+          "Cleric",
+          "Deprived",
+        ],
         label: { "pt-BR": "Classe inicial", en: "Starting class", es: "Clase inicial" },
       },
-      { key: "runs_count", type: "number", min: 0, max: 9999, label: { "pt-BR": "Runs concluídas", en: "Completed runs", es: "Runs completadas" } },
-      { key: "highest_ng", type: "number", min: 0, max: 99, label: { "pt-BR": "NG+ mais alto", en: "Highest NG+", es: "NG+ más alto" } },
-      { key: "personal_notes", type: "textarea", maxLength: 1000, label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" } },
+      {
+        key: "runs_count",
+        type: "number",
+        min: 0,
+        max: 9999,
+        label: { "pt-BR": "Runs concluídas", en: "Completed runs", es: "Runs completadas" },
+      },
+      {
+        key: "highest_ng",
+        type: "number",
+        min: 0,
+        max: 99,
+        label: { "pt-BR": "NG+ mais alto", en: "Highest NG+", es: "NG+ más alto" },
+      },
+      {
+        key: "personal_notes",
+        type: "textarea",
+        maxLength: 1000,
+        label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" },
+      },
     ],
     visual: {
       coverImage: DARK_SOULS_REMASTERED_COVER,
@@ -159,7 +216,8 @@ export const GAMES: GameConfig[] = [
     name: "Dark Souls III",
     aliases: ["Dark Souls 3", "DS3"],
     description: {
-      "pt-BR": "O capítulo final da trilogia Dark Souls: combate preciso, builds profundas e um mundo consumido pelas cinzas.",
+      "pt-BR":
+        "O capítulo final da trilogia Dark Souls: combate preciso, builds profundas e um mundo consumido pelas cinzas.",
       en: "The final Dark Souls trilogy chapter: precise combat, deep builds and a world consumed by ash.",
       es: "El capítulo final de la trilogía Dark Souls: combate preciso, builds profundas y un mundo consumido por las cenizas.",
     },
@@ -173,14 +231,56 @@ export const GAMES: GameConfig[] = [
       { slug: "the-ringed-city", name: "The Ringed City", kind: "dlc", releaseLabel: "2017" },
     ],
     profileFields: [
-      { key: "favorite_weapon", type: "text", maxLength: 60, label: { "pt-BR": "Arma favorita", en: "Favorite weapon", es: "Arma favorita" } },
-      { key: "favorite_build", type: "text", maxLength: 60, label: { "pt-BR": "Build favorita", en: "Favorite build", es: "Build favorita" } },
-      { key: "favorite_boss", type: "text", maxLength: 60, label: { "pt-BR": "Chefe favorito", en: "Favorite boss", es: "Jefe favorito" } },
-      { key: "covenant", type: "text", maxLength: 60, label: { "pt-BR": "Pacto favorito", en: "Favorite covenant", es: "Pacto favorito" } },
-      { key: "starting_class", type: "text", maxLength: 40, label: { "pt-BR": "Classe inicial", en: "Starting class", es: "Clase inicial" } },
-      { key: "runs_count", type: "number", min: 0, max: 9999, label: { "pt-BR": "Runs concluídas", en: "Completed runs", es: "Runs completadas" } },
-      { key: "highest_ng", type: "number", min: 0, max: 99, label: { "pt-BR": "NG+ mais alto", en: "Highest NG+", es: "NG+ más alto" } },
-      { key: "personal_notes", type: "textarea", maxLength: 1000, label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" } },
+      {
+        key: "favorite_weapon",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Arma favorita", en: "Favorite weapon", es: "Arma favorita" },
+      },
+      {
+        key: "favorite_build",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Build favorita", en: "Favorite build", es: "Build favorita" },
+      },
+      {
+        key: "favorite_boss",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Chefe favorito", en: "Favorite boss", es: "Jefe favorito" },
+      },
+      {
+        key: "covenant",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Pacto favorito", en: "Favorite covenant", es: "Pacto favorito" },
+      },
+      {
+        key: "starting_class",
+        type: "text",
+        maxLength: 40,
+        label: { "pt-BR": "Classe inicial", en: "Starting class", es: "Clase inicial" },
+      },
+      {
+        key: "runs_count",
+        type: "number",
+        min: 0,
+        max: 9999,
+        label: { "pt-BR": "Runs concluídas", en: "Completed runs", es: "Runs completadas" },
+      },
+      {
+        key: "highest_ng",
+        type: "number",
+        min: 0,
+        max: 99,
+        label: { "pt-BR": "NG+ mais alto", en: "Highest NG+", es: "NG+ más alto" },
+      },
+      {
+        key: "personal_notes",
+        type: "textarea",
+        maxLength: 1000,
+        label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" },
+      },
     ],
     visual: {
       coverImage: DS3_COVER,
@@ -198,7 +298,8 @@ export const GAMES: GameConfig[] = [
     name: "Elden Ring",
     aliases: ["Elden Ring Shadow of the Erdtree", "Shadow of the Erdtree"],
     description: {
-      "pt-BR": "Action RPG de mundo aberto da FromSoftware, com exploração livre, builds extensas e a expansão Shadow of the Erdtree no mesmo hub.",
+      "pt-BR":
+        "Action RPG de mundo aberto da FromSoftware, com exploração livre, builds extensas e a expansão Shadow of the Erdtree no mesmo hub.",
       en: "FromSoftware's open-world action RPG, with free-form exploration, extensive builds and Shadow of the Erdtree inside the same hub.",
       es: "RPG de acción de mundo abierto de FromSoftware, con exploración libre, builds extensas y Shadow of the Erdtree dentro del mismo hub.",
     },
@@ -208,18 +309,73 @@ export const GAMES: GameConfig[] = [
     themeKey: "dark_souls",
     modules: ["overview", "news", "builds", "bosses", "guides"],
     expansions: [
-      { slug: "shadow-of-the-erdtree", name: "Shadow of the Erdtree", kind: "expansion", releaseLabel: "2024" },
-      { slug: "tarnished-pack", name: "Tarnished Pack", kind: "content-pack", releaseLabel: "2026" },
+      {
+        slug: "shadow-of-the-erdtree",
+        name: "Shadow of the Erdtree",
+        kind: "expansion",
+        releaseLabel: "2024",
+      },
+      {
+        slug: "tarnished-pack",
+        name: "Tarnished Pack",
+        kind: "content-pack",
+        releaseLabel: "2026",
+      },
     ],
     profileFields: [
-      { key: "favorite_weapon", type: "text", maxLength: 60, label: { "pt-BR": "Arma favorita", en: "Favorite weapon", es: "Arma favorita" } },
-      { key: "favorite_build", type: "text", maxLength: 60, label: { "pt-BR": "Build favorita", en: "Favorite build", es: "Build favorita" } },
-      { key: "favorite_boss", type: "text", maxLength: 60, label: { "pt-BR": "Chefe favorito", en: "Favorite boss", es: "Jefe favorito" } },
-      { key: "favorite_spirit_ash", type: "text", maxLength: 60, label: { "pt-BR": "Cinza espiritual favorita", en: "Favorite Spirit Ash", es: "Ceniza espiritual favorita" } },
-      { key: "favorite_ending", type: "text", maxLength: 80, label: { "pt-BR": "Final favorito", en: "Favorite ending", es: "Final favorito" } },
-      { key: "starting_class", type: "text", maxLength: 40, label: { "pt-BR": "Classe inicial", en: "Starting class", es: "Clase inicial" } },
-      { key: "highest_ng", type: "number", min: 0, max: 99, label: { "pt-BR": "NG+ mais alto", en: "Highest NG+", es: "NG+ más alto" } },
-      { key: "personal_notes", type: "textarea", maxLength: 1000, label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" } },
+      {
+        key: "favorite_weapon",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Arma favorita", en: "Favorite weapon", es: "Arma favorita" },
+      },
+      {
+        key: "favorite_build",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Build favorita", en: "Favorite build", es: "Build favorita" },
+      },
+      {
+        key: "favorite_boss",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Chefe favorito", en: "Favorite boss", es: "Jefe favorito" },
+      },
+      {
+        key: "favorite_spirit_ash",
+        type: "text",
+        maxLength: 60,
+        label: {
+          "pt-BR": "Cinza espiritual favorita",
+          en: "Favorite Spirit Ash",
+          es: "Ceniza espiritual favorita",
+        },
+      },
+      {
+        key: "favorite_ending",
+        type: "text",
+        maxLength: 80,
+        label: { "pt-BR": "Final favorito", en: "Favorite ending", es: "Final favorito" },
+      },
+      {
+        key: "starting_class",
+        type: "text",
+        maxLength: 40,
+        label: { "pt-BR": "Classe inicial", en: "Starting class", es: "Clase inicial" },
+      },
+      {
+        key: "highest_ng",
+        type: "number",
+        min: 0,
+        max: 99,
+        label: { "pt-BR": "NG+ mais alto", en: "Highest NG+", es: "NG+ más alto" },
+      },
+      {
+        key: "personal_notes",
+        type: "textarea",
+        maxLength: 1000,
+        label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" },
+      },
     ],
     visual: {
       coverImage: ELDEN_RING_COVER,
@@ -237,7 +393,8 @@ export const GAMES: GameConfig[] = [
     name: "Elden Ring Nightreign",
     aliases: ["Nightreign", "Night Ring"],
     description: {
-      "pt-BR": "Aventura cooperativa standalone no universo de Elden Ring, centrada em Nightfarers, runs e encontros contra Nightlords.",
+      "pt-BR":
+        "Aventura cooperativa standalone no universo de Elden Ring, centrada em Nightfarers, runs e encontros contra Nightlords.",
       en: "A standalone cooperative adventure in the Elden Ring universe focused on Nightfarers, runs and Nightlord encounters.",
       es: "Una aventura cooperativa independiente en el universo de Elden Ring centrada en Nightfarers, runs y enfrentamientos contra Nightlords.",
     },
@@ -246,24 +403,72 @@ export const GAMES: GameConfig[] = [
     ageRating: "16+",
     themeKey: "dark_souls",
     modules: ["overview", "news", "builds", "bosses", "guides", "lfg"],
-    expansions: [
-      { slug: "the-forsaken-hollows", name: "The Forsaken Hollows", kind: "dlc" },
-    ],
+    expansions: [{ slug: "the-forsaken-hollows", name: "The Forsaken Hollows", kind: "dlc" }],
     profileFields: [
-      { key: "favorite_nightfarer", type: "text", maxLength: 60, label: { "pt-BR": "Nightfarer favorito", en: "Favorite Nightfarer", es: "Nightfarer favorito" } },
-      { key: "favorite_nightlord", type: "text", maxLength: 60, label: { "pt-BR": "Nightlord favorito", en: "Favorite Nightlord", es: "Nightlord favorito" } },
-      { key: "preferred_style", type: "text", maxLength: 60, label: { "pt-BR": "Estilo preferido", en: "Preferred style", es: "Estilo preferido" } },
-      { key: "favorite_relic_setup", type: "text", maxLength: 120, label: { "pt-BR": "Setup de relíquias", en: "Relic setup", es: "Configuración de reliquias" } },
-      { key: "runs_count", type: "number", min: 0, max: 99999, label: { "pt-BR": "Runs", en: "Runs", es: "Runs" } },
-      { key: "wins_count", type: "number", min: 0, max: 99999, label: { "pt-BR": "Vitórias", en: "Wins", es: "Victorias" } },
-      { key: "personal_notes", type: "textarea", maxLength: 1000, label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" } },
+      {
+        key: "favorite_nightfarer",
+        type: "text",
+        maxLength: 60,
+        label: {
+          "pt-BR": "Nightfarer favorito",
+          en: "Favorite Nightfarer",
+          es: "Nightfarer favorito",
+        },
+      },
+      {
+        key: "favorite_nightlord",
+        type: "text",
+        maxLength: 60,
+        label: {
+          "pt-BR": "Nightlord favorito",
+          en: "Favorite Nightlord",
+          es: "Nightlord favorito",
+        },
+      },
+      {
+        key: "preferred_style",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Estilo preferido", en: "Preferred style", es: "Estilo preferido" },
+      },
+      {
+        key: "favorite_relic_setup",
+        type: "text",
+        maxLength: 120,
+        label: {
+          "pt-BR": "Setup de relíquias",
+          en: "Relic setup",
+          es: "Configuración de reliquias",
+        },
+      },
+      {
+        key: "runs_count",
+        type: "number",
+        min: 0,
+        max: 99999,
+        label: { "pt-BR": "Runs", en: "Runs", es: "Runs" },
+      },
+      {
+        key: "wins_count",
+        type: "number",
+        min: 0,
+        max: 99999,
+        label: { "pt-BR": "Vitórias", en: "Wins", es: "Victorias" },
+      },
+      {
+        key: "personal_notes",
+        type: "textarea",
+        maxLength: 1000,
+        label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" },
+      },
     ],
     visual: {
       coverImage: NIGHTREIGN_PLACEHOLDER,
       heroImage: NIGHTREIGN_PLACEHOLDER,
       backgroundImage: NIGHTREIGN_PLACEHOLDER,
       fallbackImage: darkSoulsAtmosphere,
-      assetSource: "MGP-generated placeholder; official Bandai Namco assets pending production asset review",
+      assetSource:
+        "MGP-generated placeholder; official Bandai Namco assets pending production asset review",
       assetLicense: "MGP original placeholder; no third-party game artwork embedded",
     },
   },
@@ -272,7 +477,8 @@ export const GAMES: GameConfig[] = [
     name: "Valorant",
     aliases: ["VALORANT"],
     description: {
-      "pt-BR": "FPS tático 5v5 com agentes, habilidades e economia de rodada. Precisão, informação e coordenação decidem a partida.",
+      "pt-BR":
+        "FPS tático 5v5 com agentes, habilidades e economia de rodada. Precisão, informação e coordenação decidem a partida.",
       en: "A 5v5 tactical FPS with agents, abilities and round economy. Aim, information and coordination decide the match.",
       es: "FPS táctico 5v5 con agentes, habilidades y economía por rondas. Precisión, información y coordinación deciden la partida.",
     },
@@ -282,13 +488,56 @@ export const GAMES: GameConfig[] = [
     themeKey: "valorant",
     modules: ["overview", "news", "agents", "maps", "weapons", "skins", "competitive", "lineups"],
     profileFields: [
-      { key: "favorite_agent", type: "text", maxLength: 40, label: { "pt-BR": "Agente favorito", en: "Favorite agent", es: "Agente favorito" } },
-      { key: "preferred_role", type: "select", options: ["Duelist", "Initiator", "Controller", "Sentinel", "Flex"], label: { "pt-BR": "Função preferida", en: "Preferred role", es: "Rol preferido" } },
-      { key: "favorite_map", type: "text", maxLength: 40, label: { "pt-BR": "Mapa favorito", en: "Favorite map", es: "Mapa favorito" } },
-      { key: "favorite_weapon", type: "text", maxLength: 40, label: { "pt-BR": "Arma favorita", en: "Favorite weapon", es: "Arma favorita" } },
-      { key: "current_rank_manual", type: "text", maxLength: 40, label: { "pt-BR": "Rank atual (informado)", en: "Current rank (declared)", es: "Rango actual (declarado)" } },
-      { key: "peak_rank_manual", type: "text", maxLength: 40, label: { "pt-BR": "Rank mais alto (informado)", en: "Peak rank (declared)", es: "Rango máximo (declarado)" } },
-      { key: "personal_notes", type: "textarea", maxLength: 1000, label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" } },
+      {
+        key: "favorite_agent",
+        type: "text",
+        maxLength: 40,
+        label: { "pt-BR": "Agente favorito", en: "Favorite agent", es: "Agente favorito" },
+      },
+      {
+        key: "preferred_role",
+        type: "select",
+        options: ["Duelist", "Initiator", "Controller", "Sentinel", "Flex"],
+        label: { "pt-BR": "Função preferida", en: "Preferred role", es: "Rol preferido" },
+      },
+      {
+        key: "favorite_map",
+        type: "text",
+        maxLength: 40,
+        label: { "pt-BR": "Mapa favorito", en: "Favorite map", es: "Mapa favorito" },
+      },
+      {
+        key: "favorite_weapon",
+        type: "text",
+        maxLength: 40,
+        label: { "pt-BR": "Arma favorita", en: "Favorite weapon", es: "Arma favorita" },
+      },
+      {
+        key: "current_rank_manual",
+        type: "text",
+        maxLength: 40,
+        label: {
+          "pt-BR": "Rank atual (informado)",
+          en: "Current rank (declared)",
+          es: "Rango actual (declarado)",
+        },
+      },
+      {
+        key: "peak_rank_manual",
+        type: "text",
+        maxLength: 40,
+        label: {
+          "pt-BR": "Rank mais alto (informado)",
+          en: "Peak rank (declared)",
+          es: "Rango máximo (declarado)",
+        },
+      },
+      {
+        key: "personal_notes",
+        type: "textarea",
+        maxLength: 1000,
+        label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" },
+      },
     ],
     visual: {
       coverImage: VALORANT_COVER,
@@ -308,7 +557,8 @@ export const GAMES: GameConfig[] = [
     name: "League of Legends",
     aliases: ["LoL", "League"],
     description: {
-      "pt-BR": "MOBA competitivo 5v5 da Riot Games. Campeões, rotas, itens, macro e execução convergem na disputa pelo Nexus.",
+      "pt-BR":
+        "MOBA competitivo 5v5 da Riot Games. Campeões, rotas, itens, macro e execução convergem na disputa pelo Nexus.",
       en: "Riot Games' competitive 5v5 MOBA. Champions, lanes, items, macro and execution converge in the fight for the Nexus.",
       es: "MOBA competitivo 5v5 de Riot Games. Campeones, líneas, objetos, macro y ejecución convergen en la lucha por el Nexus.",
     },
@@ -318,21 +568,66 @@ export const GAMES: GameConfig[] = [
     themeKey: "competitive",
     modules: ["overview", "news", "champions", "maps", "items", "skins", "competitive", "guides"],
     profileFields: [
-      { key: "favorite_champion", type: "text", maxLength: 50, label: { "pt-BR": "Campeão favorito", en: "Favorite champion", es: "Campeón favorito" } },
-      { key: "preferred_role", type: "select", options: ["Top", "Jungle", "Mid", "ADC", "Support", "Fill"], label: { "pt-BR": "Rota preferida", en: "Preferred role", es: "Rol preferido" } },
-      { key: "secondary_role", type: "select", options: ["Top", "Jungle", "Mid", "ADC", "Support", "Fill"], label: { "pt-BR": "Rota secundária", en: "Secondary role", es: "Rol secundario" } },
-      { key: "server", type: "text", maxLength: 20, label: { "pt-BR": "Servidor", en: "Server", es: "Servidor" } },
-      { key: "current_rank_manual", type: "text", maxLength: 40, label: { "pt-BR": "Rank atual (informado)", en: "Current rank (declared)", es: "Rango actual (declarado)" } },
-      { key: "peak_rank_manual", type: "text", maxLength: 40, label: { "pt-BR": "Peak (informado)", en: "Peak rank (declared)", es: "Peak (declarado)" } },
-      { key: "favorite_skin", type: "text", maxLength: 80, label: { "pt-BR": "Skin favorita", en: "Favorite skin", es: "Skin favorita" } },
-      { key: "personal_notes", type: "textarea", maxLength: 1000, label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" } },
+      {
+        key: "favorite_champion",
+        type: "text",
+        maxLength: 50,
+        label: { "pt-BR": "Campeão favorito", en: "Favorite champion", es: "Campeón favorito" },
+      },
+      {
+        key: "preferred_role",
+        type: "select",
+        options: ["Top", "Jungle", "Mid", "ADC", "Support", "Fill"],
+        label: { "pt-BR": "Rota preferida", en: "Preferred role", es: "Rol preferido" },
+      },
+      {
+        key: "secondary_role",
+        type: "select",
+        options: ["Top", "Jungle", "Mid", "ADC", "Support", "Fill"],
+        label: { "pt-BR": "Rota secundária", en: "Secondary role", es: "Rol secundario" },
+      },
+      {
+        key: "server",
+        type: "text",
+        maxLength: 20,
+        label: { "pt-BR": "Servidor", en: "Server", es: "Servidor" },
+      },
+      {
+        key: "current_rank_manual",
+        type: "text",
+        maxLength: 40,
+        label: {
+          "pt-BR": "Rank atual (informado)",
+          en: "Current rank (declared)",
+          es: "Rango actual (declarado)",
+        },
+      },
+      {
+        key: "peak_rank_manual",
+        type: "text",
+        maxLength: 40,
+        label: { "pt-BR": "Peak (informado)", en: "Peak rank (declared)", es: "Peak (declarado)" },
+      },
+      {
+        key: "favorite_skin",
+        type: "text",
+        maxLength: 80,
+        label: { "pt-BR": "Skin favorita", en: "Favorite skin", es: "Skin favorita" },
+      },
+      {
+        key: "personal_notes",
+        type: "textarea",
+        maxLength: 1000,
+        label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" },
+      },
     ],
     visual: {
       coverImage: LOL_PLACEHOLDER,
       heroImage: LOL_PLACEHOLDER,
       backgroundImage: LOL_PLACEHOLDER,
       fallbackImage: valorantAtmosphere,
-      assetSource: "MGP-generated placeholder; Riot-approved/public assets pending production asset review",
+      assetSource:
+        "MGP-generated placeholder; Riot-approved/public assets pending production asset review",
       assetLicense: "MGP original placeholder; no third-party game artwork embedded",
     },
   },
@@ -341,7 +636,8 @@ export const GAMES: GameConfig[] = [
     name: "EA SPORTS FC",
     aliases: ["FIFA", "EA FC", "FC 26", "EA SPORTS FC 26"],
     description: {
-      "pt-BR": "Hub permanente da série de futebol da EA, cobrindo Ultimate Team, Clubs, Carreira e competitivo sem recriar o perfil a cada edição anual.",
+      "pt-BR":
+        "Hub permanente da série de futebol da EA, cobrindo Ultimate Team, Clubs, Carreira e competitivo sem recriar o perfil a cada edição anual.",
       en: "A permanent hub for EA's football series, covering Ultimate Team, Clubs, Career and competitive play without recreating the profile every annual edition.",
       es: "Un hub permanente para la serie de fútbol de EA, cubriendo Ultimate Team, Clubs, Carrera y competitivo sin recrear el perfil en cada edición anual.",
     },
@@ -351,13 +647,48 @@ export const GAMES: GameConfig[] = [
     themeKey: "competitive",
     modules: ["overview", "news", "modes", "competitive", "guides"],
     profileFields: [
-      { key: "favorite_mode", type: "select", options: ["Ultimate Team", "Clubs", "Career", "Kick-Off", "Seasons", "Other"], label: { "pt-BR": "Modo favorito", en: "Favorite mode", es: "Modo favorito" } },
-      { key: "favorite_club", type: "text", maxLength: 80, label: { "pt-BR": "Clube favorito", en: "Favorite club", es: "Club favorito" } },
-      { key: "platform", type: "select", options: ["PC", "PlayStation", "Xbox", "Nintendo Switch"], label: { "pt-BR": "Plataforma", en: "Platform", es: "Plataforma" } },
-      { key: "division_rank", type: "text", maxLength: 60, label: { "pt-BR": "Divisão / rank", en: "Division / rank", es: "División / rango" } },
-      { key: "favorite_formation", type: "text", maxLength: 40, label: { "pt-BR": "Formação favorita", en: "Favorite formation", es: "Formación favorita" } },
-      { key: "favorite_player", type: "text", maxLength: 80, label: { "pt-BR": "Jogador favorito", en: "Favorite player", es: "Jugador favorito" } },
-      { key: "personal_notes", type: "textarea", maxLength: 1000, label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" } },
+      {
+        key: "favorite_mode",
+        type: "select",
+        options: ["Ultimate Team", "Clubs", "Career", "Kick-Off", "Seasons", "Other"],
+        label: { "pt-BR": "Modo favorito", en: "Favorite mode", es: "Modo favorito" },
+      },
+      {
+        key: "favorite_club",
+        type: "text",
+        maxLength: 80,
+        label: { "pt-BR": "Clube favorito", en: "Favorite club", es: "Club favorito" },
+      },
+      {
+        key: "platform",
+        type: "select",
+        options: ["PC", "PlayStation", "Xbox", "Nintendo Switch"],
+        label: { "pt-BR": "Plataforma", en: "Platform", es: "Plataforma" },
+      },
+      {
+        key: "division_rank",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Divisão / rank", en: "Division / rank", es: "División / rango" },
+      },
+      {
+        key: "favorite_formation",
+        type: "text",
+        maxLength: 40,
+        label: { "pt-BR": "Formação favorita", en: "Favorite formation", es: "Formación favorita" },
+      },
+      {
+        key: "favorite_player",
+        type: "text",
+        maxLength: 80,
+        label: { "pt-BR": "Jogador favorito", en: "Favorite player", es: "Jugador favorito" },
+      },
+      {
+        key: "personal_notes",
+        type: "textarea",
+        maxLength: 1000,
+        label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" },
+      },
     ],
     visual: {
       coverImage: FC26_COVER,
