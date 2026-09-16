@@ -117,17 +117,38 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
               <Sparkles className="size-5 text-gold-strong" />
             </div>
             <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-border bg-background">
-              <img
-                src={selectedImageUrl ?? darkSoulsAtmosphere}
-                alt={selectedImageUrl ? selected?.name ?? "" : ""}
-                referrerPolicy="no-referrer"
-                className={cn(
-                  "h-full w-full object-cover",
-                  !selectedImageUrl && "scale-110 opacity-45 blur-[1px]",
-                )}
-              />
+              {selectedImage ? (
+                <>
+                  <img
+                    src={selectedImage.url}
+                    alt=""
+                    aria-hidden="true"
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 h-full w-full scale-110 object-cover opacity-20 blur-2xl"
+                    style={{ objectPosition: selectedImage.cardObjectPosition ?? "50% 35%" }}
+                  />
+                  <div className="absolute inset-0 bg-background/30" />
+                  <img
+                    src={selectedImage.url}
+                    alt={selected?.name ?? ""}
+                    referrerPolicy="no-referrer"
+                    className="relative z-10 h-full w-full object-contain p-3 opacity-95"
+                    style={{ objectPosition: selectedImage.detailObjectPosition ?? "50% 38%" }}
+                  />
+                </>
+              ) : (
+                <img
+                  src={selectedImageUrl ?? darkSoulsAtmosphere}
+                  alt={selectedImageUrl ? selected?.name ?? "" : ""}
+                  referrerPolicy="no-referrer"
+                  className={cn(
+                    "h-full w-full object-cover",
+                    !selectedImageUrl && "scale-110 opacity-45 blur-[1px]",
+                  )}
+                />
+              )}
               {!selectedImageUrl ? (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-background via-background/40 to-transparent p-6 text-center">
+                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-gradient-to-t from-background via-background/40 to-transparent p-6 text-center">
                   <Skull className="size-10 text-gold-strong" />
                   <p className="mt-4 font-display text-2xl font-bold text-foreground">{selected?.name}</p>
                   <p className="mt-2 max-w-xs text-xs leading-relaxed text-muted-foreground">
@@ -214,9 +235,10 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                     loading="lazy"
                     referrerPolicy="no-referrer"
                     className={cn(
-                      "h-full w-full object-cover transition duration-300 group-hover:scale-105",
-                      hasImage ? "opacity-75 group-hover:opacity-90" : "opacity-40 group-hover:opacity-55",
+                      "h-full w-full object-cover transition-opacity duration-300",
+                      hasImage ? "opacity-80 group-hover:opacity-95" : "opacity-40 group-hover:opacity-55",
                     )}
+                    style={{ objectPosition: imageAsset?.cardObjectPosition ?? "50% 38%" }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
                   <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3">
