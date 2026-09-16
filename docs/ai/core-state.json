@@ -12,13 +12,15 @@
         "Implemented official multi-provider inference routing with OpenAI, Gemini and Anthropic failover.",
         "Separated inference providers from GitHub, Supabase and Lovable administrative tool bridges.",
         "Configured GPT-5.6 Sol as the default OpenAI model while keeping provider/model selection environment-driven.",
-        "Persisted provider/model and relevant specialist cores with assistant messages."
+        "Persisted provider/model and relevant specialist cores with assistant messages.",
+        "Opened global Gamer chat to anonymous visitors with a ten-successful-response trial and login wall after quota exhaustion.",
+        "Added a first-message NEXUS greeting, gamer-native public persona and the original angular N/Z interface mark."
       ],
       "inProgress": [
         "Connect scoped GitHub, Supabase Management API and Lovable MCP credentials to executable Nexus tools."
       ],
       "next": [
-        "Configure at least one official inference API credential in deployment secrets and test the live chat.",
+        "Configure at least one official inference API credential in deployment secrets and test live model replies end to end.",
         "Add the GitHub App bridge as the first write-capable Nexus development tool using branch/review/merge by default.",
         "Add explicit human-approval gates before destructive or production-impacting tool actions.",
         "Consider an opt-in multi-model council mode only for difficult admin tasks after normal failover is stable."
@@ -31,7 +33,9 @@
       "completed": [
         "Restricted Nexus Development mode to MGP administrators.",
         "Kept model-provider credentials server-side and documented that consumer sessions must not be used as hidden API credentials.",
-        "Applied per-user RLS to Nexus conversations and optimized Nexus auth.uid() RLS evaluation."
+        "Applied per-user RLS to Nexus conversations and optimized Nexus auth.uid() RLS evaluation.",
+        "Protected anonymous Nexus storage from direct browser access with deny RLS policies and revoked anon/authenticated grants.",
+        "Added server-side guest quota enforcement, atomic assistant-response counting and a short-window per-session rate limit."
       ],
       "inProgress": [],
       "next": [
@@ -44,13 +48,16 @@
       "name": "VEIL",
       "role": "privacy",
       "completed": [
-        "Scoped Nexus chat history to the authenticated user through RLS.",
-        "Separated Gamer mode from internal Development context to avoid exposing repository/admin details to normal users."
+        "Scoped Nexus authenticated chat history to the user through RLS.",
+        "Separated Gamer mode from internal Development context to avoid exposing repository/admin details to normal users.",
+        "Implemented anonymous Nexus sessions with an opaque HTTP-only cookie rather than email or device fingerprinting.",
+        "Set anonymous trial records to expire after 30 days and added automated daily deletion of expired guest sessions/messages.",
+        "Added UI disclosure that guest messages may be processed by MGP's configured official AI providers."
       ],
       "inProgress": [],
       "next": [
-        "Define retention/deletion controls for Nexus conversation history.",
-        "Document which message content is sent to each external model provider when optional multi-provider features are introduced."
+        "Define user-facing deletion/export controls for authenticated Nexus conversation history.",
+        "Keep provider-data disclosure updated if optional multi-provider council features are introduced."
       ],
       "blocked": []
     },
@@ -60,12 +67,15 @@
       "completed": [
         "Added explicit source attribution metadata to Dark Souls and Dark Souls III boss artwork mappings.",
         "Preferred identifiable concept/reference artwork over ambiguous screenshots where practical.",
-        "Preserved source-page links for externally sourced boss artwork."
+        "Preserved source-page links for externally sourced boss artwork.",
+        "Recorded NEXUS brand provenance and kept personal legal identifiers out of source control.",
+        "Stored the first NEXUS N/Z mark as original editable vector geometry in the project."
       ],
       "inProgress": [],
       "next": [
         "Continue replacing weak fallback artwork when higher-quality, clearly sourced assets are found.",
-        "Keep provenance metadata attached to every new external media source."
+        "Keep provenance metadata attached to every new external media source.",
+        "Keep any formal NEXUS trademark/copyright/business registrations in private legal records rather than the client repository."
       ],
       "blocked": [
         "Some bosses still lack a sufficiently reliable boss-specific asset from currently reviewed sources."
@@ -86,7 +96,8 @@
       "name": "GEAR",
       "role": "automation",
       "completed": [
-        "Registered GitHub, Supabase and Lovable as separate Nexus tool bridges with explicit transports and approval requirements."
+        "Registered GitHub, Supabase and Lovable as separate Nexus tool bridges with explicit transports and approval requirements.",
+        "Scheduled a daily pg_cron retention job to delete expired anonymous Nexus sessions and cascading message history."
       ],
       "inProgress": [],
       "next": [
@@ -106,7 +117,8 @@
         "Added per-boss image position, scale and cover/contain controls for Dark Souls and Dark Souls III.",
         "Reduced poor letterboxing for landscape boss screenshots by allowing targeted crop/zoom.",
         "Changed the games catalog to a denser responsive grid while preserving the homepage carousel.",
-        "Made Nexus multi-provider behavior failover-first instead of querying every model for every message, limiting unnecessary latency and cost."
+        "Made Nexus multi-provider behavior failover-first instead of querying every model for every message, limiting unnecessary latency and cost.",
+        "Bound anonymous Nexus replies to shorter message/output limits and a finite ten-response trial to control public inference cost."
       ],
       "inProgress": [],
       "next": [
