@@ -4,20 +4,23 @@ import {
   Building2,
   CalendarDays,
   ChevronRight,
+  Clock3,
   RefreshCw,
   Sparkles,
   Star,
 } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
-import { MODULE_LABELS, getGameConfig, type GameModuleKey } from "@/config/games";
+import { MODULE_LABELS, getGameConfig, type GameModuleKey, type GameConfig } from "@/config/games";
+import { isGameActive } from "@/config/gameAvailability";
 import { GAME_EDITORIAL_OVERVIEW } from "@/data/gameEditorialOverview";
-import { useI18n } from "@/i18n";
+import { useI18n, type Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
 import { GameLivePanel } from "@/components/games/GameLivePanel";
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { FutureCollection } from "@/components/games/FutureCollection";
 import { LeagueEsportsPanel } from "@/components/games/LeagueEsportsPanel";
+import { RiotPlayerSearch } from "@/components/games/RiotPlayerSearch";
 import { useGameAmbience } from "@/hooks/useGameAmbience";
 
 export const Route = createFileRoute("/games/$slug")({
@@ -74,7 +77,8 @@ function GameHub() {
   const { locale, t } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const panelRef = useRef<HTMLDivElement>(null);
-  useGameAmbience(game.visual.ambientAudio);
+  const activeHub = isGameActive(game.slug);
+  useGameAmbience(activeHub ? game.visual.ambientAudio : undefined);
 
   const [active, setActive] = useState<GameModuleKey>("overview");
   const visibleModules = useMemo(() => {
@@ -83,9 +87,6 @@ function GameHub() {
     );
     if (game.slug !== "league-of-legends") return modules;
 
-    // League is organized by player-facing game modes rather than a raw map
-    // encyclopedia. The underlying game config keeps backwards compatibility,
-    // while the hub surfaces the new Modes section.
     return Array.from(
       new Set(modules.map((moduleKey) => (moduleKey === "maps" ? "modes" : moduleKey))),
     ) as GameModuleKey[];
@@ -104,6 +105,12 @@ function GameHub() {
       });
     });
   };
+
+  if (!activeHub) {
+    return <PausedGameHub game={game} locale={locale} />;
+  }
+
+  const hasRiotLookup = game.slug === "valorant" || game.slug === "league-of-legends";
 
   return (
     <div
@@ -154,11 +161,7 @@ function GameHub() {
             {game.expansions?.length ? (
               <div
                 className="mt-4 flex flex-wrap items-center gap-2"
-                aria-label={copy(
-                  "Expansões e DLCs",
-                  "Expansions and DLC",
-                  "Expansiones y DLC",
-                )}
+                aria-label={copy("Expansões e DLCs", "Expansions and DLC", "Expansiones y DLC")}
               >
                 <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-hero-muted">
                   {copy("Conteúdo adicional", "Additional content", "Contenido adicional")}
@@ -220,89 +223,69 @@ function GameHub() {
             className="animate-in fade-in slide-in-from-bottom-2 duration-300 motion-reduce:animate-none"
           >
             {active === "overview" ? (
-              <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-                <article className="surface-panel p-6 sm:p-8">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="size-4 text-gold-strong" />
-                    <span className="section-kicker">
-                      {copy("FICHA DO JOGO", "GAME PROFILE", "FICHA DEL JUEGO")}
-                    </span>
-                  </div>
+              <div className="space-y-6">
+                <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                  <article className="surface-panel p-6 sm:p-8">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="size-4 text-gold-strong" />
+                      <span className="section-kicker">
+                        {copy("FICHA DO JOGO", "GAME PROFILE", "FICHA DEL JUEGO")}
+                      </span>
+                    </div>
 
-                  <div className="mt-4 grid gap-7 xl:grid-cols-[minmax(0,1fr)_13rem]">
-                    <div>
-                      <h2 className="font-display text-2xl font-semibold text-foreground">
-                        {copy("Sobre o jogo", "About the game", "Sobre el juego")}
-                      </h2>
-                      <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
-                        {editorial?.synopsis[locale] ?? game.description[locale]}
-                      </p>
+                    <div className="mt-4 grid gap-7 xl:grid-cols-[minmax(0,1fr)_13rem]">
+                      <div>
+                        <h2 className="font-display text-2xl font-semibold text-foreground">
+                          {copy("Sobre o jogo", "About the game", "Sobre el juego")}
+                        </h2>
+                        <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
+                          {editorial?.synopsis[locale] ?? game.description[locale]}
+                        </p>
 
-                      {editorial ? (
-                        <div className="mt-7 grid gap-3 sm:grid-cols-2">
-                          <GameFact
-                            icon={CalendarDays}
-                            label={copy("Lançamento", "Release", "Lanzamiento")}
-                            value={editorial.release[locale]}
-                          />
-                          <GameFact
-                            icon={Building2}
-                            label={copy("Desenvolvimento", "Developer", "Desarrollo")}
-                            value={editorial.developer}
-                          />
-                          <GameFact
-                            icon={Building2}
-                            label={copy("Publicação", "Publisher", "Publicación")}
-                            value={editorial.publisher}
-                          />
-                          <GameFact
-                            icon={RefreshCw}
-                            label={copy("Versão", "Version", "Versión")}
-                            value={editorial.latestVersion}
-                          />
+                        {editorial ? (
+                          <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                            <GameFact icon={CalendarDays} label={copy("Lançamento", "Release", "Lanzamiento")} value={editorial.release[locale]} />
+                            <GameFact icon={Building2} label={copy("Desenvolvimento", "Developer", "Desarrollo")} value={editorial.developer} />
+                            <GameFact icon={Building2} label={copy("Publicação", "Publisher", "Publicación")} value={editorial.publisher} />
+                            <GameFact icon={RefreshCw} label={copy("Versão", "Version", "Versión")} value={editorial.latestVersion} />
+                          </div>
+                        ) : null}
+                      </div>
+
+                      {editorial?.score ? (
+                        <div className="self-start rounded-2xl border border-gold/25 bg-[radial-gradient(circle_at_top,rgba(212,167,44,0.14),transparent_65%),hsl(var(--muted)/0.2)] p-5 text-center transition-transform duration-300 hover:-translate-y-1">
+                          <Star className="mx-auto size-5 fill-current text-gold-strong" />
+                          <p className="mt-3 font-display text-4xl font-bold text-foreground">
+                            {editorial.score.value.toFixed(1)}
+                            <span className="text-base font-semibold text-muted-foreground">/10</span>
+                          </p>
+                          <p className="mt-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                            {copy("Média de referência", "Reference average", "Promedio de referencia")}
+                          </p>
+                          <p className="mt-3 text-xs leading-5 text-muted-foreground">{editorial.score.sourceLabel}</p>
+                          <p className="mt-2 text-[0.7rem] leading-5 text-muted-foreground">{editorial.score.note[locale]}</p>
                         </div>
                       ) : null}
                     </div>
+                  </article>
 
-                    {editorial?.score ? (
-                      <div className="self-start rounded-2xl border border-gold/25 bg-[radial-gradient(circle_at_top,rgba(212,167,44,0.14),transparent_65%),hsl(var(--muted)/0.2)] p-5 text-center transition-transform duration-300 hover:-translate-y-1">
-                        <Star className="mx-auto size-5 fill-current text-gold-strong" />
-                        <p className="mt-3 font-display text-4xl font-bold text-foreground">
-                          {editorial.score.value.toFixed(1)}
-                          <span className="text-base font-semibold text-muted-foreground">/10</span>
-                        </p>
-                        <p className="mt-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                          {copy(
-                            "Média de referência",
-                            "Reference average",
-                            "Promedio de referencia",
-                          )}
-                        </p>
-                        <p className="mt-3 text-xs leading-5 text-muted-foreground">
-                          {editorial.score.sourceLabel}
-                        </p>
-                        <p className="mt-2 text-[0.7rem] leading-5 text-muted-foreground">
-                          {editorial.score.note[locale]}
-                        </p>
-                      </div>
-                    ) : null}
-                  </div>
-                </article>
+                  {game.slug === "league-of-legends" ? (
+                    <LeagueEsportsPanel
+                      locale={locale}
+                      compact
+                      onOpenCompetitive={() => handleTab("competitive", true)}
+                    />
+                  ) : (
+                    <GameLivePanel
+                      gameSlug={game.slug}
+                      themeKey={game.themeKey}
+                      locale={locale}
+                      onOpenModule={(moduleKey) => handleTab(moduleKey, true)}
+                    />
+                  )}
+                </div>
 
-                {game.slug === "league-of-legends" ? (
-                  <LeagueEsportsPanel
-                    locale={locale}
-                    compact
-                    onOpenCompetitive={() => handleTab("competitive", true)}
-                  />
-                ) : (
-                  <GameLivePanel
-                    gameSlug={game.slug}
-                    themeKey={game.themeKey}
-                    locale={locale}
-                    onOpenModule={(moduleKey) => handleTab(moduleKey, true)}
-                  />
-                )}
+                {hasRiotLookup ? <RiotPlayerSearch locale={locale} /> : null}
               </div>
             ) : (
               <FutureCollection
@@ -315,6 +298,43 @@ function GameHub() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function PausedGameHub({ game, locale }: { game: GameConfig; locale: Locale }) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+
+  return (
+    <div className="game-hub min-h-[75vh]">
+      <section className="game-hub-hero relative isolate overflow-hidden border-b border-border">
+        <GameArtwork game={game} variant="hero" loading="eager" className="absolute inset-0 h-full w-full opacity-50" />
+        <div className="absolute inset-0 bg-background/65 backdrop-blur-[2px]" />
+        <div className="relative mx-auto flex min-h-[32rem] w-full max-w-5xl items-center px-4 py-24 sm:px-6">
+          <div className="max-w-2xl rounded-3xl border border-hero-border bg-hero-surface p-6 shadow-hero backdrop-blur-xl sm:p-9">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-gold-strong">
+              <Clock3 className="size-4" />
+              MGP 0.1.9
+            </div>
+            <h1 className="mt-4 font-display text-4xl font-bold text-hero-foreground sm:text-5xl">{game.name}</h1>
+            <p className="mt-4 text-sm leading-7 text-hero-muted sm:text-base">
+              {copy(
+                "Este hub está preservado, mas temporariamente fora do catálogo ativo enquanto a equipe prepara assets, conteúdo e integrações com o mesmo padrão dos hubs principais.",
+                "This hub is preserved but temporarily outside the active catalog while assets, content and integrations are brought up to the same standard as the main hubs.",
+                "Este hub está conservado, pero temporalmente fuera del catálogo activo mientras preparamos recursos, contenido e integraciones al nivel de los hubs principales.",
+              )}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link to="/games" className="brand-button">
+                {copy("Ver jogos ativos", "View active games", "Ver juegos activos")}
+              </Link>
+              <span className="inline-flex items-center rounded-full border border-hero-border px-4 py-2 text-xs font-semibold text-hero-muted">
+                {copy("Dados mantidos para retorno futuro", "Data preserved for future return", "Datos conservados para su regreso")}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
