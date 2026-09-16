@@ -19,6 +19,7 @@ import { SoundProvider } from "../lib/sound";
 import { RouteTransitionLoader } from "../components/common/RouteTransitionLoader";
 import { AppHeader } from "../components/layout/AppHeader";
 import { AppFooter } from "../components/layout/AppFooter";
+import { NexusChat } from "../components/nexus/NexusChat";
 
 function NotFoundComponent() {
   return (
@@ -145,6 +146,7 @@ function RootComponent() {
             </main>
             <AppFooter />
           </div>
+          <NexusChat />
         </SoundProvider>
       </ThemeProvider>
     </QueryClientProvider>
