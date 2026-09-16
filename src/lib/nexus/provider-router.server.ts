@@ -1,4 +1,4 @@
-export type NexusProviderId = "openai" | "gemini" | "anthropic";
+export type NexusProviderId = "openai" | "gemini" | "groq" | "openrouter" | "anthropic";
 
 export type NexusChatRole = "user" | "assistant";
 
@@ -14,6 +14,7 @@ export type NexusCompletionRequest = {
   messages: NexusChatMessage[];
   effort?: NexusReasoningEffort;
   maxOutputTokens?: number;
+  providerOrder?: NexusProviderId[];
 };
 
 export type NexusCompletionResult = {
@@ -27,26 +28,36 @@ export type NexusProviderStatus = {
   id: NexusProviderId;
   configured: boolean;
   model: string;
-  kind: "official-api";
+  kind: "official-api" | "router-api";
 };
 
-const DEFAULT_PROVIDER_ORDER: NexusProviderId[] = ["openai", "gemini", "anthropic"];
+const ALL_PROVIDERS: NexusProviderId[] = ["openai", "gemini", "groq", "openrouter", "anthropic"];
+const DEFAULT_PROVIDER_ORDER: NexusProviderId[] = ["openai", "gemini", "groq", "openrouter", "anthropic"];
+const DEFAULT_GUEST_PROVIDER_ORDER: NexusProviderId[] = ["gemini", "groq", "openrouter", "openai", "anthropic"];
 
 function serverEnv(name: string) {
   return process.env[name]?.trim() || undefined;
 }
 
-function getProviderOrder(): NexusProviderId[] {
-  const configured = serverEnv("NEXUS_PROVIDER_ORDER");
-  if (!configured) return DEFAULT_PROVIDER_ORDER;
+function parseProviderOrder(name: string, fallback: NexusProviderId[]) {
+  const configured = serverEnv(name);
+  if (!configured) return fallback;
 
-  const accepted = new Set<NexusProviderId>(DEFAULT_PROVIDER_ORDER);
+  const accepted = new Set<NexusProviderId>(ALL_PROVIDERS);
   const parsed = configured
     .split(",")
     .map((value) => value.trim().toLowerCase())
     .filter((value): value is NexusProviderId => accepted.has(value as NexusProviderId));
 
-  return parsed.length ? [...new Set(parsed)] : DEFAULT_PROVIDER_ORDER;
+  return parsed.length ? [...new Set(parsed)] : fallback;
+}
+
+function getProviderOrder() {
+  return parseProviderOrder("NEXUS_PROVIDER_ORDER", DEFAULT_PROVIDER_ORDER);
+}
+
+export function getNexusGuestProviderOrder() {
+  return parseProviderOrder("NEXUS_GUEST_PROVIDER_ORDER", DEFAULT_GUEST_PROVIDER_ORDER);
 }
 
 export function getNexusProviderStatus(): NexusProviderStatus[] {
@@ -59,9 +70,21 @@ export function getNexusProviderStatus(): NexusProviderStatus[] {
     },
     {
       id: "gemini",
-      configured: Boolean(serverEnv("GEMINI_API_KEY")),
+      configured: Boolean(serverEnv("GEMINI_API_KEY") || serverEnv("GOOGLE_API_KEY")),
       model: serverEnv("NEXUS_GEMINI_MODEL") ?? "gemini-3.8-flash",
       kind: "official-api",
+    },
+    {
+      id: "groq",
+      configured: Boolean(serverEnv("GROQ_API_KEY")),
+      model: serverEnv("NEXUS_GROQ_MODEL") ?? "openai/gpt-oss-120b",
+      kind: "official-api",
+    },
+    {
+      id: "openrouter",
+      configured: Boolean(serverEnv("OPENROUTER_API_KEY")),
+      model: serverEnv("NEXUS_OPENROUTER_MODEL") ?? "openrouter/free",
+      kind: "router-api",
     },
     {
       id: "anthropic",
@@ -124,14 +147,17 @@ async function completeOpenAI(request: NexusCompletionRequest): Promise<Omit<Nex
 }
 
 async function completeGemini(request: NexusCompletionRequest): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
-  const apiKey = serverEnv("GEMINI_API_KEY");
+  const apiKey = serverEnv("GEMINI_API_KEY") ?? serverEnv("GOOGLE_API_KEY");
   if (!apiKey) throw new Error("Gemini is not configured");
 
   const model = serverEnv("NEXUS_GEMINI_MODEL") ?? "gemini-3.8-flash";
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
   const response = await fetch(endpoint, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": apiKey,
+    },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: request.system }] },
       contents: request.messages.map((message) => ({
@@ -155,6 +181,85 @@ async function completeGemini(request: NexusCompletionRequest): Promise<Omit<Nex
   const text = data.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("").trim();
   if (!text) throw new Error("Gemini returned no text");
   return { text, provider: "gemini", model };
+}
+
+async function completeCompatibleChat({
+  request,
+  apiKey,
+  endpoint,
+  provider,
+  model,
+  extraHeaders = {},
+}: {
+  request: NexusCompletionRequest;
+  apiKey: string;
+  endpoint: string;
+  provider: "groq" | "openrouter";
+  model: string;
+  extraHeaders?: Record<string, string>;
+}): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      ...extraHeaders,
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: "system", content: request.system },
+        ...request.messages,
+      ],
+      max_tokens: request.maxOutputTokens ?? 1800,
+    }),
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`${provider} ${response.status}: ${body.slice(0, 180)}`);
+  }
+
+  const data = (await response.json()) as {
+    choices?: Array<{ message?: { content?: string | Array<{ type?: string; text?: string }> } }>;
+    model?: string;
+  };
+  const raw = data.choices?.[0]?.message?.content;
+  const text = typeof raw === "string"
+    ? raw.trim()
+    : raw?.map((part) => part.text ?? "").join("\n").trim();
+  if (!text) throw new Error(`${provider} returned no text`);
+  return { text, provider, model: data.model ?? model };
+}
+
+async function completeGroq(request: NexusCompletionRequest): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
+  const apiKey = serverEnv("GROQ_API_KEY");
+  if (!apiKey) throw new Error("Groq is not configured");
+  return completeCompatibleChat({
+    request,
+    apiKey,
+    endpoint: "https://api.groq.com/openai/v1/chat/completions",
+    provider: "groq",
+    model: serverEnv("NEXUS_GROQ_MODEL") ?? "openai/gpt-oss-120b",
+  });
+}
+
+async function completeOpenRouter(request: NexusCompletionRequest): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
+  const apiKey = serverEnv("OPENROUTER_API_KEY");
+  if (!apiKey) throw new Error("OpenRouter is not configured");
+
+  const appUrl = serverEnv("PUBLIC_APP_URL");
+  return completeCompatibleChat({
+    request,
+    apiKey,
+    endpoint: "https://openrouter.ai/api/v1/chat/completions",
+    provider: "openrouter",
+    model: serverEnv("NEXUS_OPENROUTER_MODEL") ?? "openrouter/free",
+    extraHeaders: {
+      ...(appUrl ? { "HTTP-Referer": appUrl } : {}),
+      "X-OpenRouter-Title": "MGP NEXUS",
+    },
+  });
 }
 
 async function completeAnthropic(request: NexusCompletionRequest): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
@@ -200,6 +305,8 @@ const COMPLETERS: Record<
 > = {
   openai: completeOpenAI,
   gemini: completeGemini,
+  groq: completeGroq,
+  openrouter: completeOpenRouter,
   anthropic: completeAnthropic,
 };
 
@@ -210,7 +317,7 @@ export async function completeWithNexusRouter(
   const attemptedProviders: NexusProviderId[] = [];
   const failures: string[] = [];
 
-  for (const provider of getProviderOrder()) {
+  for (const provider of request.providerOrder ?? getProviderOrder()) {
     const status = statuses.get(provider);
     if (!status?.configured) continue;
 
@@ -225,7 +332,7 @@ export async function completeWithNexusRouter(
 
   if (!attemptedProviders.length) {
     throw new Error(
-      "NEXUS has no official model API configured. Add OPENAI_API_KEY, GEMINI_API_KEY or ANTHROPIC_API_KEY on the server.",
+      "NEXUS has no model API configured. Add GEMINI_API_KEY, GROQ_API_KEY, OPENROUTER_API_KEY, OPENAI_API_KEY or ANTHROPIC_API_KEY on the server.",
     );
   }
 
