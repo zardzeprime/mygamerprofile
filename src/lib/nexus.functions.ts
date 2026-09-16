@@ -10,9 +10,17 @@ const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_JXVaM-rr7Yu59l3x7WyHEg_qlR-uDMX";
 const NEXUS_EDGE_URL = `${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/nexus-inference`;
 
+// Provider failover happens server-side. Keep the browser request alive long enough
+// for the Edge Function to try configured fallbacks instead of aborting the first
+// slow provider before failover can begin.
+const NEXUS_REQUEST_TIMEOUT_MS = 70_000;
+
 async function invokeNexus(body: Record<string, unknown>, accessToken?: string): Promise<any> {
   const controller = new AbortController();
-  const timeout = typeof window !== "undefined" ? window.setTimeout(() => controller.abort(), 15_000) : undefined;
+  const timeout =
+    typeof window !== "undefined"
+      ? window.setTimeout(() => controller.abort(), NEXUS_REQUEST_TIMEOUT_MS)
+      : undefined;
 
   try {
     const response = await fetch(NEXUS_EDGE_URL, {

@@ -14,7 +14,9 @@
         "Configured GPT-5.6 Sol as the default OpenAI model while keeping provider/model selection environment-driven.",
         "Persisted provider/model and relevant specialist cores with assistant messages.",
         "Opened global Gamer chat to anonymous visitors with a ten-successful-response trial and login wall after quota exhaustion.",
-        "Added a first-message NEXUS greeting, gamer-native public persona and the original angular N/Z interface mark."
+        "Added a first-message NEXUS greeting, gamer-native public persona and the original angular N/Z interface mark.",
+        "Grounded MGP content recommendations in the live active-games table plus the published content catalog so paused games are not advertised.",
+        "Aligned browser and provider timeout budgets so server-side failover can finish before the client abandons a reply."
       ],
       "inProgress": [
         "Connect scoped GitHub, Supabase Management API and Lovable MCP credentials to executable Nexus tools."
@@ -69,7 +71,8 @@
         "Preferred identifiable concept/reference artwork over ambiguous screenshots where practical.",
         "Preserved source-page links for externally sourced boss artwork.",
         "Recorded NEXUS brand provenance and kept personal legal identifiers out of source control.",
-        "Stored the first NEXUS N/Z mark as original editable vector geometry in the project."
+        "Stored the first NEXUS N/Z mark as original editable vector geometry in the project.",
+        "Defined the AVAPGV licensing-report rule that public accessibility is not treated as permission to reuse external media."
       ],
       "inProgress": [],
       "next": [
@@ -97,7 +100,8 @@
       "role": "automation",
       "completed": [
         "Registered GitHub, Supabase and Lovable as separate Nexus tool bridges with explicit transports and approval requirements.",
-        "Scheduled a daily pg_cron retention job to delete expired anonymous Nexus sessions and cascading message history."
+        "Scheduled a daily pg_cron retention job to delete expired anonymous Nexus sessions and cascading message history.",
+        "Standardized AVAPGV Watch on a responsive branded MG Profile HTML email contract with plain-text fallback and secret-safe reporting."
       ],
       "inProgress": [],
       "next": [
@@ -118,7 +122,8 @@
         "Reduced poor letterboxing for landscape boss screenshots by allowing targeted crop/zoom.",
         "Changed the games catalog to a denser responsive grid while preserving the homepage carousel.",
         "Made Nexus multi-provider behavior failover-first instead of querying every model for every message, limiting unnecessary latency and cost.",
-        "Bound anonymous Nexus replies to shorter message/output limits and a finite ten-response trial to control public inference cost."
+        "Bound anonymous Nexus replies to shorter message/output limits and a finite ten-response trial to control public inference cost.",
+        "Reduced the per-provider timeout and increased the browser inference window so failover has a bounded path without premature client aborts."
       ],
       "inProgress": [],
       "next": [
