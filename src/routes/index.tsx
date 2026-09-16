@@ -152,9 +152,12 @@ function Home() {
             className="mt-7"
             aria-label={t("home.featured.title")}
           >
-            <CarouselContent>
+            <CarouselContent className="ml-0">
               {SORTED_GAMES.map((game) => (
-                <CarouselItem key={game.slug} className="basis-[88%] sm:basis-[70%] lg:basis-1/2">
+                <CarouselItem
+                  key={game.slug}
+                  className="basis-[88%] pl-0 pr-4 sm:basis-[70%] lg:basis-1/2"
+                >
                   <GameCard game={game} />
                 </CarouselItem>
               ))}
