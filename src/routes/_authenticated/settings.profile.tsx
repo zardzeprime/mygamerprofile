@@ -25,7 +25,7 @@ import {
   getProfileBackground,
   type ProfileBackgroundKey,
 } from "@/config/profileBackgrounds";
-import { GAMES } from "@/config/games";
+import { ACTIVE_GAMES } from "@/config/gameAvailability";
 import type { Json } from "@/integrations/supabase/types";
 import type { Database } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
@@ -167,7 +167,7 @@ function SettingsProfilePage() {
 
       if (updateError) throw updateError;
 
-      const favoriteRows = GAMES.flatMap((game) => {
+      const favoriteRows = ACTIVE_GAMES.flatMap((game) => {
         const databaseGame = gameRows.find((row) => row.slug === game.slug);
         if (!databaseGame) return [];
 
@@ -287,9 +287,9 @@ function SettingsProfilePage() {
           </div>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
             {copy(
-              "Escolha um visual oficial do MGP. Planos animados e cosméticos premium chegam mais tarde sem permitir upload livre de banners.",
-              "Choose an official MGP look. Animated and premium cosmetics will arrive later without unrestricted banner uploads.",
-              "Elige un aspecto oficial de MGP. Los fondos animados y cosméticos premium llegarán más adelante sin permitir cargas libres de banners.",
+              "Escolha um visual oficial do MGP. Os novos presets animados são originais da plataforma e respeitam a preferência de movimento reduzido.",
+              "Choose an official MGP look. The new animated presets are original to the platform and respect reduced-motion preferences.",
+              "Elige un aspecto oficial de MGP. Los nuevos presets animados son originales de la plataforma y respetan la preferencia de movimiento reducido.",
             )}
           </p>
 
@@ -308,6 +308,11 @@ function SettingsProfilePage() {
                 >
                   <div className={cn("relative h-24", preset.className)}>
                     <div className="absolute inset-0 bg-gradient-to-t from-background/75 to-transparent" />
+                    {preset.animated ? (
+                      <span className="absolute left-2 top-2 rounded-full border border-white/15 bg-black/30 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-white/80 backdrop-blur">
+                        {copy("Animado", "Animated", "Animado")}
+                      </span>
+                    ) : null}
                     {selected ? (
                       <span className="absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-gold text-gold-foreground">
                         <Check className="size-4" />
@@ -333,14 +338,14 @@ function SettingsProfilePage() {
           </div>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
             {copy(
-              "Escolha os jogos que aparecem na sua identidade gamer. As informações detalhadas continuam dentro de cada Game Profile.",
-              "Choose the games shown in your gamer identity. Detailed information stays inside each Game Profile.",
-              "Elige los juegos que aparecen en tu identidad gamer. La información detallada sigue dentro de cada Game Profile.",
+              "Na 0.1.9, os favoritos ficam limitados aos quatro hubs ativos. Jogos pausados continuam preservados para voltar depois.",
+              "In 0.1.9, favorites are limited to the four active hubs. Paused games remain preserved for a later return.",
+              "En 0.1.9, los favoritos se limitan a los cuatro hubs activos. Los juegos pausados se conservan para volver después.",
             )}
           </p>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {GAMES.map((game) => {
+            {ACTIVE_GAMES.map((game) => {
               const selected = favoriteGameSlugs.includes(game.slug);
               return (
                 <button
@@ -350,9 +355,7 @@ function SettingsProfilePage() {
                   onClick={() => toggleFavoriteGame(game.slug)}
                   className={cn(
                     "group overflow-hidden rounded-xl border bg-surface text-left transition-all hover:-translate-y-0.5",
-                    selected
-                      ? "border-gold/65 ring-2 ring-gold/15"
-                      : "border-border hover:border-gold/35",
+                    selected ? "border-gold/65 ring-2 ring-gold/15" : "border-border hover:border-gold/35",
                   )}
                 >
                   <div className="relative h-28 overflow-hidden">
@@ -361,9 +364,7 @@ function SettingsProfilePage() {
                     <span
                       className={cn(
                         "absolute right-3 top-3 grid size-7 place-items-center rounded-full border backdrop-blur",
-                        selected
-                          ? "border-gold bg-gold text-gold-foreground"
-                          : "border-white/20 bg-black/35 text-white/70",
+                        selected ? "border-gold bg-gold text-gold-foreground" : "border-white/20 bg-black/35 text-white/70",
                       )}
                     >
                       <Check className={cn("size-4", !selected && "opacity-0")} />
@@ -371,9 +372,7 @@ function SettingsProfilePage() {
                   </div>
                   <div className="p-4">
                     <p className="font-display text-sm font-semibold">{game.name}</p>
-                    <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">
-                      {game.genre}
-                    </p>
+                    <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">{game.genre}</p>
                   </div>
                 </button>
               );
