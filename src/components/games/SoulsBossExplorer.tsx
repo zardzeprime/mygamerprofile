@@ -129,19 +129,36 @@ export function SoulsBossExplorer({
               <Sparkles className="size-5 text-gold-strong" />
             </div>
             <div className="relative aspect-[3/4] overflow-hidden rounded-lg border border-border bg-background">
-              <img
-                src={selectedImage?.url ?? game.visual.coverImage}
-                alt={selectedImage ? selected.name : ""}
-                aria-hidden={selectedImage ? undefined : true}
-                referrerPolicy="no-referrer"
-                className={cn(
-                  "h-full w-full object-cover",
-                  selectedImage ? "opacity-90" : "opacity-55",
-                )}
-                style={{ objectPosition: selectedImage?.objectPosition ?? game.visual.cardObjectPosition }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-5">
+              {selectedImage ? (
+                <>
+                  <img
+                    src={selectedImage.url}
+                    alt=""
+                    aria-hidden="true"
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 h-full w-full scale-110 object-cover opacity-20 blur-2xl"
+                    style={{ objectPosition: selectedImage.cardObjectPosition ?? "50% 30%" }}
+                  />
+                  <div className="absolute inset-0 bg-background/30" />
+                  <img
+                    src={selectedImage.url}
+                    alt={selected.name}
+                    referrerPolicy="no-referrer"
+                    className="relative z-10 h-full w-full object-contain p-3 opacity-95"
+                    style={{ objectPosition: selectedImage.detailObjectPosition ?? "50% 30%" }}
+                  />
+                </>
+              ) : (
+                <img
+                  src={game.visual.coverImage}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-full w-full object-cover opacity-55"
+                  style={{ objectPosition: game.visual.cardObjectPosition }}
+                />
+              )}
+              <div className="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/10 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 z-20 p-5">
                 <Swords className="size-7 text-gold-strong" />
                 <p className="mt-3 font-display text-2xl font-bold text-foreground">
                   {selected.name}
@@ -149,9 +166,9 @@ export function SoulsBossExplorer({
                 <p className="mt-2 text-xs leading-5 text-muted-foreground">
                   {selectedImage
                     ? copy(
-                        "Arte de referência do chefe com atribuição da fonte.",
-                        "Boss reference artwork with source attribution.",
-                        "Arte de referencia del jefe con atribución de la fuente.",
+                        "Arte enquadrada para preservar rosto, torso e armadura sem ampliar demais a imagem.",
+                        "Artwork framed to preserve the face, torso, and armor without excessive zoom.",
+                        "Arte encuadrado para preservar rostro, torso y armadura sin ampliar demasiado la imagen.",
                       )
                     : copy(
                         "A capa do jogo identifica temporariamente esta ficha.",
@@ -242,10 +259,12 @@ export function SoulsBossExplorer({
                       className={cn(
                         "h-full w-full object-cover transition-opacity duration-200",
                         imageAsset
-                          ? "opacity-75 group-hover:opacity-90"
+                          ? "opacity-80 group-hover:opacity-95"
                           : "opacity-45 group-hover:opacity-60",
                       )}
-                      style={{ objectPosition: imageAsset?.objectPosition ?? game.visual.cardObjectPosition }}
+                      style={{
+                        objectPosition: imageAsset?.cardObjectPosition ?? game.visual.cardObjectPosition,
+                      }}
                     />
                     <span className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
                     <span className="absolute inset-x-4 bottom-3 flex items-center justify-between gap-2">
