@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Menu, Search, X, Settings, LogOut, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
 import { ThemeSelector } from "@/components/common/ThemeSelector";
@@ -17,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { AudioControl } from "@/components/common/AudioControl";
-import { getCurrentProfile } from "@/lib/profiles.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 const NAV: { to: string; key: TranslationKey }[] = [
   { to: "/", key: "navigation.home" },
@@ -31,27 +30,43 @@ export function AppHeader() {
   const { user, loading, signOut } = useAuth();
   const [open, setOpen] = useState(false);
   const [profileUsername, setProfileUsername] = useState<string | null>(null);
-  const readCurrentProfile = useServerFn(getCurrentProfile);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
+
     if (!user) {
       setProfileUsername(null);
+      setProfileLoading(false);
       return;
     }
-    readCurrentProfile()
-      .then((profile) => {
-        if (!cancelled) setProfileUsername(profile.username ?? null);
+
+    setProfileLoading(true);
+    void supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          console.error("[MGP] Failed to load current profile username", error);
+          setProfileUsername(null);
+          return;
+        }
+        setProfileUsername(data?.username ?? null);
       })
-      .catch(() => {
-        if (!cancelled) setProfileUsername(null);
+      .finally(() => {
+        if (!cancelled) setProfileLoading(false);
       });
+
     return () => {
       cancelled = true;
     };
-  }, [readCurrentProfile, user]);
+  }, [user?.id]);
 
-  const profileLabel = locale === "pt-BR" ? "Meu perfil" : locale === "es" ? "Mi perfil" : "My profile";
+  const profileLabel = locale === "pt-BR" ? "Ver meu perfil" : locale === "es" ? "Ver mi perfil" : "View my profile";
+  const profileUnavailableLabel = locale === "pt-BR" ? "Perfil indisponível" : locale === "es" ? "Perfil no disponible" : "Profile unavailable";
 
   const AuthSection = () => {
     if (loading) return null;
@@ -86,7 +101,12 @@ export function AppHeader() {
                 {profileLabel}
               </Link>
             </DropdownMenuItem>
-          ) : null}
+          ) : (
+            <DropdownMenuItem disabled className="flex items-center gap-2">
+              <UserRound className="size-4" />
+              {profileLoading ? profileLabel : profileUnavailableLabel}
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem asChild>
             <Link to="/settings/profile" className="flex items-center gap-2">
               <Settings className="size-4" />
@@ -189,7 +209,12 @@ export function AppHeader() {
                       {profileLabel}
                     </Link>
                   </Button>
-                ) : null}
+                ) : (
+                  <Button variant="outline" disabled>
+                    <UserRound className="mr-2 size-4" />
+                    {profileLoading ? profileLabel : profileUnavailableLabel}
+                  </Button>
+                )}
                 <Button variant="outline" asChild>
                   <Link to="/settings/profile" onClick={() => setOpen(false)}>
                     <Settings className="mr-2 size-4" />
