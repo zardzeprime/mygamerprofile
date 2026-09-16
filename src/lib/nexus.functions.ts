@@ -10,7 +10,7 @@ const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_JXVaM-rr7Yu59l3x7WyHEg_qlR-uDMX";
 const NEXUS_EDGE_URL = `${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/nexus-inference`;
 
-async function invokeNexus<T>(body: Record<string, unknown>, accessToken?: string): Promise<T> {
+async function invokeNexus(body: Record<string, unknown>, accessToken?: string): Promise<any> {
   const controller = new AbortController();
   const timeout = typeof window !== "undefined" ? window.setTimeout(() => controller.abort(), 15_000) : undefined;
 
@@ -39,7 +39,7 @@ async function invokeNexus<T>(body: Record<string, unknown>, accessToken?: strin
       throw new Error(code);
     }
 
-    return payload as T;
+    return payload;
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
       throw new Error("NEXUS_LOAD_TIMEOUT");
