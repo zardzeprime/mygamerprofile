@@ -181,11 +181,19 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
     },
   ),
 
-  "bell-gargoyles": creativeUncut("ds-bell-gargoyle1", {
-    cardObjectPosition: "50% 34%",
-    detailObjectPosition: "50% 38%",
-    detailScale: 1.12,
-  }),
+  // Creative Uncut's Bell Gargoyle URL proved unstable in the live app.
+  // Restore the Fandom promotional still that was already confirmed working.
+  "bell-gargoyles": screenshot(
+    "DS1 Promotional screenshot (Bell Gargoyle).jpg",
+    promotionalLabel,
+    "promotional",
+    {
+      cardObjectPosition: "50% 35%",
+      detailObjectPosition: "50% 40%",
+      cardScale: 1.08,
+      detailScale: 1.18,
+    },
+  ),
 
   "capra-demon": fandomAsset("Capra Demon 01.jpg", {
     label: conceptLabel,
@@ -197,12 +205,19 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
     detailFit: "cover",
   }),
 
-  "gaping-dragon": creativeUncut("ds-gaping-dragon", {
-    cardObjectPosition: "50% 43%",
-    detailObjectPosition: "50% 45%",
-    cardScale: 1.08,
-    detailScale: 1.14,
-  }),
+  // Same fallback policy as Bell Gargoyles: prefer the previously working Fandom
+  // screenshot over a higher-quality external asset that fails to render reliably.
+  "gaping-dragon": screenshot(
+    "DS1 promotional screenshot (Gaping Dragon co-op).jpg",
+    promotionalLabel,
+    "promotional",
+    {
+      cardObjectPosition: "50% 42%",
+      detailObjectPosition: "50% 44%",
+      cardScale: 1.1,
+      detailScale: 1.2,
+    },
+  ),
 
   "chaos-witch-quelaag": fandomAsset("Quelaag 01.jpg", {
     label: conceptLabel,
