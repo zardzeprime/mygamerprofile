@@ -7,11 +7,42 @@ import type { Database } from "@/integrations/supabase/types";
 const PUBLIC_SUPABASE_URL = "https://gudvdgpjfapshzqyfcpj.supabase.co";
 const PUBLIC_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_JXVaM-rr7Yu59l3x7WyHEg_qlR-uDMX";
 
+function isNewSupabaseApiKey(value: string): boolean {
+  return value.startsWith("sb_publishable_") || value.startsWith("sb_secret_");
+}
+
+function createSupabaseFetch(supabaseKey: string): typeof fetch {
+  return (input, init) => {
+    const headers = new Headers(
+      typeof Request !== "undefined" && input instanceof Request ? input.headers : undefined,
+    );
+
+    if (init?.headers) {
+      new Headers(init.headers).forEach((value, key) => headers.set(key, value));
+    }
+
+    // Modern Supabase publishable keys are opaque API keys, not JWT access tokens.
+    // supabase-js may otherwise mirror the project key into Authorization on
+    // server-side anonymous calls, which makes PostgREST/Auth reject it as an
+    // invalid bearer token. Keep it only in `apikey`; preserve real user JWTs.
+    if (isNewSupabaseApiKey(supabaseKey) && headers.get("Authorization") === `Bearer ${supabaseKey}`) {
+      headers.delete("Authorization");
+    }
+
+    headers.set("apikey", supabaseKey);
+    return fetch(input, { ...init, headers });
+  };
+}
+
 export function getSupabasePublicConfig() {
   const url =
-    import.meta.env["VITE_SUPABASE_URL"] || process.env["SUPABASE_URL"] || PUBLIC_SUPABASE_URL;
+    import.meta.env["VITE_SUPABASE_URL"] ||
+    process.env["VITE_SUPABASE_URL"] ||
+    process.env["SUPABASE_URL"] ||
+    PUBLIC_SUPABASE_URL;
   const publishableKey =
     import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
+    process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
     process.env["SUPABASE_PUBLISHABLE_KEY"] ||
     PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
@@ -22,6 +53,9 @@ export function getSupabasePublic() {
   const { url, publishableKey } = getSupabasePublicConfig();
 
   return createClient<Database>(url, publishableKey, {
+    global: {
+      fetch: createSupabaseFetch(publishableKey),
+    },
     auth: {
       storage: undefined,
       persistSession: false,
