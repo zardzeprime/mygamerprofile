@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getGameConfig } from "@/config/games";
+import { getSoulsBossImage } from "@/data/soulsBossImages";
 import {
   SOULS_BOSS_COLLECTIONS,
   type SoulsBossKind,
@@ -55,6 +56,7 @@ export function SoulsBossExplorer({
   }, [bosses, filter, locale, query]);
 
   const selected = bosses.find((boss) => boss.slug === selectedSlug) ?? filtered[0] ?? bosses[0];
+  const selectedImage = getSoulsBossImage(gameSlug, selected?.slug);
   const selectBoss = (boss: SoulsBossResearch) => {
     setSelectedSlug(boss.slug);
     requestAnimationFrame(() => {
@@ -93,9 +95,9 @@ export function SoulsBossExplorer({
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
                 {copy(
-                  "Uma leitura editorial dos encontros, fases e sistemas de combate — sem números especulativos ou arte copiada de wikis.",
-                  "An editorial reading of encounters, phases, and combat systems—without speculative numbers or wiki artwork.",
-                  "Una lectura editorial de encuentros, fases y sistemas de combate, sin cifras especulativas ni arte copiado de wikis.",
+                  "Uma leitura editorial dos encontros, fases e sistemas de combate, com arte de referência atribuída quando disponível.",
+                  "An editorial reading of encounters, phases, and combat systems, with attributed reference artwork when available.",
+                  "Una lectura editorial de encuentros, fases y sistemas de combate, con arte de referencia atribuido cuando está disponible.",
                 )}
               </p>
             </div>
@@ -119,18 +121,24 @@ export function SoulsBossExplorer({
                   {copy("ARTE DO ENCONTRO", "ENCOUNTER ART", "ARTE DEL ENCUENTRO")}
                 </p>
                 <p className="mt-1 text-sm font-semibold text-foreground">
-                  {copy("Placeholder editorial", "Editorial placeholder", "Placeholder editorial")}
+                  {selectedImage
+                    ? copy("Arte de referência disponível", "Reference artwork available", "Arte de referencia disponible")
+                    : copy("Placeholder editorial", "Editorial placeholder", "Placeholder editorial")}
                 </p>
               </div>
               <Sparkles className="size-5 text-gold-strong" />
             </div>
             <div className="relative aspect-[3/4] overflow-hidden rounded-lg border border-border bg-background">
               <img
-                src={game.visual.coverImage}
-                alt=""
-                aria-hidden="true"
-                className="h-full w-full object-cover opacity-55"
-                style={{ objectPosition: game.visual.cardObjectPosition }}
+                src={selectedImage?.url ?? game.visual.coverImage}
+                alt={selectedImage ? selected.name : ""}
+                aria-hidden={selectedImage ? undefined : true}
+                referrerPolicy="no-referrer"
+                className={cn(
+                  "h-full w-full object-cover",
+                  selectedImage ? "opacity-90" : "opacity-55",
+                )}
+                style={{ objectPosition: selectedImage?.objectPosition ?? game.visual.cardObjectPosition }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5">
@@ -139,14 +147,30 @@ export function SoulsBossExplorer({
                   {selected.name}
                 </p>
                 <p className="mt-2 text-xs leading-5 text-muted-foreground">
-                  {copy(
-                    "A capa do jogo identifica temporariamente esta ficha.",
-                    "The game cover temporarily identifies this entry.",
-                    "La portada del juego identifica temporalmente esta ficha.",
-                  )}
+                  {selectedImage
+                    ? copy(
+                        "Arte de referência do chefe com atribuição da fonte.",
+                        "Boss reference artwork with source attribution.",
+                        "Arte de referencia del jefe con atribución de la fuente.",
+                      )
+                    : copy(
+                        "A capa do jogo identifica temporariamente esta ficha.",
+                        "The game cover temporarily identifies this entry.",
+                        "La portada del juego identifica temporalmente esta ficha.",
+                      )}
                 </p>
               </div>
             </div>
+            {selectedImage ? (
+              <a
+                href={selectedImage.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 block text-xs leading-relaxed text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                {selectedImage.sourceLabel[locale]}
+              </a>
+            ) : null}
           </aside>
         </div>
       </section>
@@ -194,6 +218,7 @@ export function SoulsBossExplorer({
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((boss, index) => {
             const active = boss.slug === selected.slug;
+            const imageAsset = getSoulsBossImage(gameSlug, boss.slug);
             return (
               <Button
                 key={boss.slug}
@@ -209,12 +234,18 @@ export function SoulsBossExplorer({
                 <span className="grid h-full w-full grid-rows-[5.5rem_1fr]">
                   <span className="relative block overflow-hidden border-b border-border bg-muted">
                     <img
-                      src={game.visual.coverImage}
+                      src={imageAsset?.url ?? game.visual.coverImage}
                       alt=""
                       aria-hidden="true"
                       loading="lazy"
-                      className="h-full w-full object-cover opacity-45 transition-opacity duration-200 group-hover:opacity-60"
-                      style={{ objectPosition: game.visual.cardObjectPosition }}
+                      referrerPolicy="no-referrer"
+                      className={cn(
+                        "h-full w-full object-cover transition-opacity duration-200",
+                        imageAsset
+                          ? "opacity-75 group-hover:opacity-90"
+                          : "opacity-45 group-hover:opacity-60",
+                      )}
+                      style={{ objectPosition: imageAsset?.objectPosition ?? game.visual.cardObjectPosition }}
                     />
                     <span className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
                     <span className="absolute inset-x-4 bottom-3 flex items-center justify-between gap-2">
@@ -264,9 +295,9 @@ export function SoulsBossExplorer({
 
       <p className="rounded-lg border border-border bg-muted/15 p-4 text-xs leading-5 text-muted-foreground">
         {copy(
-          "Nota editorial: os textos do MG Profile são resumos próprios baseados em fatos do jogo e fontes de pesquisa. Artes individuais de chefes só serão adicionadas quando houver fonte oficial reutilizável ou licença individual claramente compatível.",
-          "Editorial note: MG Profile texts are original summaries based on game facts and research sources. Individual boss artwork will only be added when an official reusable source or clearly compatible individual license is available.",
-          "Nota editorial: los textos de MG Profile son resúmenes propios basados en hechos del juego y fuentes de investigación. El arte individual solo se añadirá con una fuente oficial reutilizable o una licencia claramente compatible.",
+          "Nota editorial: os textos do MG Profile são resumos próprios baseados em fatos do jogo e fontes de pesquisa. Artes de referência externas recebem atribuição e link para a página de origem.",
+          "Editorial note: MG Profile texts are original summaries based on game facts and research sources. External reference artwork includes attribution and a link to its source page.",
+          "Nota editorial: los textos de MG Profile son resúmenes propios basados en hechos del juego y fuentes de investigación. El arte de referencia externo incluye atribución y un enlace a su página de origen.",
         )}
       </p>
     </div>
