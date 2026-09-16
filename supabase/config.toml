@@ -13,4 +13,4 @@ subject = "Confirme seu e-mail e monte seu perfil no MGP"
 content_path = "./templates/confirmation.html"
 
 [functions.nexus-inference]
-verify_jwt = true
+verify_jwt = false
