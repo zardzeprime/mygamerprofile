@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-09-16",
+  "cores": {
+    "nexus": {
+      "name": "NEXUS",
+      "role": "mother-orchestrator",
+      "completed": [
+        "Established specialist-core routing architecture for AI-assisted development."
+      ],
+      "inProgress": [],
+      "next": [
+        "Keep specialist context scoped and integrate cross-core decisions into one implementation."
+      ],
+      "blocked": []
+    },
+    "aegis": {
+      "name": "AEGIS",
+      "role": "security",
+      "completed": [],
+      "inProgress": [],
+      "next": [
+        "Review security-sensitive changes when authentication, authorization, uploads, APIs, admin flows or third-party integrations change."
+      ],
+      "blocked": []
+    },
+    "veil": {
+      "name": "VEIL",
+      "role": "privacy",
+      "completed": [],
+      "inProgress": [],
+      "next": [
+        "Review privacy-sensitive changes when visibility, personal data, telemetry, connected accounts, retention or consent changes."
+      ],
+      "blocked": []
+    },
+    "atlas": {
+      "name": "ATLAS",
+      "role": "image-rights-and-licensing",
+      "completed": [
+        "Added explicit source attribution metadata to Dark Souls and Dark Souls III boss artwork mappings.",
+        "Preferred identifiable concept/reference artwork over ambiguous screenshots where practical.",
+        "Preserved source-page links for externally sourced boss artwork."
+      ],
+      "inProgress": [],
+      "next": [
+        "Continue replacing weak fallback artwork when higher-quality, clearly sourced assets are found.",
+        "Keep provenance metadata attached to every new external media source."
+      ],
+      "blocked": [
+        "Some bosses still lack a sufficiently reliable boss-specific asset from currently reviewed sources."
+      ]
+    },
+    "pulse": {
+      "name": "PULSE",
+      "role": "updates",
+      "completed": [],
+      "inProgress": [],
+      "next": [
+        "Track game/editorial data that can become stale and define refresh expectations before automating it."
+      ],
+      "blocked": []
+    },
+    "gear": {
+      "name": "GEAR",
+      "role": "automation",
+      "completed": [],
+      "inProgress": [],
+      "next": [
+        "Identify repeated manual project workflows that are stable enough to automate.",
+        "Coordinate with PULSE when recurring content or data refreshes are introduced."
+      ],
+      "blocked": [
+        "No dedicated multi-agent or background-worker runtime is currently implemented."
+      ]
+    },
+    "vector": {
+      "name": "VECTOR",
+      "role": "optimization",
+      "completed": [
+        "Separated boss-card framing from boss-detail framing so each context can use its own crop and scale.",
+        "Added per-boss image position, scale and cover/contain controls for Dark Souls and Dark Souls III.",
+        "Reduced poor letterboxing for landscape boss screenshots by allowing targeted crop/zoom.",
+        "Changed the games catalog to a denser responsive grid while preserving the homepage carousel."
+      ],
+      "inProgress": [],
+      "next": [
+        "Review external boss-art delivery for image weight, caching and layout stability after visual approval.",
+        "Profile high-cost routes before proposing additional performance work."
+      ],
+      "blocked": []
+    }
+  }
+}
