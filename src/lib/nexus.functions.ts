@@ -2,7 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { buildNexusSystemPrompt, selectNexusCores } from "@/lib/nexus/prompt";
+import { getSupabaseAdmin } from "@/lib/supabase-admin.server";
+import { useNexusGuestSession } from "@/lib/nexus/guest-session.server";
+import {
+  buildNexusSystemPrompt,
+  selectNexusCores,
+  type NexusLocale,
+} from "@/lib/nexus/prompt";
 import {
   completeWithNexusRouter,
   getNexusProviderStatus,
@@ -11,12 +17,21 @@ import {
 import { NEXUS_TOOL_BRIDGES } from "@/lib/nexus/tool-bridges";
 
 const modeSchema = z.enum(["gaming", "development"]);
+const localeSchema = z.enum(["pt-BR", "en", "es"]);
 const threadSchema = z.object({ threadId: z.string().uuid() });
 const sendSchema = z.object({
   threadId: z.string().uuid().optional(),
   mode: modeSchema.default("gaming"),
+  locale: localeSchema.default("pt-BR"),
   message: z.string().trim().min(1).max(6000),
 });
+const guestSendSchema = z.object({
+  locale: localeSchema.default("pt-BR"),
+  message: z.string().trim().min(1).max(2500),
+});
+
+const GUEST_HISTORY_LIMIT = 20;
+const GUEST_RATE_LIMIT_PER_MINUTE = 6;
 
 async function isAdmin(db: any, userId: string) {
   const { data, error } = await db
@@ -44,10 +59,184 @@ async function enforceNexusRateLimit(db: any, userId: string) {
   }
 }
 
+async function ensureGuestContext() {
+  const cookieSession = await useNexusGuestSession();
+  const db = getSupabaseAdmin() as any;
+  let guestId = cookieSession.data.guestId;
+
+  if (guestId) {
+    const { data: existing, error } = await db
+      .from("nexus_guest_sessions")
+      .select("id,responses_used,max_responses,expires_at")
+      .eq("id", guestId)
+      .maybeSingle();
+
+    if (error) throw new Error(error.message);
+    if (existing && new Date(existing.expires_at).getTime() > Date.now()) {
+      return { db, guestId, guest: existing };
+    }
+  }
+
+  guestId = crypto.randomUUID();
+  const { data: created, error: createError } = await db
+    .from("nexus_guest_sessions")
+    .insert({ id: guestId })
+    .select("id,responses_used,max_responses,expires_at")
+    .single();
+  if (createError) throw new Error(createError.message);
+
+  await cookieSession.update({ guestId });
+  return { db, guestId, guest: created };
+}
+
+async function loadGuestMessages(db: any, guestId: string, limit = GUEST_HISTORY_LIMIT) {
+  const { data, error } = await db
+    .from("nexus_guest_messages")
+    .select("id,role,content,core_ids,provider,model,created_at")
+    .eq("session_id", guestId)
+    .in("role", ["user", "assistant"])
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw new Error(error.message);
+  return (data ?? []).reverse();
+}
+
+async function enforceGuestRateLimit(db: any, guestId: string) {
+  const since = new Date(Date.now() - 60_000).toISOString();
+  const { count, error } = await db
+    .from("nexus_guest_messages")
+    .select("id", { count: "exact", head: true })
+    .eq("session_id", guestId)
+    .eq("role", "user")
+    .gte("created_at", since);
+
+  if (error) throw new Error(error.message);
+  if ((count ?? 0) >= GUEST_RATE_LIMIT_PER_MINUTE) {
+    throw new Error("NEXUS_GUEST_RATE_LIMIT");
+  }
+}
+
 function titleFromMessage(message: string) {
   const oneLine = message.replace(/\s+/g, " ").trim();
   return oneLine.length > 72 ? `${oneLine.slice(0, 69)}...` : oneLine;
 }
+
+export const getNexusGuestStatus = createServerFn({ method: "GET" }).handler(async () => {
+  const { db, guestId, guest } = await ensureGuestContext();
+  const messages = await loadGuestMessages(db, guestId, 40);
+  const responsesUsed = Number(guest.responses_used ?? 0);
+  const maxResponses = Number(guest.max_responses ?? 10);
+  const remaining = Math.max(0, maxResponses - responsesUsed);
+
+  return {
+    responsesUsed,
+    maxResponses,
+    remaining,
+    locked: remaining <= 0,
+    messages,
+  };
+});
+
+export const sendNexusGuestMessage = createServerFn({ method: "POST" })
+  .inputValidator((data) => guestSendSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { db, guestId, guest } = await ensureGuestContext();
+    const responsesUsed = Number(guest.responses_used ?? 0);
+    const maxResponses = Number(guest.max_responses ?? 10);
+
+    if (responsesUsed >= maxResponses) {
+      return {
+        locked: true as const,
+        remaining: 0,
+        maxResponses,
+        message: null,
+      };
+    }
+
+    await enforceGuestRateLimit(db, guestId);
+
+    const coreIds = selectNexusCores(data.message, "gamer");
+    const { error: userMessageError } = await db.from("nexus_guest_messages").insert({
+      session_id: guestId,
+      role: "user",
+      content: data.message,
+      core_ids: coreIds,
+      metadata: { mode: "gaming", locale: data.locale, anonymousTrial: true },
+    });
+    if (userMessageError) throw new Error(userMessageError.message);
+
+    const historyRows = await loadGuestMessages(db, guestId);
+    const history: NexusChatMessage[] = historyRows.map(
+      (row: { role: string; content: string }) => ({
+        role: row.role === "assistant" ? "assistant" : "user",
+        content: row.content,
+      }),
+    );
+
+    const system = buildNexusSystemPrompt({
+      mode: "gamer",
+      isAdmin: false,
+      coreIds,
+      locale: data.locale as NexusLocale,
+    });
+
+    const completion = await completeWithNexusRouter({
+      system,
+      messages: history,
+      effort: "medium",
+      maxOutputTokens: 1000,
+    });
+
+    const { data: quotaRows, error: quotaError } = await db.rpc(
+      "record_nexus_guest_assistant",
+      {
+        p_session_id: guestId,
+        p_content: completion.text,
+        p_core_ids: coreIds,
+        p_provider: completion.provider,
+        p_model: completion.model,
+        p_metadata: {
+          mode: "gaming",
+          locale: data.locale,
+          anonymousTrial: true,
+          attemptedProviders: completion.attemptedProviders,
+        },
+      },
+    );
+
+    if (quotaError) {
+      if (String(quotaError.message).includes("NEXUS_GUEST_LIMIT_REACHED")) {
+        return {
+          locked: true as const,
+          remaining: 0,
+          maxResponses,
+          message: null,
+        };
+      }
+      throw new Error(quotaError.message);
+    }
+
+    const quota = quotaRows?.[0];
+    const remaining = Number(quota?.remaining_count ?? 0);
+
+    return {
+      locked: remaining <= 0,
+      remaining,
+      maxResponses,
+      message: {
+        id: quota?.message_id as string | undefined,
+        role: "assistant" as const,
+        content: completion.text,
+        core_ids: coreIds,
+        provider: completion.provider,
+        model: completion.model,
+      },
+      provider: completion.provider,
+      model: completion.model,
+      attemptedProviders: completion.attemptedProviders,
+    };
+  });
 
 export const getNexusStatus = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -182,7 +371,7 @@ export const sendNexusMessage = createServerFn({ method: "POST" })
       role: "user",
       content: data.message,
       core_ids: coreIds,
-      metadata: { mode: threadMode },
+      metadata: { mode: threadMode, locale: data.locale },
     });
     if (userMessageError) throw new Error(userMessageError.message);
 
@@ -207,6 +396,7 @@ export const sendNexusMessage = createServerFn({ method: "POST" })
       mode: promptMode,
       isAdmin: admin,
       coreIds,
+      locale: data.locale as NexusLocale,
     });
 
     const completion = await completeWithNexusRouter({
@@ -228,6 +418,7 @@ export const sendNexusMessage = createServerFn({ method: "POST" })
         model: completion.model,
         metadata: {
           mode: threadMode,
+          locale: data.locale,
           attemptedProviders: completion.attemptedProviders,
         },
       })
