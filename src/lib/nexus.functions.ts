@@ -420,7 +420,7 @@ export const sendNexusMessage = createServerFn({ method: "POST" })
       updated_at: now,
       last_message_at: now,
     };
-    if (isNewThread) updatePayload.title = titleFromMessage(data.message);
+    if (isNewThread) updatePayload["title"] = titleFromMessage(data.message);
 
     const { error: threadUpdateError } = await db
       .from("nexus_threads")

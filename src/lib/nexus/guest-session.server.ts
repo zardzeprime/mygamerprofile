@@ -28,7 +28,7 @@ export function useNexusGuestSession() {
     cookie: {
       httpOnly: true,
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env["NODE_ENV"] === "production",
       maxAge: THIRTY_DAYS_SECONDS,
       path: "/",
     },
