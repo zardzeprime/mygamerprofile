@@ -1,3 +1,5 @@
+import { augmentSystemWithMgpContent } from "./content.ts";
+
 export type ProviderId = "openai" | "gemini" | "groq" | "openrouter" | "anthropic";
 export type ChatMessage = { role: "user" | "assistant"; content: string };
 export type CompletionRequest = {
@@ -10,6 +12,7 @@ export type CompletionRequest = {
 
 const PROVIDERS: ProviderId[] = ["openai", "gemini", "groq", "openrouter", "anthropic"];
 const DEFAULT_ORDER: ProviderId[] = ["gemini", "openai", "groq", "openrouter", "anthropic"];
+const PROVIDER_TIMEOUT_MS = 16_000;
 
 function env(name: string) {
   return Deno.env.get(name)?.trim() || undefined;
@@ -17,6 +20,20 @@ function env(name: string) {
 
 function errorText(error: unknown) {
   return (error instanceof Error ? error.message : String(error)).slice(0, 500);
+}
+
+async function withTimeout<T>(promise: Promise<T>, provider: ProviderId): Promise<T> {
+  let timer: number | undefined;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<T>((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`${provider} timed out`)), PROVIDER_TIMEOUT_MS);
+      }),
+    ]);
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
+  }
 }
 
 export function providerStatuses() {
@@ -186,12 +203,18 @@ export async function complete(request: CompletionRequest) {
   );
   const attemptedProviders: ProviderId[] = [];
   const failures: string[] = [];
+  const latestUserMessage = [...request.messages].reverse().find((message) => message.role === "user")?.content ?? "";
+  const groundedRequest: CompletionRequest = {
+    ...request,
+    system: await augmentSystemWithMgpContent(request.system, latestUserMessage),
+  };
 
   for (const provider of providerOrder(request.providerOrder)) {
     if (!state.get(provider)?.configured) continue;
     attemptedProviders.push(provider);
     try {
-      return { ...(await COMPLETERS[provider](request)), attemptedProviders };
+      const result = await withTimeout(COMPLETERS[provider](groundedRequest), provider);
+      return { ...result, attemptedProviders };
     } catch (error) {
       failures.push(`${provider}: ${errorText(error)}`);
     }
