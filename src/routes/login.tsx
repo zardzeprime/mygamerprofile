@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/i18n";
+import { localeCopy } from "@/i18n/locale-utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,12 +20,36 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const handleGoogle = async () => {
+    setOauthLoading(true);
+    setError("");
+    try {
+      const redirectTo = `${window.location.origin}/onboarding`;
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo },
+      });
+      if (oauthError) throw oauthError;
+    } catch {
+      setOauthLoading(false);
+      setError(
+        copy(
+          "Login com Google ainda precisa ser habilitado nas credenciais OAuth do MGP.",
+          "Google sign-in still needs to be enabled in MGP's OAuth credentials.",
+          "El acceso con Google aún debe habilitarse en las credenciales OAuth de MGP.",
+        ),
+      );
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +94,25 @@ function LoginPage() {
           <CardDescription>MGP — {t("brand.full")}</CardDescription>
         </CardHeader>
         <CardContent>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={handleGoogle}
+            disabled={oauthLoading || loading}
+          >
+            <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-bold">G</span>
+            {oauthLoading
+              ? t("common.loading")
+              : copy("Continuar com Google", "Continue with Google", "Continuar con Google")}
+          </Button>
+
+          <div className="my-5 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="h-px flex-1 bg-border" />
+            {copy("ou e-mail", "or email", "o correo")}
+            <span className="h-px flex-1 bg-border" />
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">{t("auth.email")}</Label>
@@ -93,7 +137,7 @@ function LoginPage() {
               />
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading || oauthLoading}>
               {loading ? t("common.loading") : t("auth.submitLogin")}
             </Button>
           </form>
