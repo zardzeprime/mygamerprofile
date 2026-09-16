@@ -16,6 +16,7 @@ import {
   sendNexusMessage,
 } from "@/lib/nexus.functions";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 type NexusMode = "gaming" | "development";
 
@@ -109,7 +110,13 @@ export function NexusChat() {
         return;
       }
 
-      const [nextStatus, threads] = await Promise.all([getNexusStatus(), listNexusThreads()]);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error("NEXUS_AUTH_SESSION_MISSING");
+      const [nextStatus, threads] = await Promise.all([
+        getNexusStatus({ data: { accessToken } }),
+        listNexusThreads({ data: { accessToken } }),
+      ]);
       if (!active) return;
       setStatus(nextStatus as NexusStatus);
 
@@ -118,7 +125,9 @@ export function NexusChat() {
       );
       if (!preferred) return;
 
-      const history = (await listNexusMessages({ data: { threadId: preferred.id } })) as NexusMessage[];
+      const history = (await listNexusMessages({
+        data: { threadId: preferred.id, accessToken },
+      })) as NexusMessage[];
       if (!active) return;
       setThreadId(preferred.id);
       setMessages(history.filter((message) => message.role === "user" || message.role === "assistant"));
@@ -200,8 +209,11 @@ export function NexusChat() {
         return;
       }
 
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error("NEXUS_AUTH_SESSION_MISSING");
       const response = await sendNexusMessage({
-        data: { threadId, mode, message, locale },
+        data: { threadId, mode, message, locale, accessToken },
       });
       setThreadId(response.threadId);
       setMessages((current) => [
