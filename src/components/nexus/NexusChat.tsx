@@ -35,12 +35,26 @@ type NexusStatus = {
 };
 
 type NexusGuestStatus = {
+  guestId: string;
   responsesUsed: number;
   maxResponses: number;
   remaining: number;
   locked: boolean;
+  aiReady: boolean;
   messages: NexusMessage[];
 };
+
+const GUEST_STORAGE_KEY = "mgp:nexus:guest-session";
+
+function readStoredGuestId() {
+  if (typeof window === "undefined") return undefined;
+  return window.localStorage.getItem(GUEST_STORAGE_KEY) || undefined;
+}
+
+function persistGuestId(guestId?: string) {
+  if (typeof window === "undefined" || !guestId) return;
+  window.localStorage.setItem(GUEST_STORAGE_KEY, guestId);
+}
 
 export function NexusChat() {
   const { user, loading: authLoading } = useAuth();
@@ -81,8 +95,11 @@ export function NexusChat() {
 
     const load = async () => {
       if (!user) {
-        const nextGuest = (await getNexusGuestStatus()) as NexusGuestStatus;
+        const nextGuest = (await getNexusGuestStatus({
+          data: { guestId: readStoredGuestId() },
+        })) as NexusGuestStatus;
         if (!active) return;
+        persistGuestId(nextGuest.guestId);
         setGuestStatus(nextGuest);
         setMessages(
           (nextGuest.messages ?? []).filter(
@@ -144,7 +161,8 @@ export function NexusChat() {
     event.preventDefault();
     const message = input.trim();
     if (!message || sending || authLoading) return;
-    if (!user && (!guestStatus || guestStatus.locked)) return;
+    if (!user && (!guestStatus || guestStatus.locked || !guestStatus.aiReady)) return;
+    if (user && configuredProviders.length === 0) return;
 
     setInput("");
     setError("");
@@ -154,17 +172,20 @@ export function NexusChat() {
     try {
       if (!user) {
         const response = await sendNexusGuestMessage({
-          data: { message, locale },
+          data: { guestId: guestStatus?.guestId, message, locale },
         });
 
+        persistGuestId(response.guestId);
         if (response.message) {
           setMessages((current) => [...current, response.message as NexusMessage]);
         }
         setGuestStatus((current) => ({
+          guestId: response.guestId,
           responsesUsed: response.maxResponses - response.remaining,
           maxResponses: response.maxResponses,
           remaining: response.remaining,
           locked: response.locked,
+          aiReady: response.aiReady,
           messages: current?.messages ?? [],
         }));
         return;
@@ -185,6 +206,11 @@ export function NexusChat() {
         },
       ]);
     } catch (reason) {
+      setMessages((current) => {
+        const last = current.at(-1);
+        if (last?.role === "user" && last.content === message) return current.slice(0, -1);
+        return current;
+      });
       setError(formatNexusError(reason, Boolean(user), copy));
     } finally {
       setSending(false);
@@ -216,7 +242,12 @@ export function NexusChat() {
 
   const visibleMessages = [greeting, ...messages];
   const guestLocked = !user && Boolean(guestStatus?.locked);
-  const canSend = Boolean(user || (guestStatus && !guestStatus.locked));
+  const aiReady = user ? configuredProviders.length > 0 : Boolean(guestStatus?.aiReady);
+  const canSend = Boolean(
+    !loadingChat &&
+      aiReady &&
+      (user || (guestStatus && !guestStatus.locked)),
+  );
 
   return (
     <>
@@ -259,7 +290,7 @@ export function NexusChat() {
                             `${configuredProviders.length} provider(s) available`,
                             `${configuredProviders.length} proveedor(es) disponible(s)`,
                           )
-                        : copy("NEXUS online", "NEXUS online", "NEXUS en línea")}
+                        : copy("NEXUS sem provedor conectado", "NEXUS has no provider connected", "NEXUS sin proveedor conectado")}
                   </p>
                 </div>
               </div>
@@ -349,6 +380,26 @@ export function NexusChat() {
                   </div>
                 ) : null}
 
+                {!aiReady ? (
+                  <div className="mt-4 rounded-2xl border border-border bg-muted/40 p-4 text-center">
+                    <NexusMark className="mx-auto mb-2 size-8 text-gold-strong" />
+                    <p className="font-semibold text-foreground">
+                      {copy(
+                        "A NEXUS está instalada, mas o motor de IA ainda não está conectado.",
+                        "NEXUS is installed, but its AI engine is not connected yet.",
+                        "NEXUS está instalada, pero su motor de IA aún no está conectado.",
+                      )}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                      {copy(
+                        "Precisamos configurar pelo menos um provedor oficial no servidor para ela responder.",
+                        "At least one official provider must be configured on the server before she can reply.",
+                        "Hay que configurar al menos un proveedor oficial en el servidor para que pueda responder.",
+                      )}
+                    </p>
+                  </div>
+                ) : null}
+
                 {guestLocked ? (
                   <div className="mt-4 rounded-2xl border border-gold/30 bg-gold/5 p-4 text-center">
                     <div className="mx-auto mb-2 grid size-9 place-items-center rounded-full bg-gold/10 text-gold-strong">
@@ -404,9 +455,11 @@ export function NexusChat() {
                 rows={1}
                 maxLength={user ? 6000 : 2500}
                 placeholder={
-                  guestLocked
-                    ? copy("Entre para continuar com a NEXUS", "Sign in to keep chatting", "Inicia sesión para continuar")
-                    : copy("Fale com a NEXUS...", "Talk to NEXUS...", "Habla con NEXUS...")
+                  !aiReady
+                    ? copy("Motor de IA ainda não conectado", "AI engine not connected yet", "Motor de IA aún no conectado")
+                    : guestLocked
+                      ? copy("Entre para continuar com a NEXUS", "Sign in to keep chatting", "Inicia sesión para continuar")
+                      : copy("Fale com a NEXUS...", "Talk to NEXUS...", "Habla con NEXUS...")
                 }
                 className="max-h-32 min-h-11 flex-1 resize-none rounded-2xl border border-input bg-background px-3.5 py-3 text-sm text-foreground outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-gold/30 disabled:opacity-50"
               />
@@ -446,7 +499,7 @@ function formatNexusError(
 ) {
   const raw = reason instanceof Error ? reason.message : String(reason);
 
-  if (raw.includes("NEXUS_GUEST_RATE_LIMIT")) {
+  if (raw.includes("NEXUS_GUEST_RATE_LIMIT") || raw.includes("NEXUS_RATE_LIMIT")) {
     return copy(
       "Mandou rápido demais 😅 espera alguns segundos e tenta de novo.",
       "That was fast 😅 wait a few seconds and try again.",
@@ -454,11 +507,15 @@ function formatNexusError(
     );
   }
 
-  if (raw.includes("no official model API configured") || raw.includes("All configured NEXUS providers failed")) {
+  if (
+    raw.includes("NEXUS_NO_PROVIDER") ||
+    raw.includes("no official model API configured") ||
+    raw.includes("All configured NEXUS providers failed")
+  ) {
     return copy(
-      "A NEXUS está com o cérebro de IA indisponível agora. Tenta novamente daqui a pouco.",
-      "NEXUS's AI brain is unavailable right now. Try again in a bit.",
-      "El cerebro de IA de NEXUS no está disponible ahora. Inténtalo de nuevo en un momento.",
+      "A NEXUS está instalada, mas ainda falta conectar um provedor de IA no servidor.",
+      "NEXUS is installed, but an AI provider still needs to be connected on the server.",
+      "NEXUS está instalada, pero todavía falta conectar un proveedor de IA en el servidor.",
     );
   }
 
