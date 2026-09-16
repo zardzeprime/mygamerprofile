@@ -21,6 +21,11 @@ export function GameArtwork({
   loading = "lazy",
 }: GameArtworkProps) {
   const isLeagueArtwork = game.slug === "league-of-legends";
+  const usesUpscaledRepositoryArtwork = [
+    "dark-souls-iii",
+    "elden-ring",
+    "ea-sports-fc",
+  ].includes(game.slug);
   const configuredSource = isLeagueArtwork
     ? LEAGUE_OFFICIAL_LOGO
     : variant === "hero"
@@ -56,7 +61,8 @@ export function GameArtwork({
         }}
         style={objectPosition ? { objectPosition } : undefined}
         className={cn(
-          "game-artwork-base h-full w-full select-none transition-[transform,filter,opacity] duration-700 group-hover:scale-[1.045]",
+          "game-artwork-base h-full w-full select-none transition-[transform,filter,opacity] duration-700",
+          usesUpscaledRepositoryArtwork ? "group-hover:scale-[1.015]" : "group-hover:scale-[1.045]",
           isLeagueArtwork
             ? variant === "hero"
               ? "object-contain p-[19%] opacity-90"
