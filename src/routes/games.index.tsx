@@ -3,14 +3,14 @@ import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { GameCard } from "@/components/games/GameCard";
-import { GAMES } from "@/config/games";
+import { ACTIVE_GAMES } from "@/config/gameAvailability";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
 
 type GenreFilter = "all" | "rpg" | "fps" | "moba" | "sports";
 
-const SORTED_GAMES = [...GAMES].sort((first, second) =>
+const SORTED_GAMES = [...ACTIVE_GAMES].sort((first, second) =>
   first.name.localeCompare(second.name, "en", { sensitivity: "base" }),
 );
 
@@ -20,12 +20,12 @@ export const Route = createFileRoute("/games/")({
       { title: "Catálogo de jogos — MGP" },
       {
         name: "description",
-        content: "Catálogo editorial de jogos do MGP com informações, guias, builds e coleções por título.",
+        content: "Catálogo editorial de jogos ativos do MGP com informações, guias, builds e coleções por título.",
       },
       { property: "og:title", content: "Catálogo de jogos — MGP" },
       {
         property: "og:description",
-        content: "Catálogo editorial de jogos do MGP com informações, guias, builds e coleções por título.",
+        content: "Catálogo editorial de jogos ativos do MGP com informações, guias, builds e coleções por título.",
       },
     ],
   }),
@@ -68,14 +68,14 @@ function GamesCatalog() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
-      <p className="section-kicker">MGP / LIBRARY</p>
+      <p className="section-kicker">MGP / 0.1.9</p>
       <h1 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-5xl">{t("games.title")}</h1>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">{t("games.subtitle")}</p>
       <p className="mt-2 max-w-2xl text-xs leading-5 text-muted-foreground">
         {copy(
-          "Jogos é a biblioteca editorial do MGP. Conversas e atividade social ficam no catálogo separado de Comunidades.",
-          "Games is MGP's editorial library. Conversations and social activity live in the separate Communities catalog.",
-          "Juegos es la biblioteca editorial de MGP. Las conversaciones y la actividad social viven en el catálogo separado de Comunidades.",
+          "Nesta fase, o catálogo ativo foca Dark Souls, Dark Souls III, Valorant e League of Legends. Outros hubs continuam preservados e voltam quando o conteúdo estiver pronto.",
+          "This phase focuses the active catalog on Dark Souls, Dark Souls III, Valorant and League of Legends. Other hubs remain preserved and will return when their content is ready.",
+          "En esta fase, el catálogo activo se centra en Dark Souls, Dark Souls III, Valorant y League of Legends. Otros hubs se conservan y volverán cuando su contenido esté listo.",
         )}
       </p>
 
