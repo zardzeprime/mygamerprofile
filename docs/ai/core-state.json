@@ -37,7 +37,8 @@
         "Kept model-provider credentials server-side and documented that consumer sessions must not be used as hidden API credentials.",
         "Applied per-user RLS to Nexus conversations and optimized Nexus auth.uid() RLS evaluation.",
         "Protected anonymous Nexus storage from direct browser access with deny RLS policies and revoked anon/authenticated grants.",
-        "Added server-side guest quota enforcement, atomic assistant-response counting and a short-window per-session rate limit."
+        "Added server-side guest quota enforcement, atomic assistant-response counting and a short-window per-session rate limit.",
+        "Removed direct anon/authenticated EXECUTE access from Nexus guest SECURITY DEFINER RPCs, leaving them server-side for service_role only."
       ],
       "inProgress": [],
       "next": [
