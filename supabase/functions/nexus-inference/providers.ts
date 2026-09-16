@@ -12,7 +12,7 @@ export type CompletionRequest = {
 
 const PROVIDERS: ProviderId[] = ["openai", "gemini", "groq", "openrouter", "anthropic"];
 const DEFAULT_ORDER: ProviderId[] = ["gemini", "openai", "groq", "openrouter", "anthropic"];
-const PROVIDER_TIMEOUT_MS = 16_000;
+const PROVIDER_TIMEOUT_MS = 12_000;
 
 function env(name: string) {
   return Deno.env.get(name)?.trim() || undefined;
