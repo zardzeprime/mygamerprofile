@@ -8,13 +8,13 @@ NEXUS deliberately separates **reasoning/inference** from **actions/tools**.
 
 ### Inference providers
 
-These providers generate NEXUS responses through official server-side APIs:
+These providers generate NEXUS responses through official server-side APIs. The public failover order is:
 
-1. **OpenAI** — default model `gpt-5.6-sol`
-2. **Google Gemini** — default model `gemini-3.8-flash`
-3. **Anthropic Claude** — default model `claude-sonnet-4-6`
+1. **Google Gemini**
+2. **Groq**
+3. **OpenRouter**
 
-The order is configured with `NEXUS_PROVIDER_ORDER`. If a configured provider fails, the router tries the next configured provider. The assistant message stores the provider/model that actually answered and the providers attempted.
+OpenAI and Anthropic Claude remain optional providers for authenticated/admin workloads. Model identifiers are configuration, not product constants, because provider catalogs change. The order is configured with `NEXUS_GUEST_PROVIDER_ORDER` and `NEXUS_PROVIDER_ORDER`. If a configured provider fails, the router tries the next configured provider. The assistant message stores the provider/model that actually answered and the providers attempted.
 
 Consumer subscriptions are not treated as API credentials. Do not automate consumer chat sessions, browser cookies or hidden web UI calls to imitate normal human usage. Integrations must use official APIs, OAuth, MCP or supported project tools.
 
@@ -102,15 +102,22 @@ Prefer reversible workflows: branch -> diff/review -> merge, and migration -> re
 Server-only environment variables:
 
 ```text
-OPENAI_API_KEY=
 GEMINI_API_KEY=
+GROQ_API_KEY=
+OPENROUTER_API_KEY=
+OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
-NEXUS_PROVIDER_ORDER=openai,gemini,anthropic
-NEXUS_OPENAI_MODEL=gpt-5.6-sol
-NEXUS_GEMINI_MODEL=gemini-3.8-flash
-NEXUS_ANTHROPIC_MODEL=claude-sonnet-4-6
+NEXUS_GUEST_PROVIDER_ORDER=gemini,groq,openrouter
+NEXUS_PROVIDER_ORDER=gemini,groq,openrouter,openai,anthropic
+NEXUS_GEMINI_MODEL=
+NEXUS_GROQ_MODEL=
+NEXUS_OPENROUTER_MODEL=
+NEXUS_OPENAI_MODEL=
+NEXUS_ANTHROPIC_MODEL=
 NEXUS_GUEST_SESSION_SECRET=
 ```
+
+Lovable Secrets are backend values injected into Edge Functions and supported server-side integrations. They are not browser variables and must not be renamed to `VITE_*`. When the TanStack SSR runtime cannot see those secrets through `process.env`, NEXUS inference must run in a server-side function that receives them and the UI/server function must call that backend boundary. A health response may return only provider identifiers, model identifiers and booleans such as `configured`/`available`; it must never return secret values or provider error bodies containing credentials.
 
 `NEXUS_GUEST_SESSION_SECRET` should be a random value with at least 32 characters. The runtime can temporarily derive the guest-cookie secret from the server-only Supabase service-role credential when the dedicated secret is absent, but a dedicated secret is preferred for key separation.
 
@@ -126,7 +133,20 @@ Later, NEXUS may support an explicit `council` mode for difficult admin-only tas
 
 The NEXUS brand/provenance boundary is documented in `docs/NEXUS_BRAND_PROVENANCE.md`. Personal legal identifiers such as CPF, private phone numbers and identity documents must not be committed to the repository merely to prove ownership.
 
-## 8. Current limitations
+## 8. v0.1.9 connection acceptance test
+
+The NEXUS engine is considered connected only when all of the following pass in preview:
+
+1. At least one of Gemini, Groq or OpenRouter is reported as configured by the backend runtime that performs inference.
+2. A guest message receives a real generated response.
+3. Provider/model metadata identifies the provider that answered without exposing credentials.
+4. If the first provider is unavailable, the router attempts the next configured provider.
+5. A total provider failure returns a safe localized error and does not decrement the guest's ten-response quota.
+6. An authenticated message is persisted under the owning user and remains protected by RLS.
+
+The local greeting and an `aiReady` boolean alone are not sufficient proof.
+
+## 9. Current limitations
 
 - The MGP runtime does not inherit ChatGPT account memory, ChatGPT Plus quotas or ChatGPT connectors.
 - Anonymous guest history is not automatically merged into an account after sign-in; that can become an explicit opt-in feature later.
