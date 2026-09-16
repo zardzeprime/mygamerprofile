@@ -1,3 +1,5 @@
+import { getSupabasePublicConfig } from "@/lib/supabase.server";
+
 export type NexusProviderId = "openai" | "gemini" | "groq" | "openrouter" | "anthropic";
 
 export type NexusChatRole = "user" | "assistant";
@@ -46,18 +48,7 @@ function serverEnv(name: string) {
 }
 
 function publicSupabaseConfig() {
-  // In Lovable/TanStack Start production the public Supabase values are commonly
-  // injected as VITE_* variables. Server bundles cannot rely on import.meta.env
-  // being populated at request time, so accept the VITE_* names from process.env
-  // as well. These are publishable values, never privileged secrets.
-  const url =
-    import.meta.env["VITE_SUPABASE_URL"] ||
-    process.env["VITE_SUPABASE_URL"] ||
-    process.env["SUPABASE_URL"];
-  const publishableKey =
-    import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
-    process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
-    process.env["SUPABASE_PUBLISHABLE_KEY"];
+  const { url, publishableKey } = getSupabasePublicConfig();
   if (!url || !publishableKey) return null;
   return {
     url: String(url).replace(/\/$/, ""),
