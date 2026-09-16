@@ -101,11 +101,11 @@ function makeMgpPlaceholder(label: string, subtitle: string, from: string, to: s
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
-const DS3_PLACEHOLDER = makeMgpPlaceholder("DARK SOULS III", "MGP · GAME HUB", "#120d0a", "#6b2d17");
-const ELDEN_RING_PLACEHOLDER = makeMgpPlaceholder("ELDEN RING", "MGP · THE LANDS BETWEEN", "#11120d", "#726021");
 const NIGHTREIGN_PLACEHOLDER = makeMgpPlaceholder("ELDEN RING NIGHTREIGN", "MGP · STANDALONE HUB", "#080f18", "#244e73");
 const LOL_PLACEHOLDER = makeMgpPlaceholder("LEAGUE OF LEGENDS", "MGP · COMPETITIVE HUB", "#06151d", "#0d6671");
-const FC_PLACEHOLDER = makeMgpPlaceholder("EA SPORTS FC", "MGP · FOOTBALL HUB", "#07110c", "#187244");
+const DS3_COVER = "/game-covers/ds3.webp";
+const ELDEN_RING_COVER = "/game-covers/elden-ring.webp";
+const FC26_COVER = "/game-covers/fc26.webp";
 
 export const GAMES: GameConfig[] = [
   {
@@ -183,12 +183,14 @@ export const GAMES: GameConfig[] = [
       { key: "personal_notes", type: "textarea", maxLength: 1000, label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" } },
     ],
     visual: {
-      coverImage: DS3_PLACEHOLDER,
-      heroImage: DS3_PLACEHOLDER,
-      backgroundImage: DS3_PLACEHOLDER,
+      coverImage: DS3_COVER,
+      heroImage: DS3_COVER,
+      backgroundImage: DS3_COVER,
       fallbackImage: darkSoulsAtmosphere,
-      assetSource: "MGP-generated placeholder; official Bandai Namco assets pending production asset review",
-      assetLicense: "MGP original placeholder; no third-party game artwork embedded",
+      cardObjectPosition: "48% 50%",
+      heroObjectPosition: "50% 43%",
+      assetSource: "User-provided repository artwork",
+      assetLicense: "User-provided asset; usage rights managed by project owner",
     },
   },
   {
@@ -220,12 +222,14 @@ export const GAMES: GameConfig[] = [
       { key: "personal_notes", type: "textarea", maxLength: 1000, label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" } },
     ],
     visual: {
-      coverImage: ELDEN_RING_PLACEHOLDER,
-      heroImage: ELDEN_RING_PLACEHOLDER,
-      backgroundImage: ELDEN_RING_PLACEHOLDER,
+      coverImage: ELDEN_RING_COVER,
+      heroImage: ELDEN_RING_COVER,
+      backgroundImage: ELDEN_RING_COVER,
       fallbackImage: darkSoulsAtmosphere,
-      assetSource: "MGP-generated placeholder; official Bandai Namco assets pending production asset review",
-      assetLicense: "MGP original placeholder; no third-party game artwork embedded",
+      cardObjectPosition: "54% 52%",
+      heroObjectPosition: "55% 52%",
+      assetSource: "User-provided repository artwork",
+      assetLicense: "User-provided asset; usage rights managed by project owner",
     },
   },
   {
@@ -356,12 +360,14 @@ export const GAMES: GameConfig[] = [
       { key: "personal_notes", type: "textarea", maxLength: 1000, label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" } },
     ],
     visual: {
-      coverImage: FC_PLACEHOLDER,
-      heroImage: FC_PLACEHOLDER,
-      backgroundImage: FC_PLACEHOLDER,
+      coverImage: FC26_COVER,
+      heroImage: FC26_COVER,
+      backgroundImage: FC26_COVER,
       fallbackImage: valorantAtmosphere,
-      assetSource: "MGP-generated placeholder; EA-approved/public assets pending production asset review",
-      assetLicense: "MGP original placeholder; no third-party game artwork embedded",
+      cardObjectPosition: "50% 50%",
+      heroObjectPosition: "50% 48%",
+      assetSource: "User-provided repository artwork",
+      assetLicense: "User-provided asset; usage rights managed by project owner",
     },
   },
 ];
