@@ -129,7 +129,7 @@ function Home() {
       </section>
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
         <section className="py-14" aria-labelledby="featured-games">
-          <div className="flex items-end justify-between gap-4">
+          <div className="flex items-start justify-between gap-4">
             <div>
               <p className="section-kicker">MG PROFILE / 01</p>
               <h2
@@ -141,7 +141,7 @@ function Home() {
             </div>
             <Link
               to="/games"
-              className="hidden items-center gap-2 text-sm font-semibold text-gold-strong sm:flex"
+              className="relative z-10 hidden -translate-y-6 items-center gap-2 text-sm font-semibold text-gold-strong sm:flex"
             >
               {t("home.cta.exploreGames")}
               <ArrowRight className="size-4" />
