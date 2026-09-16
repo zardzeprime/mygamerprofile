@@ -10,6 +10,10 @@ import { cn } from "@/lib/utils";
 
 type GenreFilter = "all" | "rpg" | "fps" | "moba" | "sports";
 
+const SORTED_GAMES = [...GAMES].sort((first, second) =>
+  first.name.localeCompare(second.name, "en", { sensitivity: "base" }),
+);
+
 export const Route = createFileRoute("/games/")({
   head: () => ({
     meta: [
@@ -36,7 +40,7 @@ function GamesCatalog() {
 
   const results = useMemo(() => {
     const term = query.trim().toLowerCase();
-    return GAMES.filter((game) => {
+    return SORTED_GAMES.filter((game) => {
       const aliases = game.aliases?.join(" ").toLowerCase() ?? "";
       const matchesQuery =
         !term ||
@@ -109,7 +113,7 @@ function GamesCatalog() {
         {results.length === 0 ? (
           <EmptyState title={t("games.empty")} />
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {results.map((game) => (
               <GameCard key={game.slug} game={game} />
             ))}
