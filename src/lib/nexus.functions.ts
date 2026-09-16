@@ -268,14 +268,14 @@ export const listNexusThreads = createServerFn({ method: "GET" })
   .inputValidator((data) => authSchema.parse(data))
   .handler(async ({ data }) => {
     const { db, userId } = await nexusUserContext(data.accessToken);
-    const { data, error } = await db
+    const { data: threads, error } = await db
       .from("nexus_threads")
       .select("id,title,mode,created_at,updated_at,last_message_at")
       .eq("user_id", userId)
       .order("last_message_at", { ascending: false })
       .limit(30);
     if (error) throw new Error(error.message);
-    return data ?? [];
+    return threads ?? [];
   });
 
 export const listNexusMessages = createServerFn({ method: "GET" })
