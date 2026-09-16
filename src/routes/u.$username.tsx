@@ -29,6 +29,7 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { GameProfileCard } from "@/components/games/GameProfileCard";
 import { PostCard } from "@/components/posts/PostCard";
 import { ReportDialog } from "@/components/common/ReportDialog";
+import { PublicProfileIdentity } from "@/components/profile/PublicProfileIdentity";
 import { GAMES } from "@/config/games";
 import { getProfileBackground } from "@/config/profileBackgrounds";
 import { cn } from "@/lib/utils";
@@ -127,10 +128,10 @@ function ProfilePage() {
     }
   };
 
-  const joinedAt = new Intl.DateTimeFormat(locale === "pt-BR" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US", {
-    month: "long",
-    year: "numeric",
-  }).format(new Date(profile.created_at));
+  const joinedAt = new Intl.DateTimeFormat(
+    locale === "pt-BR" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US",
+    { month: "long", year: "numeric" },
+  ).format(new Date(profile.created_at));
 
   return (
     <main className="mx-auto w-full max-w-7xl overflow-x-clip px-3 py-4 sm:px-6 sm:py-8 lg:py-10">
@@ -182,6 +183,7 @@ function ProfilePage() {
           <p className="mt-5 max-w-3xl whitespace-pre-wrap text-sm leading-7 text-muted-foreground">
             {profile.bio || t("profile.noBio")}
           </p>
+          <PublicProfileIdentity userId={profile.id} locale={locale} />
         </div>
       </section>
 
