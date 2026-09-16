@@ -73,7 +73,8 @@
         "Preserved source-page links for externally sourced boss artwork.",
         "Recorded NEXUS brand provenance and kept personal legal identifiers out of source control.",
         "Stored the first NEXUS N/Z mark as original editable vector geometry in the project.",
-        "Defined the AVAPGV licensing-report rule that public accessibility is not treated as permission to reuse external media."
+        "Defined the AVAPGV licensing-report rule that public accessibility is not treated as permission to reuse external media.",
+        "Kept player-photo and unverified team-logo fallbacks text-only when reuse rights or provenance were unclear."
       ],
       "inProgress": [],
       "next": [
@@ -88,8 +89,12 @@
     "pulse": {
       "name": "PULSE",
       "role": "updates",
-      "completed": [],
-      "inProgress": [],
+      "completed": [
+        "Expanded the VALORANT competitive snapshot across Americas, EMEA, Pacific and China with dated VLR provenance and roster-status metadata."
+      ],
+      "inProgress": [
+        "Continue individual ProSettings verification for players whose settings remain hidden."
+      ],
       "next": [
         "Track model IDs and provider API changes so Nexus defaults do not become stale.",
         "Track game/editorial data that can become stale and define refresh expectations before automating it."
@@ -124,7 +129,8 @@
         "Changed the games catalog to a denser responsive grid while preserving the homepage carousel.",
         "Made Nexus multi-provider behavior failover-first instead of querying every model for every message, limiting unnecessary latency and cost.",
         "Bound anonymous Nexus replies to shorter message/output limits and a finite ten-response trial to control public inference cost.",
-        "Reduced the per-provider timeout and increased the browser inference window so failover has a bounded path without premature client aborts."
+        "Reduced the per-provider timeout and increased the browser inference window so failover has a bounded path without premature client aborts.",
+        "Compacted the competitive grid and roster modal for small mobile screens, with resilient logo fallbacks and copyable crosshair codes."
       ],
       "inProgress": [],
       "next": [

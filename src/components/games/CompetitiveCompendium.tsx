@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Crosshair, Database, ExternalLink, MousePointer2, UsersRound } from "lucide-react";
+import { Check, Copy, Crosshair, Database, ExternalLink, MousePointer2, UsersRound } from "lucide-react";
 
 import {
   Dialog,
@@ -18,9 +18,16 @@ import {
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 
-type RegionFilter = "all" | "Americas" | "EMEA" | "Pacific" | "China";
+type RegionFilter = "all" | "americas" | "emea" | "pacific" | "china";
 
-const REGION_FILTERS: RegionFilter[] = ["all", "Americas", "EMEA", "Pacific", "China"];
+const REGION_FILTERS: RegionFilter[] = ["all", "americas", "emea", "pacific", "china"];
+
+const REGION_LABELS: Record<Exclude<RegionFilter, "all">, string> = {
+  americas: "Americas",
+  emea: "EMEA",
+  pacific: "Pacific",
+  china: "China",
+};
 
 export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
@@ -98,7 +105,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
               {REGION_FILTERS.map((region) => {
                 const active = regionFilter === region;
                 const label =
-                  region === "all" ? copy("Todos", "All", "Todos") : region;
+                  region === "all" ? copy("Todos", "All", "Todos") : REGION_LABELS[region];
                 return (
                   <button
                     key={region}
@@ -117,7 +124,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
             </div>
           ) : null}
 
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-4 grid grid-cols-1 gap-2 min-[380px]:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
             {visibleTeams.map((team) => {
               const roster = players.filter((player) => team.playerIds.includes(player.id));
               return (
@@ -209,7 +216,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                   </p>
 
                   {selectedRoster.length > 0 ? (
-                    <div className="mt-2 grid grid-cols-2 gap-2 lg:block lg:space-y-2">
+                    <div className="mt-2 grid grid-cols-1 gap-2 min-[440px]:grid-cols-2 lg:block lg:space-y-2">
                       {selectedRoster.map((player) => {
                         const active = player.id === selectedPlayer?.id;
                         return (
@@ -229,7 +236,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                             <div className="min-w-0">
                               <p className="truncate text-xs font-semibold text-foreground sm:text-sm">{player.handle}</p>
                               <p className="hidden truncate text-[10px] text-muted-foreground sm:block">
-                                {player.role ?? copy("Função não verificada", "Role not verified", "Rol no verificado")}
+                                {player.role ?? rosterStatusLabel(player.rosterStatus, copy)}
                               </p>
                             </div>
                           </button>
@@ -345,6 +352,18 @@ function TeamProvenance({
   );
 }
 
+function rosterStatusLabel(
+  status: EsportsPlayer["rosterStatus"],
+  copy: (pt: string, en: string, es: string) => string,
+) {
+  if (!status || status === "active") return copy("Ativo", "Active", "Activo");
+  if (status === "sub") return copy("Reserva", "Substitute", "Suplente");
+  if (status === "inactive") return copy("Inativo", "Inactive", "Inactivo");
+  if (status === "stand-in") return "Stand-in";
+  if (status === "loan") return copy("Empréstimo", "Loan", "Préstamo");
+  return status;
+}
+
 function PlayerPanel({
   player,
   team,
@@ -355,6 +374,7 @@ function PlayerPanel({
   copy: (pt: string, en: string, es: string) => string;
 }) {
   const settings = player.settings;
+  const [copied, setCopied] = useState(false);
   const vlrSource = player.sources.find((source) => source.label.startsWith("VLR.gg"));
   const proSource = player.sources.find((source) => source.label === "ProSettings.net");
 
@@ -374,6 +394,11 @@ function PlayerPanel({
             <span className="rounded-full border border-border bg-background/55 px-2 py-0.5 text-[10px] font-semibold text-foreground sm:px-2.5 sm:py-1 sm:text-xs">
               {player.role ?? copy("Função não verificada", "Role not verified", "Rol no verificado")}
             </span>
+            {player.rosterStatus && player.rosterStatus !== "active" ? (
+              <span className="rounded-full border border-amber-500/25 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-300 sm:px-2.5 sm:py-1 sm:text-xs">
+                {rosterStatusLabel(player.rosterStatus, copy)}
+              </span>
+            ) : null}
             {player.countryCode ? (
               <span className="rounded-full border border-border bg-background/55 px-2 py-0.5 text-[10px] text-muted-foreground sm:px-2.5 sm:py-1 sm:text-xs">
                 {player.countryCode}
@@ -403,7 +428,7 @@ function PlayerPanel({
 
         {settings ? (
           <>
-            <dl className="mt-3 grid grid-cols-3 gap-x-3 gap-y-3 sm:mt-4 sm:gap-x-5 sm:gap-y-4">
+            <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-3 sm:mt-4 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-4">
               <Stat label="DPI" value={settings.dpi} />
               <Stat label={copy("Sens.", "Sens.", "Sens.")} value={settings.sensitivity} />
               <Stat label="eDPI" value={settings.edpi} />
@@ -421,9 +446,24 @@ function PlayerPanel({
 
             {settings.crosshairCode ? (
               <div className="mt-2 rounded-lg border border-border bg-background/50 p-3 sm:mt-3 sm:rounded-xl">
-                <div className="flex items-center gap-2">
-                  <Crosshair className="size-3.5 text-gold-strong sm:size-4" />
-                  <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">Crosshair</p>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Crosshair className="size-3.5 text-gold-strong sm:size-4" />
+                    <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">Crosshair</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void navigator.clipboard.writeText(settings.crosshairCode ?? "").then(() => {
+                        setCopied(true);
+                        window.setTimeout(() => setCopied(false), 1600);
+                      });
+                    }}
+                    className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[9px] font-semibold text-gold-strong transition hover:border-gold/30 sm:text-[10px]"
+                  >
+                    {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
+                    {copied ? copy("Copiado", "Copied", "Copiado") : copy("Copiar", "Copy", "Copiar")}
+                  </button>
                 </div>
                 <code className="mt-2 block break-all text-[10px] leading-4 text-foreground sm:text-[11px] sm:leading-5">
                   {settings.crosshairCode}
