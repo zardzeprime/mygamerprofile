@@ -1,0 +1,114 @@
+.profile-bg-rift-nebula,
+.profile-bg-emberstorm,
+.profile-bg-hextech-pulse {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: var(--profile-hero-base);
+}
+
+.profile-bg-rift-nebula {
+  background-image:
+    radial-gradient(65% 100% at 18% 18%, color-mix(in oklab, var(--color-tactical) 42%, transparent), transparent 68%),
+    radial-gradient(55% 80% at 82% 70%, color-mix(in oklab, var(--color-gold) 24%, transparent), transparent 72%),
+    linear-gradient(135deg, var(--profile-hero-elevated), var(--profile-hero-base));
+  background-size: 135% 135%, 145% 145%, 100% 100%;
+  animation: mgp-nebula-drift 16s ease-in-out infinite alternate;
+}
+
+.profile-bg-rift-nebula::before {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  z-index: -1;
+  opacity: 0.34;
+  background:
+    radial-gradient(circle at 32% 38%, color-mix(in oklab, var(--color-foreground) 28%, transparent) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 68% 58%, color-mix(in oklab, var(--color-gold) 35%, transparent) 0 1px, transparent 1.8px);
+  background-size: 42px 42px, 66px 66px;
+  animation: mgp-starfield-drift 24s linear infinite;
+}
+
+.profile-bg-emberstorm {
+  background-image:
+    radial-gradient(65% 105% at 18% 92%, color-mix(in oklab, var(--color-ember) 72%, transparent), transparent 62%),
+    radial-gradient(50% 80% at 82% 18%, color-mix(in oklab, var(--color-gold) 26%, transparent), transparent 70%),
+    linear-gradient(150deg, var(--profile-hero-elevated), var(--profile-hero-base));
+  animation: mgp-ember-glow 9s ease-in-out infinite alternate;
+}
+
+.profile-bg-emberstorm::before {
+  content: "";
+  position: absolute;
+  inset: -24%;
+  z-index: -1;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(circle, color-mix(in oklab, var(--color-gold) 72%, transparent) 0 1.2px, transparent 1.8px),
+    radial-gradient(circle, color-mix(in oklab, var(--color-ember) 70%, transparent) 0 1px, transparent 1.7px);
+  background-size: 54px 72px, 83px 104px;
+  animation: mgp-embers-rise 13s linear infinite;
+}
+
+.profile-bg-hextech-pulse {
+  background-image:
+    radial-gradient(70% 110% at 82% 12%, color-mix(in oklab, var(--color-tactical) 40%, transparent), transparent 64%),
+    repeating-linear-gradient(90deg, color-mix(in oklab, var(--color-gold) 9%, transparent) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(0deg, color-mix(in oklab, var(--color-tactical) 10%, transparent) 0 1px, transparent 1px 46px),
+    linear-gradient(135deg, var(--profile-hero-elevated), var(--profile-hero-base));
+  background-size: 125% 125%, auto, auto, auto;
+  animation: mgp-hextech-shift 12s ease-in-out infinite alternate;
+}
+
+.profile-bg-hextech-pulse::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.5;
+  background: linear-gradient(105deg, transparent 20%, color-mix(in oklab, var(--color-gold) 22%, transparent) 48%, transparent 76%);
+  transform: translateX(-70%);
+  animation: mgp-hextech-scan 6.5s ease-in-out infinite;
+}
+
+@keyframes mgp-nebula-drift {
+  from { background-position: 0% 25%, 100% 70%, center; }
+  to { background-position: 22% 42%, 76% 48%, center; }
+}
+
+@keyframes mgp-starfield-drift {
+  from { transform: translate3d(-2%, 1%, 0) rotate(0deg); }
+  to { transform: translate3d(5%, -4%, 0) rotate(2deg); }
+}
+
+@keyframes mgp-ember-glow {
+  from { background-position: 0% 100%, 100% 0%, center; }
+  to { background-position: 8% 88%, 92% 14%, center; }
+}
+
+@keyframes mgp-embers-rise {
+  from { transform: translate3d(0, 14%, 0); }
+  to { transform: translate3d(4%, -14%, 0); }
+}
+
+@keyframes mgp-hextech-shift {
+  from { background-position: 100% 0%, 0 0, 0 0, center; }
+  to { background-position: 78% 18%, 18px 0, 0 18px, center; }
+}
+
+@keyframes mgp-hextech-scan {
+  0%, 18% { transform: translateX(-70%); opacity: 0; }
+  42%, 62% { opacity: 0.52; }
+  84%, 100% { transform: translateX(70%); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-bg-rift-nebula,
+  .profile-bg-rift-nebula::before,
+  .profile-bg-emberstorm,
+  .profile-bg-emberstorm::before,
+  .profile-bg-hextech-pulse,
+  .profile-bg-hextech-pulse::before {
+    animation: none !important;
+  }
+}
