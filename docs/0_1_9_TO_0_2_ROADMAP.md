@@ -48,8 +48,13 @@ Elden Ring, Elden Ring Nightreign and EA SPORTS FC remain preserved in code/data
 
 ### NEXUS
 
-- Maintain provider health/failover visibility.
-- Guest NEXUS remains limited to ten assistant replies before login.
+- Make live inference a required v0.1.9 deliverable; the UI must not remain in the "AI engine not connected" state when at least one provider secret is configured.
+- Keep inference server-side. Lovable/Supabase secrets must never be copied to frontend code, `VITE_*`, GitHub, logs or database rows.
+- Public failover order is Gemini → Groq → OpenRouter; missing or unhealthy providers are skipped. OpenAI and Anthropic remain optional.
+- Route model calls through the backend runtime that actually receives Lovable/Supabase secrets. Do not assume TanStack SSR `process.env` can read Edge Function secrets.
+- Add a safe provider health response that exposes only configured/available state, provider and model — never credential values.
+- Guest NEXUS remains limited to ten successful assistant replies before login; failed provider calls must not consume quota.
+- Verify one real guest response and one authenticated response in preview before declaring the engine connected.
 - Developer mode stays admin-only.
 - GitHub/Supabase/Lovable tools remain separate from inference providers.
 - Destructive production actions keep a human-approval boundary.
@@ -81,7 +86,7 @@ Elden Ring, Elden Ring Nightreign and EA SPORTS FC remain preserved in code/data
 5. No secrets are shipped to the browser or committed to the repository.
 6. Upload paths enforce file type/size/ownership and have sensible storage policies.
 7. Riot lookup handles missing key, expired development key, rate limits and not-found states safely.
-8. NEXUS has at least one healthy provider plus a documented fallback path.
+8. NEXUS completes real preview responses through at least one healthy provider, reports only non-secret health metadata, follows Gemini → Groq → OpenRouter fallback, and does not consume guest quota when inference fails.
 9. Core pages are mobile-tested and loading/empty/error states are coherent.
 10. Database migration history matches production schema.
 
