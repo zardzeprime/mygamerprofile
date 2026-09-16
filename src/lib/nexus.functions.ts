@@ -1,8 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { getSupabasePublic } from "@/lib/supabase.server";
+import { createClient } from "@supabase/supabase-js";
+import { getSupabasePublic, getSupabasePublicConfig } from "@/lib/supabase.server";
 import { buildNexusSystemPrompt, selectNexusCores, type NexusLocale } from "@/lib/nexus/prompt";
 import {
   completeWithNexusRouter,
@@ -14,8 +14,10 @@ import { NEXUS_TOOL_BRIDGES } from "@/lib/nexus/tool-bridges";
 
 const modeSchema = z.enum(["gaming", "development"]);
 const localeSchema = z.enum(["pt-BR", "en", "es"]);
-const threadSchema = z.object({ threadId: z.string().uuid() });
+const authSchema = z.object({ accessToken: z.string().min(20) });
+const threadSchema = z.object({ threadId: z.string().uuid(), accessToken: z.string().min(20) });
 const sendSchema = z.object({
+  accessToken: z.string().min(20),
   threadId: z.string().uuid().optional(),
   mode: modeSchema.default("gaming"),
   locale: localeSchema.default("pt-BR"),
@@ -31,6 +33,17 @@ const guestSendSchema = z.object({
 });
 
 const GUEST_HISTORY_LIMIT = 20;
+
+async function nexusUserContext(accessToken: string) {
+  const { url, publishableKey } = getSupabasePublicConfig();
+  const db = createClient(url, publishableKey, {
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+  }) as any;
+  const { data, error } = await db.auth.getUser(accessToken);
+  if (error || !data?.user?.id) throw new Error("Unauthorized: Invalid session");
+  return { db, userId: data.user.id as string };
+}
 
 function hasConfiguredProvider() {
   return hasNexusInferenceTransport();
@@ -226,11 +239,11 @@ export const sendNexusGuestMessage = createServerFn({ method: "POST" })
   });
 
 export const getNexusStatus = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const db = context.supabase as any;
+  .inputValidator((data) => authSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { db, userId } = await nexusUserContext(data.accessToken);
     const [admin, runtime] = await Promise.all([
-      isAdmin(db, context.userId),
+      isAdmin(db, userId),
       getNexusRuntimeHealth(),
     ]);
 
@@ -252,13 +265,13 @@ export const getNexusStatus = createServerFn({ method: "GET" })
   });
 
 export const listNexusThreads = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const db = context.supabase as any;
+  .inputValidator((data) => authSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { db, userId } = await nexusUserContext(data.accessToken);
     const { data, error } = await db
       .from("nexus_threads")
       .select("id,title,mode,created_at,updated_at,last_message_at")
-      .eq("user_id", context.userId)
+      .eq("user_id", userId)
       .order("last_message_at", { ascending: false })
       .limit(30);
     if (error) throw new Error(error.message);
@@ -266,15 +279,14 @@ export const listNexusThreads = createServerFn({ method: "GET" })
   });
 
 export const listNexusMessages = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data) => threadSchema.parse(data))
-  .handler(async ({ context, data }) => {
-    const db = context.supabase as any;
+  .handler(async ({ data }) => {
+    const { db, userId } = await nexusUserContext(data.accessToken);
     const { data: thread, error: threadError } = await db
       .from("nexus_threads")
       .select("id")
       .eq("id", data.threadId)
-      .eq("user_id", context.userId)
+      .eq("user_id", userId)
       .maybeSingle();
     if (threadError) throw new Error(threadError.message);
     if (!thread) throw new Error("NEXUS thread not found");
@@ -283,7 +295,7 @@ export const listNexusMessages = createServerFn({ method: "GET" })
       .from("nexus_messages")
       .select("id,role,content,core_ids,provider,model,created_at")
       .eq("thread_id", data.threadId)
-      .eq("user_id", context.userId)
+      .eq("user_id", userId)
       .order("created_at", { ascending: true })
       .limit(200);
     if (error) throw new Error(error.message);
@@ -291,31 +303,29 @@ export const listNexusMessages = createServerFn({ method: "GET" })
   });
 
 export const deleteNexusThread = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data) => threadSchema.parse(data))
-  .handler(async ({ context, data }) => {
-    const db = context.supabase as any;
+  .handler(async ({ data }) => {
+    const { db, userId } = await nexusUserContext(data.accessToken);
     const { error } = await db
       .from("nexus_threads")
       .delete()
       .eq("id", data.threadId)
-      .eq("user_id", context.userId);
+      .eq("user_id", userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
 
 export const sendNexusMessage = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((data) => sendSchema.parse(data))
-  .handler(async ({ context, data }) => {
-    const db = context.supabase as any;
-    const admin = await isAdmin(db, context.userId);
+  .handler(async ({ data }) => {
+    const { db, userId } = await nexusUserContext(data.accessToken);
+    const admin = await isAdmin(db, userId);
     if (data.mode === "development" && !admin) {
       throw new Error("Development mode is restricted to MGP administrators.");
     }
 
     assertInferenceReady();
-    await enforceNexusRateLimit(db, context.userId);
+    await enforceNexusRateLimit(db, userId);
 
     let threadId = data.threadId;
     let threadMode = data.mode;
@@ -326,7 +336,7 @@ export const sendNexusMessage = createServerFn({ method: "POST" })
         .from("nexus_threads")
         .select("id,mode")
         .eq("id", threadId)
-        .eq("user_id", context.userId)
+        .eq("user_id", userId)
         .maybeSingle();
       if (error) throw new Error(error.message);
       if (!thread) throw new Error("NEXUS thread not found");
@@ -338,7 +348,7 @@ export const sendNexusMessage = createServerFn({ method: "POST" })
       const { data: thread, error } = await db
         .from("nexus_threads")
         .insert({
-          user_id: context.userId,
+          user_id: userId,
           title: titleFromMessage(data.message),
           mode: data.mode,
         })
@@ -355,7 +365,7 @@ export const sendNexusMessage = createServerFn({ method: "POST" })
 
     const { error: userMessageError } = await db.from("nexus_messages").insert({
       thread_id: threadId,
-      user_id: context.userId,
+      user_id: userId,
       role: "user",
       content: data.message,
       core_ids: coreIds,
@@ -367,7 +377,7 @@ export const sendNexusMessage = createServerFn({ method: "POST" })
       .from("nexus_messages")
       .select("role,content")
       .eq("thread_id", threadId)
-      .eq("user_id", context.userId)
+      .eq("user_id", userId)
       .in("role", ["user", "assistant"])
       .order("created_at", { ascending: false })
       .limit(24);
@@ -398,7 +408,7 @@ export const sendNexusMessage = createServerFn({ method: "POST" })
       .from("nexus_messages")
       .insert({
         thread_id: threadId,
-        user_id: context.userId,
+        user_id: userId,
         role: "assistant",
         content: completion.text,
         core_ids: coreIds,
@@ -425,7 +435,7 @@ export const sendNexusMessage = createServerFn({ method: "POST" })
       .from("nexus_threads")
       .update(updatePayload)
       .eq("id", threadId)
-      .eq("user_id", context.userId);
+      .eq("user_id", userId);
     if (threadUpdateError) throw new Error(threadUpdateError.message);
 
     return {
