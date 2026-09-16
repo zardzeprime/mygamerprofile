@@ -9,7 +9,18 @@ import { useAuth } from "@/hooks/useAuth";
 import { listPosts } from "@/lib/posts.functions";
 import { PostCard } from "@/components/posts/PostCard";
 import { PostComposer } from "@/components/posts/PostComposer";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { useState } from "react";
+
+const SORTED_GAMES = [...GAMES].sort((first, second) =>
+  first.name.localeCompare(second.name, "en", { sensitivity: "base" }),
+);
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -113,11 +124,21 @@ function Home() {
               <ArrowRight className="size-4" />
             </Link>
           </div>
-          <div className="mt-7 grid gap-6 sm:grid-cols-2">
-            {GAMES.map((game) => (
-              <GameCard key={game.slug} game={game} />
-            ))}
-          </div>
+          <Carousel
+            opts={{ align: "start", containScroll: "trimSnaps", loop: false, slidesToScroll: 1 }}
+            className="mt-7"
+            aria-label={t("home.featured.title")}
+          >
+            <CarouselContent>
+              {SORTED_GAMES.map((game) => (
+                <CarouselItem key={game.slug} className="basis-[88%] sm:basis-[70%] lg:basis-1/2">
+                  <GameCard game={game} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-top-12 left-auto right-11 translate-y-0 border-border bg-surface-elevated shadow-soft disabled:opacity-35 sm:-top-11" />
+            <CarouselNext className="-top-12 right-0 translate-y-0 border-border bg-surface-elevated shadow-soft disabled:opacity-35 sm:-top-11" />
+          </Carousel>
         </section>
 
         <section className="border-t border-border py-14" aria-labelledby="community-activity">
