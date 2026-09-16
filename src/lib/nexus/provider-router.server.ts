@@ -31,12 +31,29 @@ export type NexusProviderStatus = {
   kind: "official-api" | "router-api";
 };
 
+export type NexusRuntimeHealth = {
+  ready: boolean;
+  transport: "supabase-edge" | "direct-server";
+  providers: Array<Pick<NexusProviderStatus, "id" | "configured" | "model">>;
+};
+
 const ALL_PROVIDERS: NexusProviderId[] = ["openai", "gemini", "groq", "openrouter", "anthropic"];
 const DEFAULT_PROVIDER_ORDER: NexusProviderId[] = ["openai", "gemini", "groq", "openrouter", "anthropic"];
 const DEFAULT_GUEST_PROVIDER_ORDER: NexusProviderId[] = ["gemini", "groq", "openrouter", "openai", "anthropic"];
 
 function serverEnv(name: string) {
   return process.env[name]?.trim() || undefined;
+}
+
+function publicSupabaseConfig() {
+  const url = import.meta.env["VITE_SUPABASE_URL"] || process.env["SUPABASE_URL"];
+  const publishableKey =
+    import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] || process.env["SUPABASE_PUBLISHABLE_KEY"];
+  if (!url || !publishableKey) return null;
+  return {
+    url: String(url).replace(/\/$/, ""),
+    publishableKey: String(publishableKey),
+  };
 }
 
 function parseProviderOrder(name: string, fallback: NexusProviderId[]) {
@@ -95,9 +112,122 @@ export function getNexusProviderStatus(): NexusProviderStatus[] {
   ];
 }
 
+export function hasNexusInferenceTransport() {
+  return Boolean(publicSupabaseConfig()) || getNexusProviderStatus().some((provider) => provider.configured);
+}
+
 function compactError(error: unknown) {
   if (error instanceof Error) return error.message.slice(0, 260);
   return String(error).slice(0, 260);
+}
+
+async function callNexusEdge(body: Record<string, unknown>) {
+  const config = publicSupabaseConfig();
+  if (!config) throw new Error("NEXUS Edge transport is not configured");
+
+  const response = await fetch(`${config.url}/functions/v1/nexus-inference`, {
+    method: "POST",
+    headers: {
+      apikey: config.publishableKey,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  const text = await response.text();
+  let data: Record<string, unknown> = {};
+  try {
+    data = text ? (JSON.parse(text) as Record<string, unknown>) : {};
+  } catch {
+    throw new Error(`NEXUS Edge ${response.status}: invalid JSON response`);
+  }
+
+  if (!response.ok) {
+    const message = typeof data.error === "string" ? data.error : text.slice(0, 180);
+    throw new Error(`NEXUS Edge ${response.status}: ${message}`);
+  }
+
+  return data;
+}
+
+async function completeViaEdge(request: NexusCompletionRequest): Promise<NexusCompletionResult> {
+  const data = await callNexusEdge({
+    type: "completion",
+    system: request.system,
+    messages: request.messages,
+    effort: request.effort,
+    maxOutputTokens: request.maxOutputTokens,
+    providerOrder: request.providerOrder,
+  });
+
+  const provider = data.provider;
+  const attemptedProviders = Array.isArray(data.attemptedProviders)
+    ? data.attemptedProviders.filter(
+        (value): value is NexusProviderId =>
+          typeof value === "string" && ALL_PROVIDERS.includes(value as NexusProviderId),
+      )
+    : [];
+
+  if (
+    typeof data.text !== "string" ||
+    !data.text.trim() ||
+    typeof provider !== "string" ||
+    !ALL_PROVIDERS.includes(provider as NexusProviderId) ||
+    typeof data.model !== "string"
+  ) {
+    throw new Error("NEXUS Edge returned an invalid completion payload");
+  }
+
+  return {
+    text: data.text.trim(),
+    provider: provider as NexusProviderId,
+    model: data.model,
+    attemptedProviders,
+  };
+}
+
+export async function getNexusRuntimeHealth(): Promise<NexusRuntimeHealth> {
+  if (publicSupabaseConfig()) {
+    try {
+      const data = await callNexusEdge({ type: "health" });
+      const providers = Array.isArray(data.providers)
+        ? data.providers.flatMap((raw) => {
+            if (!raw || typeof raw !== "object") return [];
+            const item = raw as Record<string, unknown>;
+            if (
+              typeof item.id !== "string" ||
+              !ALL_PROVIDERS.includes(item.id as NexusProviderId) ||
+              typeof item.configured !== "boolean" ||
+              typeof item.model !== "string"
+            ) {
+              return [];
+            }
+            return [
+              {
+                id: item.id as NexusProviderId,
+                configured: item.configured,
+                model: item.model,
+              },
+            ];
+          })
+        : [];
+
+      return {
+        ready: data.ready === true,
+        transport: "supabase-edge",
+        providers,
+      };
+    } catch (error) {
+      console.warn("[NEXUS] Edge health check failed; checking direct server providers.", compactError(error));
+    }
+  }
+
+  const providers = getNexusProviderStatus().map(({ id, configured, model }) => ({ id, configured, model }));
+  return {
+    ready: providers.some((provider) => provider.configured),
+    transport: "direct-server",
+    providers,
+  };
 }
 
 async function completeOpenAI(request: NexusCompletionRequest): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
@@ -257,7 +387,7 @@ async function completeOpenRouter(request: NexusCompletionRequest): Promise<Omit
     model: serverEnv("NEXUS_OPENROUTER_MODEL") ?? "openrouter/free",
     extraHeaders: {
       ...(appUrl ? { "HTTP-Referer": appUrl } : {}),
-      "X-OpenRouter-Title": "MGP NEXUS",
+      "X-OpenRouter-Title": "MG Profile NEXUS",
     },
   });
 }
@@ -313,9 +443,18 @@ const COMPLETERS: Record<
 export async function completeWithNexusRouter(
   request: NexusCompletionRequest,
 ): Promise<NexusCompletionResult> {
+  const failures: string[] = [];
+
+  if (publicSupabaseConfig()) {
+    try {
+      return await completeViaEdge(request);
+    } catch (error) {
+      failures.push(`edge: ${compactError(error)}`);
+    }
+  }
+
   const statuses = new Map(getNexusProviderStatus().map((status) => [status.id, status]));
   const attemptedProviders: NexusProviderId[] = [];
-  const failures: string[] = [];
 
   for (const provider of request.providerOrder ?? getProviderOrder()) {
     const status = statuses.get(provider);
@@ -330,11 +469,11 @@ export async function completeWithNexusRouter(
     }
   }
 
-  if (!attemptedProviders.length) {
+  if (!attemptedProviders.length && !publicSupabaseConfig()) {
     throw new Error(
-      "NEXUS has no model API configured. Add GEMINI_API_KEY, GROQ_API_KEY, OPENROUTER_API_KEY, OPENAI_API_KEY or ANTHROPIC_API_KEY on the server.",
+      "NEXUS has no inference transport configured. Connect Supabase or add a server-side model provider key.",
     );
   }
 
-  throw new Error(`All configured NEXUS providers failed: ${failures.join(" | ")}`);
+  throw new Error(`NEXUS inference failed: ${failures.join(" | ")}`);
 }
