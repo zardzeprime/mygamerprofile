@@ -28,6 +28,7 @@ const NAV: { to: string; key: TranslationKey }[] = [
 export function AppHeader() {
   const { t, locale } = useI18n();
   const { user, loading, signOut } = useAuth();
+  const userId = user?.id;
   const [open, setOpen] = useState(false);
   const [profileUsername, setProfileUsername] = useState<string | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
@@ -35,7 +36,7 @@ export function AppHeader() {
   useEffect(() => {
     let cancelled = false;
 
-    if (!user) {
+    if (!userId) {
       setProfileUsername(null);
       setProfileLoading(false);
       return;
@@ -45,7 +46,7 @@ export function AppHeader() {
     void supabase
       .from("profiles")
       .select("username")
-      .eq("id", user.id)
+      .eq("id", userId)
       .maybeSingle()
       .then(({ data, error }) => {
         if (cancelled) return;
@@ -63,7 +64,7 @@ export function AppHeader() {
     return () => {
       cancelled = true;
     };
-  }, [user?.id]);
+  }, [userId]);
 
   const profileLabel = locale === "pt-BR" ? "Ver meu perfil" : locale === "es" ? "Ver mi perfil" : "View my profile";
   const profileUnavailableLabel = locale === "pt-BR" ? "Perfil indisponível" : locale === "es" ? "Perfil no disponible" : "Profile unavailable";
