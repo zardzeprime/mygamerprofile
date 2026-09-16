@@ -164,12 +164,12 @@ function baseUpgradeableStats(item: LeagueItem, englishItem: LeagueItem): Array<
   const push = (key: UpgradeStatKey, value: number | undefined) => {
     if (value && value > 0) rows.push({ key, base: value });
   };
-  push("attackDamage", stats.FlatPhysicalDamageMod);
-  push("abilityPower", stats.FlatMagicDamageMod);
-  push("health", stats.FlatHPPoolMod);
-  push("armor", stats.FlatArmorMod);
-  push("magicResistance", stats.FlatSpellBlockMod);
-  push("attackSpeed", stats.PercentAttackSpeedMod ? stats.PercentAttackSpeedMod * 100 : 0);
+  push("attackDamage", stats["FlatPhysicalDamageMod"]);
+  push("abilityPower", stats["FlatMagicDamageMod"]);
+  push("health", stats["FlatHPPoolMod"]);
+  push("armor", stats["FlatArmorMod"]);
+  push("magicResistance", stats["FlatSpellBlockMod"]);
+  push("attackSpeed", stats["PercentAttackSpeedMod"] ? stats["PercentAttackSpeedMod"] * 100 : 0);
   push("abilityHaste", extractAbilityHaste(englishItem.description));
   return rows;
 }
@@ -352,11 +352,11 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
       {error ? <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-5 text-sm text-destructive">{error}</div> : null}
 
       {loading ? (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-          {Array.from({ length: 24 }).map((_, index) => <div key={index} className="h-64 animate-pulse rounded-xl border border-border bg-muted/40" />)}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 16 }).map((_, index) => <div key={index} className="h-32 animate-pulse rounded-xl border border-border bg-muted/40" />)}
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filtered.map((entry) => {
             const statLines = extractStatLines(entry.item.description).slice(0, 3);
             const upgrades = entry.variant === "masterwork" ? masterworkStats(entry.item, entry.englishItem) : [];
@@ -367,28 +367,34 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
                 onClick={() => openEntry(entry.key)}
                 title={entry.item.name}
                 className={cn(
-                  "group overflow-hidden rounded-xl border bg-surface p-2.5 text-left transition-all hover:-translate-y-0.5 hover:shadow-lift",
+                  "group flex min-h-32 items-start gap-3 overflow-hidden rounded-xl border bg-surface p-3 text-left transition-all hover:-translate-y-0.5 hover:shadow-lift",
                   entry.variant === "masterwork" ? "border-orange-400/55 bg-[linear-gradient(180deg,rgba(249,115,22,0.08),transparent_38%)] hover:border-orange-300" : "border-border hover:border-gold/45",
                 )}
               >
-                <div className="relative">
-                  <img src={`${DDRAGON}/cdn/${version}/img/item/${entry.item.image.full}`} alt="" loading="lazy" className="aspect-square w-full rounded-lg bg-black object-cover" />
+                <div className="relative grid size-16 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-muted/60 p-1.5">
+                  <img src={`${DDRAGON}/cdn/${version}/img/item/${entry.item.image.full}`} alt="" loading="lazy" width={56} height={56} className="size-14 object-contain" />
                   {entry.variant === "masterwork" ? (
-                    <span className="absolute right-1 top-1 inline-flex items-center gap-1 rounded-full border border-orange-300/70 bg-[#24140b]/95 px-2 py-1 text-[0.55rem] font-black uppercase tracking-[0.08em] text-orange-100 shadow-lg"><Hammer className="size-3" />ORNN</span>
+                    <span className="absolute bottom-0.5 right-0.5 inline-flex items-center gap-0.5 rounded-full border border-orange-300/70 bg-popover px-1.5 py-0.5 text-[0.5rem] font-black uppercase text-orange-500 shadow-lg"><Hammer className="size-2.5" />ORNN</span>
                   ) : null}
                 </div>
-                <p className="mt-2 truncate text-xs font-semibold text-foreground">{entry.item.name}</p>
-                <p className={cn("mt-0.5 text-[0.6rem] font-bold uppercase tracking-[0.08em]", entry.variant === "masterwork" ? "text-orange-500" : "text-muted-foreground")}>
-                  {entry.variant === "masterwork" ? copy("Magistral", "Masterwork", "Magistral") : copy("Item normal", "Base item", "Objeto normal")}
-                </p>
-                <div className="mt-2 min-h-[3.4rem] space-y-1 text-[0.62rem] leading-4 text-muted-foreground">
-                  {entry.variant === "masterwork"
-                    ? upgrades.slice(0, 3).map((stat) => (
-                        <p key={stat.key} className="truncate"><span className="text-foreground">{statLabel(stat.key, locale)}:</span> {formatStat(stat.key, stat.base)} → <span className="font-bold text-orange-500">{formatStat(stat.key, stat.base + stat.bonus)}</span></p>
-                      ))
-                    : statLines.map((line) => <p key={line} className="truncate">{line}</p>)}
+                <div className="min-w-0 flex-1">
+                  <div className="flex min-w-0 items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-foreground">{entry.item.name}</p>
+                      <p className={cn("mt-0.5 text-[0.6rem] font-bold uppercase tracking-[0.08em]", entry.variant === "masterwork" ? "text-orange-500" : "text-muted-foreground")}>
+                        {entry.variant === "masterwork" ? copy("Magistral", "Masterwork", "Magistral") : copy("Item normal", "Base item", "Objeto normal")}
+                      </p>
+                    </div>
+                    {entry.item.gold?.total ? <p className="flex shrink-0 items-center gap-1 text-[0.68rem] font-semibold text-gold-strong"><Coins className="size-3" />{entry.item.gold.total}</p> : null}
+                  </div>
+                  <div className="mt-2 flex min-h-12 flex-wrap content-start gap-1 text-[0.62rem] leading-4 text-muted-foreground">
+                    {entry.variant === "masterwork"
+                      ? upgrades.slice(0, 3).map((stat) => (
+                          <span key={stat.key} className="max-w-full truncate rounded-md border border-orange-400/20 bg-background/65 px-1.5 py-0.5"><span className="text-foreground">{statLabel(stat.key, locale)}:</span> {formatStat(stat.key, stat.base)} → <span className="font-bold text-orange-500">{formatStat(stat.key, stat.base + stat.bonus)}</span></span>
+                        ))
+                      : statLines.map((line) => <span key={line} className="max-w-full truncate rounded-md border border-border bg-muted/30 px-1.5 py-0.5">{line}</span>)}
+                  </div>
                 </div>
-                {entry.item.gold?.total ? <p className="mt-2 flex items-center gap-1 text-[0.62rem] text-muted-foreground"><Coins className="size-3" />{entry.item.gold.total}</p> : null}
               </button>
             );
           })}
@@ -447,8 +453,8 @@ function ItemDetail({ entry, version, locale, allItems, englishItems, canGoBack,
 
       <DialogHeader className="text-left">
         <div className="flex gap-4 pr-8">
-          <div className={cn("shrink-0 rounded-2xl p-[2px]", variant === "masterwork" ? "bg-gradient-to-br from-orange-400 via-amber-200 to-orange-800" : "bg-border")}>
-            <img src={`${DDRAGON}/cdn/${version}/img/item/${item.image.full}`} alt="" className="size-20 rounded-[calc(1rem-2px)] bg-black object-cover" />
+          <div className={cn("grid size-20 shrink-0 place-items-center rounded-2xl p-1.5", variant === "masterwork" ? "bg-gradient-to-br from-orange-400 via-amber-200 to-orange-800" : "bg-muted") }>
+            <img src={`${DDRAGON}/cdn/${version}/img/item/${item.image.full}`} alt="" width={68} height={68} className="size-[68px] rounded-xl bg-background object-contain p-1" />
           </div>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
@@ -508,7 +514,9 @@ function ItemLinks({ title, entries, version, onSelect }: { title: string; entri
       <div className="mt-3 flex flex-wrap gap-2">
         {entries.map(([id, item]) => (
           <button key={id} type="button" onClick={() => onSelect(id)} className="group flex items-center gap-2 rounded-xl border border-border bg-muted/15 p-2 pr-3 text-left transition-all hover:-translate-y-0.5 hover:border-gold/45 hover:bg-muted/25">
-            <img src={`${DDRAGON}/cdn/${version}/img/item/${item.image.full}`} alt="" className="size-10 rounded-lg bg-black" />
+            <span className="grid size-10 shrink-0 place-items-center rounded-lg border border-border bg-muted/60 p-1">
+              <img src={`${DDRAGON}/cdn/${version}/img/item/${item.image.full}`} alt="" loading="lazy" width={32} height={32} className="size-8 object-contain" />
+            </span>
             <span className="max-w-44 text-xs font-semibold text-foreground group-hover:text-gold-strong">{item.name}</span>
           </button>
         ))}
