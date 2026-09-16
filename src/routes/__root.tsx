@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
+import darkSoulsAtmosphere from "../assets/dark-souls-atmosphere.jpg";
 import appCss from "../styles.css?url";
 import responsiveCss from "../responsive.css?url";
 import routeTransitionCss from "../route-transition.css?url";
@@ -134,6 +135,58 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    const handleExternalArtworkError = (event: Event) => {
+      const image = event.target;
+      if (!(image instanceof HTMLImageElement)) return;
+
+      const source = image.currentSrc || image.src;
+      if (!source) return;
+
+      let parsed: URL;
+      try {
+        parsed = new URL(source, window.location.href);
+      } catch {
+        return;
+      }
+
+      const hostname = parsed.hostname.toLowerCase();
+      const isFandom = hostname.endsWith("fandom.com") || hostname.endsWith("wikia.nocookie.net");
+      const isCreativeUncut = hostname === "creativeuncut.com" || hostname === "www.creativeuncut.com";
+      if (!isFandom && !isCreativeUncut) return;
+
+      image.removeAttribute("srcset");
+
+      // Some external media hosts reject no-referrer hotlinks or unstable redirect URLs.
+      // Retry once with the browser's normal cross-origin referrer policy and a stable
+      // MediaWiki file-path alias before falling back to a same-origin MGP asset.
+      if (image.dataset.mgpExternalRetry !== "1") {
+        image.dataset.mgpExternalRetry = "1";
+        image.referrerPolicy = "strict-origin-when-cross-origin";
+
+        if (isFandom && source.includes("/Special:Redirect/file/")) {
+          image.src = source.replace("/Special:Redirect/file/", "/Special:FilePath/");
+          return;
+        }
+
+        const retryUrl = new URL(source, window.location.href);
+        retryUrl.searchParams.set("mgp_retry", "1");
+        image.src = retryUrl.toString();
+        return;
+      }
+
+      if (image.dataset.mgpFallbackApplied === "1") return;
+      image.dataset.mgpFallbackApplied = "1";
+
+      const isDarkSoulsThree =
+        window.location.pathname.includes("dark-souls-iii") || parsed.pathname.includes("/gallery-30/");
+      image.src = isDarkSoulsThree ? "/game-covers/ds3.webp" : darkSoulsAtmosphere;
+    };
+
+    window.addEventListener("error", handleExternalArtworkError, true);
+    return () => window.removeEventListener("error", handleExternalArtworkError, true);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
