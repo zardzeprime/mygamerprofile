@@ -2,8 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { getSupabaseAdmin } from "@/lib/supabase-admin.server";
-import { useNexusGuestSession } from "@/lib/nexus/guest-session.server";
+import { getSupabasePublic } from "@/lib/supabase.server";
 import {
   buildNexusSystemPrompt,
   selectNexusCores,
@@ -25,13 +24,26 @@ const sendSchema = z.object({
   locale: localeSchema.default("pt-BR"),
   message: z.string().trim().min(1).max(6000),
 });
+const guestStatusSchema = z.object({
+  guestId: z.string().uuid().optional(),
+});
 const guestSendSchema = z.object({
+  guestId: z.string().uuid().optional(),
   locale: localeSchema.default("pt-BR"),
   message: z.string().trim().min(1).max(2500),
 });
 
 const GUEST_HISTORY_LIMIT = 20;
-const GUEST_RATE_LIMIT_PER_MINUTE = 6;
+
+function hasConfiguredProvider() {
+  return getNexusProviderStatus().some((provider) => provider.configured);
+}
+
+function assertInferenceReady() {
+  if (!hasConfiguredProvider()) {
+    throw new Error("NEXUS_NO_PROVIDER");
+  }
+}
 
 async function isAdmin(db: any, userId: string) {
   const { data, error } = await db
@@ -55,66 +67,35 @@ async function enforceNexusRateLimit(db: any, userId: string) {
 
   if (error) throw new Error(error.message);
   if ((count ?? 0) >= 12) {
-    throw new Error("NEXUS rate limit reached. Wait a moment before sending another message.");
+    throw new Error("NEXUS_RATE_LIMIT");
   }
 }
 
-async function ensureGuestContext() {
-  const cookieSession = await useNexusGuestSession();
-  const db = getSupabaseAdmin() as any;
-  let guestId = cookieSession.data.guestId;
+async function ensureGuestContext(requestedGuestId?: string) {
+  const db = getSupabasePublic() as any;
+  const { data, error } = await db.rpc("ensure_nexus_guest_session", {
+    p_session_id: requestedGuestId ?? null,
+  });
 
-  if (guestId) {
-    const { data: existing, error } = await db
-      .from("nexus_guest_sessions")
-      .select("id,responses_used,max_responses,expires_at")
-      .eq("id", guestId)
-      .maybeSingle();
+  if (error) throw new Error(error.message);
+  const guest = data?.[0];
+  if (!guest?.session_id) throw new Error("NEXUS_GUEST_SESSION_FAILED");
 
-    if (error) throw new Error(error.message);
-    if (existing && new Date(existing.expires_at).getTime() > Date.now()) {
-      return { db, guestId, guest: existing };
-    }
-  }
-
-  guestId = crypto.randomUUID();
-  const { data: created, error: createError } = await db
-    .from("nexus_guest_sessions")
-    .insert({ id: guestId })
-    .select("id,responses_used,max_responses,expires_at")
-    .single();
-  if (createError) throw new Error(createError.message);
-
-  await cookieSession.update({ guestId });
-  return { db, guestId, guest: created };
+  return {
+    db,
+    guestId: guest.session_id as string,
+    guest,
+  };
 }
 
 async function loadGuestMessages(db: any, guestId: string, limit = GUEST_HISTORY_LIMIT) {
-  const { data, error } = await db
-    .from("nexus_guest_messages")
-    .select("id,role,content,core_ids,provider,model,created_at")
-    .eq("session_id", guestId)
-    .in("role", ["user", "assistant"])
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const { data, error } = await db.rpc("list_nexus_guest_messages", {
+    p_session_id: guestId,
+    p_limit: limit,
+  });
 
   if (error) throw new Error(error.message);
-  return (data ?? []).reverse();
-}
-
-async function enforceGuestRateLimit(db: any, guestId: string) {
-  const since = new Date(Date.now() - 60_000).toISOString();
-  const { count, error } = await db
-    .from("nexus_guest_messages")
-    .select("id", { count: "exact", head: true })
-    .eq("session_id", guestId)
-    .eq("role", "user")
-    .gte("created_at", since);
-
-  if (error) throw new Error(error.message);
-  if ((count ?? 0) >= GUEST_RATE_LIMIT_PER_MINUTE) {
-    throw new Error("NEXUS_GUEST_RATE_LIMIT");
-  }
+  return data ?? [];
 }
 
 function titleFromMessage(message: string) {
@@ -122,50 +103,47 @@ function titleFromMessage(message: string) {
   return oneLine.length > 72 ? `${oneLine.slice(0, 69)}...` : oneLine;
 }
 
-export const getNexusGuestStatus = createServerFn({ method: "GET" }).handler(async () => {
-  const { db, guestId, guest } = await ensureGuestContext();
-  const messages = await loadGuestMessages(db, guestId, 40);
-  const responsesUsed = Number(guest.responses_used ?? 0);
-  const maxResponses = Number(guest.max_responses ?? 10);
-  const remaining = Math.max(0, maxResponses - responsesUsed);
+export const getNexusGuestStatus = createServerFn({ method: "GET" })
+  .inputValidator((data) => guestStatusSchema.parse(data ?? {}))
+  .handler(async ({ data }) => {
+    const { db, guestId, guest } = await ensureGuestContext(data.guestId);
+    const messages = await loadGuestMessages(db, guestId, 40);
+    const responsesUsed = Number(guest.responses_used ?? 0);
+    const maxResponses = Number(guest.max_responses ?? 10);
+    const remaining = Math.max(0, maxResponses - responsesUsed);
 
-  return {
-    responsesUsed,
-    maxResponses,
-    remaining,
-    locked: remaining <= 0,
-    messages,
-  };
-});
+    return {
+      guestId,
+      responsesUsed,
+      maxResponses,
+      remaining,
+      locked: remaining <= 0,
+      aiReady: hasConfiguredProvider(),
+      messages,
+    };
+  });
 
 export const sendNexusGuestMessage = createServerFn({ method: "POST" })
   .inputValidator((data) => guestSendSchema.parse(data))
   .handler(async ({ data }) => {
-    const { db, guestId, guest } = await ensureGuestContext();
+    const { db, guestId, guest } = await ensureGuestContext(data.guestId);
     const responsesUsed = Number(guest.responses_used ?? 0);
     const maxResponses = Number(guest.max_responses ?? 10);
 
     if (responsesUsed >= maxResponses) {
       return {
+        guestId,
         locked: true as const,
         remaining: 0,
         maxResponses,
+        aiReady: hasConfiguredProvider(),
         message: null,
       };
     }
 
-    await enforceGuestRateLimit(db, guestId);
+    assertInferenceReady();
 
     const coreIds = selectNexusCores(data.message, "gamer");
-    const { error: userMessageError } = await db.from("nexus_guest_messages").insert({
-      session_id: guestId,
-      role: "user",
-      content: data.message,
-      core_ids: coreIds,
-      metadata: { mode: "gaming", locale: data.locale, anonymousTrial: true },
-    });
-    if (userMessageError) throw new Error(userMessageError.message);
-
     const historyRows = await loadGuestMessages(db, guestId);
     const history: NexusChatMessage[] = historyRows.map(
       (row: { role: string; content: string }) => ({
@@ -173,6 +151,7 @@ export const sendNexusGuestMessage = createServerFn({ method: "POST" })
         content: row.content,
       }),
     );
+    history.push({ role: "user", content: data.message });
 
     const system = buildNexusSystemPrompt({
       mode: "gamer",
@@ -189,10 +168,11 @@ export const sendNexusGuestMessage = createServerFn({ method: "POST" })
     });
 
     const { data: quotaRows, error: quotaError } = await db.rpc(
-      "record_nexus_guest_assistant",
+      "record_nexus_guest_exchange",
       {
         p_session_id: guestId,
-        p_content: completion.text,
+        p_user_content: data.message,
+        p_assistant_content: completion.text,
         p_core_ids: coreIds,
         p_provider: completion.provider,
         p_model: completion.model,
@@ -206,13 +186,19 @@ export const sendNexusGuestMessage = createServerFn({ method: "POST" })
     );
 
     if (quotaError) {
-      if (String(quotaError.message).includes("NEXUS_GUEST_LIMIT_REACHED")) {
+      const message = String(quotaError.message);
+      if (message.includes("NEXUS_GUEST_LIMIT_REACHED")) {
         return {
+          guestId,
           locked: true as const,
           remaining: 0,
           maxResponses,
+          aiReady: true,
           message: null,
         };
+      }
+      if (message.includes("NEXUS_GUEST_RATE_LIMIT")) {
+        throw new Error("NEXUS_GUEST_RATE_LIMIT");
       }
       throw new Error(quotaError.message);
     }
@@ -221,9 +207,11 @@ export const sendNexusGuestMessage = createServerFn({ method: "POST" })
     const remaining = Number(quota?.remaining_count ?? 0);
 
     return {
+      guestId,
       locked: remaining <= 0,
       remaining,
       maxResponses,
+      aiReady: true,
       message: {
         id: quota?.message_id as string | undefined,
         role: "assistant" as const,
@@ -327,6 +315,7 @@ export const sendNexusMessage = createServerFn({ method: "POST" })
       throw new Error("Development mode is restricted to MGP administrators.");
     }
 
+    assertInferenceReady();
     await enforceNexusRateLimit(db, context.userId);
 
     let threadId = data.threadId;
