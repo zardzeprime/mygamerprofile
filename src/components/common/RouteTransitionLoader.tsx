@@ -5,29 +5,39 @@ import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 
 const DEVICES = [Gamepad2, Mouse, Keyboard, Gamepad2, Mouse, Keyboard, Gamepad2, Mouse, Keyboard];
+const MIN_VISIBLE_MS = 420;
 
 export function RouteTransitionLoader() {
   const { locale } = useI18n();
   const pending = useRouterState({ select: (state) => state.status === "pending" });
-  const [visible, setVisible] = useState(false);
+  const [initialBoot, setInitialBoot] = useState(true);
+  const [visible, setVisible] = useState(true);
   const shownAtRef = useRef(0);
 
   useEffect(() => {
-    let timeout: number | undefined;
+    shownAtRef.current = performance.now();
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timeout = window.setTimeout(() => setInitialBoot(false), reducedMotion ? 80 : MIN_VISIBLE_MS);
+    return () => window.clearTimeout(timeout);
+  }, []);
 
-    if (pending) {
-      shownAtRef.current = performance.now();
+  useEffect(() => {
+    let timeout: number | undefined;
+    const shouldShow = initialBoot || pending;
+
+    if (shouldShow) {
+      if (!visible) shownAtRef.current = performance.now();
       setVisible(true);
     } else if (visible) {
       const elapsed = performance.now() - shownAtRef.current;
-      const remaining = Math.max(0, 360 - elapsed);
+      const remaining = Math.max(0, MIN_VISIBLE_MS - elapsed);
       timeout = window.setTimeout(() => setVisible(false), remaining);
     }
 
     return () => {
       if (timeout !== undefined) window.clearTimeout(timeout);
     };
-  }, [pending, visible]);
+  }, [initialBoot, pending, visible]);
 
   return (
     <div
@@ -57,7 +67,7 @@ export function RouteTransitionLoader() {
           <div className="text-left">
             <p className="font-display text-sm font-bold tracking-[0.16em] text-foreground">MGP</p>
             <p className="mt-1 text-xs font-semibold text-muted-foreground">
-              {localeCopy(locale, "Carregando sua próxima tela…", "Loading your next screen…", "Cargando tu próxima pantalla…")}
+              {localeCopy(locale, "Carregando seu perfil gamer…", "Loading your gamer profile…", "Cargando tu perfil gamer…")}
             </p>
           </div>
         </div>
