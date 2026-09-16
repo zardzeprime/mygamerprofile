@@ -28,6 +28,14 @@
 - [x] Add interactive stat selection and build-direction suggestions
 - [x] Ship the guide in Portuguese, English and Spanish
 
+# MGP — Souls Visual & Editorial Foundation
+
+- [x] Optimize the repository artwork for Dark Souls III, Elden Ring, and EA SPORTS FC
+- [x] Connect the three local covers with reviewed card and hero framing
+- [x] Move Dark Souls III and Elden Ring boss research into a dedicated data module
+- [x] Rebuild the shared Souls boss explorer with selectable details, filters, mechanics, and licensed-art placeholders
+- [x] Validate changed files, automatic build health, and responsive presentation
+
 # MGP v0.1.3A — VALORANT Foundation
 
 - [x] Rebuild the VALORANT Overview with editorial synopsis, release, developer, publisher, latest patch and critic reference score
