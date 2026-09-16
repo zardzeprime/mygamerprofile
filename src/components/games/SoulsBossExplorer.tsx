@@ -139,13 +139,19 @@ export function SoulsBossExplorer({
                     className="absolute inset-0 h-full w-full scale-110 object-cover opacity-20 blur-2xl"
                     style={{ objectPosition: selectedImage.cardObjectPosition ?? "50% 30%" }}
                   />
-                  <div className="absolute inset-0 bg-background/30" />
+                  <div className="absolute inset-0 bg-background/25" />
                   <img
                     src={selectedImage.url}
                     alt={selected.name}
                     referrerPolicy="no-referrer"
-                    className="relative z-10 h-full w-full object-contain p-3 opacity-95"
-                    style={{ objectPosition: selectedImage.detailObjectPosition ?? "50% 30%" }}
+                    className={cn(
+                      "relative z-10 h-full w-full opacity-95",
+                      selectedImage.detailFit === "cover" ? "object-cover" : "object-contain p-3",
+                    )}
+                    style={{
+                      objectPosition: selectedImage.detailObjectPosition ?? "50% 30%",
+                      transform: `scale(${selectedImage.detailScale ?? 1})`,
+                    }}
                   />
                 </>
               ) : (
@@ -166,9 +172,9 @@ export function SoulsBossExplorer({
                 <p className="mt-2 text-xs leading-5 text-muted-foreground">
                   {selectedImage
                     ? copy(
-                        "Arte enquadrada para preservar rosto, torso e armadura sem ampliar demais a imagem.",
-                        "Artwork framed to preserve the face, torso, and armor without excessive zoom.",
-                        "Arte encuadrado para preservar rostro, torso y armadura sin ampliar demasiado la imagen.",
+                        "Enquadramento ajustado individualmente para manter o chefe como foco da arte.",
+                        "Framing is tuned individually to keep the boss as the artwork's focal point.",
+                        "El encuadre se ajusta individualmente para mantener al jefe como foco del arte.",
                       )
                     : copy(
                         "A capa do jogo identifica temporariamente esta ficha.",
@@ -257,13 +263,15 @@ export function SoulsBossExplorer({
                       loading="lazy"
                       referrerPolicy="no-referrer"
                       className={cn(
-                        "h-full w-full object-cover transition-opacity duration-200",
+                        "h-full w-full transition-[opacity,transform] duration-300",
+                        imageAsset?.cardFit === "contain" ? "object-contain p-2" : "object-cover",
                         imageAsset
                           ? "opacity-80 group-hover:opacity-95"
                           : "opacity-45 group-hover:opacity-60",
                       )}
                       style={{
                         objectPosition: imageAsset?.cardObjectPosition ?? game.visual.cardObjectPosition,
+                        transform: `scale(${imageAsset?.cardScale ?? 1})`,
                       }}
                     />
                     <span className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
