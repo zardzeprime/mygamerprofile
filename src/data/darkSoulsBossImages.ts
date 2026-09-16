@@ -6,7 +6,7 @@ export type DarkSoulsBossImageAsset = {
   url: string;
   sourceUrl: string;
   sourceLabel: LocalizedText;
-  kind: "promotional" | "ptde-screenshot";
+  kind: "promotional" | "ptde-screenshot" | "wiki-image";
 };
 
 const fandomFileUrl = (filename: string) =>
@@ -33,19 +33,35 @@ const promotionalImageLabel: LocalizedText = {
   es: "Imagen promocional · Dark Souls Wiki (Fandom)",
 };
 
+const wikiImageLabel: LocalizedText = {
+  "pt-BR": "Imagem de referência · Dark Souls Wiki (Fandom, CC BY-SA)",
+  en: "Reference image · Dark Souls Wiki (Fandom, CC BY-SA)",
+  es: "Imagen de referencia · Dark Souls Wiki (Fandom, CC BY-SA)",
+};
+
+const wikiImage = (filename: string): DarkSoulsBossImageAsset => ({
+  url: fandomFileUrl(filename),
+  sourceUrl: fandomFilePage(filename),
+  sourceLabel: wikiImageLabel,
+  kind: "wiki-image",
+});
+
 export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
+  "asylum-demon": wikiImage("Asylum Demon.png"),
   "bell-gargoyles": {
     url: fandomFileUrl("DS1 Promotional screenshot (Bell Gargoyle).jpg"),
     sourceUrl: fandomFilePage("DS1 Promotional screenshot (Bell Gargoyle).jpg"),
     sourceLabel: promotionalLabel,
     kind: "promotional",
   },
+  "capra-demon": wikiImage("Capra Demon.jpg"),
   "ceaseless-discharge": {
     url: fandomFileUrl("DS1 promotional screenshot (Ceaseless Discharge).jpg"),
     sourceUrl: fandomFilePage("DS1 promotional screenshot (Ceaseless Discharge).jpg"),
     sourceLabel: promotionalLabel,
     kind: "promotional",
   },
+  "centipede-demon": wikiImage("Centipede Demon.jpg"),
   "gaping-dragon": {
     url: fandomFileUrl("DS1 promotional screenshot (Gaping Dragon co-op).jpg"),
     sourceUrl: fandomFilePage("DS1 promotional screenshot (Gaping Dragon co-op).jpg"),
@@ -76,6 +92,10 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
     sourceLabel: promotionalLabel,
     kind: "promotional",
   },
+  "bed-of-chaos": wikiImage("Bed of Chaos.jpg"),
+  "crossbreed-priscilla": wikiImage("Crossbreed-priscilla.jpg"),
+  "dark-sun-gwyndolin": wikiImage("Dark Sun Gwyndolin.jpg"),
+  "gravelord-nito": wikiImage("Dark-souls-gravelord-nito.jpg"),
   "black-dragon-kalameet": {
     url: fandomFileUrl("DS1 PtDE screenshot (Black Dragon Kalameet 1).jpg"),
     sourceUrl: fandomFilePage("DS1 PtDE screenshot (Black Dragon Kalameet 1).jpg"),
