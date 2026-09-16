@@ -103,7 +103,12 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
         </div>
 
         <div className="grid gap-0 xl:grid-cols-[minmax(0,1fr)_24rem]">
-          <BossDetail boss={selected} locale={locale} showSpoilers={showSpoilers} setShowSpoilers={setShowSpoilers} />
+          <BossDetail
+            boss={selected}
+            locale={locale}
+            showSpoilers={showSpoilers}
+            setShowSpoilers={setShowSpoilers}
+          />
           <aside className="border-t border-border bg-muted/20 p-5 xl:border-l xl:border-t-0 sm:p-6">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
@@ -127,13 +132,19 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                     className="absolute inset-0 h-full w-full scale-110 object-cover opacity-20 blur-2xl"
                     style={{ objectPosition: selectedImage.cardObjectPosition ?? "50% 35%" }}
                   />
-                  <div className="absolute inset-0 bg-background/30" />
+                  <div className="absolute inset-0 bg-background/25" />
                   <img
                     src={selectedImage.url}
                     alt={selected?.name ?? ""}
                     referrerPolicy="no-referrer"
-                    className="relative z-10 h-full w-full object-contain p-3 opacity-95"
-                    style={{ objectPosition: selectedImage.detailObjectPosition ?? "50% 38%" }}
+                    className={cn(
+                      "relative z-10 h-full w-full opacity-95",
+                      selectedImage.detailFit === "cover" ? "object-cover" : "object-contain p-3",
+                    )}
+                    style={{
+                      objectPosition: selectedImage.detailObjectPosition ?? "50% 38%",
+                      transform: `scale(${selectedImage.detailScale ?? 1})`,
+                    }}
                   />
                 </>
               ) : (
@@ -235,14 +246,20 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                     loading="lazy"
                     referrerPolicy="no-referrer"
                     className={cn(
-                      "h-full w-full object-cover transition-opacity duration-300",
+                      "h-full w-full transition-[opacity,transform] duration-300",
+                      imageAsset?.cardFit === "contain" ? "object-contain p-2" : "object-cover",
                       hasImage ? "opacity-80 group-hover:opacity-95" : "opacity-40 group-hover:opacity-55",
                     )}
-                    style={{ objectPosition: imageAsset?.cardObjectPosition ?? "50% 38%" }}
+                    style={{
+                      objectPosition: imageAsset?.cardObjectPosition ?? "50% 38%",
+                      transform: `scale(${imageAsset?.cardScale ?? 1})`,
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
                   <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3">
-                    <span className="text-xs font-bold uppercase tracking-[0.16em] text-gold-strong">#{String(boss.order).padStart(2, "0")}</span>
+                    <span className="text-xs font-bold uppercase tracking-[0.16em] text-gold-strong">
+                      #{String(boss.order).padStart(2, "0")}
+                    </span>
                     <div className="flex gap-1.5">
                       {boss.dlc ? <Pill>DLC</Pill> : null}
                       <Pill>
@@ -292,9 +309,9 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
 
       <p className="text-xs leading-relaxed text-muted-foreground">
         {copy(
-          "Nota editorial: os textos do MGP são resumos originais baseados em fatos do jogo e referências consolidadas. Teorias não confirmadas são identificadas como teoria. Parte das imagens desta versão usa screenshots promocionais e de Prepare to Die Edition catalogados pela Dark Souls Wiki (Fandom), com a página-fonte indicada no painel de arte. Chefes ainda sem imagem continuam com o placeholder do MGP.",
-          "Editorial note: MGP copy is original summary text based on in-game facts and established references. Unconfirmed theories are identified as theory. Part of this version uses promotional and Prepare to Die Edition screenshots catalogued by the Dark Souls Wiki (Fandom), with the source file page linked in the art panel. Bosses without an image still use the MGP placeholder.",
-          "Nota editorial: los textos de MGP son resúmenes originales basados en hechos del juego y referencias consolidadas. Las teorías no confirmadas se identifican como tales. Parte de las imágenes usa capturas promocionales y de Prepare to Die Edition catalogadas por Dark Souls Wiki (Fandom), con la página fuente enlazada en el panel de arte. Los jefes sin imagen siguen usando el placeholder de MGP.",
+          "Nota editorial: os textos do MGP são resumos originais baseados em fatos do jogo e referências consolidadas. As artes de chefes combinam concept art, artwork e screenshots catalogados em fontes externas, sempre com atribuição no painel. O enquadramento é ajustado por chefe para priorizar a criatura em vez de preservar bordas vazias da imagem original.",
+          "Editorial note: MGP copy is original summary text based on in-game facts and established references. Boss visuals combine concept art, artwork and screenshots catalogued by external sources, with attribution in the art panel. Framing is tuned per boss to prioritize the creature rather than preserve empty borders from the original image.",
+          "Nota editorial: los textos de MGP son resúmenes originales basados en hechos del juego y referencias consolidadas. Las imágenes de jefes combinan arte conceptual, ilustraciones y capturas catalogadas por fuentes externas, con atribución en el panel. El encuadre se ajusta por jefe para priorizar la criatura en vez de conservar bordes vacíos de la imagen original.",
         )}
       </p>
     </div>
