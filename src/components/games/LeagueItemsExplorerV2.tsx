@@ -158,7 +158,10 @@ function isOrnnMasterworkCandidate(item: LeagueItem, allItems: Map<string, Leagu
   return Boolean(item.from?.length);
 }
 
-function baseUpgradeableStats(item: LeagueItem, englishItem: LeagueItem): Array<Omit<UpgradeStat, "bonus">> {
+function baseUpgradeableStats(
+  item: LeagueItem,
+  englishItem: LeagueItem,
+): Array<Omit<UpgradeStat, "bonus">> {
   const stats = item.stats ?? {};
   const rows: Array<Omit<UpgradeStat, "bonus">> = [];
   const push = (key: UpgradeStatKey, value: number | undefined) => {
@@ -235,27 +238,37 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
       try {
         let current = FALLBACK_VERSION;
         try {
-          const versionsResponse = await fetch(`${DDRAGON}/api/versions.json`, { signal: controller.signal });
+          const versionsResponse = await fetch(`${DDRAGON}/api/versions.json`, {
+            signal: controller.signal,
+          });
           if (versionsResponse.ok) {
             const versions = (await versionsResponse.json()) as string[];
             current = versions[0] || FALLBACK_VERSION;
           }
         } catch (versionError) {
-          if (!controller.signal.aborted) console.warn("[League] Using fallback Data Dragon version.", versionError);
+          if (!controller.signal.aborted)
+            console.warn("[League] Using fallback Data Dragon version.", versionError);
         }
 
         const localUrl = `${DDRAGON}/cdn/${current}/data/${DATA_DRAGON_LOCALE[locale]}/item.json`;
         const englishUrl = `${DDRAGON}/cdn/${current}/data/en_US/item.json`;
         const [localResponse, englishResponse] = await Promise.all([
           fetch(localUrl, { signal: controller.signal }),
-          locale === "en" ? Promise.resolve(null) : fetch(englishUrl, { signal: controller.signal }),
+          locale === "en"
+            ? Promise.resolve(null)
+            : fetch(englishUrl, { signal: controller.signal }),
         ]);
         if (!localResponse.ok) throw new Error(`Data Dragon returned ${localResponse.status}`);
-        if (englishResponse && !englishResponse.ok) throw new Error(`Data Dragon EN returned ${englishResponse.status}`);
+        if (englishResponse && !englishResponse.ok)
+          throw new Error(`Data Dragon EN returned ${englishResponse.status}`);
         const payload = (await localResponse.json()) as ItemPayload;
-        const englishPayload = englishResponse ? ((await englishResponse.json()) as ItemPayload) : payload;
+        const englishPayload = englishResponse
+          ? ((await englishResponse.json()) as ItemPayload)
+          : payload;
         const everyItem = Object.entries(payload.data);
-        const summonersRiftItems = dedupeCatalog(everyItem.filter(([, item]) => isVisibleStoreItem(item)));
+        const summonersRiftItems = dedupeCatalog(
+          everyItem.filter(([, item]) => isVisibleStoreItem(item)),
+        );
 
         setVersion(current);
         setAllItemEntries(everyItem);
@@ -264,7 +277,13 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
       } catch (loadError) {
         if (controller.signal.aborted) return;
         console.error("[League] Item collection failed.", loadError);
-        setError(copy("Não foi possível carregar os itens oficiais agora.", "Official items could not be loaded right now.", "No se pudieron cargar los objetos oficiales en este momento."));
+        setError(
+          copy(
+            "Não foi possível carregar os itens oficiais agora.",
+            "Official items could not be loaded right now.",
+            "No se pudieron cargar los objetos oficiales en este momento.",
+          ),
+        );
       } finally {
         if (!controller.signal.aborted) setLoading(false);
       }
@@ -295,7 +314,10 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
       return (
         entry.item.name.toLowerCase().includes(normalized) ||
         entry.item.tags?.some((tag) => tag.toLowerCase().includes(normalized)) ||
-        (entry.variant === "masterwork" && (normalized.includes("ornn") || normalized.includes("magistral") || normalized.includes("masterwork")))
+        (entry.variant === "masterwork" &&
+          (normalized.includes("ornn") ||
+            normalized.includes("magistral") ||
+            normalized.includes("masterwork")))
       );
     });
   }, [catalog, query]);
@@ -330,9 +352,17 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <DataSourceIndicator source="verified" />
-              <span className="rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">Riot Data Dragon · {version}</span>
+              <span className="rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                Riot Data Dragon · {version}
+              </span>
             </div>
-            <h2 className="mt-4 font-display text-2xl font-semibold text-foreground sm:text-3xl">{copy("Itens de Summoner's Rift", "Summoner's Rift items", "Objetos de la Grieta del Invocador")}</h2>
+            <h2 className="mt-4 font-display text-2xl font-semibold text-foreground sm:text-3xl">
+              {copy(
+                "Itens de Summoner's Rift",
+                "Summoner's Rift items",
+                "Objetos de la Grieta del Invocador",
+              )}
+            </h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
               {copy(
                 "Atributos oficiais, receitas clicáveis e uma versão Magistral separada para cada Lendário elegível ao Ornn.",
@@ -341,25 +371,48 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
               )}
             </p>
           </div>
-          <span className="text-xs font-semibold text-muted-foreground">{loading ? copy("Sincronizando…", "Syncing…", "Sincronizando…") : `${filtered.length} ${copy("entradas", "entries", "entradas")}`}</span>
+          <span className="text-xs font-semibold text-muted-foreground">
+            {loading
+              ? copy("Sincronizando…", "Syncing…", "Sincronizando…")
+              : `${filtered.length} ${copy("entradas", "entries", "entradas")}`}
+          </span>
         </div>
         <label className="mt-5 flex max-w-xl items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 focus-within:border-gold/50">
           <Search className="size-4 text-muted-foreground" />
-          <Input value={query} onChange={(event) => setQuery(event.target.value)} className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0" placeholder={copy("Buscar item ou Ornn…", "Search item or Ornn…", "Buscar objeto u Ornn…")} />
+          <Input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0"
+            placeholder={copy(
+              "Buscar item ou Ornn…",
+              "Search item or Ornn…",
+              "Buscar objeto u Ornn…",
+            )}
+          />
         </label>
       </div>
 
-      {error ? <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-5 text-sm text-destructive">{error}</div> : null}
+      {error ? (
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-5 text-sm text-destructive">
+          {error}
+        </div>
+      ) : null}
 
       {loading ? (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {Array.from({ length: 16 }).map((_, index) => <div key={index} className="h-32 animate-pulse rounded-xl border border-border bg-muted/40" />)}
+          {Array.from({ length: 16 }).map((_, index) => (
+            <div
+              key={index}
+              className="h-32 animate-pulse rounded-xl border border-border bg-muted/40"
+            />
+          ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filtered.map((entry) => {
             const statLines = extractStatLines(entry.item.description).slice(0, 3);
-            const upgrades = entry.variant === "masterwork" ? masterworkStats(entry.item, entry.englishItem) : [];
+            const upgrades =
+              entry.variant === "masterwork" ? masterworkStats(entry.item, entry.englishItem) : [];
             return (
               <button
                 key={entry.key}
@@ -368,31 +421,75 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
                 title={entry.item.name}
                 className={cn(
                   "group flex min-h-32 items-start gap-3 overflow-hidden rounded-xl border bg-surface p-3 text-left transition-all hover:-translate-y-0.5 hover:shadow-lift",
-                  entry.variant === "masterwork" ? "border-orange-400/55 bg-[linear-gradient(180deg,rgba(249,115,22,0.08),transparent_38%)] hover:border-orange-300" : "border-border hover:border-gold/45",
+                  entry.variant === "masterwork"
+                    ? "border-orange-400/55 bg-[linear-gradient(180deg,rgba(249,115,22,0.08),transparent_38%)] hover:border-orange-300"
+                    : "border-border hover:border-gold/45",
                 )}
               >
                 <div className="relative grid size-16 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-muted/60 p-1.5">
-                  <img src={`${DDRAGON}/cdn/${version}/img/item/${entry.item.image.full}`} alt="" loading="lazy" width={56} height={56} className="size-14 object-contain" />
+                  <img
+                    src={`${DDRAGON}/cdn/${version}/img/item/${entry.item.image.full}`}
+                    alt=""
+                    loading="lazy"
+                    width={56}
+                    height={56}
+                    className="size-14 object-contain"
+                  />
                   {entry.variant === "masterwork" ? (
-                    <span className="absolute bottom-0.5 right-0.5 inline-flex items-center gap-0.5 rounded-full border border-orange-300/70 bg-popover px-1.5 py-0.5 text-[0.5rem] font-black uppercase text-orange-500 shadow-lg"><Hammer className="size-2.5" />ORNN</span>
+                    <span className="absolute bottom-0.5 right-0.5 inline-flex items-center gap-0.5 rounded-full border border-orange-300/70 bg-popover px-1.5 py-0.5 text-[0.5rem] font-black uppercase text-orange-500 shadow-lg">
+                      <Hammer className="size-2.5" />
+                      ORNN
+                    </span>
                   ) : null}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex min-w-0 items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-foreground">{entry.item.name}</p>
-                      <p className={cn("mt-0.5 text-[0.6rem] font-bold uppercase tracking-[0.08em]", entry.variant === "masterwork" ? "text-orange-500" : "text-muted-foreground")}>
-                        {entry.variant === "masterwork" ? copy("Magistral", "Masterwork", "Magistral") : copy("Item normal", "Base item", "Objeto normal")}
+                      <p className="truncate text-sm font-semibold text-foreground">
+                        {entry.item.name}
+                      </p>
+                      <p
+                        className={cn(
+                          "mt-0.5 text-[0.6rem] font-bold uppercase tracking-[0.08em]",
+                          entry.variant === "masterwork"
+                            ? "text-orange-500"
+                            : "text-muted-foreground",
+                        )}
+                      >
+                        {entry.variant === "masterwork"
+                          ? copy("Magistral", "Masterwork", "Magistral")
+                          : copy("Item normal", "Base item", "Objeto normal")}
                       </p>
                     </div>
-                    {entry.item.gold?.total ? <p className="flex shrink-0 items-center gap-1 text-[0.68rem] font-semibold text-gold-strong"><Coins className="size-3" />{entry.item.gold.total}</p> : null}
+                    {entry.item.gold?.total ? (
+                      <p className="flex shrink-0 items-center gap-1 text-[0.68rem] font-semibold text-gold-strong">
+                        <Coins className="size-3" />
+                        {entry.item.gold.total}
+                      </p>
+                    ) : null}
                   </div>
                   <div className="mt-2 flex min-h-12 flex-wrap content-start gap-1 text-[0.62rem] leading-4 text-muted-foreground">
                     {entry.variant === "masterwork"
                       ? upgrades.slice(0, 3).map((stat) => (
-                          <span key={stat.key} className="max-w-full truncate rounded-md border border-orange-400/20 bg-background/65 px-1.5 py-0.5"><span className="text-foreground">{statLabel(stat.key, locale)}:</span> {formatStat(stat.key, stat.base)} → <span className="font-bold text-orange-500">{formatStat(stat.key, stat.base + stat.bonus)}</span></span>
+                          <span
+                            key={stat.key}
+                            className="max-w-full truncate rounded-md border border-orange-400/20 bg-background/65 px-1.5 py-0.5"
+                          >
+                            <span className="text-foreground">{statLabel(stat.key, locale)}:</span>{" "}
+                            {formatStat(stat.key, stat.base)} →{" "}
+                            <span className="font-bold text-orange-500">
+                              {formatStat(stat.key, stat.base + stat.bonus)}
+                            </span>
+                          </span>
                         ))
-                      : statLines.map((line) => <span key={line} className="max-w-full truncate rounded-md border border-border bg-muted/30 px-1.5 py-0.5">{line}</span>)}
+                      : statLines.map((line) => (
+                          <span
+                            key={line}
+                            className="max-w-full truncate rounded-md border border-border bg-muted/30 px-1.5 py-0.5"
+                          >
+                            {line}
+                          </span>
+                        ))}
                   </div>
                 </div>
               </button>
@@ -403,11 +500,13 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
 
       <div className="flex gap-3 rounded-2xl border border-border bg-muted/15 p-4 text-xs leading-5 text-muted-foreground">
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-gold-strong" />
-        <p>{copy(
-          "Dados e imagens vêm do Riot Data Dragon. As versões Magistrais são visualizações calculadas do sistema atual do Ornn: os atributos elegíveis recebem, juntos, aproximadamente 1.000 de ouro em valor adicional; passivas e efeitos do item não mudam.",
-          "Data and images come from Riot Data Dragon. Masterwork versions are calculated views of Ornn's current system: eligible stats together receive roughly 1,000 gold of additional stat value; item passives and effects remain unchanged.",
-          "Los datos e imágenes provienen de Riot Data Dragon. Las versiones Magistrales son vistas calculadas del sistema actual de Ornn: los atributos elegibles reciben en conjunto aproximadamente 1.000 de oro de valor adicional; las pasivas y efectos no cambian.",
-        )}</p>
+        <p>
+          {copy(
+            "Dados e imagens vêm do Riot Data Dragon. As versões Magistrais são visualizações calculadas do sistema atual do Ornn: os atributos elegíveis recebem, juntos, aproximadamente 1.000 de ouro em valor adicional; passivas e efeitos do item não mudam.",
+            "Data and images come from Riot Data Dragon. Masterwork versions are calculated views of Ornn's current system: eligible stats together receive roughly 1,000 gold of additional stat value; item passives and effects remain unchanged.",
+            "Los datos e imágenes provienen de Riot Data Dragon. Las versiones Magistrales son vistas calculadas del sistema actual de Ornn: los atributos elegibles reciben en conjunto aproximadamente 1.000 de oro de valor adicional; las pasivas y efectos no cambian.",
+          )}
+        </p>
       </div>
 
       <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && closeItem()}>
@@ -430,7 +529,16 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
   );
 }
 
-function ItemDetail({ entry, version, locale, allItems, englishItems, canGoBack, onBack, onSelect }: {
+function ItemDetail({
+  entry,
+  version,
+  locale,
+  allItems,
+  englishItems,
+  canGoBack,
+  onBack,
+  onSelect,
+}: {
   entry: CatalogEntry;
   version: string;
   locale: Locale;
@@ -442,82 +550,235 @@ function ItemDetail({ entry, version, locale, allItems, englishItems, canGoBack,
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const { id, item, englishItem, variant } = entry;
-  const components = item.from?.map((componentId) => [componentId, allItems.get(componentId)] as const).filter((row): row is readonly [string, LeagueItem] => Boolean(row[1])) ?? [];
-  const upgrades = item.into?.map((upgradeId) => [upgradeId, allItems.get(upgradeId)] as const).filter((row): row is readonly [string, LeagueItem] => Boolean(row[1]) && Boolean(row[1]?.maps?.["11"])) ?? [];
+  const components =
+    item.from
+      ?.map((componentId) => [componentId, allItems.get(componentId)] as const)
+      .filter((row): row is readonly [string, LeagueItem] => Boolean(row[1])) ?? [];
+  const upgrades =
+    item.into
+      ?.map((upgradeId) => [upgradeId, allItems.get(upgradeId)] as const)
+      .filter(
+        (row): row is readonly [string, LeagueItem] =>
+          Boolean(row[1]) && Boolean(row[1]?.maps?.["11"]),
+      ) ?? [];
   const statLines = extractStatLines(item.description);
   const masterwork = variant === "masterwork" ? masterworkStats(item, englishItem) : [];
 
   return (
     <div>
-      {canGoBack ? <button type="button" onClick={onBack} className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-muted/20 px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"><ArrowLeft className="size-3.5" />{copy("Voltar na árvore", "Back in tree", "Volver en el árbol")}</button> : null}
+      {canGoBack ? (
+        <button
+          type="button"
+          onClick={onBack}
+          className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-muted/20 px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="size-3.5" />
+          {copy("Voltar na árvore", "Back in tree", "Volver en el árbol")}
+        </button>
+      ) : null}
 
       <DialogHeader className="text-left">
         <div className="flex gap-4 pr-8">
-          <div className={cn("grid size-20 shrink-0 place-items-center rounded-2xl p-1.5", variant === "masterwork" ? "bg-gradient-to-br from-orange-400 via-amber-200 to-orange-800" : "bg-muted") }>
-            <img src={`${DDRAGON}/cdn/${version}/img/item/${item.image.full}`} alt="" width={68} height={68} className="size-[68px] rounded-xl bg-background object-contain p-1" />
+          <div
+            className={cn(
+              "grid size-20 shrink-0 place-items-center rounded-2xl p-1.5",
+              variant === "masterwork"
+                ? "bg-gradient-to-br from-orange-400 via-amber-200 to-orange-800"
+                : "bg-muted",
+            )}
+          >
+            <img
+              src={`${DDRAGON}/cdn/${version}/img/item/${item.image.full}`}
+              alt=""
+              width={68}
+              height={68}
+              className="size-[68px] rounded-xl bg-background object-contain p-1"
+            />
           </div>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <DialogTitle className="font-display text-2xl">{item.name}</DialogTitle>
-              {variant === "masterwork" ? <span className="inline-flex items-center gap-1 rounded-full border border-orange-400/45 bg-orange-500/10 px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.1em] text-orange-500"><Hammer className="size-3" />{copy("Magistral · Ornn", "Masterwork · Ornn", "Magistral · Ornn")}</span> : null}
+              {variant === "masterwork" ? (
+                <span className="inline-flex items-center gap-1 rounded-full border border-orange-400/45 bg-orange-500/10 px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.1em] text-orange-500">
+                  <Hammer className="size-3" />
+                  {copy("Magistral · Ornn", "Masterwork · Ornn", "Magistral · Ornn")}
+                </span>
+              ) : null}
             </div>
-            <DialogDescription className="mt-1">#{id} {item.tags?.length ? `· ${item.tags.join(" · ")}` : ""}</DialogDescription>
-            {item.gold?.total ? <p className="mt-2 flex items-center gap-1.5 text-sm font-bold text-gold-strong"><Coins className="size-4" />{item.gold.total}</p> : null}
+            <DialogDescription className="mt-1">
+              #{id} {item.tags?.length ? `· ${item.tags.join(" · ")}` : ""}
+            </DialogDescription>
+            {item.gold?.total ? (
+              <p className="mt-2 flex items-center gap-1.5 text-sm font-bold text-gold-strong">
+                <Coins className="size-4" />
+                {item.gold.total}
+              </p>
+            ) : null}
           </div>
         </div>
       </DialogHeader>
 
       {variant === "masterwork" ? (
         <section className="mt-5 rounded-2xl border border-orange-400/35 bg-orange-500/[0.06] p-4">
-          <div className="flex items-center gap-2 text-orange-500"><Hammer className="size-4" /><h3 className="text-xs font-black uppercase tracking-[0.12em]">{copy("Stats Magistral", "Masterwork stats", "Stats Magistrales")}</h3></div>
+          <div className="flex items-center gap-2 text-orange-500">
+            <Hammer className="size-4" />
+            <h3 className="text-xs font-black uppercase tracking-[0.12em]">
+              {copy("Stats Magistral", "Masterwork stats", "Stats Magistrales")}
+            </h3>
+          </div>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {masterwork.map((stat) => (
-              <div key={stat.key} className="rounded-xl border border-orange-400/20 bg-background/70 p-3">
-                <p className="text-[0.65rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">{statLabel(stat.key, locale)}</p>
-                <p className="mt-1 font-display text-lg font-bold text-foreground">{formatStat(stat.key, stat.base)} <span className="mx-1 text-muted-foreground">→</span> <span className="text-orange-500">{formatStat(stat.key, stat.base + stat.bonus)}</span></p>
-                <p className="mt-1 text-[0.65rem] font-semibold text-orange-500">+{formatStat(stat.key, stat.bonus)}</p>
+              <div
+                key={stat.key}
+                className="rounded-xl border border-orange-400/20 bg-background/70 p-3"
+              >
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+                  {statLabel(stat.key, locale)}
+                </p>
+                <p className="mt-1 font-display text-lg font-bold text-foreground">
+                  {formatStat(stat.key, stat.base)}{" "}
+                  <span className="mx-1 text-muted-foreground">→</span>{" "}
+                  <span className="text-orange-500">
+                    {formatStat(stat.key, stat.base + stat.bonus)}
+                  </span>
+                </p>
+                <p className="mt-1 text-[0.65rem] font-semibold text-orange-500">
+                  +{formatStat(stat.key, stat.bonus)}
+                </p>
               </div>
             ))}
           </div>
-          <p className="mt-3 text-[0.7rem] leading-5 text-muted-foreground">{copy(
-            "O aprimoramento distribui cerca de 1.000 de ouro em valor entre os atributos elegíveis que o item já possui. Passivas, ativos e efeitos permanecem os mesmos do item normal.",
-            "The upgrade distributes about 1,000 gold of value across eligible stats the item already has. Passives, actives and effects remain the same as the base item.",
-            "La mejora distribuye cerca de 1.000 de oro de valor entre los atributos elegibles que el objeto ya posee. Pasivas, activos y efectos permanecen iguales al objeto normal.",
-          )}</p>
+          <p className="mt-3 text-[0.7rem] leading-5 text-muted-foreground">
+            {copy(
+              "O aprimoramento distribui cerca de 1.000 de ouro em valor entre os atributos elegíveis que o item já possui. Passivas, ativos e efeitos permanecem os mesmos do item normal.",
+              "The upgrade distributes about 1,000 gold of value across eligible stats the item already has. Passives, actives and effects remain the same as the base item.",
+              "La mejora distribuye cerca de 1.000 de oro de valor entre los atributos elegibles que el objeto ya posee. Pasivas, activos y efectos permanecen iguales al objeto normal.",
+            )}
+          </p>
         </section>
       ) : (
         <section className="mt-5 rounded-2xl border border-border bg-muted/15 p-4">
-          <div className="flex items-center gap-2"><Sparkles className="size-4 text-gold-strong" /><h3 className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">{copy("Atributos", "Stats", "Atributos")}</h3></div>
-          {statLines.length ? <div className="mt-3 grid gap-2 sm:grid-cols-2">{statLines.map((line) => <div key={line} className="rounded-xl border border-border bg-background/65 px-3 py-2 text-sm font-semibold text-foreground">{line}</div>)}</div> : <p className="mt-3 text-xs text-muted-foreground">{copy("Sem atributos diretos expostos nesta versão do Data Dragon.", "No direct stats exposed in this Data Dragon version.", "Sin atributos directos expuestos en esta versión de Data Dragon.")}</p>}
+          <div className="flex items-center gap-2">
+            <Sparkles className="size-4 text-gold-strong" />
+            <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
+              {copy("Atributos", "Stats", "Atributos")}
+            </h3>
+          </div>
+          {statLines.length ? (
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {statLines.map((line) => (
+                <div
+                  key={line}
+                  className="rounded-xl border border-border bg-background/65 px-3 py-2 text-sm font-semibold text-foreground"
+                >
+                  {line}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-3 text-xs text-muted-foreground">
+              {copy(
+                "Sem atributos diretos expostos nesta versão do Data Dragon.",
+                "No direct stats exposed in this Data Dragon version.",
+                "Sin atributos directos expuestos en esta versión de Data Dragon.",
+              )}
+            </p>
+          )}
         </section>
       )}
 
-      <p className="mt-5 text-sm leading-7 text-muted-foreground">{stripMarkup(item.description).replace(statLines.join(" "), "") || item.plaintext}</p>
+      <p className="mt-5 text-sm leading-7 text-muted-foreground">
+        {stripMarkup(item.description).replace(statLines.join(" "), "") || item.plaintext}
+      </p>
 
-      {variant === "base" && isOrnnMasterworkCandidate(item, allItems) && masterworkStats(item, englishItems.get(id) ?? englishItem).length ? (
-        <button type="button" onClick={() => {}} disabled className="mt-5 flex w-full items-center gap-3 rounded-xl border border-orange-400/25 bg-orange-500/[0.04] p-3 text-left opacity-90">
-          <span className="grid size-9 place-items-center rounded-xl bg-orange-500/10 text-orange-500"><Hammer className="size-4" /></span>
-          <span><span className="block text-xs font-black uppercase tracking-[0.1em] text-orange-500">{copy("Também existe como Magistral", "Also available as Masterwork", "También existe como Magistral")}</span><span className="mt-1 block text-xs text-muted-foreground">{copy("Volte ao catálogo para abrir a cópia aprimorada do Ornn.", "Return to the catalog to open the Ornn-upgraded copy.", "Vuelve al catálogo para abrir la copia mejorada por Ornn.")}</span></span>
+      {variant === "base" &&
+      isOrnnMasterworkCandidate(item, allItems) &&
+      masterworkStats(item, englishItems.get(id) ?? englishItem).length ? (
+        <button
+          type="button"
+          onClick={() => {}}
+          disabled
+          className="mt-5 flex w-full items-center gap-3 rounded-xl border border-orange-400/25 bg-orange-500/[0.04] p-3 text-left opacity-90"
+        >
+          <span className="grid size-9 place-items-center rounded-xl bg-orange-500/10 text-orange-500">
+            <Hammer className="size-4" />
+          </span>
+          <span>
+            <span className="block text-xs font-black uppercase tracking-[0.1em] text-orange-500">
+              {copy(
+                "Também existe como Magistral",
+                "Also available as Masterwork",
+                "También existe como Magistral",
+              )}
+            </span>
+            <span className="mt-1 block text-xs text-muted-foreground">
+              {copy(
+                "Volte ao catálogo para abrir a cópia aprimorada do Ornn.",
+                "Return to the catalog to open the Ornn-upgraded copy.",
+                "Vuelve al catálogo para abrir la copia mejorada por Ornn.",
+              )}
+            </span>
+          </span>
         </button>
       ) : null}
 
-      {components.length ? <ItemLinks title={copy("Componentes", "Components", "Componentes")} entries={components} version={version} onSelect={onSelect} /> : null}
-      {upgrades.length ? <ItemLinks title={copy("Pode construir", "Builds into", "Puede construir")} entries={upgrades} version={version} onSelect={onSelect} /> : null}
+      {components.length ? (
+        <ItemLinks
+          title={copy("Componentes", "Components", "Componentes")}
+          entries={components}
+          version={version}
+          onSelect={onSelect}
+        />
+      ) : null}
+      {upgrades.length ? (
+        <ItemLinks
+          title={copy("Pode construir", "Builds into", "Puede construir")}
+          entries={upgrades}
+          version={version}
+          onSelect={onSelect}
+        />
+      ) : null}
     </div>
   );
 }
 
-function ItemLinks({ title, entries, version, onSelect }: { title: string; entries: Array<readonly [string, LeagueItem]>; version: string; onSelect: (id: string) => void }) {
+function ItemLinks({
+  title,
+  entries,
+  version,
+  onSelect,
+}: {
+  title: string;
+  entries: Array<readonly [string, LeagueItem]>;
+  version: string;
+  onSelect: (id: string) => void;
+}) {
   return (
     <section className="mt-6">
-      <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">{title}</h3>
+      <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
+        {title}
+      </h3>
       <div className="mt-3 flex flex-wrap gap-2">
         {entries.map(([id, item]) => (
-          <button key={id} type="button" onClick={() => onSelect(id)} className="group flex items-center gap-2 rounded-xl border border-border bg-muted/15 p-2 pr-3 text-left transition-all hover:-translate-y-0.5 hover:border-gold/45 hover:bg-muted/25">
+          <button
+            key={id}
+            type="button"
+            onClick={() => onSelect(id)}
+            className="group flex items-center gap-2 rounded-xl border border-border bg-muted/15 p-2 pr-3 text-left transition-all hover:-translate-y-0.5 hover:border-gold/45 hover:bg-muted/25"
+          >
             <span className="grid size-10 shrink-0 place-items-center rounded-lg border border-border bg-muted/60 p-1">
-              <img src={`${DDRAGON}/cdn/${version}/img/item/${item.image.full}`} alt="" loading="lazy" width={32} height={32} className="size-8 object-contain" />
+              <img
+                src={`${DDRAGON}/cdn/${version}/img/item/${item.image.full}`}
+                alt=""
+                loading="lazy"
+                width={32}
+                height={32}
+                className="size-8 object-contain"
+              />
             </span>
-            <span className="max-w-44 text-xs font-semibold text-foreground group-hover:text-gold-strong">{item.name}</span>
+            <span className="max-w-44 text-xs font-semibold text-foreground group-hover:text-gold-strong">
+              {item.name}
+            </span>
           </button>
         ))}
       </div>
