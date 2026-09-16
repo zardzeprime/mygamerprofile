@@ -3,11 +3,7 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { getSupabasePublic } from "@/lib/supabase.server";
-import {
-  buildNexusSystemPrompt,
-  selectNexusCores,
-  type NexusLocale,
-} from "@/lib/nexus/prompt";
+import { buildNexusSystemPrompt, selectNexusCores, type NexusLocale } from "@/lib/nexus/prompt";
 import {
   completeWithNexusRouter,
   getNexusProviderStatus,
@@ -167,23 +163,20 @@ export const sendNexusGuestMessage = createServerFn({ method: "POST" })
       maxOutputTokens: 1000,
     });
 
-    const { data: quotaRows, error: quotaError } = await db.rpc(
-      "record_nexus_guest_exchange",
-      {
-        p_session_id: guestId,
-        p_user_content: data.message,
-        p_assistant_content: completion.text,
-        p_core_ids: coreIds,
-        p_provider: completion.provider,
-        p_model: completion.model,
-        p_metadata: {
-          mode: "gaming",
-          locale: data.locale,
-          anonymousTrial: true,
-          attemptedProviders: completion.attemptedProviders,
-        },
+    const { data: quotaRows, error: quotaError } = await db.rpc("record_nexus_guest_exchange", {
+      p_session_id: guestId,
+      p_user_content: data.message,
+      p_assistant_content: completion.text,
+      p_core_ids: coreIds,
+      p_provider: completion.provider,
+      p_model: completion.model,
+      p_metadata: {
+        mode: "gaming",
+        locale: data.locale,
+        anonymousTrial: true,
+        attemptedProviders: completion.attemptedProviders,
       },
-    );
+    });
 
     if (quotaError) {
       const message = String(quotaError.message);
