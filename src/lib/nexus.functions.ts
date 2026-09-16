@@ -1,451 +1,107 @@
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
+type Envelope<T = unknown> = { data: T };
 
-import { createClient } from "@supabase/supabase-js";
-import { getSupabasePublic, getSupabasePublicConfig } from "@/lib/supabase.server";
-import { buildNexusSystemPrompt, selectNexusCores, type NexusLocale } from "@/lib/nexus/prompt";
-import {
-  completeWithNexusRouter,
-  getNexusRuntimeHealth,
-  hasNexusInferenceTransport,
-  type NexusChatMessage,
-} from "@/lib/nexus/provider-router.server";
-import { NEXUS_TOOL_BRIDGES } from "@/lib/nexus/tool-bridges";
+type Locale = "pt-BR" | "en" | "es";
+type Mode = "gaming" | "development";
 
-const modeSchema = z.enum(["gaming", "development"]);
-const localeSchema = z.enum(["pt-BR", "en", "es"]);
-const authSchema = z.object({ accessToken: z.string().min(20) });
-const threadSchema = z.object({ threadId: z.string().uuid(), accessToken: z.string().min(20) });
-const sendSchema = z.object({
-  accessToken: z.string().min(20),
-  threadId: z.string().uuid().optional(),
-  mode: modeSchema.default("gaming"),
-  locale: localeSchema.default("pt-BR"),
-  message: z.string().trim().min(1).max(6000),
-});
-const guestStatusSchema = z.object({
-  guestId: z.string().uuid().optional(),
-});
-const guestSendSchema = z.object({
-  guestId: z.string().uuid().optional(),
-  locale: localeSchema.default("pt-BR"),
-  message: z.string().trim().min(1).max(2500),
-});
+const SUPABASE_URL =
+  import.meta.env["VITE_SUPABASE_URL"] || "https://gudvdgpjfapshzqyfcpj.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY =
+  import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
+  "sb_publishable_JXVaM-rr7Yu59l3x7WyHEg_qlR-uDMX";
+const NEXUS_EDGE_URL = `${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/nexus-inference`;
 
-const GUEST_HISTORY_LIMIT = 20;
+async function invokeNexus<T>(body: Record<string, unknown>, accessToken?: string): Promise<T> {
+  const controller = new AbortController();
+  const timeout = typeof window !== "undefined" ? window.setTimeout(() => controller.abort(), 15_000) : undefined;
 
-async function nexusUserContext(accessToken: string) {
-  const { url, publishableKey } = getSupabasePublicConfig();
-  const db = createClient(url, publishableKey, {
-    global: { headers: { Authorization: `Bearer ${accessToken}` } },
-    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-  }) as any;
-  const { data, error } = await db.auth.getUser(accessToken);
-  if (error || !data?.user?.id) throw new Error("Unauthorized: Invalid session");
-  return { db, userId: data.user.id as string };
-}
+  try {
+    const response = await fetch(NEXUS_EDGE_URL, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_PUBLISHABLE_KEY,
+        "Content-Type": "application/json",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
 
-function hasConfiguredProvider() {
-  return hasNexusInferenceTransport();
-}
+    const raw = await response.text();
+    let payload: Record<string, unknown> = {};
+    try {
+      payload = raw ? (JSON.parse(raw) as Record<string, unknown>) : {};
+    } catch {
+      throw new Error(`NEXUS_EDGE_INVALID_RESPONSE_${response.status}`);
+    }
 
-function assertInferenceReady() {
-  if (!hasConfiguredProvider()) {
-    throw new Error("NEXUS_NO_PROVIDER");
+    if (!response.ok) {
+      const code = typeof payload.error === "string" ? payload.error : `NEXUS_EDGE_${response.status}`;
+      throw new Error(code);
+    }
+
+    return payload as T;
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("NEXUS_LOAD_TIMEOUT");
+    }
+    throw error;
+  } finally {
+    if (timeout !== undefined && typeof window !== "undefined") window.clearTimeout(timeout);
   }
 }
 
-async function isAdmin(db: any, userId: string) {
-  const { data, error } = await db
-    .from("user_roles")
-    .select("id")
-    .eq("user_id", userId)
-    .eq("role", "admin")
-    .maybeSingle();
-  if (error) throw new Error(error.message);
-  return Boolean(data);
+export async function getNexusGuestStatus({ data }: Envelope<{ guestId?: string }>) {
+  return invokeNexus({ action: "guest.status", guestId: data.guestId ?? null });
 }
 
-async function enforceNexusRateLimit(db: any, userId: string) {
-  const since = new Date(Date.now() - 60_000).toISOString();
-  const { count, error } = await db
-    .from("nexus_messages")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", userId)
-    .eq("role", "user")
-    .gte("created_at", since);
-
-  if (error) throw new Error(error.message);
-  if ((count ?? 0) >= 12) {
-    throw new Error("NEXUS_RATE_LIMIT");
-  }
+export async function sendNexusGuestMessage({
+  data,
+}: Envelope<{ guestId?: string; locale: Locale; message: string }>) {
+  return invokeNexus({
+    action: "guest.send",
+    guestId: data.guestId ?? null,
+    locale: data.locale,
+    message: data.message,
+  });
 }
 
-async function ensureGuestContext(requestedGuestId?: string) {
-  const db = getSupabasePublic() as any;
-  const { data, error } = await db.rpc("ensure_nexus_guest_session", {
-    p_session_id: requestedGuestId ?? null,
-  });
-
-  if (error) throw new Error(error.message);
-  const guest = data?.[0];
-  if (!guest?.session_id) throw new Error("NEXUS_GUEST_SESSION_FAILED");
-
-  return {
-    db,
-    guestId: guest.session_id as string,
-    guest,
-  };
+export async function getNexusStatus({ data }: Envelope<{ accessToken: string }>) {
+  return invokeNexus({ action: "member.status" }, data.accessToken);
 }
 
-async function loadGuestMessages(db: any, guestId: string, limit = GUEST_HISTORY_LIMIT) {
-  const { data, error } = await db.rpc("list_nexus_guest_messages", {
-    p_session_id: guestId,
-    p_limit: limit,
-  });
-
-  if (error) throw new Error(error.message);
-  return data ?? [];
+export async function listNexusThreads({ data }: Envelope<{ accessToken: string }>) {
+  return invokeNexus({ action: "member.threads" }, data.accessToken);
 }
 
-function titleFromMessage(message: string) {
-  const oneLine = message.replace(/\s+/g, " ").trim();
-  return oneLine.length > 72 ? `${oneLine.slice(0, 69)}...` : oneLine;
+export async function listNexusMessages({
+  data,
+}: Envelope<{ threadId: string; accessToken: string }>) {
+  return invokeNexus({ action: "member.messages", threadId: data.threadId }, data.accessToken);
 }
 
-export const getNexusGuestStatus = createServerFn({ method: "GET" })
-  .inputValidator((data) => guestStatusSchema.parse(data ?? {}))
-  .handler(async ({ data }) => {
-    const { db, guestId, guest } = await ensureGuestContext(data.guestId);
-    const [messages, runtime] = await Promise.all([
-      loadGuestMessages(db, guestId, 40),
-      getNexusRuntimeHealth(),
-    ]);
-    const responsesUsed = Number(guest.responses_used ?? 0);
-    const maxResponses = Number(guest.max_responses ?? 10);
-    const remaining = Math.max(0, maxResponses - responsesUsed);
+export async function deleteNexusThread({
+  data,
+}: Envelope<{ threadId: string; accessToken: string }>) {
+  return invokeNexus({ action: "member.delete-thread", threadId: data.threadId }, data.accessToken);
+}
 
-    return {
-      guestId,
-      responsesUsed,
-      maxResponses,
-      remaining,
-      locked: remaining <= 0,
-      aiReady: runtime.ready,
-      inferenceTransport: runtime.transport,
-      messages,
-    };
-  });
-
-export const sendNexusGuestMessage = createServerFn({ method: "POST" })
-  .inputValidator((data) => guestSendSchema.parse(data))
-  .handler(async ({ data }) => {
-    const { db, guestId, guest } = await ensureGuestContext(data.guestId);
-    const responsesUsed = Number(guest.responses_used ?? 0);
-    const maxResponses = Number(guest.max_responses ?? 10);
-
-    if (responsesUsed >= maxResponses) {
-      const runtime = await getNexusRuntimeHealth();
-      return {
-        guestId,
-        locked: true as const,
-        remaining: 0,
-        maxResponses,
-        aiReady: runtime.ready,
-        message: null,
-      };
-    }
-
-    assertInferenceReady();
-
-    const coreIds = selectNexusCores(data.message, "gamer");
-    const historyRows = await loadGuestMessages(db, guestId);
-    const history: NexusChatMessage[] = historyRows.map(
-      (row: { role: string; content: string }) => ({
-        role: row.role === "assistant" ? "assistant" : "user",
-        content: row.content,
-      }),
-    );
-    history.push({ role: "user", content: data.message });
-
-    const system = buildNexusSystemPrompt({
-      mode: "gamer",
-      isAdmin: false,
-      coreIds,
-      locale: data.locale as NexusLocale,
-    });
-
-    const completion = await completeWithNexusRouter({
-      system,
-      messages: history,
-      effort: "medium",
-      maxOutputTokens: 1000,
-    });
-
-    const { data: quotaRows, error: quotaError } = await db.rpc("record_nexus_guest_exchange", {
-      p_session_id: guestId,
-      p_user_content: data.message,
-      p_assistant_content: completion.text,
-      p_core_ids: coreIds,
-      p_provider: completion.provider,
-      p_model: completion.model,
-      p_metadata: {
-        mode: "gaming",
-        locale: data.locale,
-        anonymousTrial: true,
-        attemptedProviders: completion.attemptedProviders,
-      },
-    });
-
-    if (quotaError) {
-      const message = String(quotaError.message);
-      if (message.includes("NEXUS_GUEST_LIMIT_REACHED")) {
-        return {
-          guestId,
-          locked: true as const,
-          remaining: 0,
-          maxResponses,
-          aiReady: true,
-          message: null,
-        };
-      }
-      if (message.includes("NEXUS_GUEST_RATE_LIMIT")) {
-        throw new Error("NEXUS_GUEST_RATE_LIMIT");
-      }
-      throw new Error(quotaError.message);
-    }
-
-    const quota = quotaRows?.[0];
-    const remaining = Number(quota?.remaining_count ?? 0);
-
-    return {
-      guestId,
-      locked: remaining <= 0,
-      remaining,
-      maxResponses,
-      aiReady: true,
-      message: {
-        id: quota?.message_id as string | undefined,
-        role: "assistant" as const,
-        content: completion.text,
-        core_ids: coreIds,
-        provider: completion.provider,
-        model: completion.model,
-      },
-      provider: completion.provider,
-      model: completion.model,
-      attemptedProviders: completion.attemptedProviders,
-    };
-  });
-
-export const getNexusStatus = createServerFn({ method: "GET" })
-  .inputValidator((data) => authSchema.parse(data))
-  .handler(async ({ data }) => {
-    const { db, userId } = await nexusUserContext(data.accessToken);
-    const [admin, runtime] = await Promise.all([
-      isAdmin(db, userId),
-      getNexusRuntimeHealth(),
-    ]);
-
-    return {
-      isAdmin: admin,
-      aiReady: runtime.ready,
-      inferenceTransport: runtime.transport,
-      providers: runtime.providers,
-      tools: admin
-        ? Object.values(NEXUS_TOOL_BRIDGES).map((tool) => ({
-            id: tool.id,
-            name: tool.name,
-            transport: tool.transport,
-            status: tool.status,
-            destructiveActionsRequireApproval: tool.destructiveActionsRequireApproval,
-          }))
-        : [],
-    };
-  });
-
-export const listNexusThreads = createServerFn({ method: "GET" })
-  .inputValidator((data) => authSchema.parse(data))
-  .handler(async ({ data }) => {
-    const { db, userId } = await nexusUserContext(data.accessToken);
-    const { data: threads, error } = await db
-      .from("nexus_threads")
-      .select("id,title,mode,created_at,updated_at,last_message_at")
-      .eq("user_id", userId)
-      .order("last_message_at", { ascending: false })
-      .limit(30);
-    if (error) throw new Error(error.message);
-    return threads ?? [];
-  });
-
-export const listNexusMessages = createServerFn({ method: "GET" })
-  .inputValidator((data) => threadSchema.parse(data))
-  .handler(async ({ data }) => {
-    const { db, userId } = await nexusUserContext(data.accessToken);
-    const { data: thread, error: threadError } = await db
-      .from("nexus_threads")
-      .select("id")
-      .eq("id", data.threadId)
-      .eq("user_id", userId)
-      .maybeSingle();
-    if (threadError) throw new Error(threadError.message);
-    if (!thread) throw new Error("NEXUS thread not found");
-
-    const { data: messages, error } = await db
-      .from("nexus_messages")
-      .select("id,role,content,core_ids,provider,model,created_at")
-      .eq("thread_id", data.threadId)
-      .eq("user_id", userId)
-      .order("created_at", { ascending: true })
-      .limit(200);
-    if (error) throw new Error(error.message);
-    return messages ?? [];
-  });
-
-export const deleteNexusThread = createServerFn({ method: "POST" })
-  .inputValidator((data) => threadSchema.parse(data))
-  .handler(async ({ data }) => {
-    const { db, userId } = await nexusUserContext(data.accessToken);
-    const { error } = await db
-      .from("nexus_threads")
-      .delete()
-      .eq("id", data.threadId)
-      .eq("user_id", userId);
-    if (error) throw new Error(error.message);
-    return { ok: true };
-  });
-
-export const sendNexusMessage = createServerFn({ method: "POST" })
-  .inputValidator((data) => sendSchema.parse(data))
-  .handler(async ({ data }) => {
-    const { db, userId } = await nexusUserContext(data.accessToken);
-    const admin = await isAdmin(db, userId);
-    if (data.mode === "development" && !admin) {
-      throw new Error("Development mode is restricted to MGP administrators.");
-    }
-
-    assertInferenceReady();
-    await enforceNexusRateLimit(db, userId);
-
-    let threadId = data.threadId;
-    let threadMode = data.mode;
-    let isNewThread = false;
-
-    if (threadId) {
-      const { data: thread, error } = await db
-        .from("nexus_threads")
-        .select("id,mode")
-        .eq("id", threadId)
-        .eq("user_id", userId)
-        .maybeSingle();
-      if (error) throw new Error(error.message);
-      if (!thread) throw new Error("NEXUS thread not found");
-      threadMode = thread.mode as "gaming" | "development";
-      if (threadMode === "development" && !admin) {
-        throw new Error("Development mode is restricted to MGP administrators.");
-      }
-    } else {
-      const { data: thread, error } = await db
-        .from("nexus_threads")
-        .insert({
-          user_id: userId,
-          title: titleFromMessage(data.message),
-          mode: data.mode,
-        })
-        .select("id,mode")
-        .single();
-      if (error) throw new Error(error.message);
-      threadId = thread.id;
-      threadMode = thread.mode;
-      isNewThread = true;
-    }
-
-    const promptMode = threadMode === "development" ? "development" : "gamer";
-    const coreIds = selectNexusCores(data.message, promptMode);
-
-    const { error: userMessageError } = await db.from("nexus_messages").insert({
-      thread_id: threadId,
-      user_id: userId,
-      role: "user",
-      content: data.message,
-      core_ids: coreIds,
-      metadata: { mode: threadMode, locale: data.locale },
-    });
-    if (userMessageError) throw new Error(userMessageError.message);
-
-    const { data: historyRows, error: historyError } = await db
-      .from("nexus_messages")
-      .select("role,content")
-      .eq("thread_id", threadId)
-      .eq("user_id", userId)
-      .in("role", ["user", "assistant"])
-      .order("created_at", { ascending: false })
-      .limit(24);
-    if (historyError) throw new Error(historyError.message);
-
-    const history: NexusChatMessage[] = (historyRows ?? [])
-      .reverse()
-      .map((row: { role: string; content: string }) => ({
-        role: row.role === "assistant" ? "assistant" : "user",
-        content: row.content,
-      }));
-
-    const system = buildNexusSystemPrompt({
-      mode: promptMode,
-      isAdmin: admin,
-      coreIds,
-      locale: data.locale as NexusLocale,
-    });
-
-    const completion = await completeWithNexusRouter({
-      system,
-      messages: history,
-      effort: threadMode === "development" ? "high" : "medium",
-      maxOutputTokens: threadMode === "development" ? 2400 : 1600,
-    });
-
-    const { data: assistantMessage, error: assistantError } = await db
-      .from("nexus_messages")
-      .insert({
-        thread_id: threadId,
-        user_id: userId,
-        role: "assistant",
-        content: completion.text,
-        core_ids: coreIds,
-        provider: completion.provider,
-        model: completion.model,
-        metadata: {
-          mode: threadMode,
-          locale: data.locale,
-          attemptedProviders: completion.attemptedProviders,
-        },
-      })
-      .select("id,role,content,core_ids,provider,model,created_at")
-      .single();
-    if (assistantError) throw new Error(assistantError.message);
-
-    const now = new Date().toISOString();
-    const updatePayload: Record<string, string> = {
-      updated_at: now,
-      last_message_at: now,
-    };
-    if (isNewThread) updatePayload["title"] = titleFromMessage(data.message);
-
-    const { error: threadUpdateError } = await db
-      .from("nexus_threads")
-      .update(updatePayload)
-      .eq("id", threadId)
-      .eq("user_id", userId);
-    if (threadUpdateError) throw new Error(threadUpdateError.message);
-
-    return {
-      threadId,
-      mode: threadMode,
-      isAdmin: admin,
-      message: assistantMessage,
-      provider: completion.provider,
-      model: completion.model,
-      coreIds,
-      attemptedProviders: completion.attemptedProviders,
-    };
-  });
+export async function sendNexusMessage({
+  data,
+}: Envelope<{
+  accessToken: string;
+  threadId?: string;
+  mode: Mode;
+  locale: Locale;
+  message: string;
+}>) {
+  return invokeNexus(
+    {
+      action: "member.send",
+      threadId: data.threadId ?? null,
+      mode: data.mode,
+      locale: data.locale,
+      message: data.message,
+    },
+    data.accessToken,
+  );
+}
