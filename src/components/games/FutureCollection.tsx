@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import type { GameModuleKey, GameThemeKey } from "@/config/games";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
+import { CompetitiveCompendium } from "@/components/games/CompetitiveCompendium";
 import { DarkSoulsBossWiki } from "@/components/games/DarkSoulsBossWiki";
 import { DarkSoulsGuides } from "@/components/games/DarkSoulsGuides";
 import { ValorantAgents } from "@/components/games/ValorantAgents";
@@ -14,7 +15,6 @@ import { ValorantSkins } from "@/components/games/ValorantSkins";
 import { LeagueChampionExplorer } from "@/components/games/LeagueChampionExplorer";
 import { LeagueItemsExplorerV2 } from "@/components/games/LeagueItemsExplorerV2";
 import { LeagueModesExplorer } from "@/components/games/LeagueModesExplorer";
-import { LeagueEsportsPanel } from "@/components/games/LeagueEsportsPanel";
 import { SoulsBossExplorer } from "@/components/games/SoulsBossExplorer";
 import { SoulsGameGuides } from "@/components/games/SoulsGameGuides";
 
@@ -29,9 +29,6 @@ export function FutureCollection({
   locale: Locale;
   gameSlug: string;
 }) {
-  // Specialized collections are intentionally scoped to their exact game.
-  // New games may share a visual language without accidentally inheriting
-  // Dark Souls Remastered bosses or VALORANT agents/weapons.
   if (gameSlug === "dark-souls-remastered") {
     if (moduleKey === "bosses") return <DarkSoulsBossWiki locale={locale} />;
     if (moduleKey === "guides") return <DarkSoulsGuides locale={locale} />;
@@ -48,6 +45,7 @@ export function FutureCollection({
     if (moduleKey === "maps") return <ValorantMaps locale={locale} />;
     if (moduleKey === "weapons") return <ValorantWeapons locale={locale} />;
     if (moduleKey === "skins") return <ValorantSkins locale={locale} />;
+    if (moduleKey === "competitive") return <CompetitiveCompendium game="valorant" locale={locale} />;
   }
 
   if (gameSlug === "league-of-legends") {
@@ -55,7 +53,7 @@ export function FutureCollection({
     if (moduleKey === "skins") return <LeagueChampionExplorer locale={locale} mode="skins" />;
     if (moduleKey === "items") return <LeagueItemsExplorerV2 locale={locale} />;
     if (moduleKey === "modes") return <LeagueModesExplorer locale={locale} />;
-    if (moduleKey === "competitive") return <LeagueEsportsPanel locale={locale} />;
+    if (moduleKey === "competitive") return <CompetitiveCompendium game="league-of-legends" locale={locale} />;
   }
 
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
@@ -101,8 +99,8 @@ export function FutureCollection({
       copy("Skins, variantes e referências oficiais aparecerão aqui.", "Skins, variants and official references will appear here.", "Skins, variantes y referencias oficiales aparecerán aquí."),
     ],
     competitive: [
-      copy("Competitivo", "Competitive", "Competitivo"),
-      copy("Ranked, esports, rankings e integrações competitivas serão aprofundados aqui.", "Ranked, esports, rankings and competitive integrations will be expanded here.", "Ranked, esports, rankings e integraciones competitivas se ampliarán aquí."),
+      copy("Compêndio competitivo", "Competitive compendium", "Compendio competitivo"),
+      copy("Times, jogadores, equipamentos e configurações serão publicados com fonte e data de verificação.", "Teams, players, gear and settings will be published with source and verification date.", "Equipos, jugadores, equipo y configuraciones se publicarán con fuente y fecha de verificación."),
     ],
     lineups: [
       copy("Biblioteca de lineups", "Lineup library", "Biblioteca de lineups"),
