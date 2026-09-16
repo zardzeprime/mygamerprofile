@@ -2,10 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { useI18n, type TranslationKey } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 
-const TABS: { to: string; key: TranslationKey | null }[] = [
+const TABS: { to: string; key: TranslationKey | null; label?: [string, string, string] }[] = [
   { to: "/settings/profile", key: "settings.profile" },
+  { to: "/settings/identity", key: null, label: ["Identidade & cosméticos", "Identity & cosmetics", "Identidad y cosméticos"] },
   { to: "/settings/account", key: "settings.account" },
-  { to: "/settings/connections", key: null },
+  { to: "/settings/connections", key: null, label: ["Conexões", "Connections", "Conexiones"] },
   { to: "/settings/appearance", key: "settings.appearance" },
 ];
 
@@ -25,7 +26,11 @@ export function SettingsLayout({ children }: { children: React.ReactNode }) {
               activeProps={{ className: "bg-gold-soft/60 text-gold-strong" }}
               className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
-              {tab.key ? t(tab.key) : copy("Conexões", "Connections", "Conexiones")}
+              {tab.key
+                ? t(tab.key)
+                : tab.label
+                  ? copy(...tab.label)
+                  : copy("Conexões", "Connections", "Conexiones")}
             </Link>
           ))}
         </nav>
