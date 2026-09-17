@@ -522,10 +522,14 @@ function PlayerPanel({
               <Stat label={copy("Tela", "Display", "Pantalla")} value={settings.displayMode} />
             </dl>
 
-            {settings.mouse ? (
-              <div className="mt-3 rounded-lg border border-border bg-background/50 p-3 sm:mt-4 sm:rounded-xl">
-                <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">Mouse</p>
-                <p className="mt-1 text-xs font-semibold text-foreground sm:text-sm">{settings.mouse}</p>
+            {settings.mouse || settings.keyboard || settings.monitor || settings.headset || settings.mousepad || settings.earphones ? (
+              <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-2">
+                <GearItem label="Mouse" value={settings.mouse} />
+                <GearItem label={copy("Teclado", "Keyboard", "Teclado")} value={settings.keyboard} />
+                <GearItem label={copy("Monitor", "Monitor", "Monitor")} value={settings.monitor} />
+                <GearItem label={copy("Headset", "Headset", "Auriculares")} value={settings.headset} />
+                <GearItem label="Mousepad" value={settings.mousepad} />
+                <GearItem label={copy("Fones", "Earphones", "Auriculares in-ear")} value={settings.earphones} />
               </div>
             ) : null}
 
@@ -583,6 +587,16 @@ function PlayerPanel({
         )}
       </div>
     </article>
+  );
+}
+
+function GearItem({ label, value }: { label: string; value: string | undefined }) {
+  if (!value) return null;
+  return (
+    <div className="rounded-lg border border-border bg-background/50 p-3 sm:rounded-xl">
+      <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">{label}</p>
+      <p className="mt-1 text-xs font-semibold leading-5 text-foreground sm:text-sm">{value}</p>
+    </div>
   );
 }
 
