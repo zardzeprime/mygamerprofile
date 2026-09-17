@@ -2,26 +2,29 @@
 
 AVAPGV Watch is the operational alert lane for MG Profile's AI-core model.
 
-Core ownership:
+## The six fronts
 
+User-facing AVAPGV reports use the fixed name **the six fronts**:
+
+- **NEXUS** — cross-domain coordination and AI.
 - **AEGIS** — security, authentication, authorization, secrets and intrusion signals.
 - **VEIL** — privacy and personal-data exposure.
 - **ATLAS** — media provenance, licensing and rights.
 - **PULSE** — freshness, platform/game/source changes.
 - **GEAR** — automations, CI/CD, scheduled jobs and pipelines.
-- **VECTOR** — performance and technical regressions.
-- **NEXUS** — cross-domain coordination.
+
+**VECTOR** remains an internal optimization role. Its performance and UX findings are reported through NEXUS or GEAR so user-facing emails consistently present the six fronts.
 
 Alert format: severity, owning core, what changed, repository/workflow reference and recommended next action. Secret values, tokens and credentials must never appear in alerts.
 
 ## Branded email delivery
 
-Meaningful AVAPGV findings are delivered as responsive Portuguese HTML email through the separately configured Gmail automation. The email visual contract mirrors MG Profile without depending on remote images:
+Meaningful AVAPGV findings are delivered as responsive Portuguese HTML email through the separately configured Gmail automation. A temporary connector unavailability in one execution must be reported as a delivery failure for that execution only; it must not be described as an account or Gmail failure without evidence. Later successful delivery does not retroactively erase the incident, but confirms the channel recovered. The email visual contract mirrors MG Profile without depending on remote images:
 
 - near-black page background (`#090A0C`);
 - graphite report cards (`#121419`) with subtle borders (`#292C33`);
 - warm-gold accents (`#C9A95D`);
-- compact `MG PROFILE / AVAPGV WATCH` masthead;
+- compact `MG PROFILE / AVAPGV WATCH · AS SEIS FRENTES` masthead;
 - overall status pill using only `BOM`, `+/-` or `RUIM`;
 - separate cards for responsible core, what changed, concrete reference, risk/impact and next action;
 - timestamp in the user's Bahia timezone;
