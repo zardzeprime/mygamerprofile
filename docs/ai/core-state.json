@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-16",
+  "updatedAt": "2026-09-17",
   "cores": {
     "nexus": {
       "name": "NEXUS",
@@ -74,7 +74,8 @@
         "Recorded NEXUS brand provenance and kept personal legal identifiers out of source control.",
         "Stored the first NEXUS N/Z mark as original editable vector geometry in the project.",
         "Defined the AVAPGV licensing-report rule that public accessibility is not treated as permission to reuse external media.",
-        "Kept player-photo and unverified team-logo fallbacks text-only when reuse rights or provenance were unclear."
+        "Kept player-photo and unverified team-logo fallbacks text-only when reuse rights or provenance were unclear.",
+        "Excluded sponsor data and avoided unverified staff photos while adding source-linked staff text records."
       ],
       "inProgress": [],
       "next": [
@@ -90,14 +91,17 @@
       "name": "PULSE",
       "role": "updates",
       "completed": [
-        "Expanded the VALORANT competitive snapshot across Americas, EMEA, Pacific and China with dated VLR provenance and roster-status metadata."
+        "Expanded the VALORANT competitive snapshot across Americas, EMEA, Pacific and China with dated VLR provenance and roster-status metadata.",
+        "Added dated, source-linked VALORANT staff snapshots for LOUD, LEVIATÁN, MIBR and Sentinels."
       ],
       "inProgress": [
-        "Continue individual ProSettings verification for players whose settings remain hidden."
+        "Continue individual ProSettings verification for players whose settings remain hidden.",
+        "Expand verified staff coverage across the remaining competitive organizations without inferring missing roles."
       ],
       "next": [
         "Track model IDs and provider API changes so Nexus defaults do not become stale.",
-        "Track game/editorial data that can become stale and define refresh expectations before automating it."
+        "Track game/editorial data that can become stale and define refresh expectations before automating it.",
+        "Add owner/founder and institutional organization facts only when an official organization source confirms them."
       ],
       "blocked": []
     },
