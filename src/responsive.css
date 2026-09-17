@@ -37,7 +37,10 @@ video {
 [role="tabpanel"],
 .surface-panel,
 .profile-shell,
-.profile-shell > * {
+.profile-shell > *,
+main,
+section,
+article {
   min-width: 0;
 }
 
@@ -106,6 +109,12 @@ video {
     font-size: 16px !important;
   }
 
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
   .game-hub-hero {
     min-height: 24rem;
   }
@@ -169,5 +178,13 @@ video {
   .hub-tablist,
   [data-scroll-lock-region] {
     scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
