@@ -37,7 +37,10 @@ video {
 [role="tabpanel"],
 .surface-panel,
 .profile-shell,
-.profile-shell > * {
+.profile-shell > *,
+main,
+section,
+article {
   min-width: 0;
 }
 
@@ -106,6 +109,12 @@ video {
     font-size: 16px !important;
   }
 
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
   .game-hub-hero {
     min-height: 24rem;
   }
@@ -146,6 +155,24 @@ video {
     max-height: 56dvh !important;
   }
 
+  /* Video decode and a full-screen backdrop blur compete for the same mobile GPU budget. */
+  [role="dialog"]:has(video) {
+    background-color: rgba(0, 0, 0, 0.86) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    animation: none !important;
+  }
+
+  [role="dialog"]:has(video) > div {
+    animation: none !important;
+    box-shadow: var(--shadow-hero);
+  }
+
+  [role="dialog"]:has(video) video {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+
   .profile-hero {
     min-height: 12.5rem !important;
   }
@@ -169,5 +196,13 @@ video {
   .hub-tablist,
   [data-scroll-lock-region] {
     scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -26,6 +26,15 @@ type SoundContextValue = AudioPreferences & {
   play: (event: SoundEvent) => void;
 };
 
+type SoundSignature = {
+  frequency: number;
+  overtone: number;
+  duration: number;
+  type: OscillatorType;
+  endFrequency?: number;
+  overtoneEndFrequency?: number;
+};
+
 const STORAGE_KEY = "mgp-audio";
 const DEFAULTS: AudioPreferences = {
   uiEnabled: true,
@@ -33,6 +42,17 @@ const DEFAULTS: AudioPreferences = {
   uiVolume: 24,
   ambienceVolume: 18,
 };
+
+const SOUND_SIGNATURES: Record<SoundEvent, SoundSignature> = {
+  hover: { frequency: 760, overtone: 1140, duration: 0.032, type: "sine" },
+  click: { frequency: 390, overtone: 585, duration: 0.05, type: "sine" },
+  navigation: { frequency: 480, overtone: 720, duration: 0.072, type: "sine", endFrequency: 560, overtoneEndFrequency: 840 },
+  open: { frequency: 540, overtone: 810, duration: 0.085, type: "sine", endFrequency: 660, overtoneEndFrequency: 990 },
+  close: { frequency: 430, overtone: 645, duration: 0.07, type: "sine", endFrequency: 340, overtoneEndFrequency: 510 },
+  success: { frequency: 650, overtone: 975, duration: 0.13, type: "sine", endFrequency: 980, overtoneEndFrequency: 1470 },
+  error: { frequency: 230, overtone: 345, duration: 0.11, type: "triangle", endFrequency: 175, overtoneEndFrequency: 262 },
+};
+
 const SoundContext = createContext<SoundContextValue | null>(null);
 
 export function SoundProvider({ children }: { children: ReactNode }) {
@@ -90,32 +110,49 @@ export function SoundProvider({ children }: { children: ReactNode }) {
       const context = contextRef.current;
       if (!context || context.state !== "running" || !unlockedRef.current) return;
 
+      const signature = SOUND_SIGNATURES[event];
       const now = context.currentTime;
       const volumeScale = preferences.uiVolume / 100;
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      const tones: Record<SoundEvent, [number, number]> = {
-        hover: [720, 0.025],
-        click: [410, 0.045],
-        navigation: [520, 0.06],
-        open: [560, 0.07],
-        close: [360, 0.055],
-        success: [760, 0.12],
-        error: [190, 0.09],
-      };
-      const [frequency, duration] = tones[event];
-      oscillator.type = event === "error" ? "triangle" : "sine";
-      oscillator.frequency.setValueAtTime(frequency, now);
-      if (event === "success") {
-        oscillator.frequency.exponentialRampToValueAtTime(1040, now + duration);
+      const master = context.createGain();
+      const filter = context.createBiquadFilter();
+      const primary = context.createOscillator();
+      const overtone = context.createOscillator();
+      const primaryGain = context.createGain();
+      const overtoneGain = context.createGain();
+
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(event === "error" ? 1500 : 3200, now);
+      filter.Q.setValueAtTime(0.6, now);
+
+      primary.type = signature.type;
+      overtone.type = event === "error" ? "sine" : signature.type;
+      primary.frequency.setValueAtTime(signature.frequency, now);
+      overtone.frequency.setValueAtTime(signature.overtone, now);
+
+      if (signature.endFrequency) {
+        primary.frequency.exponentialRampToValueAtTime(signature.endFrequency, now + signature.duration);
       }
-      const peak = Math.min(0.035, volumeScale * 0.09);
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(peak, now + 0.008);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-      oscillator.connect(gain).connect(context.destination);
-      oscillator.start(now);
-      oscillator.stop(now + duration + 0.01);
+      if (signature.overtoneEndFrequency) {
+        overtone.frequency.exponentialRampToValueAtTime(signature.overtoneEndFrequency, now + signature.duration);
+      }
+
+      const peak = Math.min(0.032, volumeScale * 0.075);
+      const attack = Math.min(0.009, signature.duration * 0.22);
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(peak, now + attack);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + signature.duration);
+
+      primaryGain.gain.setValueAtTime(1, now);
+      overtoneGain.gain.setValueAtTime(event === "hover" ? 0.12 : 0.2, now);
+
+      primary.connect(primaryGain).connect(filter);
+      overtone.connect(overtoneGain).connect(filter);
+      filter.connect(master).connect(context.destination);
+
+      primary.start(now);
+      overtone.start(now);
+      primary.stop(now + signature.duration + 0.015);
+      overtone.stop(now + signature.duration + 0.015);
     },
     [preferences.uiEnabled, preferences.uiVolume],
   );
@@ -129,7 +166,7 @@ export function SoundProvider({ children }: { children: ReactNode }) {
         event.target instanceof Element
           ? event.target.closest("a,button,[role='button'],input,select")
           : null;
-      if (!target || Date.now() - lastHover < 120) return;
+      if (!target || Date.now() - lastHover < 160) return;
       lastHover = Date.now();
       play("hover");
     };
