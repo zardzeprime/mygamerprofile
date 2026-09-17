@@ -3,6 +3,7 @@ import { VALORANT_CHINA_2026 } from "@/data/valorant/china";
 import { VALORANT_EMEA_2026 } from "@/data/valorant/emea";
 import { VALORANT_PACIFIC_2026 } from "@/data/valorant/pacific";
 import { VERIFIED_AT, VERIFIED_ROLES, VERIFIED_SETTINGS } from "@/data/valorant/settings";
+import { EXTRA_VERIFIED_SETTINGS } from "@/data/valorant/settingsExtended";
 import { VALORANT_TEAM_DETAILS } from "@/data/valorant/teamDetails";
 import type {
   CompetitiveSourceLink,
@@ -53,6 +54,13 @@ const VALORANT_TEAMS_2026: ValorantRosterSeed[] = [
   ...VALORANT_CHINA_2026,
 ];
 
+// Keep the richer individually verified records as the final authority when the
+// same player also exists in the consolidated ProSettings expansion.
+const VERIFIED_PLAYER_SETTINGS = {
+  ...EXTRA_VERIFIED_SETTINGS,
+  ...VERIFIED_SETTINGS,
+};
+
 function normalizeHandle(handle: string) {
   return handle.toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
@@ -63,7 +71,7 @@ function playerId(teamId: string, handle: string) {
 
 function playerFromSeed(team: ValorantRosterSeed, seed: PlayerSeed): EsportsPlayer {
   const normalized = normalizeHandle(seed.handle);
-  const verified = VERIFIED_SETTINGS[normalized];
+  const verified = VERIFIED_PLAYER_SETTINGS[normalized];
 
   return {
     id: playerId(team.id, seed.handle),
@@ -115,7 +123,7 @@ export const ESPORTS_TEAMS: EsportsTeam[] = VALORANT_TEAMS_2026.map((team) => ({
 /**
  * The competitive directory is a dated, provenance-tracked snapshot. VLR is the
  * roster/event reference and ProSettings is the settings/gear reference. Values
- * without an individual verified source remain hidden instead of being inferred.
+ * without a verified source remain hidden instead of being inferred.
  */
 export function getEsportsTeams(game: EsportsGameSlug) {
   return ESPORTS_TEAMS.filter((team) => team.game === game);
