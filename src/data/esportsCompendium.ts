@@ -4,6 +4,7 @@ import { VALORANT_EMEA_2026 } from "@/data/valorant/emea";
 import { VALORANT_PACIFIC_2026 } from "@/data/valorant/pacific";
 import { VERIFIED_AT, VERIFIED_ROLES, VERIFIED_SETTINGS } from "@/data/valorant/settings";
 import { EXTRA_VERIFIED_SETTINGS } from "@/data/valorant/settingsExtended";
+import { INDIVIDUAL_EXTRA_SETTINGS } from "@/data/valorant/settingsIndividualExtra";
 import { VALORANT_TEAM_DETAILS } from "@/data/valorant/teamDetails";
 import type {
   CompetitiveSourceLink,
@@ -54,10 +55,10 @@ const VALORANT_TEAMS_2026: ValorantRosterSeed[] = [
   ...VALORANT_CHINA_2026,
 ];
 
-// Keep the richer individually verified records as the final authority when the
-// same player also exists in the consolidated ProSettings expansion.
+// Priority order: consolidated list < newer individual pass < original hand-verified records.
 const VERIFIED_PLAYER_SETTINGS = {
   ...EXTRA_VERIFIED_SETTINGS,
+  ...INDIVIDUAL_EXTRA_SETTINGS,
   ...VERIFIED_SETTINGS,
 };
 
