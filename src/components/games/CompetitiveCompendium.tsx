@@ -66,7 +66,9 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
   const openTeam = (team: EsportsTeam) => {
     const roster = players.filter((player) => team.playerIds.includes(player.id));
     setSelectedTeamId(team.id);
-    setSelectedPlayerId(roster[0]?.id ?? null);
+    const match = search ? roster.find((player) =>
+      `${player.handle} ${player.realName ?? ""}`.toLocaleLowerCase().includes(search)) : null;
+    setSelectedPlayerId(match?.id ?? roster[0]?.id ?? null);
   };
 
   const closeTeam = () => {
@@ -239,9 +241,9 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
         }}
       >
         {selectedTeam ? (
-          <DialogContent className="max-h-[92dvh] w-[calc(100vw-1rem)] max-w-5xl overflow-hidden border-border bg-background p-0 sm:max-h-[88vh]">
+          <DialogContent className="max-h-[92dvh] w-[calc(100vw-1rem)] max-w-5xl overflow-hidden border-border bg-background p-0 sm:max-h-[88vh] [&>button]:z-20 [&>button]:grid [&>button]:size-11 [&>button]:place-items-center [&>button]:right-2 [&>button]:top-2">
             <div className="max-h-[92dvh] overflow-y-auto sm:max-h-[88vh]">
-              <DialogHeader className="border-b border-border bg-surface px-4 py-4 pr-11 sm:px-7 sm:py-5 sm:pr-12">
+              <DialogHeader className="sticky top-0 z-10 border-b border-border bg-surface px-4 py-4 pr-11 sm:px-7 sm:py-5 sm:pr-12">
                 <div className="flex min-w-0 items-center gap-3 sm:gap-4">
                   <TeamLogo key={selectedTeam.id} team={selectedTeam} className="size-10 rounded-xl sm:size-14 sm:rounded-2xl" />
                   <div className="min-w-0">
