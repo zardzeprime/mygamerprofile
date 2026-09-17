@@ -355,7 +355,10 @@
   --color-ember: var(--color-gold);
   --color-tactical: var(--color-gold);
 }
-.game-hub-hero { min-height: 32rem; background: var(--color-background); }
+.game-hub-hero { min-height: 26rem; background: var(--color-background); }
+@media (min-width: 640px) {
+  .game-hub-hero { min-height: 32rem; }
+}
 .game-hub-scrim {
   background:
     linear-gradient(90deg, oklch(0.1 0.01 260 / 0.95) 0%, oklch(0.1 0.01 260 / 0.76) 48%, oklch(0.1 0.01 260 / 0.2) 82%),
