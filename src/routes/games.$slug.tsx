@@ -3,8 +3,10 @@ import { useMemo, useRef, useState } from "react";
 import {
   Building2,
   CalendarDays,
+  ChevronDown,
   ChevronRight,
   Clock3,
+  Menu,
   RefreshCw,
   Sparkles,
   Star,
@@ -81,6 +83,7 @@ function GameHub() {
   useGameAmbience(activeHub ? game.visual.ambientAudio : undefined);
 
   const [active, setActive] = useState<GameModuleKey>("overview");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const visibleModules = useMemo(() => {
     const modules = game.modules.filter(
       (moduleKey) => moduleKey !== "community" && moduleKey !== "lfg",
@@ -115,7 +118,7 @@ function GameHub() {
   return (
     <div
       className={cn(
-        "game-hub pb-10",
+        "game-hub overflow-x-clip pb-10",
         game.themeKey === "dark_souls" ? "game-hub-ember" : "game-hub-tactical",
       )}
     >
@@ -128,7 +131,7 @@ function GameHub() {
         />
         <div className="game-hub-scrim absolute inset-0" />
         <div className="game-hub-grain absolute inset-0" aria-hidden="true" />
-        <div className="relative mx-auto grid min-h-[32rem] w-full max-w-7xl items-end gap-7 px-4 pb-10 pt-24 sm:px-6 lg:grid-cols-[13rem_minmax(0,1fr)]">
+        <div className="relative mx-auto grid min-h-[26rem] w-full max-w-7xl items-end gap-7 px-4 pb-7 pt-20 sm:min-h-[32rem] sm:px-6 sm:pb-10 sm:pt-24 lg:grid-cols-[13rem_minmax(0,1fr)]">
           <div className="group hidden aspect-[3/4] overflow-hidden rounded-lg border border-hero-border bg-hero-surface shadow-lift lg:block">
             <GameArtwork game={game} variant="card" className="h-full w-full" />
           </div>
@@ -182,11 +185,63 @@ function GameHub() {
         </div>
       </section>
 
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
+      <div className="mx-auto min-w-0 w-full max-w-7xl px-4 sm:px-6">
+        <div className="sticky top-16 z-40 -mx-2 py-2 md:hidden">
+          <div className="rounded-2xl border border-border bg-background/95 p-2 shadow-lift backdrop-blur-xl">
+            <button
+              type="button"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-hub-navigation"
+              onClick={() => setMobileMenuOpen((value) => !value)}
+              className="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left"
+            >
+              <span className="flex min-w-0 items-center gap-2.5">
+                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-tactical/10 text-tactical">
+                  <Menu className="size-4" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[0.62rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                    {copy("Navegar no hub", "Browse hub", "Navegar por el hub")}
+                  </span>
+                  <span className="block truncate text-sm font-semibold text-foreground">
+                    {MODULE_LABELS[active][locale]}
+                  </span>
+                </span>
+              </span>
+              <ChevronDown className={cn("size-4 shrink-0 text-muted-foreground transition-transform", mobileMenuOpen && "rotate-180")} />
+            </button>
+            {mobileMenuOpen ? (
+              <div id="mobile-hub-navigation" role="tablist" aria-label={game.name} className="mt-1 grid grid-cols-2 gap-1 border-t border-border pt-2">
+                {visibleModules.map((moduleKey) => {
+                  const selected = active === moduleKey;
+                  return (
+                    <button
+                      key={moduleKey}
+                      type="button"
+                      role="tab"
+                      aria-selected={selected}
+                      onClick={() => {
+                        handleTab(moduleKey, true);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={cn(
+                        "min-w-0 rounded-lg px-3 py-2.5 text-left text-xs font-semibold transition-colors",
+                        selected ? "bg-tactical/10 text-foreground" : "text-muted-foreground hover:bg-muted/35 hover:text-foreground",
+                      )}
+                    >
+                      <span className="block truncate">{MODULE_LABELS[moduleKey][locale]}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
+        </div>
+
         <div
           role="tablist"
           aria-label={game.name}
-          className="hub-tablist -mx-4 flex gap-1 overflow-x-auto border-b border-border px-4 py-3 sm:mx-0 sm:px-0"
+          className="hub-tablist hidden gap-1 overflow-x-auto border-b border-border py-3 md:flex"
         >
           {visibleModules.map((moduleKey) => {
             const selected = active === moduleKey;
@@ -216,7 +271,7 @@ function GameHub() {
           id="hub-panel-content"
           role="tabpanel"
           aria-labelledby={`hub-tab-${active}`}
-          className="scroll-mt-24 py-8 outline-none"
+          className="min-w-0 scroll-mt-36 py-5 outline-none sm:scroll-mt-24 sm:py-8"
         >
           <div
             key={active}

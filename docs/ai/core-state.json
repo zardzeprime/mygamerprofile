@@ -78,7 +78,8 @@
         "Kept player-photo and unverified team-logo fallbacks text-only when reuse rights or provenance were unclear.",
         "Excluded sponsor data and avoided unverified staff photos while adding source-linked staff text records.",
         "Audited all 62 VALORANT competitive teams and attached the current VLR-linked owcdn logo reference to every team record.",
-        "Audited an initial cross-region batch of individual ProSettings/VLR player records for roles, crosshairs, settings and complete peripherals while withholding unlicensed player photos."
+        "Audited an initial cross-region batch of individual ProSettings/VLR player records for roles, crosshairs, settings and complete peripherals while withholding unlicensed player photos.",
+        "Kept crosshair previews code-native and player peripheral icons local, avoiding new external media reuse."
       ],
       "inProgress": [],
       "next": [
@@ -116,7 +117,8 @@
       "completed": [
         "Registered GitHub, Supabase and Lovable as separate Nexus tool bridges with explicit transports and approval requirements.",
         "Scheduled a daily pg_cron retention job to delete expired anonymous Nexus sessions and cascading message history.",
-        "Standardized AVAPGV Watch on a responsive branded MG Profile HTML email contract with plain-text fallback and secret-safe reporting."
+        "Standardized AVAPGV Watch on a responsive branded MG Profile HTML email contract with plain-text fallback and secret-safe reporting.",
+        "Standardized AVAPGV user-facing reports around the six fronts and documented temporary email-connector incident handling."
       ],
       "inProgress": [],
       "next": [
@@ -141,7 +143,9 @@
         "Reduced the per-provider timeout and increased the browser inference window so failover has a bounded path without premature client aborts.",
         "Compacted the competitive grid and roster modal for small mobile screens, with resilient logo fallbacks and copyable crosshair codes.",
         "Retained initials as an onError fallback while enabling full team-logo coverage in cards and modals.",
-        "Deferred mobile video preloading and reduced high-frequency player polling on touch/small-screen devices."
+        "Deferred mobile video preloading and reduced high-frequency player polling on touch/small-screen devices.",
+        "Replaced the small-screen game-hub tab strip with a sticky compact navigator, constrained horizontal overflow and shortened the mobile hero.",
+        "Added browser-rendered light/dark VALORANT crosshair previews and icon-led peripheral cards without external image assets."
       ],
       "inProgress": [],
       "next": [

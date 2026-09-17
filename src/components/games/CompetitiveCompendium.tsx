@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BriefcaseBusiness, Building2, Check, Copy, Crosshair, Database, ExternalLink, MousePointer2, UsersRound } from "lucide-react";
+import { BriefcaseBusiness, Building2, Check, Copy, Crosshair, Database, Ear, ExternalLink, Headphones, Keyboard, Monitor, Mouse, MousePointer2, RectangleHorizontal, UsersRound } from "lucide-react";
 
 import {
   Dialog,
@@ -524,12 +524,12 @@ function PlayerPanel({
 
             {settings.mouse || settings.keyboard || settings.monitor || settings.headset || settings.mousepad || settings.earphones ? (
               <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-2">
-                <GearItem label="Mouse" value={settings.mouse} />
-                <GearItem label={copy("Teclado", "Keyboard", "Teclado")} value={settings.keyboard} />
-                <GearItem label={copy("Monitor", "Monitor", "Monitor")} value={settings.monitor} />
-                <GearItem label={copy("Headset", "Headset", "Auriculares")} value={settings.headset} />
-                <GearItem label="Mousepad" value={settings.mousepad} />
-                <GearItem label={copy("Fones", "Earphones", "Auriculares in-ear")} value={settings.earphones} />
+                <GearItem icon={<Mouse className="size-3.5" />} label="Mouse" value={settings.mouse} />
+                <GearItem icon={<Keyboard className="size-3.5" />} label={copy("Teclado", "Keyboard", "Teclado")} value={settings.keyboard} />
+                <GearItem icon={<Monitor className="size-3.5" />} label={copy("Monitor", "Monitor", "Monitor")} value={settings.monitor} />
+                <GearItem icon={<Headphones className="size-3.5" />} label={copy("Headset", "Headset", "Auriculares")} value={settings.headset} />
+                <GearItem icon={<RectangleHorizontal className="size-3.5" />} label="Mousepad" value={settings.mousepad} />
+                <GearItem icon={<Ear className="size-3.5" />} label={copy("Fones", "Earphones", "Auriculares in-ear")} value={settings.earphones} />
               </div>
             ) : null}
 
@@ -559,6 +559,8 @@ function PlayerPanel({
                 </code>
               </div>
             ) : null}
+
+            {settings.crosshairCode ? <CrosshairPreview code={settings.crosshairCode} copy={copy} /> : null}
 
             {proSource ? (
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 sm:mt-4 sm:pt-4">
@@ -590,12 +592,143 @@ function PlayerPanel({
   );
 }
 
-function GearItem({ label, value }: { label: string; value: string | undefined }) {
+function GearItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | undefined }) {
   if (!value) return null;
   return (
     <div className="rounded-lg border border-border bg-background/50 p-3 sm:rounded-xl">
-      <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">{label}</p>
-      <p className="mt-1 text-xs font-semibold leading-5 text-foreground sm:text-sm">{value}</p>
+      <div className="flex items-center gap-1.5 text-gold-strong">
+        {icon}
+        <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">{label}</p>
+      </div>
+      <p className="mt-1.5 text-xs font-semibold leading-5 text-foreground sm:text-sm">{value}</p>
+    </div>
+  );
+}
+
+type CrosshairVisual = {
+  color: string;
+  centerDot: boolean;
+  centerSize: number;
+  inner: boolean;
+  innerLength: number;
+  innerThickness: number;
+  innerOffset: number;
+  outer: boolean;
+  outerLength: number;
+  outerThickness: number;
+  outerOffset: number;
+  outline: boolean;
+};
+
+const VALORANT_CROSSHAIR_COLORS = ["#ffffff", "#00ff00", "#bfff00", "#dfff00", "#ffff00", "#00ffff", "#ff66ff", "#ff4040"];
+
+function parseValorantCrosshairCode(code: string): CrosshairVisual {
+  const tokens = code.split(";").filter(Boolean);
+  const values: Record<string, string> = {};
+  let primary = false;
+
+  for (let index = 0; index < tokens.length; index += 1) {
+    const token = tokens[index];
+    if (token === "P") {
+      primary = true;
+      continue;
+    }
+    if (primary && (token === "A" || token === "S")) break;
+    if (!primary) continue;
+    const next = tokens[index + 1];
+    if (next !== undefined) {
+      values[token] = next;
+      index += 1;
+    }
+  }
+
+  const number = (key: string, fallback: number) => {
+    const parsed = Number(values[key]);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+  const colorIndex = Math.max(0, Math.min(VALORANT_CROSSHAIR_COLORS.length - 1, number("c", 0)));
+
+  return {
+    color: values.u ? `#${values.u.replace(/^#/, "")}` : VALORANT_CROSSHAIR_COLORS[colorIndex],
+    centerDot: values.d === "1",
+    centerSize: Math.max(2, Math.min(8, number("z", 2))),
+    inner: values["0b"] !== "0",
+    innerLength: Math.max(2, Math.min(18, number("0l", 4))),
+    innerThickness: Math.max(1, Math.min(6, number("0t", 2))),
+    innerOffset: Math.max(0, Math.min(12, number("0o", 2))),
+    outer: values["1b"] === "1",
+    outerLength: Math.max(2, Math.min(18, number("1l", 2))),
+    outerThickness: Math.max(1, Math.min(6, number("1t", 2))),
+    outerOffset: Math.max(0, Math.min(16, number("1o", 4))),
+    outline: values.h !== "0" && number("o", 0) > 0,
+  };
+}
+
+function CrosshairPreview({
+  code,
+  copy,
+}: {
+  code: string;
+  copy: (pt: string, en: string, es: string) => string;
+}) {
+  const visual = parseValorantCrosshairCode(code);
+  return (
+    <section className="mt-2 rounded-lg border border-border bg-background/50 p-3 sm:mt-3 sm:rounded-xl">
+      <div className="flex items-center gap-2">
+        <Crosshair className="size-3.5 text-gold-strong sm:size-4" />
+        <div>
+          <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">
+            {copy("Prévia da mira", "Crosshair preview", "Vista previa de la mira")}
+          </p>
+          <p className="mt-0.5 text-[9px] text-muted-foreground">
+            {copy("Reconstrução aproximada do código", "Approximate code reconstruction", "Reconstrucción aproximada del código")}
+          </p>
+        </div>
+      </div>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <CrosshairCanvas visual={visual} tone="dark" label={copy("Fundo escuro", "Dark background", "Fondo oscuro")} />
+        <CrosshairCanvas visual={visual} tone="light" label={copy("Fundo claro", "Light background", "Fondo claro")} />
+      </div>
+    </section>
+  );
+}
+
+function CrosshairCanvas({ visual, tone, label }: { visual: CrosshairVisual; tone: "dark" | "light"; label: string }) {
+  const lineStyle = (length: number, thickness: number, horizontal: boolean): React.CSSProperties => ({
+    width: horizontal ? length * 2 : thickness,
+    height: horizontal ? thickness : length * 2,
+    backgroundColor: visual.color,
+    boxShadow: visual.outline ? "0 0 0 1px rgba(0,0,0,.9)" : undefined,
+  });
+  const lines = (prefix: string, length: number, thickness: number, offset: number) => [
+    <span key={`${prefix}-left`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), transform: `translate(calc(-100% - ${offset}px), -50%)` }} />,
+    <span key={`${prefix}-right`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), transform: `translate(${offset}px, -50%)` }} />,
+    <span key={`${prefix}-top`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), transform: `translate(-50%, calc(-100% - ${offset}px))` }} />,
+    <span key={`${prefix}-bottom`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), transform: `translate(-50%, ${offset}px)` }} />,
+  ];
+
+  return (
+    <div>
+      <div className={`relative aspect-[4/3] overflow-hidden rounded-lg border ${tone === "dark" ? "border-white/10 bg-[#15191d]" : "border-black/10 bg-[#d8d2c6]"}`}>
+        <div className={`absolute inset-0 opacity-35 ${tone === "dark" ? "bg-[radial-gradient(circle_at_65%_35%,#52616d,transparent_42%)]" : "bg-[linear-gradient(145deg,#f2eadc_0%,#aaa394_100%)]"}`} />
+        <div className="absolute inset-x-0 bottom-[28%] h-px bg-black/15" />
+        <div className="absolute bottom-0 left-[58%] h-[62%] w-px bg-black/15" />
+        {visual.outer ? lines("outer", visual.outerLength, visual.outerThickness, visual.outerOffset + visual.innerLength) : null}
+        {visual.inner ? lines("inner", visual.innerLength, visual.innerThickness, visual.innerOffset) : null}
+        {visual.centerDot ? (
+          <span
+            className="absolute left-1/2 top-1/2"
+            style={{
+              width: visual.centerSize,
+              height: visual.centerSize,
+              backgroundColor: visual.color,
+              boxShadow: visual.outline ? "0 0 0 1px rgba(0,0,0,.9)" : undefined,
+              transform: "translate(-50%, -50%)",
+            }}
+          />
+        ) : null}
+      </div>
+      <p className="mt-1 text-center text-[9px] font-semibold text-muted-foreground">{label}</p>
     </div>
   );
 }
