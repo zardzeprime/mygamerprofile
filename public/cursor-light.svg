@@ -1,1 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><defs><linearGradient id="l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f3f0e8"/></linearGradient></defs><path d="M4.25 3.5 23.2 14.7 14.65 17.15 10.3 26.25Z" fill="url(#l)" stroke="#D4A72C" stroke-width="2" stroke-linejoin="round"/><path d="M6.4 6.2 19 13.7" stroke="#ffffff" stroke-width="1" stroke-linecap="round"/><g stroke="#9B7418" stroke-width="1.25" stroke-linecap="round"><path d="M24 4.5v5"/><path d="M21.5 7h5"/></g><circle cx="24" cy="7" r="3.7" fill="none" stroke="#D4A72C" stroke-width="1" opacity=".95"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="body" x1="5" y1="4" x2="19" y2="24" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.55" stop-color="#F8F5ED"/>
+      <stop offset="1" stop-color="#DDD6C8"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="20" y1="3" x2="27" y2="11" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F0D77D"/>
+      <stop offset="0.48" stop-color="#D4A72C"/>
+      <stop offset="1" stop-color="#916911"/>
+    </linearGradient>
+  </defs>
+  <path d="M5.2 4.8 23.25 15.15 15.3 17.45 11.05 26.05Z" fill="#16181D" opacity="0.18" transform="translate(.9 .9)"/>
+  <path d="M4.35 3.65 22.95 14.75 14.65 17.18 10.45 25.92Z" fill="url(#body)" stroke="#A77B17" stroke-width="1.55" stroke-linejoin="round"/>
+  <path d="M6.2 6.05 18.85 13.55" fill="none" stroke="#FFFFFF" stroke-width="1.1" stroke-linecap="round" opacity="0.92"/>
+  <path d="M10.55 22.9 13.72 16.45" fill="none" stroke="#C39A37" stroke-width="0.8" stroke-linecap="round" opacity="0.52"/>
+  <circle cx="24.2" cy="7.2" r="4.1" fill="#FFFFFF" fill-opacity="0.9" stroke="url(#gold)" stroke-width="1.1"/>
+  <circle cx="24.2" cy="7.2" r="1.15" fill="#A77B17"/>
+  <g fill="none" stroke="#A77B17" stroke-width="1.25" stroke-linecap="round">
+    <path d="M24.2 2.25v2.25M24.2 9.9v2.25"/>
+    <path d="M19.25 7.2h2.25M26.9 7.2h2.25"/>
+  </g>
+</svg>
