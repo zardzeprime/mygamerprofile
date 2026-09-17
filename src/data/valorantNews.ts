@@ -20,6 +20,24 @@ export const VALORANT_NEWS: ValorantNewsItem[] = [
     url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-05/", sourceLabel: "Riot Games · Patch 13.05",
   },
   {
+    id: "valorant-console-aus-nz", category: "announcement", publishedAt: "2026-09-16T00:00:00.000Z", official: true,
+    title: localized("VALORANT chega aos consoles na Austrália e Nova Zelândia", "VALORANT Coming to Console in Australia & New Zealand", "VALORANT llega a consolas en Australia y Nueva Zelanda"),
+    summary: localized("A Riot confirmou o lançamento no PS5 e Xbox Series X|S em 23 de setembro, com progressão compartilhada entre PC e console.", "Riot confirmed a September 23 launch on PS5 and Xbox Series X|S, with progression shared across PC and console.", "Riot confirmó el lanzamiento el 23 de septiembre en PS5 y Xbox Series X|S, con progresión compartida entre PC y consola."),
+    url: "https://playvalorant.com/en-us/news/announcements/valorant-coming-to-console-in-australia--new-zealand/", sourceLabel: "Riot Games",
+  },
+  {
+    id: "champions-2026-anthem", category: "media", publishedAt: "2026-09-16T12:35:00.000Z", official: true,
+    title: localized("Hino do Champions 2026 — If The Sun Burns Out Tonight", "Champions 2026 Anthem — If The Sun Burns Out Tonight", "Himno de Champions 2026 — If The Sun Burns Out Tonight"),
+    summary: localized("A Riot lançou oficialmente o hino e videoclipe do Champions 2026 com Grabbitz, Oli Sykes e Courtney LaPlante.", "Riot officially released the Champions 2026 anthem and music video featuring Grabbitz, Oli Sykes and Courtney LaPlante.", "Riot lanzó oficialmente el himno y videoclip de Champions 2026 con Grabbitz, Oli Sykes y Courtney LaPlante."),
+    url: "https://playvalorant.com/en-us/news/announcements/", sourceLabel: "Riot Games",
+  },
+  {
+    id: "champions-shanghai-opening-day", category: "esports", publishedAt: "2026-09-16T15:00:00.000Z", official: true,
+    title: localized("Champions Shanghai: Opening Day", "Champions Shanghai Opening Day", "Champions Shanghai: Opening Day"),
+    summary: localized("A transmissão de abertura foi marcada para 24 de setembro, com segmentos por Xangai e participação de criadores e ex-pros como TenZ, Sacy e TcK.", "The opening broadcast is set for September 24 with city-wide Shanghai segments and talent including TenZ, Sacy and TcK.", "La transmisión inaugural será el 24 de septiembre, con segmentos por Shanghái y talentos como TenZ, Sacy y TcK."),
+    url: "https://valorantesports.com/en-US/news/champions-shanghai-opening-day", sourceLabel: "VALORANT Esports",
+  },
+  {
     id: "gauntlet-glitched-reveal", category: "media", publishedAt: "2026-09-14T14:00:00.000Z", official: true,
     title: localized("GAUNTLET: GLITCHED — trailer de revelação do modo", "GAUNTLET: GLITCHED — Game Mode Reveal Trailer", "GAUNTLET: GLITCHED — tráiler de presentación del modo"),
     summary: localized("16 jogadores, 8 equipes e caos total no novo modo apresentado pela Riot.", "16 players, 8 teams and pure chaos in Riot's newly revealed game mode.", "16 jugadores, 8 equipos y caos total en el nuevo modo presentado por Riot."),
@@ -61,4 +79,9 @@ export const VALORANT_NEWS: ValorantNewsItem[] = [
   patch("11.08", "2025-10-14T13:00:00.000Z", "Grande atualização de balanceamento de Agentes, mapas e armas para reforçar a visão tática de longo prazo.", "Major Agent, map, and weapon balance update aligned with VALORANT's long-term tactical vision.", "Gran actualización de balance de Agentes, mapas y armas alineada con la visión táctica a largo plazo."),
   patch("11.07", "2025-09-30T13:00:00.000Z", "Clareza visual, informações mais consistentes para habilidades e um novo modo apenas para partidas personalizadas.", "Visual clarity, more consistent ability information, and a new customs-only mode.", "Claridad visual, información más consistente para habilidades y un nuevo modo solo para personalizadas."),
   patch("11.06", "2025-09-16T13:00:00.000Z", "O sistema de Replays chegou para Competitivo, Sem Classificação, Disputa da Spike e Premier no PC.", "The Replay System arrived for Competitive, Unrated, Swiftplay, and Premier on PC.", "El sistema de Replays llegó a Competitivo, No Clasificatoria, Swiftplay y Premier en PC."),
+  patch("11.05", "2025-09-02T13:00:00.000Z", "Ajustes visuais do Harbor, correções, Pick’Ems do Champions Paris e penalidades maiores contra abuso de remake.", "Harbor visual adjustments, bug fixes, Champions Paris Pick’Ems and stronger penalties for remake abuse.", "Ajustes visuales de Harbor, correcciones, Pick’Ems de Champions Paris y mayores penalizaciones por abusar de remake."),
+  patch("11.04", "2025-08-19T13:00:00.000Z", "Buffs de Chamber e Sage, retorno de Abyss à rotação, saída de Icebox e melhorias de clareza no minimapa.", "Chamber and Sage buffs, Abyss returning to the map pool, Icebox leaving, and minimap clarity improvements.", "Mejoras de Chamber y Sage, regreso de Abyss a la rotación, salida de Icebox y mejoras de claridad del minimapa."),
+  patch("11.02", "2025-07-29T13:00:00.000Z", "Migração do VALORANT para Unreal Engine 5.3, redução do tamanho instalado e uma rodada de correções.", "VALORANT upgraded to Unreal Engine 5.3, reduced installed size, and shipped a batch of bug fixes.", "VALORANT migró a Unreal Engine 5.3, redujo el tamaño instalado e incluyó varias correcciones."),
+  patch("11.01", "2025-07-14T14:00:00.000Z", "A Riot pulou a atualização 11.01 para preparar a migração para Unreal Engine 5 na 11.02.", "Riot skipped Patch 11.01 to prepare the Unreal Engine 5 upgrade in 11.02.", "Riot omitió la versión 11.01 para preparar la migración a Unreal Engine 5 en la 11.02."),
+  patch("11.00", "2025-06-24T13:00:00.000Z", "Nova mapa Corrode, ajustes de Agentes, rotação de mapas, mudanças de ranque e Hub de Esports nos consoles.", "New map Corrode, Agent adjustments, map rotation, ranked changes and the Esports Hub on console.", "Nuevo mapa Corrode, ajustes de agentes, rotación de mapas, cambios de rango y Hub de Esports en consolas."),
 ];
