@@ -1,4 +1,5 @@
 import type { EsportsSource, ProPlayerSettings } from "./types";
+import { EXTRA_VERIFIED_SETTINGS } from "./settingsExtended";
 import { VERIFIED_AT } from "./settings";
 
 type RecordEntry = { settings: ProPlayerSettings; source: EsportsSource };
@@ -21,6 +22,31 @@ function p(url: string, settings: ProPlayerSettings, note?: string): RecordEntry
  * long-standing hand-verified settings.ts records still remain the final layer.
  */
 export const INDIVIDUAL_EXTRA_SETTINGS: Record<string, RecordEntry> = {
+  kingg: p("https://prosettings.net/players/kingg/", {
+    ...EXTRA_VERIFIED_SETTINGS["kingg"]?.settings,
+    crosshairCode: "0;P;c;8;o;1;d;1;b;1;z;1;0t;1;0l;1;0o;0;0a;1;0f;0;1b;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list."),
+  spike: p("https://prosettings.net/players/spikezin/", {
+    ...EXTRA_VERIFIED_SETTINGS["spike"]?.settings,
+    crosshairCode: "0;s;1;P;c;8;u;000000FF;h;0;b;1;f;0;0l;4;0o;0;0a;1;0f;0;1b;0;S;c;0;s;0.55",
+  }, "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list."),
+  blowz: p("https://prosettings.net/players/blowz/", {
+    ...EXTRA_VERIFIED_SETTINGS["blowz"]?.settings,
+    crosshairCode: "0;s;1;P;o;1;d;1;0b;0;1b;0;S;c;2;s;0.984;o;1",
+    displayMode: "Fullscreen",
+  }, "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list."),
+  neon: p("https://prosettings.net/players/neon/", {
+    ...EXTRA_VERIFIED_SETTINGS["neon"]?.settings,
+    crosshairCode: "0;P;c;8;o;1;d;1;b;1;z;1;0t;1;0l;1;0o;0;0a;1;0f;0;1b;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list."),
+  sato: p("https://prosettings.net/players/sato/", {
+    ...EXTRA_VERIFIED_SETTINGS["sato"]?.settings,
+    crosshairCode: "0;s;1;P;h;0;f;0;m;1;0l;5;0o;1;0a;1;0f;0;1b;0;S;c;0;o;1",
+    displayMode: "Fullscreen",
+  }, "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list."),
+
   vora: p("https://prosettings.net/players/vora/", {
     dpi: 1600,
     sensitivity: 0.12,
@@ -221,3 +247,4 @@ export const INDIVIDUAL_EXTRA_SETTINGS: Record<string, RecordEntry> = {
     crosshairCode: "0;P;c;5;o;1;d;1;z;1;f;0;0b;0;1b;0",
   }),
 };
+

@@ -9,7 +9,8 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "check:valorant": "node scripts/check-valorant-data.cjs"
   },
   "overrides": {
     "rolldown": "1.2.1"

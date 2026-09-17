@@ -114,7 +114,8 @@
         "Expanded the VALORANT competitive snapshot across Americas, EMEA, Pacific and China with dated VLR provenance and roster-status metadata.",
         "Added dated, source-linked VALORANT staff snapshots for LOUD, LEVIATÁN, MIBR and Sentinels.",
         "Closed the competitive team-logo coverage gap from 16/62 to 62/62 records.",
-        "Expanded individually sourced VALORANT settings coverage with a dated cross-region batch and explicit hybrid-role labels."
+        "Expanded individually sourced VALORANT settings coverage with a dated cross-region batch and explicit hybrid-role labels.",
+        "Checked the full VALORANT directory: 234/350 entries have sourced settings and 319/350 have role labels; observed roles derive from the most-used agent in dated VLR samples. Shared-handle identity conflicts remain excluded."
       ],
       "inProgress": [
         "Continue individual ProSettings verification for players whose settings remain hidden.",
@@ -125,7 +126,9 @@
         "Track game/editorial data that can become stale and define refresh expectations before automating it.",
         "Add owner/founder and institutional organization facts only when an official organization source confirms them."
       ],
-      "blocked": [],
+      "blocked": [
+        "116 roster entries still lack confirmed public settings; 31 lack verified role labels. Do not estimate these values."
+      ],
       "legacyName": "PULSE",
       "epithet": "O Investigador",
       "reportLabel": "Vassago (Pesquisa e atualizações)",
@@ -139,7 +142,8 @@
         "Scheduled a daily pg_cron retention job to delete expired anonymous Nexus sessions and cascading message history.",
         "Standardized AVAPGV Watch on a responsive branded MG Profile HTML email contract with plain-text fallback and secret-safe reporting.",
         "Standardized AVAPGV user-facing reports around the six fronts and documented temporary email-connector incident handling.",
-        "Replaced six-front report branding with Os Sete; all seven named roles report directly, preserving stable IDs and historical records."
+        "Replaced six-front report branding with Os Sete; all seven named roles report directly, preserving stable IDs and historical records.",
+        "Added check:valorant regression validation to CI for sparse merges, source retention, eDPI, coverage and ambiguous shared handles."
       ],
       "inProgress": [],
       "next": [
@@ -170,7 +174,8 @@
         "Retained initials as an onError fallback while enabling full team-logo coverage in cards and modals.",
         "Deferred mobile video preloading and reduced high-frequency player polling on touch/small-screen devices.",
         "Replaced the small-screen game-hub tab strip with a sticky compact navigator, constrained horizontal overflow and shortened the mobile hero.",
-        "Added browser-rendered light/dark VALORANT crosshair previews and icon-led peripheral cards without external image assets."
+        "Added browser-rendered light/dark VALORANT crosshair previews and icon-led peripheral cards without external image assets.",
+        "Merged settings per field and review date, retained contributing sources, removed team-country fallback for players and localized observed roles with compact agent chips."
       ],
       "inProgress": [],
       "next": [
