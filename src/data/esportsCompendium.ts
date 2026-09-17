@@ -3,6 +3,7 @@ import { VALORANT_CHINA_2026 } from "@/data/valorant/china";
 import { VALORANT_EMEA_2026 } from "@/data/valorant/emea";
 import { VALORANT_PACIFIC_2026 } from "@/data/valorant/pacific";
 import { VERIFIED_AT, VERIFIED_ROLES, VERIFIED_SETTINGS } from "@/data/valorant/settings";
+import { VALORANT_TEAM_DETAILS } from "@/data/valorant/teamDetails";
 import type {
   CompetitiveSourceLink,
   EsportsGameSlug,
@@ -20,6 +21,9 @@ export type {
   EsportsTeam,
   ProPlayerSettings,
   RosterStatus,
+  TeamOrganization,
+  TeamStaffMember,
+  TeamStaffRole,
   ValorantRegion,
 } from "@/data/valorant/types";
 
@@ -96,6 +100,8 @@ export const ESPORTS_TEAMS: EsportsTeam[] = VALORANT_TEAMS_2026.map((team) => ({
   region: team.region,
   logoUrl: team.logoUrl,
   playerIds: team.players.map((player) => playerId(team.id, player.handle)),
+  staff: VALORANT_TEAM_DETAILS[team.id]?.staff,
+  organization: VALORANT_TEAM_DETAILS[team.id]?.organization,
   sources: [
     {
       url: team.vlrUrl,
