@@ -5,6 +5,10 @@ import { VALORANT_PACIFIC_2026 } from "@/data/valorant/pacific";
 import { VERIFIED_AT, VERIFIED_ROLES, VERIFIED_SETTINGS } from "@/data/valorant/settings";
 import { EXTRA_VERIFIED_SETTINGS } from "@/data/valorant/settingsExtended";
 import { INDIVIDUAL_EXTRA_SETTINGS } from "@/data/valorant/settingsIndividualExtra";
+import { SETTINGS_SNAPSHOT } from "@/data/valorant/settingsSnapshot";
+import { mergeSettings } from "@/data/valorant/mergeSettings";
+import { PLAYER_OBSERVATIONS } from "@/data/valorant/playerObservations";
+import { observedRole } from "@/data/valorant/observedRole";
 import { VALORANT_TEAM_DETAILS } from "@/data/valorant/teamDetails";
 import type {
   CompetitiveSourceLink,
@@ -56,11 +60,12 @@ const VALORANT_TEAMS_2026: ValorantRosterSeed[] = [
 ];
 
 // Priority order: consolidated list < newer individual pass < original hand-verified records.
-const VERIFIED_PLAYER_SETTINGS = {
-  ...EXTRA_VERIFIED_SETTINGS,
-  ...INDIVIDUAL_EXTRA_SETTINGS,
-  ...VERIFIED_SETTINGS,
-};
+const VERIFIED_PLAYER_SETTINGS = mergeSettings(
+  EXTRA_VERIFIED_SETTINGS,
+  SETTINGS_SNAPSHOT,
+  INDIVIDUAL_EXTRA_SETTINGS,
+  VERIFIED_SETTINGS,
+);
 
 function normalizeHandle(handle: string) {
   return handle.toLowerCase().replace(/[^a-z0-9]+/g, "");
@@ -73,17 +78,19 @@ function playerId(teamId: string, handle: string) {
 function playerFromSeed(team: ValorantRosterSeed, seed: PlayerSeed): EsportsPlayer {
   const normalized = normalizeHandle(seed.handle);
   const verified = VERIFIED_PLAYER_SETTINGS[normalized];
+  const observation = PLAYER_OBSERVATIONS[playerId(team.id, seed.handle)];
+  const role = observedRole(observation) ?? VERIFIED_ROLES[normalized];
 
   return {
     id: playerId(team.id, seed.handle),
     game: "valorant",
     handle: seed.handle,
-    realName: seed.realName,
-    countryCode: team.countryCode,
-    role: VERIFIED_ROLES[normalized],
+    ...(seed.realName ? { realName: seed.realName } : {}),
+    ...(role ? { role } : {}),
+    ...(observation ? { observation } : {}),
     rosterStatus: seed.status ?? "active",
     teamId: team.id,
-    settings: verified?.settings,
+    ...(verified ? { settings: verified.settings } : {}),
     sources: [
       {
         url: team.vlrUrl,
@@ -91,7 +98,8 @@ function playerFromSeed(team: ValorantRosterSeed, seed: PlayerSeed): EsportsPlay
         verifiedAt: VERIFIED_AT,
         note: `Roster snapshot — ${team.name}.`,
       },
-      ...(verified ? [verified.source] : []),
+      ...(verified?.sources ?? []),
+      ...(observation ? [observation.source] : []),
     ],
   };
 }
@@ -105,12 +113,11 @@ export const ESPORTS_TEAMS: EsportsTeam[] = VALORANT_TEAMS_2026.map((team) => ({
   game: "valorant",
   name: team.name,
   shortName: team.shortName,
-  countryCode: team.countryCode,
+  ...(team.countryCode ? { countryCode: team.countryCode } : {}),
   region: team.region,
-  logoUrl: team.logoUrl,
+  ...(team.logoUrl ? { logoUrl: team.logoUrl } : {}),
   playerIds: team.players.map((player) => playerId(team.id, player.handle)),
-  staff: VALORANT_TEAM_DETAILS[team.id]?.staff,
-  organization: VALORANT_TEAM_DETAILS[team.id]?.organization,
+  ...VALORANT_TEAM_DETAILS[team.id],
   sources: [
     {
       url: team.vlrUrl,

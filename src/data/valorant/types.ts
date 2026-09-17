@@ -52,10 +52,16 @@ export type EsportsPlayer = {
   city?: string;
   photoUrl?: string;
   role?: string;
+  observation?: PlayerObservation;
   rosterStatus?: RosterStatus;
   teamId?: string;
   settings?: ProPlayerSettings;
   sources: EsportsSource[];
+};
+
+export type PlayerObservation = {
+  agents: { agent: string; maps: number; usage: number }[];
+  source: EsportsSource;
 };
 
 export type EsportsTeam = {
