@@ -269,7 +269,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                       <span className="sr-only">{copy("Selecionar jogador", "Select player", "Seleccionar jugador")}</span>
                       <select value={selectedPlayer?.id ?? ""} onChange={(event) => setSelectedPlayerId(event.target.value)}
                         className="h-12 w-full min-w-0 rounded-xl border border-border bg-background px-3 text-base text-foreground">
-                        {selectedRoster.map((player) => <option key={player.id} value={player.id}>{player.handle}{player.role ? ` · ${player.role}` : ""}</option>)}
+                        {selectedRoster.map((player) => <option key={player.id} value={player.id}>{player.handle}{player.role ? ` · ${playerRoleLabel(player.role, copy)}` : ""}</option>)}
                       </select>
                     </label>
                     <div className="mt-2 hidden lg:block lg:space-y-2">
@@ -291,7 +291,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                             <div className="min-w-0">
                               <p className="truncate text-xs font-semibold text-foreground sm:text-sm">{player.handle}</p>
                               <p className="hidden truncate text-[10px] text-muted-foreground sm:block">
-                                {player.role ?? rosterStatusLabel(player.rosterStatus, copy)}
+                                {player.role ? playerRoleLabel(player.role, copy) : rosterStatusLabel(player.rosterStatus, copy)}
                               </p>
                             </div>
                           </button>
@@ -510,6 +510,19 @@ function rosterStatusLabel(
   return status;
 }
 
+function playerRoleLabel(role: string, copy: (pt: string, en: string, es: string) => string) {
+  return role.split(" / ").map((part) => {
+    const labels: Record<string, [string, string, string]> = {
+      Duelista: ["Duelista", "Duelist", "Duelista"],
+      Controlador: ["Controlador", "Controller", "Controlador"],
+      Iniciador: ["Iniciador", "Initiator", "Iniciador"],
+      Sentinela: ["Sentinela", "Sentinel", "Centinela"],
+      Operador: ["Operador", "Operator", "Operador"],
+    };
+    return labels[part] ? copy(...labels[part]) : part;
+  }).join(" / ");
+}
+
 function PlayerPanel({
   player,
   team,
@@ -521,8 +534,8 @@ function PlayerPanel({
 }) {
   const settings = player.settings;
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
-  const vlrSource = player.sources.find((source) => source.label.startsWith("VLR.gg"));
-  const proSource = player.sources.find((source) => source.label === "ProSettings.net");
+  const vlrSource = player.observation?.source ?? player.sources.find((source) => source.label.startsWith("VLR.gg"));
+  const proSources = player.sources.filter((source) => source.label === "ProSettings.net");
 
   return (
     <article className="overflow-hidden rounded-xl border border-border bg-muted/10 sm:rounded-2xl">
@@ -538,7 +551,7 @@ function PlayerPanel({
           {player.realName ? <p className="mt-0.5 truncate text-xs text-muted-foreground sm:text-sm">{player.realName}</p> : null}
           <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
             <span className="rounded-full border border-border bg-background/55 px-2 py-0.5 text-[10px] font-semibold text-foreground sm:px-2.5 sm:py-1 sm:text-xs">
-              {player.role ?? copy("Função não verificada", "Role not verified", "Rol no verificado")}
+              {player.role ? playerRoleLabel(player.role, copy) : copy("Função não verificada", "Role not verified", "Rol no verificado")}
             </span>
             {player.rosterStatus && player.rosterStatus !== "active" ? (
               <span className="rounded-full border border-amber-500/25 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-300 sm:px-2.5 sm:py-1 sm:text-xs">
@@ -565,6 +578,24 @@ function PlayerPanel({
       </div>
 
       <div className="p-4 sm:p-5">
+        {player.observation?.agents.length ? (
+          <div className="mb-5 rounded-xl border border-border bg-background/40 p-3">
+            <p className="text-xs font-semibold text-gold-strong">{copy("Função observada em jogo", "Observed in-game role", "Rol observado en partida")}</p>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">{copy(
+              "Classificação pelo agente mais usado na amostra consultada. A função pode mudar entre mapas.",
+              "Based on the most-used agent in the reviewed sample. Roles can change between maps.",
+              "Basado en el agente más usado en la muestra consultada. El rol puede cambiar entre mapas.",
+            )}</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {player.observation.agents.slice(0, 4).map(({ agent, maps }) => (
+                <span key={agent} className="rounded-md border border-border px-2 py-1 text-xs text-foreground">
+                  <span className="capitalize">{agent === "kayo" ? "KAY/O" : agent}</span> · {maps} {copy("mapas", "maps", "mapas")}
+                </span>
+              ))}
+            </div>
+            <p className="mt-2 text-[10px] text-muted-foreground">{copy("Consulta", "Reviewed", "Consulta")}: {player.observation.source.verifiedAt} · VLR.gg</p>
+          </div>
+        ) : null}
         <div className="flex items-center gap-2">
           <MousePointer2 className="size-4 text-gold-strong" />
           <h5 className="font-display text-base font-semibold text-foreground sm:text-lg">
@@ -580,6 +611,7 @@ function PlayerPanel({
               <TabsTrigger value="gear" className="min-h-11 min-w-0 px-1 text-xs">{copy("Equipamento", "Gear", "Equipo")}</TabsTrigger>
             </TabsList>
             <TabsContent value="settings">
+            <p className="mt-3 text-xs text-muted-foreground">{copy("Traço indica informação ainda não confirmada.", "A dash means the value is not yet confirmed.", "Un guion indica información aún no confirmada.")}</p>
             <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-3 sm:mt-4 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-4">
               <Stat label="DPI" value={settings.dpi} />
               <Stat label={copy("Sens.", "Sens.", "Sens.")} value={settings.sensitivity} />
@@ -640,18 +672,21 @@ function PlayerPanel({
               <p className="py-4 text-sm text-muted-foreground">{copy("Código da mira ainda não verificado.", "Crosshair code not yet verified.", "Código de mira aún no verificado.")}</p>}
             </TabsContent>
 
-            {proSource ? (
+            {proSources.length ? (
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 sm:mt-4 sm:pt-4">
+                {proSources.map((proSource) => (
                 <a
+                  key={proSource.url}
                   href={proSource.url}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-gold-strong hover:underline sm:text-xs"
                 >
-                  ProSettings.net <ExternalLink className="size-3" />
+                  {proSource.url.includes("/players/") ? copy("Perfil do jogador", "Player profile", "Perfil del jugador") : copy("Lista de ajustes", "Settings list", "Lista de ajustes")} · ProSettings.net <ExternalLink className="size-3" />
                 </a>
+                ))}
                 <span className="text-[9px] text-muted-foreground sm:text-[10px]">
-                  {copy("Conferido", "Verified", "Verificado")} {proSource.verifiedAt}
+                  {copy("Conferido", "Verified", "Verificado")} {proSources.map((source) => source.verifiedAt).sort().at(-1)}
                 </span>
               </div>
             ) : null}
@@ -659,9 +694,9 @@ function PlayerPanel({
         ) : (
           <div className="mt-3 rounded-xl border border-dashed border-border bg-background/40 p-3 text-xs leading-5 text-muted-foreground sm:mt-4 sm:p-4 sm:text-sm sm:leading-6">
             {copy(
-              "As configurações ainda não foram verificadas individualmente. Elas ficam ocultas até existir uma fonte específica e conferida.",
-              "Settings have not yet been individually verified. They stay hidden until a specific verified source is available.",
-              "Las configuraciones aún no fueron verificadas individualmente. Permanecen ocultas hasta que exista una fuente específica y verificada.",
+              "Ainda não encontramos configurações públicas confirmadas para este jogador. Nenhum valor é preenchido por estimativa.",
+              "We have not yet confirmed public settings for this player. Values are never estimated.",
+              "Aún no encontramos configuraciones públicas confirmadas para este jugador. No se rellenan valores estimados.",
             )}
           </div>
         )}
@@ -696,6 +731,9 @@ type CrosshairVisual = {
   outerThickness: number;
   outerOffset: number;
   outline: boolean;
+  innerOpacity: number;
+  outerOpacity: number;
+  centerOpacity: number;
 };
 
 const VALORANT_CROSSHAIR_COLORS = ["#ffffff", "#00ff00", "#bfff00", "#dfff00", "#ffff00", "#00ffff", "#ff66ff", "#ff4040"];
@@ -714,7 +752,7 @@ function parseValorantCrosshairCode(code: string): CrosshairVisual {
     if (primary && (token === "A" || token === "S")) break;
     if (!primary) continue;
     const next = tokens[index + 1];
-    if (next !== undefined) {
+    if (token !== undefined && next !== undefined) {
       values[token] = next;
       index += 1;
     }
@@ -724,21 +762,25 @@ function parseValorantCrosshairCode(code: string): CrosshairVisual {
     const parsed = Number(values[key]);
     return Number.isFinite(parsed) ? parsed : fallback;
   };
-  const colorIndex = Math.max(0, Math.min(VALORANT_CROSSHAIR_COLORS.length - 1, number("c", 0)));
+  const colorIndex = Math.trunc(number("c", 0));
+  const customColor = values["u"]?.replace(/^#/, "");
 
   return {
-    color: values.u ? `#${values.u.replace(/^#/, "")}` : VALORANT_CROSSHAIR_COLORS[colorIndex],
-    centerDot: values.d === "1",
-    centerSize: Math.max(2, Math.min(8, number("z", 2))),
+    color: colorIndex === 8 && customColor && /^(?:[a-f0-9]{6}|[a-f0-9]{8})$/i.test(customColor) ? `#${customColor}` : (VALORANT_CROSSHAIR_COLORS[colorIndex] ?? "#ffffff"),
+    centerDot: values["d"] === "1",
+    centerSize: Math.max(1, Math.min(8, number("z", 2))),
     inner: values["0b"] !== "0",
-    innerLength: Math.max(2, Math.min(18, number("0l", 4))),
-    innerThickness: Math.max(1, Math.min(6, number("0t", 2))),
+    innerLength: Math.max(0, Math.min(18, number("0l", 4))),
+    innerThickness: Math.max(0, Math.min(6, number("0t", 2))),
     innerOffset: Math.max(0, Math.min(12, number("0o", 2))),
-    outer: values["1b"] === "1",
-    outerLength: Math.max(2, Math.min(18, number("1l", 2))),
-    outerThickness: Math.max(1, Math.min(6, number("1t", 2))),
+    outer: values["1b"] !== "0",
+    outerLength: Math.max(0, Math.min(18, number("1l", 2))),
+    outerThickness: Math.max(0, Math.min(6, number("1t", 2))),
     outerOffset: Math.max(0, Math.min(16, number("1o", 4))),
-    outline: values.h !== "0" && number("o", 0) > 0,
+    outline: values["h"] !== "0" && number("o", 0.5) > 0,
+    innerOpacity: Math.max(0, Math.min(1, number("0a", 0.8))),
+    outerOpacity: Math.max(0, Math.min(1, number("1a", 0.35))),
+    centerOpacity: Math.max(0, Math.min(1, number("a", 1))),
   };
 }
 
@@ -759,7 +801,7 @@ function CrosshairPreview({
             {copy("Prévia da mira", "Crosshair preview", "Vista previa de la mira")}
           </p>
           <p className="mt-0.5 text-[9px] text-muted-foreground">
-            {copy("Reconstrução aproximada do código", "Approximate code reconstruction", "Reconstrucción aproximada del código")}
+            {copy("Prévia estática ampliada · aproximada", "Enlarged static preview · approximate", "Vista estática ampliada · aproximada")}
           </p>
         </div>
       </div>
@@ -773,16 +815,16 @@ function CrosshairPreview({
 
 function CrosshairCanvas({ visual, tone, label }: { visual: CrosshairVisual; tone: "dark" | "light"; label: string }) {
   const lineStyle = (length: number, thickness: number, horizontal: boolean): React.CSSProperties => ({
-    width: horizontal ? length * 2 : thickness,
-    height: horizontal ? thickness : length * 2,
+    width: horizontal ? length : thickness,
+    height: horizontal ? thickness : length,
     backgroundColor: visual.color,
     boxShadow: visual.outline ? "0 0 0 1px rgba(0,0,0,.9)" : undefined,
   });
-  const lines = (prefix: string, length: number, thickness: number, offset: number) => [
-    <span key={`${prefix}-left`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), transform: `translate(calc(-100% - ${offset}px), -50%)` }} />,
-    <span key={`${prefix}-right`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), transform: `translate(${offset}px, -50%)` }} />,
-    <span key={`${prefix}-top`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), transform: `translate(-50%, calc(-100% - ${offset}px))` }} />,
-    <span key={`${prefix}-bottom`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), transform: `translate(-50%, ${offset}px)` }} />,
+  const lines = (prefix: string, length: number, thickness: number, offset: number, opacity: number) => [
+    <span key={`${prefix}-left`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), opacity, transform: `translate(calc(-100% - ${offset}px), -50%)` }} />,
+    <span key={`${prefix}-right`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), opacity, transform: `translate(${offset}px, -50%)` }} />,
+    <span key={`${prefix}-top`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), opacity, transform: `translate(-50%, calc(-100% - ${offset}px))` }} />,
+    <span key={`${prefix}-bottom`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), opacity, transform: `translate(-50%, ${offset}px)` }} />,
   ];
 
   return (
@@ -791,13 +833,15 @@ function CrosshairCanvas({ visual, tone, label }: { visual: CrosshairVisual; ton
         <div className={`absolute inset-0 opacity-35 ${tone === "dark" ? "bg-[radial-gradient(circle_at_65%_35%,#52616d,transparent_42%)]" : "bg-[linear-gradient(145deg,#f2eadc_0%,#aaa394_100%)]"}`} />
         <div className="absolute inset-x-0 bottom-[28%] h-px bg-black/15" />
         <div className="absolute bottom-0 left-[58%] h-[62%] w-px bg-black/15" />
-        {visual.outer ? lines("outer", visual.outerLength, visual.outerThickness, visual.outerOffset + visual.innerLength) : null}
-        {visual.inner ? lines("inner", visual.innerLength, visual.innerThickness, visual.innerOffset) : null}
+        <div className="absolute inset-0 scale-[2]">
+        {visual.outer ? lines("outer", visual.outerLength, visual.outerThickness, visual.outerOffset, visual.outerOpacity) : null}
+        {visual.inner ? lines("inner", visual.innerLength, visual.innerThickness, visual.innerOffset, visual.innerOpacity) : null}
         {visual.centerDot ? (
           <span
             className="absolute left-1/2 top-1/2"
             style={{
               width: visual.centerSize,
+              opacity: visual.centerOpacity,
               height: visual.centerSize,
               backgroundColor: visual.color,
               boxShadow: visual.outline ? "0 0 0 1px rgba(0,0,0,.9)" : undefined,
@@ -805,6 +849,7 @@ function CrosshairCanvas({ visual, tone, label }: { visual: CrosshairVisual; ton
             }}
           />
         ) : null}
+        </div>
       </div>
       <p className="mt-1 text-center text-[9px] font-semibold text-muted-foreground">{label}</p>
     </div>
@@ -812,11 +857,10 @@ function CrosshairCanvas({ visual, tone, label }: { visual: CrosshairVisual; ton
 }
 
 function Stat({ label, value }: { label: string; value: string | number | undefined }) {
-  if (value === undefined) return null;
   return (
     <div className="min-w-0">
       <dt className="truncate text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground sm:text-[10px] sm:tracking-[0.1em]">{label}</dt>
-      <dd className="mt-0.5 truncate text-xs font-semibold text-foreground sm:mt-1 sm:text-sm">{value}</dd>
+      <dd className="mt-0.5 break-words text-xs font-semibold text-foreground sm:mt-1 sm:text-sm">{value ?? "—"}</dd>
     </div>
   );
 }
