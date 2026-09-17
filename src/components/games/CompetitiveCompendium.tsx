@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { BriefcaseBusiness, Building2, Check, Copy, Crosshair, Database, Ear, ExternalLink, Headphones, Keyboard, Monitor, Mouse, MousePointer2, RectangleHorizontal, UsersRound } from "lucide-react";
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -37,8 +38,24 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
   const [regionFilter, setRegionFilter] = useState<RegionFilter>("all");
 
-  const visibleTeams =
-    regionFilter === "all" ? teams : teams.filter((team) => team.region === regionFilter);
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const pageSize = 12;
+  const directoryRef = useRef<HTMLElement>(null);
+  const changePage = (nextPage: number) => {
+    setPage(nextPage);
+    directoryRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
+  };
+  const search = query.trim().toLocaleLowerCase();
+  const matchingTeams = teams.filter((team) =>
+    (regionFilter === "all" || team.region === regionFilter) &&
+    (!search || team.name.toLocaleLowerCase().includes(search) ||
+      players.some((player) => team.playerIds.includes(player.id) &&
+        `${player.handle} ${player.realName ?? ""}`.toLocaleLowerCase().includes(search)))
+  );
+  const pageCount = Math.max(1, Math.ceil(matchingTeams.length / pageSize));
+  const currentPage = Math.min(page, pageCount);
+  const visibleTeams = matchingTeams.slice((currentPage - 1) * pageSize, currentPage * pageSize);
   const selectedTeam = teams.find((team) => team.id === selectedTeamId) ?? null;
   const selectedRoster = selectedTeam
     ? players.filter((player) => selectedTeam.playerIds.includes(player.id))
@@ -85,20 +102,29 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
               {teams.length} {copy("times", "teams", "equipos")}
             </span>
             <span className="rounded-full border border-border px-2.5 py-1 sm:px-3 sm:py-1.5">
-              {players.length} {copy("jogadores verificados", "verified players", "jugadores verificados")}
+              {players.length} {copy("jogadores no diretório", "players in directory", "jugadores en el directorio")}
             </span>
           </div>
         </div>
       </section>
 
       {teams.length > 0 ? (
-        <section className="surface-panel p-3 sm:p-7">
+        <section ref={directoryRef} className="surface-panel min-w-0 scroll-mt-36 p-3 sm:p-7">
           <div className="flex items-center gap-2 px-1 sm:px-0">
             <UsersRound className="size-4 text-gold-strong sm:size-5" />
             <h3 className="font-display text-lg font-semibold text-foreground sm:text-xl">
               {copy("Times", "Teams", "Equipos")}
             </h3>
           </div>
+
+          <label className="mt-4 block">
+            <span className="mb-1.5 block text-xs font-semibold text-muted-foreground">
+              {copy("Buscar time ou jogador", "Find team or player", "Buscar equipo o jugador")}
+            </span>
+            <input type="search" value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }}
+              placeholder={copy("Ex.: LOUD, aspas…", "E.g. LOUD, aspas…", "Ej.: LOUD, aspas…")}
+              className="h-11 w-full min-w-0 rounded-xl border border-border bg-background px-3 text-base text-foreground outline-none focus-visible:ring-2 focus-visible:ring-gold/40" />
+          </label>
 
           {game === "valorant" ? (
             <div className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -110,8 +136,9 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                   <button
                     key={region}
                     type="button"
-                    onClick={() => setRegionFilter(region)}
-                    className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                    aria-pressed={active}
+                    onClick={() => { setRegionFilter(region); setPage(1); }}
+                    className={`shrink-0 min-h-11 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
                       active
                         ? "border-gold/40 bg-gold/10 text-gold-strong"
                         : "border-border bg-background/45 text-muted-foreground hover:border-gold/25 hover:text-foreground"
@@ -124,6 +151,9 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
             </div>
           ) : null}
 
+          <p className="mt-3 text-xs text-muted-foreground" role="status">
+            {matchingTeams.length} {copy("times encontrados", "teams found", "equipos encontrados")}
+          </p>
           <div className="mt-4 grid grid-cols-1 gap-2 min-[380px]:grid-cols-2 sm:gap-3 lg:grid-cols-3 xl:grid-cols-4">
             {visibleTeams.map((team) => {
               const roster = players.filter((player) => team.playerIds.includes(player.id));
@@ -176,6 +206,22 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
               );
             })}
           </div>
+          {matchingTeams.length === 0 ? <p className="py-8 text-center text-sm text-muted-foreground">
+            {copy("Nenhum resultado. Tente outro nome ou região.", "No results. Try another name or region.", "Sin resultados. Prueba otro nombre o región.")}
+          </p> : null}
+          {pageCount > 1 ? (
+            <nav aria-label={copy("Páginas de times", "Team pages", "Páginas de equipos")} className="mt-4 flex items-center justify-between gap-2 border-t border-border pt-4">
+              <button type="button" disabled={currentPage === 1} onClick={() => changePage(currentPage - 1)}
+                className="min-h-11 rounded-lg border border-border px-3 text-xs font-semibold disabled:opacity-40">
+                {copy("Anterior", "Previous", "Anterior")}
+              </button>
+              <span className="text-xs text-muted-foreground">{currentPage} / {pageCount}</span>
+              <button type="button" disabled={currentPage === pageCount} onClick={() => changePage(currentPage + 1)}
+                className="min-h-11 rounded-lg border border-border px-3 text-xs font-semibold disabled:opacity-40">
+                {copy("Próxima", "Next", "Siguiente")}
+              </button>
+            </nav>
+          ) : null}
         </section>
       ) : (
         <section className="rounded-2xl border border-dashed border-border bg-muted/10 p-6 text-center">
@@ -197,7 +243,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
             <div className="max-h-[92dvh] overflow-y-auto sm:max-h-[88vh]">
               <DialogHeader className="border-b border-border bg-surface px-4 py-4 pr-11 sm:px-7 sm:py-5 sm:pr-12">
                 <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-                  <TeamLogo team={selectedTeam} className="size-10 rounded-xl sm:size-14 sm:rounded-2xl" />
+                  <TeamLogo key={selectedTeam.id} team={selectedTeam} className="size-10 rounded-xl sm:size-14 sm:rounded-2xl" />
                   <div className="min-w-0">
                     <DialogTitle className="truncate font-display text-xl text-foreground sm:text-2xl">
                       {selectedTeam.name}
@@ -216,15 +262,22 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                   </p>
 
                   {selectedRoster.length > 0 ? (
-                    <div className="mt-2 grid grid-cols-1 gap-2 min-[440px]:grid-cols-2 lg:block lg:space-y-2">
+                    <>
+                    <label className="mt-2 block lg:hidden">
+                      <span className="sr-only">{copy("Selecionar jogador", "Select player", "Seleccionar jugador")}</span>
+                      <select value={selectedPlayer?.id ?? ""} onChange={(event) => setSelectedPlayerId(event.target.value)}
+                        className="h-12 w-full min-w-0 rounded-xl border border-border bg-background px-3 text-base text-foreground">
+                        {selectedRoster.map((player) => <option key={player.id} value={player.id}>{player.handle}{player.role ? ` · ${player.role}` : ""}</option>)}
+                      </select>
+                    </label>
+                    <div className="mt-2 hidden lg:block lg:space-y-2">
                       {selectedRoster.map((player) => {
                         const active = player.id === selectedPlayer?.id;
                         return (
                           <button
                             key={player.id}
                             type="button"
-                            onMouseEnter={() => setSelectedPlayerId(player.id)}
-                            onFocus={() => setSelectedPlayerId(player.id)}
+                            aria-pressed={active}
                             onClick={() => setSelectedPlayerId(player.id)}
                             className={`group flex min-w-0 items-center gap-2 rounded-lg border p-2 text-left transition duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/30 sm:rounded-xl sm:p-2.5 lg:w-full lg:hover:scale-[1.01] ${
                               active
@@ -243,6 +296,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                         );
                       })}
                     </div>
+                    </>
                   ) : (
                     <div className="mt-3 rounded-xl border border-dashed border-border bg-muted/10 p-4 text-xs leading-5 text-muted-foreground">
                       {copy(
@@ -253,13 +307,18 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                     </div>
                   )}
 
-                  <TeamDetails team={selectedTeam} copy={copy} />
-                  <TeamProvenance team={selectedTeam} copy={copy} />
+                  <details key={selectedTeam.id} className="mt-3 rounded-xl border border-border p-3">
+                    <summary className="cursor-pointer py-1 text-xs font-semibold text-gold-strong">
+                      {copy("Equipe, comissão e fontes", "Organization, staff and sources", "Equipo, cuerpo técnico y fuentes")}
+                    </summary>
+                    <TeamDetails team={selectedTeam} copy={copy} />
+                    <TeamProvenance team={selectedTeam} copy={copy} />
+                  </details>
                 </div>
 
                 <div className="min-w-0">
                   {selectedPlayer ? (
-                    <PlayerPanel player={selectedPlayer} team={selectedTeam} copy={copy} />
+                    <PlayerPanel key={selectedPlayer.id} player={selectedPlayer} team={selectedTeam} copy={copy} />
                   ) : null}
                 </div>
               </div>
@@ -459,7 +518,7 @@ function PlayerPanel({
   copy: (pt: string, en: string, es: string) => string;
 }) {
   const settings = player.settings;
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
   const vlrSource = player.sources.find((source) => source.label.startsWith("VLR.gg"));
   const proSource = player.sources.find((source) => source.label === "ProSettings.net");
 
@@ -512,7 +571,13 @@ function PlayerPanel({
         </div>
 
         {settings ? (
-          <>
+          <Tabs defaultValue="settings" className="mt-4 min-w-0">
+            <TabsList aria-label={copy("Detalhes do jogador", "Player details", "Detalles del jugador")} className="grid h-auto w-full grid-cols-3 gap-1">
+              <TabsTrigger value="settings" className="min-h-11 min-w-0 px-1 text-xs">{copy("Ajustes", "Settings", "Ajustes")}</TabsTrigger>
+              <TabsTrigger value="crosshair" className="min-h-11 min-w-0 px-1 text-xs">{copy("Mira", "Crosshair", "Mira")}</TabsTrigger>
+              <TabsTrigger value="gear" className="min-h-11 min-w-0 px-1 text-xs">{copy("Equipamento", "Gear", "Equipo")}</TabsTrigger>
+            </TabsList>
+            <TabsContent value="settings">
             <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-3 sm:mt-4 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-4">
               <Stat label="DPI" value={settings.dpi} />
               <Stat label={copy("Sens.", "Sens.", "Sens.")} value={settings.sensitivity} />
@@ -521,7 +586,8 @@ function PlayerPanel({
               <Stat label={copy("Resolução", "Resolution", "Resolución")} value={settings.resolution} />
               <Stat label={copy("Tela", "Display", "Pantalla")} value={settings.displayMode} />
             </dl>
-
+            </TabsContent>
+            <TabsContent value="gear">
             {settings.mouse || settings.keyboard || settings.monitor || settings.headset || settings.mousepad || settings.earphones ? (
               <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-2">
                 <GearItem icon={<Mouse className="size-3.5" />} label="Mouse" value={settings.mouse} />
@@ -531,7 +597,9 @@ function PlayerPanel({
                 <GearItem icon={<RectangleHorizontal className="size-3.5" />} label="Mousepad" value={settings.mousepad} />
                 <GearItem icon={<Ear className="size-3.5" />} label={copy("Fones", "Earphones", "Auriculares in-ear")} value={settings.earphones} />
               </div>
-            ) : null}
+            ) : <p className="py-4 text-sm text-muted-foreground">{copy("Equipamentos ainda não verificados.", "Gear not yet verified.", "Equipo aún no verificado.")}</p>}
+            </TabsContent>
+            <TabsContent value="crosshair">
 
             {settings.crosshairCode ? (
               <div className="mt-2 rounded-lg border border-border bg-background/50 p-3 sm:mt-3 sm:rounded-xl">
@@ -542,25 +610,33 @@ function PlayerPanel({
                   </div>
                   <button
                     type="button"
-                    onClick={() => {
-                      void navigator.clipboard.writeText(settings.crosshairCode ?? "").then(() => {
-                        setCopied(true);
-                        window.setTimeout(() => setCopied(false), 1600);
-                      });
+                    onClick={async () => {
+                      try {
+                        if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
+                        await navigator.clipboard.writeText(settings.crosshairCode ?? "");
+                        setCopyStatus("copied");
+                      } catch {
+                        setCopyStatus("error");
+                      }
                     }}
-                    className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[9px] font-semibold text-gold-strong transition hover:border-gold/30 sm:text-[10px]"
+                    className="inline-flex min-h-11 items-center gap-1 rounded-md border border-border px-3 py-2 text-xs font-semibold text-gold-strong transition hover:border-gold/30 sm:text-[10px]"
                   >
-                    {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
-                    {copied ? copy("Copiado", "Copied", "Copiado") : copy("Copiar", "Copy", "Copiar")}
+                    {copyStatus === "copied" ? <Check className="size-3" /> : <Copy className="size-3" />}
+                    {copyStatus === "copied" ? copy("Copiado", "Copied", "Copiado") : copy("Copiar", "Copy", "Copiar")}
                   </button>
                 </div>
-                <code className="mt-2 block break-all text-[10px] leading-4 text-foreground sm:text-[11px] sm:leading-5">
+                <p role="status" className="mt-2 text-xs text-muted-foreground">
+                  {copyStatus === "error" ? copy("Não foi possível copiar. Selecione o código abaixo e copie manualmente.", "Could not copy. Select the code below and copy manually.", "No se pudo copiar. Selecciona el código y cópialo manualmente.") : copyStatus === "copied" ? copy("Código copiado.", "Code copied.", "Código copiado.") : ""}
+                </p>
+                <code tabIndex={0} className="mt-2 block select-all break-all text-[10px] leading-4 text-foreground sm:text-[11px] sm:leading-5">
                   {settings.crosshairCode}
                 </code>
               </div>
             ) : null}
 
-            {settings.crosshairCode ? <CrosshairPreview code={settings.crosshairCode} copy={copy} /> : null}
+            {settings.crosshairCode ? <CrosshairPreview code={settings.crosshairCode} copy={copy} /> :
+              <p className="py-4 text-sm text-muted-foreground">{copy("Código da mira ainda não verificado.", "Crosshair code not yet verified.", "Código de mira aún no verificado.")}</p>}
+            </TabsContent>
 
             {proSource ? (
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 sm:mt-4 sm:pt-4">
@@ -577,7 +653,7 @@ function PlayerPanel({
                 </span>
               </div>
             ) : null}
-          </>
+          </Tabs>
         ) : (
           <div className="mt-3 rounded-xl border border-dashed border-border bg-background/40 p-3 text-xs leading-5 text-muted-foreground sm:mt-4 sm:p-4 sm:text-sm sm:leading-6">
             {copy(
@@ -600,7 +676,7 @@ function GearItem({ icon, label, value }: { icon: React.ReactNode; label: string
         {icon}
         <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">{label}</p>
       </div>
-      <p className="mt-1.5 text-xs font-semibold leading-5 text-foreground sm:text-sm">{value}</p>
+      <p className="mt-1.5 break-words text-xs font-semibold leading-5 text-foreground sm:text-sm">{value}</p>
     </div>
   );
 }
