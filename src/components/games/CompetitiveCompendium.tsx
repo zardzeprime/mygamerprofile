@@ -696,6 +696,9 @@ type CrosshairVisual = {
   outerThickness: number;
   outerOffset: number;
   outline: boolean;
+  innerOpacity: number;
+  outerOpacity: number;
+  centerOpacity: number;
 };
 
 const VALORANT_CROSSHAIR_COLORS = ["#ffffff", "#00ff00", "#bfff00", "#dfff00", "#ffff00", "#00ffff", "#ff66ff", "#ff4040"];
@@ -714,7 +717,7 @@ function parseValorantCrosshairCode(code: string): CrosshairVisual {
     if (primary && (token === "A" || token === "S")) break;
     if (!primary) continue;
     const next = tokens[index + 1];
-    if (next !== undefined) {
+    if (token !== undefined && next !== undefined) {
       values[token] = next;
       index += 1;
     }
@@ -724,21 +727,25 @@ function parseValorantCrosshairCode(code: string): CrosshairVisual {
     const parsed = Number(values[key]);
     return Number.isFinite(parsed) ? parsed : fallback;
   };
-  const colorIndex = Math.max(0, Math.min(VALORANT_CROSSHAIR_COLORS.length - 1, number("c", 0)));
+  const colorIndex = Math.trunc(number("c", 0));
+  const customColor = values["u"]?.replace(/^#/, "");
 
   return {
-    color: values.u ? `#${values.u.replace(/^#/, "")}` : VALORANT_CROSSHAIR_COLORS[colorIndex],
-    centerDot: values.d === "1",
-    centerSize: Math.max(2, Math.min(8, number("z", 2))),
+    color: colorIndex === 8 && customColor && /^(?:[a-f0-9]{6}|[a-f0-9]{8})$/i.test(customColor) ? `#${customColor}` : (VALORANT_CROSSHAIR_COLORS[colorIndex] ?? "#ffffff"),
+    centerDot: values["d"] === "1",
+    centerSize: Math.max(1, Math.min(8, number("z", 2))),
     inner: values["0b"] !== "0",
-    innerLength: Math.max(2, Math.min(18, number("0l", 4))),
-    innerThickness: Math.max(1, Math.min(6, number("0t", 2))),
+    innerLength: Math.max(0, Math.min(18, number("0l", 4))),
+    innerThickness: Math.max(0, Math.min(6, number("0t", 2))),
     innerOffset: Math.max(0, Math.min(12, number("0o", 2))),
-    outer: values["1b"] === "1",
-    outerLength: Math.max(2, Math.min(18, number("1l", 2))),
-    outerThickness: Math.max(1, Math.min(6, number("1t", 2))),
+    outer: values["1b"] !== "0",
+    outerLength: Math.max(0, Math.min(18, number("1l", 2))),
+    outerThickness: Math.max(0, Math.min(6, number("1t", 2))),
     outerOffset: Math.max(0, Math.min(16, number("1o", 4))),
-    outline: values.h !== "0" && number("o", 0) > 0,
+    outline: values["h"] !== "0" && number("o", 0.5) > 0,
+    innerOpacity: Math.max(0, Math.min(1, number("0a", 0.8))),
+    outerOpacity: Math.max(0, Math.min(1, number("1a", 0.35))),
+    centerOpacity: Math.max(0, Math.min(1, number("a", 1))),
   };
 }
 
@@ -759,7 +766,7 @@ function CrosshairPreview({
             {copy("Prévia da mira", "Crosshair preview", "Vista previa de la mira")}
           </p>
           <p className="mt-0.5 text-[9px] text-muted-foreground">
-            {copy("Reconstrução aproximada do código", "Approximate code reconstruction", "Reconstrucción aproximada del código")}
+            {copy("Prévia estática ampliada · aproximada", "Enlarged static preview · approximate", "Vista estática ampliada · aproximada")}
           </p>
         </div>
       </div>
@@ -773,16 +780,16 @@ function CrosshairPreview({
 
 function CrosshairCanvas({ visual, tone, label }: { visual: CrosshairVisual; tone: "dark" | "light"; label: string }) {
   const lineStyle = (length: number, thickness: number, horizontal: boolean): React.CSSProperties => ({
-    width: horizontal ? length * 2 : thickness,
-    height: horizontal ? thickness : length * 2,
+    width: horizontal ? length : thickness,
+    height: horizontal ? thickness : length,
     backgroundColor: visual.color,
     boxShadow: visual.outline ? "0 0 0 1px rgba(0,0,0,.9)" : undefined,
   });
-  const lines = (prefix: string, length: number, thickness: number, offset: number) => [
-    <span key={`${prefix}-left`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), transform: `translate(calc(-100% - ${offset}px), -50%)` }} />,
-    <span key={`${prefix}-right`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), transform: `translate(${offset}px, -50%)` }} />,
-    <span key={`${prefix}-top`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), transform: `translate(-50%, calc(-100% - ${offset}px))` }} />,
-    <span key={`${prefix}-bottom`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), transform: `translate(-50%, ${offset}px)` }} />,
+  const lines = (prefix: string, length: number, thickness: number, offset: number, opacity: number) => [
+    <span key={`${prefix}-left`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), opacity, transform: `translate(calc(-100% - ${offset}px), -50%)` }} />,
+    <span key={`${prefix}-right`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), opacity, transform: `translate(${offset}px, -50%)` }} />,
+    <span key={`${prefix}-top`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), opacity, transform: `translate(-50%, calc(-100% - ${offset}px))` }} />,
+    <span key={`${prefix}-bottom`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), opacity, transform: `translate(-50%, ${offset}px)` }} />,
   ];
 
   return (
@@ -791,13 +798,15 @@ function CrosshairCanvas({ visual, tone, label }: { visual: CrosshairVisual; ton
         <div className={`absolute inset-0 opacity-35 ${tone === "dark" ? "bg-[radial-gradient(circle_at_65%_35%,#52616d,transparent_42%)]" : "bg-[linear-gradient(145deg,#f2eadc_0%,#aaa394_100%)]"}`} />
         <div className="absolute inset-x-0 bottom-[28%] h-px bg-black/15" />
         <div className="absolute bottom-0 left-[58%] h-[62%] w-px bg-black/15" />
-        {visual.outer ? lines("outer", visual.outerLength, visual.outerThickness, visual.outerOffset + visual.innerLength) : null}
-        {visual.inner ? lines("inner", visual.innerLength, visual.innerThickness, visual.innerOffset) : null}
+        <div className="absolute inset-0 scale-[2]">
+        {visual.outer ? lines("outer", visual.outerLength, visual.outerThickness, visual.outerOffset, visual.outerOpacity) : null}
+        {visual.inner ? lines("inner", visual.innerLength, visual.innerThickness, visual.innerOffset, visual.innerOpacity) : null}
         {visual.centerDot ? (
           <span
             className="absolute left-1/2 top-1/2"
             style={{
               width: visual.centerSize,
+              opacity: visual.centerOpacity,
               height: visual.centerSize,
               backgroundColor: visual.color,
               boxShadow: visual.outline ? "0 0 0 1px rgba(0,0,0,.9)" : undefined,
@@ -805,6 +814,7 @@ function CrosshairCanvas({ visual, tone, label }: { visual: CrosshairVisual; ton
             }}
           />
         ) : null}
+        </div>
       </div>
       <p className="mt-1 text-center text-[9px] font-semibold text-muted-foreground">{label}</p>
     </div>
@@ -820,3 +830,4 @@ function Stat({ label, value }: { label: string; value: string | number | undefi
     </div>
   );
 }
+

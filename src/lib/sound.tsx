@@ -43,6 +43,10 @@ const DEFAULTS: AudioPreferences = {
   ambienceVolume: 18,
 };
 
+function clampVolume(value: unknown, fallback: number) {
+  return typeof value === "number" && Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : fallback;
+}
+
 const SOUND_SIGNATURES: Record<SoundEvent, SoundSignature> = {
   hover: { frequency: 760, overtone: 1140, duration: 0.032, type: "sine" },
   click: { frequency: 390, overtone: 585, duration: 0.05, type: "sine" },
@@ -59,24 +63,45 @@ export function SoundProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState<AudioPreferences>(DEFAULTS);
   const contextRef = useRef<AudioContext | null>(null);
   const unlockedRef = useRef(false);
+  const [hydrated, setHydrated] = useState(false);
+  const lastSoundRef = useRef(0);
 
   useEffect(() => {
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
-      if (stored) setPreferences({ ...DEFAULTS, ...JSON.parse(stored) });
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setPreferences({
+          uiEnabled: typeof parsed?.uiEnabled === "boolean" ? parsed.uiEnabled : DEFAULTS.uiEnabled,
+          ambienceEnabled: typeof parsed?.ambienceEnabled === "boolean" ? parsed.ambienceEnabled : DEFAULTS.ambienceEnabled,
+          uiVolume: clampVolume(parsed?.uiVolume, DEFAULTS.uiVolume),
+          ambienceVolume: clampVolume(parsed?.ambienceVolume, DEFAULTS.ambienceVolume),
+        });
+      }
     } catch {
       setPreferences(DEFAULTS);
+    } finally {
+      setHydrated(true);
     }
   }, []);
 
   useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
-  }, [preferences]);
+    if (!hydrated) return;
+    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences)); } catch { /* Session-only preferences remain available. */ }
+  }, [preferences, hydrated]);
+
+  useEffect(() => () => {
+    const context = contextRef.current;
+    contextRef.current = null;
+    unlockedRef.current = false;
+    if (context && context.state !== "closed") void context.close().catch(() => {});
+  }, []);
 
   const ensureContext = useCallback(async () => {
     const AudioContextClass = window.AudioContext ?? window.webkitAudioContext;
     if (!AudioContextClass) return null;
-    const context = contextRef.current ?? new AudioContextClass();
+    let context: AudioContext;
+    try { context = contextRef.current ?? new AudioContextClass(); } catch { return null; }
     contextRef.current = context;
     if (context.state === "suspended") {
       try {
@@ -106,7 +131,11 @@ export function SoundProvider({ children }: { children: ReactNode }) {
 
   const play = useCallback(
     (event: SoundEvent) => {
-      if (!preferences.uiEnabled || preferences.uiVolume === 0) return;
+      if (!preferences.uiEnabled || preferences.uiVolume === 0 || document.hidden) return;
+      // Avoid overlapping oscillators during rapid navigation or nested pointer events.
+      const stamp = performance.now();
+      if (stamp - lastSoundRef.current < (event === "hover" ? 180 : 45)) return;
+      lastSoundRef.current = stamp;
       const context = contextRef.current;
       if (!context || context.state !== "running" || !unlockedRef.current) return;
 
@@ -136,7 +165,7 @@ export function SoundProvider({ children }: { children: ReactNode }) {
         overtone.frequency.exponentialRampToValueAtTime(signature.overtoneEndFrequency, now + signature.duration);
       }
 
-      const peak = Math.min(0.032, volumeScale * 0.075);
+      const peak = Math.max(0.0002, Math.min(0.028, volumeScale * 0.065) * (event === "hover" ? 0.4 : 1));
       const attack = Math.min(0.009, signature.duration * 0.22);
       master.gain.setValueAtTime(0.0001, now);
       master.gain.exponentialRampToValueAtTime(peak, now + attack);
@@ -149,6 +178,10 @@ export function SoundProvider({ children }: { children: ReactNode }) {
       overtone.connect(overtoneGain).connect(filter);
       filter.connect(master).connect(context.destination);
 
+      overtone.onended = () => {
+        primary.disconnect(); overtone.disconnect();
+        primaryGain.disconnect(); overtoneGain.disconnect(); filter.disconnect(); master.disconnect();
+      };
       primary.start(now);
       overtone.start(now);
       primary.stop(now + signature.duration + 0.015);
@@ -166,14 +199,14 @@ export function SoundProvider({ children }: { children: ReactNode }) {
         event.target instanceof Element
           ? event.target.closest("a,button,[role='button'],input,select")
           : null;
-      if (!target || Date.now() - lastHover < 160) return;
+      if (!target || target.matches(":disabled,[aria-disabled='true']") || (event.relatedTarget instanceof Node && target.contains(event.relatedTarget)) || Date.now() - lastHover < 220) return;
       lastHover = Date.now();
       play("hover");
     };
     const onClick = (event: MouseEvent) => {
       const target =
         event.target instanceof Element ? event.target.closest("a,button,[role='button']") : null;
-      if (target) play(target instanceof HTMLAnchorElement ? "navigation" : "click");
+      if (target && !target.matches(":disabled,[aria-disabled='true']")) play(target instanceof HTMLAnchorElement ? "navigation" : "click");
     };
     document.addEventListener("pointerover", onPointerOver, { passive: true });
     document.addEventListener("click", onClick, { passive: true });
@@ -189,9 +222,9 @@ export function SoundProvider({ children }: { children: ReactNode }) {
       setUiEnabled: (uiEnabled) => setPreferences((current) => ({ ...current, uiEnabled })),
       setAmbienceEnabled: (ambienceEnabled) =>
         setPreferences((current) => ({ ...current, ambienceEnabled })),
-      setUiVolume: (uiVolume) => setPreferences((current) => ({ ...current, uiVolume })),
+      setUiVolume: (uiVolume) => setPreferences((current) => ({ ...current, uiVolume: clampVolume(uiVolume, current.uiVolume) })),
       setAmbienceVolume: (ambienceVolume) =>
-        setPreferences((current) => ({ ...current, ambienceVolume })),
+        setPreferences((current) => ({ ...current, ambienceVolume: clampVolume(ambienceVolume, current.ambienceVolume) })),
       play,
     }),
     [play, preferences],
@@ -211,3 +244,4 @@ declare global {
     webkitAudioContext?: typeof AudioContext;
   }
 }
+

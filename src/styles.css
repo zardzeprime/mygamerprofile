@@ -180,12 +180,15 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     min-width: 320px;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
     overflow-x: hidden;
   }
 
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    letter-spacing: 0;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
   }
 
   :focus-visible {
@@ -194,11 +197,42 @@
   }
 }
 
+/* Native cursors keep text editing and disabled affordances predictable. */
 @media (hover: hover) and (pointer: fine) {
   html { cursor: url('/cursor-light.svg') 4 4, default; }
   html.dark { cursor: url('/cursor-dark.svg') 4 4, default; }
-  a, button, [role="button"], input, select, textarea, label[for] { cursor: url('/cursor-pointer-light.svg') 15 15, pointer; }
-  html.dark a, html.dark button, html.dark [role="button"], html.dark input, html.dark select, html.dark textarea, html.dark label[for] { cursor: url('/cursor-pointer-dark.svg') 15 15, pointer; }
+  a, button, [role="button"], [role="tab"], [role="radio"], select, label[for], input[type="color"] { cursor: url('/cursor-pointer-light.svg') 4 4, pointer; }
+  html.dark :is(a, button, [role="button"], [role="tab"], [role="radio"], select, label[for], input[type="color"]) { cursor: url('/cursor-pointer-dark.svg') 4 4, pointer; }
+  input:not([type="color"]):not([type="range"]):not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable="true"] { cursor: text; }
+  :is(button, input, select, textarea):disabled, [aria-disabled="true"] { cursor: not-allowed; }
+}
+
+/* A second color adds atmosphere; gold remains the brand/action color. */
+:root {
+  --mgp-user-accent: var(--gold);
+  --mgp-user-accent-soft: color-mix(in oklab, var(--mgp-user-accent) 12%, var(--surface));
+  --mgp-user-accent-strong: var(--foreground);
+  --mgp-personal-gradient: linear-gradient(125deg, var(--gold-soft), var(--mgp-user-accent-soft) 72%, var(--surface));
+}
+:root[data-accent="custom"] {
+  --accent: var(--mgp-user-accent-soft);
+  --accent-foreground: var(--foreground);
+}
+:root[data-accent="custom"] main {
+  background-image: radial-gradient(ellipse at 100% 0%, color-mix(in oklab, var(--mgp-user-accent) 7%, transparent), transparent 48rem);
+  background-repeat: no-repeat;
+}
+:root[data-accent="custom"] .surface-panel {
+  background-image: linear-gradient(130deg, color-mix(in oklab, var(--mgp-user-accent) 8%, transparent), transparent 65%);
+}
+.appearance-preview { background: var(--mgp-personal-gradient); }
+::selection { background: var(--gold-soft); color: var(--foreground); }
+@media (pointer: coarse) {
+  input, select, textarea { font-size: max(1rem, 1em); }
+}
+@media (forced-colors: active) {
+  :focus-visible { outline: 2px solid Highlight; }
+  .text-gradient-gold { background: none; color: CanvasText; }
 }
 
 @utility text-gradient-gold {
@@ -528,3 +562,4 @@
     linear-gradient(115deg, var(--color-tactical) 0%, transparent 45%),
     radial-gradient(90% 80% at 85% 0%, var(--color-gold-soft) 0%, transparent 60%);
 }
+

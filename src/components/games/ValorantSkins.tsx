@@ -383,10 +383,35 @@ function SkinPreviewModal({
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const active = clips[activeIndex] ?? clips[0];
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialogRef.current?.focus();
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      previousFocus?.focus();
+    };
+  }, []);
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
+      if (event.key === "Tab") {
+        const controls = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), a[href], [tabindex="0"]') ?? []).filter((element) => element.getClientRects().length > 0);
+        const first = controls?.[0];
+        const last = controls?.[controls.length - 1];
+        if (first && last && event.shiftKey && (document.activeElement === first || document.activeElement === dialogRef.current)) {
+          event.preventDefault(); last.focus();
+        } else if (first && last && !event.shiftKey && (document.activeElement === last || document.activeElement === dialogRef.current)) {
+          event.preventDefault(); first.focus();
+        }
+      }
+      // Range controls own their arrow keys; do not switch clips while seeking or changing volume.
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
+      if (event.key === "ArrowRight" || event.key === "ArrowLeft") event.preventDefault();
       if (event.key === "ArrowRight") onIndex((activeIndex + 1) % clips.length);
       if (event.key === "ArrowLeft") onIndex((activeIndex - 1 + clips.length) % clips.length);
     };
@@ -398,25 +423,27 @@ function SkinPreviewModal({
 
   return (
     <div
-      className="fixed inset-0 z-[120] grid place-items-center bg-black/75 p-3 backdrop-blur-md animate-in fade-in duration-200 sm:p-4"
+      className="fixed inset-0 z-[120] grid place-items-center bg-black/90 p-3 animate-in fade-in duration-200 motion-reduce:animate-none sm:p-4"
+      ref={dialogRef}
+      tabIndex={-1}
       role="dialog"
       aria-modal="true"
-      aria-label={`${skin.name} preview`}
+      aria-label={`${skin.name} — ${copy("Prévia", "Preview", "Vista previa")}`}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="max-h-[94dvh] w-full max-w-5xl overflow-y-auto rounded-2xl border border-white/15 bg-background shadow-2xl animate-in fade-in zoom-in-95 duration-250">
+      <div className="max-h-[94dvh] w-full max-w-5xl overflow-y-auto overscroll-contain rounded-2xl border border-white/15 bg-background shadow-2xl animate-in fade-in zoom-in-95 duration-250 motion-reduce:animate-none">
         <div className="flex items-center justify-between gap-4 border-b border-border px-4 py-3 sm:px-5 sm:py-4">
           <div className="min-w-0"><p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-tactical">{copy("PREVIEW DE SKIN", "SKIN PREVIEW", "PREVIEW DE SKIN")}</p><h3 className="mt-1 truncate font-display text-lg font-semibold sm:text-xl">{skin.name}</h3></div>
-          <button type="button" onClick={onClose} className="grid size-9 shrink-0 place-items-center rounded-full border border-border transition-all hover:rotate-90 hover:border-tactical/45 hover:text-tactical" aria-label={copy("Fechar preview", "Close preview", "Cerrar preview")}><X className="size-4" /></button>
+          <button type="button" onClick={onClose} className="grid size-11 shrink-0 place-items-center rounded-full border border-border transition-all hover:rotate-90 hover:border-tactical/45 hover:text-tactical" aria-label={copy("Fechar preview", "Close preview", "Cerrar preview")}><X className="size-4" /></button>
         </div>
         <MinimalVideoPlayer key={active.url} src={active.url} locale={locale} autoPlay className="aspect-video w-full" />
         <div className="flex flex-col gap-3 border-t border-border p-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="truncate text-sm font-semibold text-foreground">{active.label}</p>
           <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
             {clips.map((clip, index) => (
-              <button key={clip.id} type="button" onClick={() => onIndex(index)} className={cn("shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all", index === activeIndex ? "border-tactical/55 bg-tactical/10 text-foreground" : "border-border text-muted-foreground hover:border-tactical/30 hover:text-foreground")}>{index + 1}. {clip.label}</button>
+              <button key={clip.id} type="button" onClick={() => onIndex(index)} aria-pressed={index === activeIndex} className={cn("min-h-11 shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all", index === activeIndex ? "border-tactical/55 bg-tactical/10 text-foreground" : "border-border text-muted-foreground hover:border-tactical/30 hover:text-foreground")}>{index + 1}. {clip.label}</button>
             ))}
           </div>
         </div>
@@ -517,3 +544,4 @@ function getWheelItems(skins: ValorantSkin[], selectedIndex: number, slots: numb
 function StateCard({ text }: { text: string }) {
   return <div className="surface-panel rounded-2xl p-10 text-center text-sm text-muted-foreground">{text}</div>;
 }
+

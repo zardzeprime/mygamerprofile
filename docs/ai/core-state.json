@@ -114,7 +114,8 @@
         "Expanded the VALORANT competitive snapshot across Americas, EMEA, Pacific and China with dated VLR provenance and roster-status metadata.",
         "Added dated, source-linked VALORANT staff snapshots for LOUD, LEVIATÁN, MIBR and Sentinels.",
         "Closed the competitive team-logo coverage gap from 16/62 to 62/62 records.",
-        "Expanded individually sourced VALORANT settings coverage with a dated cross-region batch and explicit hybrid-role labels."
+        "Expanded individually sourced VALORANT settings coverage with a dated cross-region batch and explicit hybrid-role labels.",
+        "Added individually checked LEVIATAN crosshair snapshots and missing Less/Saadhak/C0M peripheral fields."
       ],
       "inProgress": [
         "Continue individual ProSettings verification for players whose settings remain hidden.",
@@ -170,13 +171,17 @@
         "Retained initials as an onError fallback while enabling full team-logo coverage in cards and modals.",
         "Deferred mobile video preloading and reduced high-frequency player polling on touch/small-screen devices.",
         "Replaced the small-screen game-hub tab strip with a sticky compact navigator, constrained horizontal overflow and shortened the mobile hero.",
-        "Added browser-rendered light/dark VALORANT crosshair previews and icon-led peripheral cards without external image assets."
+        "Added browser-rendered light/dark VALORANT crosshair previews and icon-led peripheral cards without external image assets.",
+        "Added a compact home with games/community/discovery panels, responsive header controls and keyboard-operable hub navigation.",
+        "Fixed native mobile video preload/play deadlock, added retry/error states and stable YouTube lifecycle with background pause.",
+        "Kept gold as the semantic action color while adding contrast-preserving secondary palettes and resilient theme/audio storage."
       ],
       "inProgress": [],
       "next": [
         "Review external boss-art delivery for image weight, caching and layout stability after visual approval.",
         "Profile Nexus latency and provider failure rates before adding parallel council inference.",
-        "Profile high-cost routes before proposing additional performance work."
+        "Profile high-cost routes before proposing additional performance work.",
+        "Verify this redesign in a deployed preview at 360/390/768/1024/1440px and profile dropped video frames on a real Android device."
       ],
       "blocked": [],
       "legacyName": "VECTOR",

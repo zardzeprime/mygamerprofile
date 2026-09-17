@@ -20,11 +20,11 @@ export const VERIFIED_SETTINGS: Record<string, { settings: ProPlayerSettings; so
     source: { url: "https://prosettings.net/players/aspas/", label: "ProSettings.net", verifiedAt: VERIFIED_AT, note: "Individual settings page checked for MGP." },
   },
   saadhak: {
-    settings: { dpi: 900, sensitivity: 0.255, edpi: 229.5, pollingRateHz: 500, mouse: "Logitech G Pro X2 SUPERSTRIKE Lunar Eclipse", resolution: "1920x1080", displayMode: "Fullscreen", crosshairCode: "0;s;1;P;c;3;h;0;d;1;z;1;a;0.7;0t;1;0l;2;0a;1;0f;0;1t;3;1o;1;1a;0.7;1m;0;1f;0;S;c;5;s;0;o;1" },
+    settings: { keyboard: "Wooting 60HE+", monitor: "ZOWIE XL2566X+", headset: "Logitech G PRO X 2 Headset Magenta", mousepad: "Pulsar eS Saturn Pro Black", earphones: "Shure SE215 Blue", dpi: 900, sensitivity: 0.255, edpi: 229.5, pollingRateHz: 500, mouse: "Logitech G Pro X2 SUPERSTRIKE Lunar Eclipse", resolution: "1920x1080", displayMode: "Fullscreen", crosshairCode: "0;s;1;P;c;3;h;0;d;1;z;1;a;0.7;0t;1;0l;2;0a;1;0f;0;1t;3;1o;1;1a;0.7;1m;0;1f;0;S;c;5;s;0;o;1" },
     source: { url: "https://prosettings.net/players/saadhak/", label: "ProSettings.net", verifiedAt: VERIFIED_AT, note: "Individual settings page checked for MGP." },
   },
   less: {
-    settings: { dpi: 800, sensitivity: 0.32, edpi: 256, pollingRateHz: 4000, mouse: "Logitech G Pro 2 LIGHTSPEED Magenta", resolution: "1920x1080", displayMode: "Fullscreen", crosshairCode: "0;s;1;P;o;1;d;1;f;0;0l;2;0o;0;0a;1;0f;0;1b;0" },
+    settings: { keyboard: "ASUS ROG Falcata", monitor: "ZOWIE XL2566K", headset: "HyperX Cloud Alpha", mousepad: "Pulsar eS Saturn Pro Red", dpi: 800, sensitivity: 0.32, edpi: 256, pollingRateHz: 4000, mouse: "Logitech G Pro 2 LIGHTSPEED Magenta", resolution: "1920x1080", displayMode: "Fullscreen", crosshairCode: "0;s;1;P;o;1;d;1;f;0;0l;2;0o;0;0a;1;0f;0;1b;0" },
     source: { url: "https://prosettings.net/players/less/", label: "ProSettings.net", verifiedAt: VERIFIED_AT, note: "Individual settings page checked for MGP." },
   },
   splash: {
@@ -32,7 +32,7 @@ export const VERIFIED_SETTINGS: Record<string, { settings: ProPlayerSettings; so
     source: { url: "https://prosettings.net/players/splash/", label: "ProSettings.net", verifiedAt: VERIFIED_AT, note: "Individual settings page checked for MGP." },
   },
   c0m: {
-    settings: { dpi: 800, sensitivity: 0.2, edpi: 160, pollingRateHz: 1000, mouse: "Logitech G Pro X2 SUPERSTRIKE Lunar Eclipse", resolution: "1440x1080", displayMode: "Fullscreen", crosshairCode: "0;p;0;s;1;P;c;5;o;1;f;0;0t;1;0l;3;0o;2;0a;1;0f;0;1b;0;A;c;5;o;1;0t;1;0l;3;0o;2;0a;1;0f;0;1b;0;S;s;0.823;o;1" },
+    settings: { keyboard: "Wooting 60HE+", monitor: "ZOWIE XL2566X+", headset: "HyperX Cloud II", mousepad: "Artisan Ninja FX Zero Mid", dpi: 800, sensitivity: 0.2, edpi: 160, pollingRateHz: 1000, mouse: "Logitech G Pro X2 SUPERSTRIKE Lunar Eclipse", resolution: "1440x1080", displayMode: "Fullscreen", crosshairCode: "0;p;0;s;1;P;c;5;o;1;f;0;0t;1;0l;3;0o;2;0a;1;0f;0;1b;0;A;c;5;o;1;0t;1;0l;3;0o;2;0a;1;0f;0;1b;0;S;s;0.823;o;1" },
     source: { url: "https://prosettings.net/players/c0m/", label: "ProSettings.net", verifiedAt: VERIFIED_AT, note: "Individual settings page checked for MGP." },
   },
   nats: {
@@ -76,3 +76,4 @@ export const VERIFIED_ROLES: Record<string, string> = {
   zmjjkk: "Duelista / operador",
   nobody: "Iniciador",
 };
+

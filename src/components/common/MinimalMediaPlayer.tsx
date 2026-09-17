@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { LoaderCircle, Pause, Play, Volume2, VolumeX } from "lucide-react";
+import { LoaderCircle, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,8 @@ type YouTubePlayerOptions = {
   events: {
     onReady: (event: YouTubeReadyEvent) => void;
     onStateChange: (event: YouTubeStateEvent) => void;
+    onError: () => void;
+    onAutoplayBlocked: () => void;
   };
 };
 
@@ -59,20 +61,37 @@ function loadYouTubeApi(): Promise<YouTubeApi> {
 
   youtubeApiPromise = new Promise<YouTubeApi>((resolve, reject) => {
     const previousReady = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = () => {
-      previousReady?.();
-      if (window.YT) resolve(window.YT);
-      else reject(new Error("youtube_api_unavailable"));
+    let script = document.querySelector<HTMLScriptElement>('script[src="https://www.youtube.com/iframe_api"]');
+    const cleanup = () => {
+      window.clearTimeout(timeout);
+      script?.removeEventListener("error", fail);
+      if (window.onYouTubeIframeAPIReady === onReady) { if (previousReady) window.onYouTubeIframeAPIReady = previousReady; else delete window.onYouTubeIframeAPIReady; }
     };
-
-    const existing = document.querySelector<HTMLScriptElement>('script[src="https://www.youtube.com/iframe_api"]');
-    if (existing) return;
-
-    const script = document.createElement("script");
-    script.src = "https://www.youtube.com/iframe_api";
-    script.async = true;
-    script.onerror = () => reject(new Error("youtube_api_load_failed"));
-    document.head.appendChild(script);
+    const fail = () => {
+      cleanup();
+      script?.remove();
+      reject(new Error("youtube_api_load_failed"));
+    };
+    const onReady = () => {
+      cleanup();
+      if (window.YT?.Player) resolve(window.YT);
+      else reject(new Error("youtube_api_unavailable"));
+      previousReady?.();
+    };
+    const timeout = window.setTimeout(fail, 15000);
+    window.onYouTubeIframeAPIReady = onReady;
+    if (!script) {
+      script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      script.async = true;
+      script.addEventListener("error", fail, { once: true });
+      document.head.appendChild(script);
+    } else {
+      script.addEventListener("error", fail, { once: true });
+    }
+  }).catch((error: unknown) => {
+    youtubeApiPromise = null;
+    throw error;
   });
 
   return youtubeApiPromise;
@@ -90,8 +109,11 @@ export function MinimalYouTubePlayer({
   className?: string;
 }) {
   const mountRef = useRef<HTMLDivElement>(null);
+  const [attempt, setAttempt] = useState(0);
+  const [buffering, setBuffering] = useState(false);
   const playerRef = useRef<YouTubePlayerInstance | null>(null);
   const [ready, setReady] = useState(false);
+  const [error, setError] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -103,17 +125,32 @@ export function MinimalYouTubePlayer({
     let cancelled = false;
     const mount = mountRef.current;
     if (!mount) return;
+    setReady(false);
+    setPlaying(false);
+    setError(false);
+    setBuffering(true);
+    setCurrentTime(0);
+    setDuration(0);
+    const mobileOrTouch = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
+    const connection = (navigator as Navigator & { connection?: NetworkInformation }).connection;
+    const shouldAutoPlay = autoPlay && !mobileOrTouch && !connection?.saveData && document.visibilityState !== "hidden";
+    const readyTimeout = window.setTimeout(() => {
+      if (!cancelled) { setError(true); setBuffering(false); }
+    }, 20000);
 
     void loadYouTubeApi()
       .then((api) => {
         if (cancelled || !mountRef.current) return;
-        const player = new api.Player(mountRef.current, {
+        // YouTube replaces its target node. Keep React's container intact across retries and StrictMode cleanup.
+        const targetElement = document.createElement("div");
+        mount.replaceChildren(targetElement);
+        const player = new api.Player(targetElement, {
           width: "100%",
           height: "100%",
           videoId,
           host: "https://www.youtube-nocookie.com",
           playerVars: {
-            autoplay: autoPlay ? 1 : 0,
+            autoplay: shouldAutoPlay ? 1 : 0,
             controls: 0,
             disablekb: 1,
             fs: 0,
@@ -124,42 +161,77 @@ export function MinimalYouTubePlayer({
           },
           events: {
             onReady: ({ target }) => {
+              if (cancelled) return;
+              window.clearTimeout(readyTimeout);
+              setError(false);
+              setBuffering(false);
               target.setVolume(72);
+              setVolumeState(72);
               setDuration(target.getDuration() || 0);
               setReady(true);
-              if (autoPlay) target.playVideo();
+              if (shouldAutoPlay && document.visibilityState !== "hidden") target.playVideo();
             },
             onStateChange: ({ data }) => {
+              if (cancelled) return;
+              if (data === api.PlayerState.PLAYING && document.visibilityState === "hidden") {
+                playerRef.current?.pauseVideo();
+                return;
+              }
               setPlaying(data === api.PlayerState.PLAYING);
+              setBuffering(data === 3);
+              setCurrentTime(playerRef.current?.getCurrentTime() || 0);
+              setDuration(playerRef.current?.getDuration() || 0);
               if (data === api.PlayerState.ENDED) {
                 setCurrentTime(playerRef.current?.getDuration() ?? 0);
               }
+            },
+            onError: () => {
+              if (cancelled) return;
+              window.clearTimeout(readyTimeout);
+              setError(true);
+              setPlaying(false);
+              setBuffering(false);
+            },
+            onAutoplayBlocked: () => {
+              if (!cancelled) { setPlaying(false); setBuffering(false); }
             },
           },
         });
         playerRef.current = player;
       })
-      .catch(() => setReady(false));
+      .catch(() => {
+        if (!cancelled) { setReady(false); setError(true); setBuffering(false); }
+      });
 
     return () => {
       cancelled = true;
+      window.clearTimeout(readyTimeout);
       playerRef.current?.destroy();
       playerRef.current = null;
+      mount.replaceChildren();
     };
-  }, [autoPlay, videoId]);
+  }, [autoPlay, videoId, attempt]);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || !playing) return;
     const mobileOrTouch = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
     const timer = window.setInterval(() => {
       const player = playerRef.current;
-      if (!player) return;
+      if (!player || document.visibilityState === "hidden") return;
       setCurrentTime(player.getCurrentTime() || 0);
       const nextDuration = player.getDuration() || 0;
-      if (nextDuration !== duration) setDuration(nextDuration);
+      setDuration(nextDuration);
     }, mobileOrTouch ? 750 : 250);
     return () => window.clearInterval(timer);
-  }, [duration, ready]);
+  }, [playing, ready]);
+
+  useEffect(() => {
+    const pauseWhenHidden = () => {
+      if (document.visibilityState === "hidden" && ready) playerRef.current?.pauseVideo();
+    };
+    document.addEventListener("visibilitychange", pauseWhenHidden);
+    return () => document.removeEventListener("visibilitychange", pauseWhenHidden);
+  }, [ready]);
 
   const setVolume = useCallback((nextVolume: number) => {
     const player = playerRef.current;
@@ -179,9 +251,10 @@ export function MinimalYouTubePlayer({
   return (
     <div className={cn("relative isolate h-full w-full overflow-hidden bg-black", className)}>
       <div ref={mountRef} className="pointer-events-none absolute inset-0 h-full w-full [&>iframe]:h-full [&>iframe]:w-full" />
+      <PlayerStatus buffering={buffering} error={error} locale={locale} onRetry={() => setAttempt((value) => value + 1)} />
       <PlayerControls
         playing={playing}
-        ready={ready}
+        ready={ready && !error}
         currentTime={currentTime}
         duration={duration}
         volume={volume}
@@ -200,6 +273,8 @@ export function MinimalYouTubePlayer({
         playLabel={copy("Reproduzir", "Play", "Reproducir")}
         pauseLabel={copy("Pausar", "Pause", "Pausar")}
         volumeLabel={copy("Volume", "Volume", "Volumen")}
+        progressLabel={copy("Progresso do vídeo", "Video progress", "Progreso del video")}
+        muteLabel={volume === 0 ? copy("Ativar som", "Unmute", "Activar sonido") : copy("Silenciar", "Mute", "Silenciar")}
       />
     </div>
   );
@@ -219,6 +294,8 @@ export function MinimalVideoPlayer({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
+  const [error, setError] = useState(false);
+  const lastProgressRef = useRef(0);
   const [buffering, setBuffering] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -230,6 +307,8 @@ export function MinimalVideoPlayer({
   useEffect(() => {
     setPlaying(false);
     setReady(false);
+    setError(false);
+    lastProgressRef.current = 0;
     setBuffering(false);
     setCurrentTime(0);
     setDuration(0);
@@ -245,9 +324,9 @@ export function MinimalVideoPlayer({
     const slowConnection = effectiveType === "slow-2g" || effectiveType === "2g";
     const mobileOrTouch = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
 
-    setPreload(saveData || slowConnection || mobileOrTouch ? "none" : "auto");
+    setPreload(saveData || slowConnection || mobileOrTouch ? "none" : "metadata");
 
-    if (!autoPlay || mobileOrTouch || saveData || slowConnection) return;
+    if (!autoPlay || mobileOrTouch || saveData || slowConnection || document.visibilityState === "hidden") return;
     setBuffering(true);
     void video.play().catch(() => setBuffering(false));
   }, [autoPlay, src]);
@@ -280,9 +359,14 @@ export function MinimalVideoPlayer({
     const video = videoRef.current;
     if (!video) return;
     if (video.paused) {
+      setError(false);
       setBuffering(true);
-      if (video.readyState === HTMLMediaElement.HAVE_NOTHING) video.load();
-      void video.play().catch(() => setBuffering(false));
+      if (video.error) video.load();
+      // play() itself starts loading when preload is none; never gate this gesture on metadata.
+      void video.play().catch((reason: unknown) => {
+        setBuffering(false);
+        if (reason instanceof DOMException && reason.name !== "NotAllowedError" && reason.name !== "AbortError") setError(true);
+      });
     } else {
       video.pause();
     }
@@ -306,14 +390,23 @@ export function MinimalVideoPlayer({
         }}
         onCanPlay={() => setBuffering(false)}
         onDurationChange={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)}
-        onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
+        onTimeUpdate={(event) => {
+          const video = event.currentTarget;
+          const now = performance.now();
+          if (now - lastProgressRef.current < 250 && !video.paused && !video.ended) return;
+          lastProgressRef.current = now;
+          setCurrentTime(video.currentTime);
+        }}
+        onSeeked={(event) => setCurrentTime(event.currentTarget.currentTime)}
+        onError={() => { setError(true); setBuffering(false); setPlaying(false); }}
         onPlay={() => setPlaying(true)}
-        onPlaying={() => {
+        onPlaying={(event) => {
+          if (document.visibilityState === "hidden") { event.currentTarget.pause(); return; }
           setPlaying(true);
           setBuffering(false);
         }}
         onWaiting={() => setBuffering(true)}
-        onStalled={() => setBuffering(true)}
+        onStalled={(event) => { if (!event.currentTarget.paused) setBuffering(true); }}
         onPause={() => {
           setPlaying(false);
           setBuffering(false);
@@ -324,17 +417,16 @@ export function MinimalVideoPlayer({
         }}
         onClick={requestPlay}
       />
-      {buffering ? (
-        <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-black/10" aria-live="polite">
-          <span className="grid size-11 place-items-center rounded-full bg-black/60 text-white shadow-lg">
-            <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
-            <span className="sr-only">{copy("Carregando vídeo", "Loading video", "Cargando video")}</span>
-          </span>
-        </div>
+      <PlayerStatus buffering={buffering} error={error} locale={locale} onRetry={requestPlay} />
+      {!playing && !buffering && !error && !ready ? (
+        <button type="button" onClick={requestPlay} className="absolute left-1/2 top-1/3 z-10 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white ring-1 ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white" aria-label={copy("Reproduzir", "Play", "Reproducir")}>
+          <Play className="size-5 fill-current" aria-hidden="true" />
+        </button>
       ) : null}
       <PlayerControls
         playing={playing}
         ready={ready}
+        canPlay={!error}
         currentTime={currentTime}
         duration={duration}
         volume={volume}
@@ -350,7 +442,30 @@ export function MinimalVideoPlayer({
         playLabel={copy("Reproduzir", "Play", "Reproducir")}
         pauseLabel={copy("Pausar", "Pause", "Pausar")}
         volumeLabel={copy("Volume", "Volume", "Volumen")}
+        progressLabel={copy("Progresso do vídeo", "Video progress", "Progreso del video")}
+        muteLabel={volume === 0 ? copy("Ativar som", "Unmute", "Activar sonido") : copy("Silenciar", "Mute", "Silenciar")}
       />
+    </div>
+  );
+}
+
+function PlayerStatus({ buffering, error, locale, onRetry }: { buffering: boolean; error: boolean; locale: Locale; onRetry: () => void }) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  if (error) return (
+    <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-black/90 p-3 text-center text-white" role="alert">
+      <p className="text-sm">{copy("Não foi possível carregar este vídeo.", "This video could not be loaded.", "No se pudo cargar este video.")}</p>
+      <button type="button" onClick={onRetry} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/30 px-4 text-sm font-semibold hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
+        <RotateCcw className="size-4" aria-hidden="true" />{copy("Tentar novamente", "Try again", "Volver a intentar")}
+      </button>
+    </div>
+  );
+  if (!buffering) return null;
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center" role="status">
+      <span className="grid size-11 place-items-center rounded-full bg-black/60 text-white">
+        <LoaderCircle className="size-5 animate-spin motion-reduce:animate-none" aria-hidden="true" />
+        <span className="sr-only">{copy("Carregando vídeo", "Loading video", "Cargando video")}</span>
+      </span>
     </div>
   );
 }
@@ -358,6 +473,7 @@ export function MinimalVideoPlayer({
 function PlayerControls({
   playing,
   ready,
+  canPlay = ready,
   currentTime,
   duration,
   volume,
@@ -368,9 +484,12 @@ function PlayerControls({
   playLabel,
   pauseLabel,
   volumeLabel,
+  progressLabel,
+  muteLabel,
 }: {
   playing: boolean;
   ready: boolean;
+  canPlay?: boolean;
   currentTime: number;
   duration: number;
   volume: number;
@@ -381,6 +500,8 @@ function PlayerControls({
   playLabel: string;
   pauseLabel: string;
   volumeLabel: string;
+  progressLabel: string;
+  muteLabel: string;
 }) {
   const safeDuration = duration > 0 ? duration : 0;
   const safeCurrent = safeDuration > 0 ? Math.min(currentTime, safeDuration) : 0;
@@ -395,21 +516,21 @@ function PlayerControls({
         value={safeCurrent}
         disabled={!ready || safeDuration <= 0}
         onChange={(event) => onSeek(Number(event.target.value))}
-        className="h-1.5 w-full cursor-pointer accent-primary disabled:cursor-default disabled:opacity-45"
-        aria-label="Video progress"
+        className="h-6 w-full cursor-pointer accent-primary disabled:cursor-default disabled:opacity-45"
+        aria-label={progressLabel}
       />
       <div className="mt-2 flex items-center gap-2.5 text-white">
         <button
           type="button"
           onClick={onTogglePlay}
-          disabled={!ready}
-          className="grid size-9 shrink-0 place-items-center rounded-full bg-white/12 text-white backdrop-blur transition-colors hover:bg-white/20 disabled:opacity-45"
+          disabled={!canPlay}
+          className="grid size-11 shrink-0 place-items-center rounded-full bg-white/12 text-white transition-colors hover:bg-white/20 disabled:opacity-45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           aria-label={playing ? pauseLabel : playLabel}
         >
           {playing ? <Pause className="size-4 fill-current" /> : <Play className="size-4 fill-current" />}
         </button>
 
-        <span className="hidden min-w-[5.2rem] text-[0.68rem] font-semibold tabular-nums text-white/75 sm:inline">
+        <span className="min-w-[4.2rem] text-[0.65rem] font-semibold tabular-nums text-white/75">
           {formatTime(safeCurrent)} / {formatTime(safeDuration)}
         </span>
 
@@ -417,8 +538,9 @@ function PlayerControls({
           <button
             type="button"
             onClick={onToggleMute}
-            className="grid size-8 shrink-0 place-items-center rounded-full text-white/85 transition-colors hover:bg-white/10 hover:text-white"
-            aria-label={volumeLabel}
+            className="grid size-11 shrink-0 place-items-center rounded-full text-white/85 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+            aria-label={muteLabel}
+            aria-pressed={volume === 0}
           >
             {volume === 0 ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
           </button>
@@ -429,7 +551,7 @@ function PlayerControls({
             step={1}
             value={volume}
             onChange={(event) => onVolume(Number(event.target.value))}
-            className="h-1.5 w-20 cursor-pointer accent-primary sm:w-24"
+            className="hidden h-6 w-20 cursor-pointer accent-primary sm:block sm:w-24"
             aria-label={volumeLabel}
           />
         </div>
@@ -445,3 +567,4 @@ function formatTime(value: number) {
   const seconds = total % 60;
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
+
