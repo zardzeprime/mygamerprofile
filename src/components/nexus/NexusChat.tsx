@@ -179,7 +179,7 @@ export function NexusChat() {
     event.preventDefault();
     const message = input.trim();
     if (!message || sending || authLoading) return;
-    if (!user && (!guestStatus || guestStatus.locked || !guestStatus.aiReady)) return;
+    if (!user && guestStatus?.locked) return;
     if (user && configuredProviders.length === 0) return;
 
     setInput("");
@@ -189,8 +189,21 @@ export function NexusChat() {
 
     try {
       if (!user) {
+        // Enter can submit the form while the guest bootstrap is still in flight.
+        // Resolve the session here instead of silently discarding the user's first message.
+        let activeGuest = guestStatus;
+        if (!activeGuest) {
+          activeGuest = (await getNexusGuestStatus({
+            data: { guestId: readStoredGuestId() },
+          })) as NexusGuestStatus;
+          persistGuestId(activeGuest.guestId);
+          setGuestStatus(activeGuest);
+        }
+        if (activeGuest.locked) throw new Error("NEXUS_GUEST_LIMIT");
+        if (!activeGuest.aiReady) throw new Error("NEXUS_NO_PROVIDER");
+
         const response = await sendNexusGuestMessage({
-          data: { guestId: guestStatus?.guestId, message, locale },
+          data: { guestId: activeGuest.guestId, message, locale },
         });
 
         persistGuestId(response.guestId);
