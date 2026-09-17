@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, Copy, Crosshair, Database, ExternalLink, MousePointer2, UsersRound } from "lucide-react";
+import { BriefcaseBusiness, Building2, Check, Copy, Crosshair, Database, ExternalLink, MousePointer2, UsersRound } from "lucide-react";
 
 import {
   Dialog,
@@ -253,6 +253,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                     </div>
                   )}
 
+                  <TeamDetails team={selectedTeam} copy={copy} />
                   <TeamProvenance team={selectedTeam} copy={copy} />
                 </div>
 
@@ -349,6 +350,90 @@ function TeamProvenance({
         {copy("Conferido", "Verified", "Verificado")} {source.verifiedAt}
       </p>
     </div>
+  );
+}
+
+function staffRoleLabel(
+  role: NonNullable<EsportsTeam["staff"]>[number]["role"],
+  copy: (pt: string, en: string, es: string) => string,
+) {
+  if (role === "manager") return "Manager";
+  if (role === "head-coach") return copy("Head coach", "Head coach", "Entrenador principal");
+  if (role === "assistant-coach") return copy("Coach assistente", "Assistant coach", "Entrenador asistente");
+  if (role === "performance-coach") return copy("Coach de performance", "Performance coach", "Coach de rendimiento");
+  if (role === "analyst") return copy("Analista", "Analyst", "Analista");
+  return copy("Comissão técnica", "Staff", "Cuerpo técnico");
+}
+
+function TeamDetails({
+  team,
+  copy,
+}: {
+  team: EsportsTeam;
+  copy: (pt: string, en: string, es: string) => string;
+}) {
+  const staff = team.staff ?? [];
+  const organization = team.organization;
+  if (!staff.length && !organization) {
+    return (
+      <div className="mt-3 rounded-xl border border-dashed border-border bg-muted/10 p-3 text-[11px] leading-5 text-muted-foreground sm:mt-4 sm:text-xs">
+        {copy(
+          "Comissão técnica e dados institucionais ainda não foram verificados para esta equipe.",
+          "Staff and institutional details have not yet been verified for this team.",
+          "El cuerpo técnico y los datos institucionales aún no fueron verificados para este equipo.",
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <section className="mt-3 space-y-3 rounded-xl border border-border bg-background/45 p-3 sm:mt-4">
+      {staff.length ? (
+        <div>
+          <div className="flex items-center gap-2">
+            <BriefcaseBusiness className="size-3.5 text-gold-strong" />
+            <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">
+              {copy("Comissão técnica", "Team staff", "Cuerpo técnico")}
+            </p>
+          </div>
+          <div className="mt-2 space-y-2">
+            {staff.map((member) => (
+              <div key={`${member.handle}-${member.role}`} className="flex items-start justify-between gap-3 rounded-lg border border-border/70 bg-muted/10 px-2.5 py-2">
+                <div className="min-w-0">
+                  <p className="truncate text-xs font-semibold text-foreground">{member.handle}</p>
+                  {member.realName ? <p className="truncate text-[10px] text-muted-foreground">{member.realName}</p> : null}
+                </div>
+                <span className="shrink-0 text-right text-[9px] font-semibold uppercase tracking-[0.06em] text-gold-strong">
+                  {staffRoleLabel(member.role, copy)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {organization ? (
+        <div className="border-t border-border pt-3">
+          <div className="flex items-center gap-2">
+            <Building2 className="size-3.5 text-gold-strong" />
+            <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">
+              {copy("Organização", "Organization", "Organización")}
+            </p>
+          </div>
+          <div className="mt-2 space-y-1 text-[11px] text-muted-foreground">
+            {organization.foundedYear ? <p>{copy("Fundação", "Founded", "Fundación")}: <span className="font-semibold text-foreground">{organization.foundedYear}</span></p> : null}
+            {organization.headquarters ? <p>{copy("Sede", "Headquarters", "Sede")}: <span className="font-semibold text-foreground">{organization.headquarters}</span></p> : null}
+            {organization.ownerName ? <p>{copy("Proprietário", "Owner", "Propietario")}: <span className="font-semibold text-foreground">{organization.ownerName}</span></p> : null}
+            {organization.founderNames?.length ? <p>{copy("Fundadores", "Founders", "Fundadores")}: <span className="font-semibold text-foreground">{organization.founderNames.join(", ")}</span></p> : null}
+            {organization.websiteUrl ? (
+              <a href={organization.websiteUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-gold-strong hover:underline">
+                {copy("Site oficial", "Official website", "Sitio oficial")} <ExternalLink className="size-3" />
+              </a>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+    </section>
   );
 }
 
