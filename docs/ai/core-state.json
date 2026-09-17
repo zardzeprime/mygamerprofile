@@ -16,7 +16,8 @@
         "Opened global Gamer chat to anonymous visitors with a ten-successful-response trial and login wall after quota exhaustion.",
         "Added a first-message NEXUS greeting, gamer-native public persona and the original angular N/Z interface mark.",
         "Grounded MGP content recommendations in the live active-games table plus the published content catalog so paused games are not advertised.",
-        "Aligned browser and provider timeout budgets so server-side failover can finish before the client abandons a reply."
+        "Aligned browser and provider timeout budgets so server-side failover can finish before the client abandons a reply.",
+        "Preserved the first guest prompt during session bootstrap instead of silently dropping an early Enter submission."
       ],
       "inProgress": [
         "Connect scoped GitHub, Supabase Management API and Lovable MCP credentials to executable Nexus tools."
@@ -76,7 +77,8 @@
         "Defined the AVAPGV licensing-report rule that public accessibility is not treated as permission to reuse external media.",
         "Kept player-photo and unverified team-logo fallbacks text-only when reuse rights or provenance were unclear.",
         "Excluded sponsor data and avoided unverified staff photos while adding source-linked staff text records.",
-        "Audited all 62 VALORANT competitive teams and attached the current VLR-linked owcdn logo reference to every team record."
+        "Audited all 62 VALORANT competitive teams and attached the current VLR-linked owcdn logo reference to every team record.",
+        "Audited an initial cross-region batch of individual ProSettings/VLR player records for roles, crosshairs, settings and complete peripherals while withholding unlicensed player photos."
       ],
       "inProgress": [],
       "next": [
@@ -94,7 +96,8 @@
       "completed": [
         "Expanded the VALORANT competitive snapshot across Americas, EMEA, Pacific and China with dated VLR provenance and roster-status metadata.",
         "Added dated, source-linked VALORANT staff snapshots for LOUD, LEVIATÁN, MIBR and Sentinels.",
-        "Closed the competitive team-logo coverage gap from 16/62 to 62/62 records."
+        "Closed the competitive team-logo coverage gap from 16/62 to 62/62 records.",
+        "Expanded individually sourced VALORANT settings coverage with a dated cross-region batch and explicit hybrid-role labels."
       ],
       "inProgress": [
         "Continue individual ProSettings verification for players whose settings remain hidden.",
@@ -137,7 +140,8 @@
         "Bound anonymous Nexus replies to shorter message/output limits and a finite ten-response trial to control public inference cost.",
         "Reduced the per-provider timeout and increased the browser inference window so failover has a bounded path without premature client aborts.",
         "Compacted the competitive grid and roster modal for small mobile screens, with resilient logo fallbacks and copyable crosshair codes.",
-        "Retained initials as an onError fallback while enabling full team-logo coverage in cards and modals."
+        "Retained initials as an onError fallback while enabling full team-logo coverage in cards and modals.",
+        "Deferred mobile video preloading and reduced high-frequency player polling on touch/small-screen devices."
       ],
       "inProgress": [],
       "next": [
