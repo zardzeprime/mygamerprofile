@@ -150,13 +150,14 @@ export function MinimalYouTubePlayer({
 
   useEffect(() => {
     if (!ready) return;
+    const mobileOrTouch = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
     const timer = window.setInterval(() => {
       const player = playerRef.current;
       if (!player) return;
       setCurrentTime(player.getCurrentTime() || 0);
       const nextDuration = player.getDuration() || 0;
       if (nextDuration !== duration) setDuration(nextDuration);
-    }, 250);
+    }, mobileOrTouch ? 750 : 250);
     return () => window.clearInterval(timer);
   }, [duration, ready]);
 
@@ -222,7 +223,7 @@ export function MinimalVideoPlayer({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(72);
-  const [preload, setPreload] = useState<"none" | "metadata" | "auto">("metadata");
+  const [preload, setPreload] = useState<"none" | "metadata" | "auto">("none");
   const lastAudibleVolumeRef = useRef(72);
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
 
@@ -244,7 +245,7 @@ export function MinimalVideoPlayer({
     const slowConnection = effectiveType === "slow-2g" || effectiveType === "2g";
     const mobileOrTouch = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
 
-    setPreload(saveData || slowConnection ? "none" : mobileOrTouch ? "metadata" : "auto");
+    setPreload(saveData || slowConnection || mobileOrTouch ? "none" : "auto");
 
     if (!autoPlay || mobileOrTouch || saveData || slowConnection) return;
     setBuffering(true);
@@ -280,6 +281,7 @@ export function MinimalVideoPlayer({
     if (!video) return;
     if (video.paused) {
       setBuffering(true);
+      if (video.readyState === HTMLMediaElement.HAVE_NOTHING) video.load();
       void video.play().catch(() => setBuffering(false));
     } else {
       video.pause();

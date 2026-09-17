@@ -32,6 +32,11 @@ export type ProPlayerSettings = {
   edpi?: number;
   crosshairCode?: string;
   mouse?: string;
+  keyboard?: string;
+  monitor?: string;
+  headset?: string;
+  mousepad?: string;
+  earphones?: string;
   pollingRateHz?: number;
   resolution?: string;
   displayMode?: string;
