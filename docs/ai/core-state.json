@@ -28,10 +28,14 @@
         "Add explicit human-approval gates before destructive or production-impacting tool actions.",
         "Consider an opt-in multi-model council mode only for difficult admin tasks after normal failover is stable."
       ],
-      "blocked": []
+      "blocked": [],
+      "legacyName": "NEXUS",
+      "epithet": "A Regente",
+      "reportLabel": "NEXUS (Coordenação e IA)",
+      "parentId": null
     },
     "aegis": {
-      "name": "AEGIS",
+      "name": "Sabnock",
       "role": "security",
       "completed": [
         "Restricted Nexus Development mode to MGP administrators.",
@@ -46,10 +50,14 @@
         "Review GitHub App, Supabase Management API and Lovable MCP scopes before enabling Nexus write actions.",
         "Add approval and audit records for privileged Nexus tool execution."
       ],
-      "blocked": []
+      "blocked": [],
+      "legacyName": "AEGIS",
+      "epithet": "A Fortaleza",
+      "reportLabel": "Sabnock (Segurança)",
+      "parentId": "nexus"
     },
     "veil": {
-      "name": "VEIL",
+      "name": "Bael",
       "role": "privacy",
       "completed": [
         "Scoped Nexus authenticated chat history to the user through RLS.",
@@ -63,10 +71,14 @@
         "Define user-facing deletion/export controls for authenticated Nexus conversation history.",
         "Keep provider-data disclosure updated if optional multi-provider council features are introduced."
       ],
-      "blocked": []
+      "blocked": [],
+      "legacyName": "VEIL",
+      "epithet": "O Véu",
+      "reportLabel": "Bael (Privacidade)",
+      "parentId": "nexus"
     },
     "atlas": {
-      "name": "ATLAS",
+      "name": "Andromalius",
       "role": "image-rights-and-licensing",
       "completed": [
         "Added explicit source attribution metadata to Dark Souls and Dark Souls III boss artwork mappings.",
@@ -89,10 +101,14 @@
       ],
       "blocked": [
         "Some bosses still lack a sufficiently reliable boss-specific asset from currently reviewed sources."
-      ]
+      ],
+      "legacyName": "ATLAS",
+      "epithet": "O Guardião da Procedência",
+      "reportLabel": "Andromalius (Direitos e procedência)",
+      "parentId": "nexus"
     },
     "pulse": {
-      "name": "PULSE",
+      "name": "Vassago",
       "role": "updates",
       "completed": [
         "Expanded the VALORANT competitive snapshot across Americas, EMEA, Pacific and China with dated VLR provenance and roster-status metadata.",
@@ -109,16 +125,21 @@
         "Track game/editorial data that can become stale and define refresh expectations before automating it.",
         "Add owner/founder and institutional organization facts only when an official organization source confirms them."
       ],
-      "blocked": []
+      "blocked": [],
+      "legacyName": "PULSE",
+      "epithet": "O Investigador",
+      "reportLabel": "Vassago (Pesquisa e atualizações)",
+      "parentId": "nexus"
     },
     "gear": {
-      "name": "GEAR",
+      "name": "Marbas",
       "role": "automation",
       "completed": [
         "Registered GitHub, Supabase and Lovable as separate Nexus tool bridges with explicit transports and approval requirements.",
         "Scheduled a daily pg_cron retention job to delete expired anonymous Nexus sessions and cascading message history.",
         "Standardized AVAPGV Watch on a responsive branded MG Profile HTML email contract with plain-text fallback and secret-safe reporting.",
-        "Standardized AVAPGV user-facing reports around the six fronts and documented temporary email-connector incident handling."
+        "Standardized AVAPGV user-facing reports around the six fronts and documented temporary email-connector incident handling.",
+        "Replaced six-front report branding with Os Sete; all seven named roles report directly, preserving stable IDs and historical records."
       ],
       "inProgress": [],
       "next": [
@@ -128,10 +149,14 @@
       ],
       "blocked": [
         "No dedicated multi-agent/background-worker runtime exists yet for independent specialist agents."
-      ]
+      ],
+      "legacyName": "GEAR",
+      "epithet": "O Artífice",
+      "reportLabel": "Marbas (Automação)",
+      "parentId": "nexus"
     },
     "vector": {
-      "name": "VECTOR",
+      "name": "Andrealphus",
       "role": "optimization",
       "completed": [
         "Separated boss-card framing from boss-detail framing so each context can use its own crop and scale.",
@@ -153,7 +178,12 @@
         "Profile Nexus latency and provider failure rates before adding parallel council inference.",
         "Profile high-cost routes before proposing additional performance work."
       ],
-      "blocked": []
+      "blocked": [],
+      "legacyName": "VECTOR",
+      "epithet": "O Geômetra",
+      "reportLabel": "Andrealphus (Performance e UX)",
+      "parentId": "nexus"
     }
-  }
+  },
+  "councilName": "Os Sete — Conselho da NEXUS"
 }

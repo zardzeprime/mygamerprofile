@@ -12,6 +12,11 @@ export type AiCoreKind = "orchestrator" | "specialist";
 export type AiCoreDefinition = {
   id: AiCoreId;
   name: string;
+  legacyName: string;
+  epithet: string;
+  reportLabel: string;
+  parentId: "nexus" | null;
+  executionModel: "orchestrated-specialization";
   kind: AiCoreKind;
   domain: string;
   mission: string;
@@ -24,6 +29,11 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
   nexus: {
     id: "nexus",
     name: "NEXUS",
+    legacyName: "NEXUS",
+    epithet: "A Regente",
+    reportLabel: "NEXUS (Coordenação e IA)",
+    parentId: null,
+    executionModel: "orchestrated-specialization",
     kind: "orchestrator",
     domain: "orchestration",
     mission:
@@ -40,7 +50,12 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
   },
   aegis: {
     id: "aegis",
-    name: "AEGIS",
+    name: "Sabnock",
+    legacyName: "AEGIS",
+    epithet: "A Fortaleza",
+    reportLabel: "Sabnock (Segurança)",
+    parentId: "nexus",
+    executionModel: "orchestrated-specialization",
     kind: "specialist",
     domain: "security",
     mission: "Protect accounts, data paths, permissions, secrets, APIs and attack surfaces.",
@@ -65,7 +80,12 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
   },
   veil: {
     id: "veil",
-    name: "VEIL",
+    name: "Bael",
+    legacyName: "VEIL",
+    epithet: "O Véu",
+    reportLabel: "Bael (Privacidade)",
+    parentId: "nexus",
+    executionModel: "orchestrated-specialization",
     kind: "specialist",
     domain: "privacy",
     mission: "Apply privacy-by-design to personal data, visibility, consent, retention and telemetry.",
@@ -90,7 +110,12 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
   },
   atlas: {
     id: "atlas",
-    name: "ATLAS",
+    name: "Andromalius",
+    legacyName: "ATLAS",
+    epithet: "O Guardião da Procedência",
+    reportLabel: "Andromalius (Direitos e procedência)",
+    parentId: "nexus",
+    executionModel: "orchestrated-specialization",
     kind: "specialist",
     domain: "image-rights-and-licensing",
     mission: "Keep external media provenance, licensing, attribution and reuse decisions explicit.",
@@ -116,7 +141,12 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
   },
   pulse: {
     id: "pulse",
-    name: "PULSE",
+    name: "Vassago",
+    legacyName: "PULSE",
+    epithet: "O Investigador",
+    reportLabel: "Vassago (Pesquisa e atualizações)",
+    parentId: "nexus",
+    executionModel: "orchestrated-specialization",
     kind: "specialist",
     domain: "updates",
     mission: "Identify data and content that become stale and define how freshness should be maintained.",
@@ -141,7 +171,12 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
   },
   gear: {
     id: "gear",
-    name: "GEAR",
+    name: "Marbas",
+    legacyName: "GEAR",
+    epithet: "O Artífice",
+    reportLabel: "Marbas (Automação)",
+    parentId: "nexus",
+    executionModel: "orchestrated-specialization",
     kind: "specialist",
     domain: "automation",
     mission: "Turn stable repetitive work into reliable scripts, pipelines, schedules and operational automation.",
@@ -166,7 +201,12 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
   },
   vector: {
     id: "vector",
-    name: "VECTOR",
+    name: "Andrealphus",
+    legacyName: "VECTOR",
+    epithet: "O Geômetra",
+    reportLabel: "Andrealphus (Performance e UX)",
+    parentId: "nexus",
+    executionModel: "orchestrated-specialization",
     kind: "specialist",
     domain: "optimization",
     mission: "Improve performance and technical efficiency without repeating optimization work already completed.",
@@ -201,4 +241,11 @@ export function getAiCore(id: AiCoreId) {
 
 export function getSpecialistCores() {
   return Object.values(AI_CORE_REGISTRY).filter((core) => core.kind === "specialist");
+}
+
+export const AI_COUNCIL_NAME = "Os Sete — Conselho da NEXUS" as const;
+export const AI_REPORT_MASTHEAD = "MG PROFILE · OS SETE" as const;
+
+export function getAiCoreReportLabel(id: AiCoreId) {
+  return AI_CORE_REGISTRY[id].reportLabel;
 }

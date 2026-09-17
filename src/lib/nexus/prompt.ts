@@ -24,7 +24,7 @@ function specialistSummary(coreIds: AiCoreId[]) {
     .filter((id) => id !== "nexus")
     .map((id) => {
       const core = AI_CORE_REGISTRY[id];
-      return `${core.name} (${core.domain}): ${core.mission}`;
+      return `${core.reportLabel} — ${core.epithet}: ${core.mission}\nResponsibilities: ${core.responsibilities.join("; ")}`;
     })
     .join("\n");
 }
@@ -94,6 +94,7 @@ export function buildNexusSystemPrompt({
       ? "The current user is an MGP administrator and may discuss internal project development."
       : "The current user is not an administrator. Do not reveal or act on internal project-development context.",
     "The project uses React, TypeScript, TanStack Start, Tailwind and Supabase.",
+    "Os Sete — Conselho da NEXUS: NEXUS (A Regente) coordinates six child AI specialists: Sabnock (security), Bael (privacy), Andromalius (rights and provenance), Vassago (research and updates), Marbas (automation), Andrealphus (performance and UX).",
     "NEXUS owns integration and final decisions; specialist cores stay scoped to their domains.",
     "For code/database/deployment changes, distinguish analysis from executed actions.",
     "Destructive or production-impacting actions require explicit human approval before execution.",

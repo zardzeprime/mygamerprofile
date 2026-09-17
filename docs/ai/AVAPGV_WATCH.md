@@ -2,18 +2,17 @@
 
 AVAPGV Watch is the operational alert lane for MG Profile's AI-core model.
 
-## The six fronts
+## Os Sete — Conselho da NEXUS
 
-User-facing AVAPGV reports use the fixed name **the six fronts**:
+- **NEXUS (Coordenação e IA)** — A Regente.
+- **Sabnock (Segurança)** — A Fortaleza.
+- **Bael (Privacidade)** — O Véu.
+- **Andromalius (Direitos e procedência)** — O Guardião da Procedência.
+- **Vassago (Pesquisa e atualizações)** — O Investigador.
+- **Marbas (Automação)** — O Artífice.
+- **Andrealphus (Performance e UX)** — O Geômetra.
 
-- **NEXUS** — cross-domain coordination and AI.
-- **AEGIS** — security, authentication, authorization, secrets and intrusion signals.
-- **VEIL** — privacy and personal-data exposure.
-- **ATLAS** — media provenance, licensing and rights.
-- **PULSE** — freshness, platform/game/source changes.
-- **GEAR** — automations, CI/CD, scheduled jobs and pipelines.
-
-**VECTOR** remains an internal optimization role. Its performance and UX findings are reported through NEXUS or GEAR so user-facing emails consistently present the six fronts.
+NEXUS coordinates six child specialist agents. Andrealphus reports directly on performance and UX. Reports must distinguish performed checks from domains not assessed; do not give all seven a BOM status by default.
 
 Alert format: severity, owning core, what changed, repository/workflow reference and recommended next action. Secret values, tokens and credentials must never appear in alerts.
 
@@ -24,13 +23,13 @@ Meaningful AVAPGV findings are delivered as responsive Portuguese HTML email thr
 - near-black page background (`#090A0C`);
 - graphite report cards (`#121419`) with subtle borders (`#292C33`);
 - warm-gold accents (`#C9A95D`);
-- compact `MG PROFILE / AVAPGV WATCH · AS SEIS FRENTES` masthead;
+- compact `MG PROFILE · OS SETE` masthead;
 - overall status pill using only `BOM`, `+/-` or `RUIM`;
 - separate cards for responsible core, what changed, concrete reference, risk/impact and next action;
 - timestamp in the user's Bahia timezone;
 - plain-text fallback for clients that do not render HTML;
 - footer confirming that no secrets, tokens or credentials are included.
 
-ATLAS alerts must distinguish material that is merely publicly accessible from material whose license or terms actually permit reuse. Public availability alone is never treated as reuse permission.
+Andromalius alerts must distinguish material that is merely publicly accessible from material whose license or terms actually permit reuse. Public availability alone is never treated as reuse permission.
 
 The external delivery automation is configured separately from repository code so email credentials are not stored in GitHub.
