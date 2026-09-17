@@ -1,12 +1,29 @@
 export type EsportsGameSlug = "valorant" | "league-of-legends";
 export type ValorantRegion = "americas" | "emea" | "pacific" | "china";
 export type RosterStatus = "active" | "sub" | "inactive" | "stand-in" | "loan";
+export type TeamStaffRole = "manager" | "head-coach" | "assistant-coach" | "performance-coach" | "analyst" | "other";
 
 export type EsportsSource = {
   url: string;
   label: string;
   verifiedAt: string;
   note?: string;
+};
+
+export type TeamStaffMember = {
+  handle: string;
+  realName?: string;
+  role: TeamStaffRole;
+  sources: EsportsSource[];
+};
+
+export type TeamOrganization = {
+  foundedYear?: number;
+  headquarters?: string;
+  ownerName?: string;
+  founderNames?: string[];
+  websiteUrl?: string;
+  sources: EsportsSource[];
 };
 
 export type ProPlayerSettings = {
@@ -45,6 +62,8 @@ export type EsportsTeam = {
   region?: ValorantRegion;
   logoUrl?: string;
   playerIds: string[];
+  staff?: TeamStaffMember[];
+  organization?: TeamOrganization;
   sources: EsportsSource[];
 };
 
