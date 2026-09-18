@@ -104,6 +104,29 @@ function decodeHtml(value: string) {
     .trim();
 }
 
+function stripHtml(value: string) {
+  return decodeHtml(
+    value
+      .replace(/<!--.*?-->/gs, " ")
+      .replace(/<script\b[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style\b[\s\S]*?<\/style>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " "),
+  );
+}
+
+async function fetchSourceHtml(url: string, timeoutMs = 7000) {
+  const response = await fetch(url, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (compatible; MGProfileGuideBot/1.0; +https://mgprofile.online)",
+      "Accept-Language": "en-US,en;q=0.9",
+    },
+    signal: AbortSignal.timeout(timeoutMs),
+  });
+  const html = await response.text();
+  return { response, html };
+}
+
 function slugifyChampion(name: string) {
   const normalized = name
     .normalize("NFD")
