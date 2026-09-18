@@ -45,8 +45,10 @@ export async function authenticatedUser(req: Request) {
 
   const url = env("SUPABASE_URL");
   if (!url) throw new Error("NEXUS_BACKEND_NOT_READY");
+
   const response = await fetch(`${url}/auth/v1/user`, {
     headers: { apikey: PROJECT_PUBLISHABLE_KEY, Authorization: `Bearer ${token}` },
+    signal: AbortSignal.timeout(6_000),
   });
   if (!response.ok) throw new Error("NEXUS_AUTH_INVALID");
   const user = await response.json() as { id?: string };
@@ -79,7 +81,7 @@ async function ensureGuest(db: any, requestedGuestId?: unknown) {
   };
 }
 
-async function guestMessages(db: any, guestId: string, limit = 40) {
+async function guestMessages(db: any, guestId: string, limit = 24) {
   const { data, error } = await db.rpc("list_nexus_guest_messages", {
     p_session_id: guestId,
     p_limit: limit,
@@ -88,10 +90,39 @@ async function guestMessages(db: any, guestId: string, limit = 40) {
   return data ?? [];
 }
 
+function compactChatHistory(
+  rows: Array<{ role?: unknown; content?: unknown }>,
+  maxMessages: number,
+  maxChars: number,
+): ChatMessage[] {
+  const newestFirst = rows
+    .filter((row) => row.role === "user" || row.role === "assistant")
+    .slice(0, maxMessages);
+
+  const selected: ChatMessage[] = [];
+  let chars = 0;
+
+  for (const row of newestFirst) {
+    const content = String(row.content ?? "").trim();
+    if (!content) continue;
+
+    const remaining = maxChars - chars;
+    if (remaining <= 0) break;
+    const clipped = content.length > remaining ? content.slice(content.length - remaining) : content;
+    selected.push({
+      role: row.role === "assistant" ? "assistant" : "user",
+      content: clipped,
+    });
+    chars += clipped.length;
+  }
+
+  return selected.reverse();
+}
+
 export async function handleGuestStatus(raw: Record<string, unknown>) {
   const db = adminDb();
   const guest = await ensureGuest(db, raw.guestId);
-  const messages = await guestMessages(db, guest.session_id, 40);
+  const messages = await guestMessages(db, guest.session_id, 24);
   const responsesUsed = Number(guest.responses_used ?? 0);
   const maxResponses = Number(guest.max_responses ?? 10);
   const remaining = Math.max(0, maxResponses - responsesUsed);
@@ -102,7 +133,7 @@ export async function handleGuestStatus(raw: Record<string, unknown>) {
     remaining,
     locked: remaining <= 0,
     aiReady: aiReady(),
-    inferenceTransport: "supabase-edge-v2",
+    inferenceTransport: "supabase-edge-v3",
     providers: providerStatuses(),
     messages,
   };
@@ -129,17 +160,15 @@ export async function handleGuestSend(raw: Record<string, unknown>) {
   if (!aiReady()) throw new Error("NEXUS_NO_PROVIDER");
 
   const coreIds = selectCores(message, "gaming");
-  const rows = await guestMessages(db, guest.session_id, 20);
-  const history: ChatMessage[] = rows
-    .filter((row: any) => row.role === "user" || row.role === "assistant")
-    .map((row: any) => ({ role: row.role, content: String(row.content) }));
+  const rows = await guestMessages(db, guest.session_id, 12);
+  const history = compactChatHistory(rows, 12, 12_000);
   history.push({ role: "user", content: message });
 
   const completion = await complete({
     system: buildSystemPrompt("gaming", false, coreIds, locale),
     messages: history,
-    effort: "medium",
-    maxOutputTokens: 1000,
+    effort: "low",
+    maxOutputTokens: 850,
   });
 
   const { data: quotaRows, error } = await db.rpc("record_nexus_guest_exchange", {
@@ -154,7 +183,9 @@ export async function handleGuestSend(raw: Record<string, unknown>) {
       locale,
       anonymousTrial: true,
       attemptedProviders: completion.attemptedProviders,
-      runtime: "edge-v2",
+      providerTimings: completion.providerTimings,
+      latencyMs: completion.latencyMs,
+      runtime: "edge-v3",
       orchestrator: "nexus",
     },
   });
@@ -179,6 +210,7 @@ export async function handleGuestSend(raw: Record<string, unknown>) {
     provider: completion.provider,
     model: completion.model,
     attemptedProviders: completion.attemptedProviders,
+    latencyMs: completion.latencyMs,
     coreIds,
   };
 }
@@ -190,7 +222,7 @@ export async function handleMemberStatus(req: Request) {
   return {
     isAdmin: admin,
     aiReady: aiReady(),
-    inferenceTransport: "supabase-edge-v2",
+    inferenceTransport: "supabase-edge-v3",
     providers: providerStatuses(),
     tools: admin ? TOOL_BRIDGES : [],
     orchestrator: "nexus",
@@ -224,19 +256,24 @@ async function ownedThread(db: any, userId: string, threadId: unknown) {
   return data as { id: string; mode: Mode };
 }
 
+async function memberHistory(db: any, userId: string, threadId: string, limit = 80) {
+  const { data, error } = await db
+    .from("nexus_messages")
+    .select("id,role,content,core_ids,provider,model,created_at")
+    .eq("thread_id", threadId)
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw new Error("NEXUS_MESSAGES_FAILED");
+  return data ?? [];
+}
+
 export async function handleMemberMessages(req: Request, raw: Record<string, unknown>) {
   const userId = await authenticatedUser(req);
   const db = adminDb();
   const thread = await ownedThread(db, userId, raw.threadId);
-  const { data, error } = await db
-    .from("nexus_messages")
-    .select("id,role,content,core_ids,provider,model,created_at")
-    .eq("thread_id", thread.id)
-    .eq("user_id", userId)
-    .order("created_at", { ascending: true })
-    .limit(200);
-  if (error) throw new Error("NEXUS_MESSAGES_FAILED");
-  return data ?? [];
+  const rows = await memberHistory(db, userId, thread.id, 80);
+  return rows.reverse();
 }
 
 export async function handleDeleteThread(req: Request, raw: Record<string, unknown>) {
@@ -269,79 +306,117 @@ async function enforceMemberRateLimit(db: any, userId: string) {
   if ((count ?? 0) >= 12) throw new Error("NEXUS_RATE_LIMIT");
 }
 
+function ephemeralAssistantMessage(
+  completion: Awaited<ReturnType<typeof complete>>,
+  coreIds: string[],
+) {
+  return {
+    id: `nexus-ephemeral-${crypto.randomUUID()}`,
+    role: "assistant",
+    content: completion.text,
+    core_ids: coreIds,
+    provider: completion.provider,
+    model: completion.model,
+    created_at: new Date().toISOString(),
+  };
+}
+
 export async function handleMemberSend(req: Request, raw: Record<string, unknown>) {
   const userId = await authenticatedUser(req);
   const db = adminDb();
-  const admin = await isAdmin(db, userId);
   const requestedMode = normalizeMode(raw.mode);
   const locale = normalizeLocale(raw.locale);
   const message = requireMessage(raw.message, 6000);
 
+  const [admin] = await Promise.all([
+    requestedMode === "development" ? isAdmin(db, userId) : Promise.resolve(false),
+    enforceMemberRateLimit(db, userId),
+  ]);
+
   if (requestedMode === "development" && !admin) throw new Error("NEXUS_ADMIN_REQUIRED");
   if (!aiReady()) throw new Error("NEXUS_NO_PROVIDER");
-  await enforceMemberRateLimit(db, userId);
 
-  let threadId: string;
+  let threadId: string | undefined;
   let threadMode: Mode = requestedMode;
-  let newThread = false;
+  let history: ChatMessage[] = [];
 
-  if (raw.threadId) {
-    const thread = await ownedThread(db, userId, raw.threadId);
+  if (raw.threadId != null) {
+    if (!validUuid(raw.threadId)) throw new Error("NEXUS_THREAD_INVALID");
+    const existingThreadId = raw.threadId;
+
+    const [thread, historyRows] = await Promise.all([
+      ownedThread(db, userId, existingThreadId),
+      memberHistory(db, userId, existingThreadId, 16),
+    ]);
+
     threadId = thread.id;
     threadMode = thread.mode;
     if (threadMode === "development" && !admin) throw new Error("NEXUS_ADMIN_REQUIRED");
-  } else {
+    history = compactChatHistory(historyRows, 14, 18_000);
+  }
+
+  history.push({ role: "user", content: message });
+
+  const coreIds = selectCores(message, threadMode);
+  const completion = await complete({
+    system: buildSystemPrompt(threadMode, admin, coreIds, locale),
+    messages: history,
+    effort: threadMode === "development" ? "medium" : "low",
+    maxOutputTokens: threadMode === "development" ? 1800 : 1000,
+  });
+
+  let isNewThread = false;
+  let persistence = "stored";
+
+  if (!threadId) {
     const { data: thread, error } = await db
       .from("nexus_threads")
       .insert({ user_id: userId, title: titleFromMessage(message), mode: requestedMode })
       .select("id,mode")
       .single();
-    if (error || !thread) throw new Error("NEXUS_THREAD_CREATE_FAILED");
+
+    if (error || !thread) {
+      console.error("[NEXUS] completion succeeded but thread persistence failed");
+      persistence = "degraded";
+      return {
+        threadId: null,
+        isNewThread: true,
+        mode: threadMode,
+        message: ephemeralAssistantMessage(completion, coreIds),
+        provider: completion.provider,
+        model: completion.model,
+        attemptedProviders: completion.attemptedProviders,
+        latencyMs: completion.latencyMs,
+        coreIds,
+        orchestrator: "nexus",
+        persistence,
+      };
+    }
+
     threadId = thread.id;
     threadMode = thread.mode as Mode;
-    newThread = true;
+    isNewThread = true;
   }
 
-  try {
-    const { data: historyRows, error: historyError } = await db
-      .from("nexus_messages")
-      .select("role,content")
-      .eq("thread_id", threadId)
-      .eq("user_id", userId)
-      .in("role", ["user", "assistant"])
-      .order("created_at", { ascending: false })
-      .limit(23);
-    if (historyError) throw new Error("NEXUS_HISTORY_FAILED");
+  const metadataBase = {
+    mode: threadMode,
+    locale,
+    runtime: "edge-v3",
+    orchestrator: "nexus",
+  };
 
-    const history: ChatMessage[] = (historyRows ?? [])
-      .reverse()
-      .map((row: any) => ({
-        role: row.role === "assistant" ? "assistant" : "user",
-        content: String(row.content),
-      }));
-    history.push({ role: "user", content: message });
-
-    const coreIds = selectCores(message, threadMode);
-    const completion = await complete({
-      system: buildSystemPrompt(threadMode, admin, coreIds, locale),
-      messages: history,
-      effort: threadMode === "development" ? "high" : "medium",
-      maxOutputTokens: threadMode === "development" ? 2400 : 1600,
-    });
-
-    const { error: userMessageError } = await db.from("nexus_messages").insert({
-      thread_id: threadId,
-      user_id: userId,
-      role: "user",
-      content: message,
-      core_ids: coreIds,
-      metadata: { mode: threadMode, locale, runtime: "edge-v2", orchestrator: "nexus" },
-    });
-    if (userMessageError) throw new Error("NEXUS_USER_MESSAGE_WRITE_FAILED");
-
-    const { data: assistantMessage, error: assistantError } = await db
-      .from("nexus_messages")
-      .insert({
+  const { data: insertedMessages, error: messageWriteError } = await db
+    .from("nexus_messages")
+    .insert([
+      {
+        thread_id: threadId,
+        user_id: userId,
+        role: "user",
+        content: message,
+        core_ids: coreIds,
+        metadata: metadataBase,
+      },
+      {
         thread_id: threadId,
         user_id: userId,
         role: "assistant",
@@ -350,38 +425,44 @@ export async function handleMemberSend(req: Request, raw: Record<string, unknown
         provider: completion.provider,
         model: completion.model,
         metadata: {
-          mode: threadMode,
-          locale,
-          runtime: "edge-v2",
-          orchestrator: "nexus",
+          ...metadataBase,
           attemptedProviders: completion.attemptedProviders,
+          providerTimings: completion.providerTimings,
+          latencyMs: completion.latencyMs,
         },
-      })
-      .select("id,role,content,core_ids,provider,model,created_at")
-      .single();
-    if (assistantError) throw new Error("NEXUS_ASSISTANT_MESSAGE_WRITE_FAILED");
+      },
+    ])
+    .select("id,role,content,core_ids,provider,model,created_at");
 
-    await db
+  let assistantMessage = insertedMessages?.find((row: any) => row.role === "assistant");
+
+  if (messageWriteError || !assistantMessage) {
+    console.error("[NEXUS] completion succeeded but message persistence failed");
+    persistence = "degraded";
+    assistantMessage = ephemeralAssistantMessage(completion, coreIds);
+  } else {
+    const { error: threadUpdateError } = await db
       .from("nexus_threads")
       .update({ last_message_at: new Date().toISOString() })
       .eq("id", threadId)
       .eq("user_id", userId);
 
-    return {
-      threadId,
-      isNewThread: newThread,
-      mode: threadMode,
-      message: assistantMessage,
-      provider: completion.provider,
-      model: completion.model,
-      attemptedProviders: completion.attemptedProviders,
-      coreIds,
-      orchestrator: "nexus",
-    };
-  } catch (error) {
-    if (newThread) {
-      await db.from("nexus_threads").delete().eq("id", threadId).eq("user_id", userId);
+    if (threadUpdateError) {
+      console.warn("[NEXUS] thread timestamp update failed after successful response");
     }
-    throw error;
   }
+
+  return {
+    threadId,
+    isNewThread,
+    mode: threadMode,
+    message: assistantMessage,
+    provider: completion.provider,
+    model: completion.model,
+    attemptedProviders: completion.attemptedProviders,
+    latencyMs: completion.latencyMs,
+    coreIds,
+    orchestrator: "nexus",
+    persistence,
+  };
 }
