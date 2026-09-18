@@ -66,8 +66,8 @@ const PRESETS: BuildPreset[] = [
       },
     ],
     sources: [
-      { label: "Dark Souls community · Quality discussion", url: "https://steamcommunity.com/app/211420/discussions/0/624074858707394642/" },
-      { label: "GameFAQs · Claymore scaling discussion", url: "https://gamefaqs.gamespot.com/boards/230462-dark-souls-remastered/76646160" },
+      { label: "Steam · Quality / Claymore 27 STR + 40 DEX", url: "https://steamcommunity.com/app/570940/discussions/0/1696049513772474324/" },
+      { label: "Reddit · Claymore como quality weapon", url: "https://www.reddit.com/r/darksouls/comments/nvmkwk/" },
     ],
     icon: Sword,
   },
@@ -107,8 +107,8 @@ const PRESETS: BuildPreset[] = [
       },
     ],
     sources: [
-      { label: "Dark Souls Wiki · Great Club", url: "https://darksouls.fandom.com/wiki/Great_Club" },
-      { label: "Community build reference · Great Club", url: "https://www.youtube.com/watch?v=oYaH5GpDKDQ" },
+      { label: "Steam · Great Club / Bandit / Strength", url: "https://steamcommunity.com/app/570940/discussions/0/1696049513772474324/" },
+      { label: "Reddit · STR 40 + Great Club / Black Knight route", url: "https://www.reddit.com/r/darksouls/comments/zy62wh/" },
     ],
     icon: Hammer,
   },
@@ -148,8 +148,9 @@ const PRESETS: BuildPreset[] = [
       },
     ],
     sources: [
-      { label: "Dark Souls Wiki · Great Combustion", url: "https://darksouls.wikidot.com/great-combustion" },
-      { label: "Dark Souls Wiki · Power Within", url: "https://darksouls.wikidot.com/power-within" },
+      { label: "Reddit · Pyromancy + Great Combustion / Power Within", url: "https://www.reddit.com/r/darksouls/comments/1dgio2o/" },
+      { label: "Reddit · DEX 40–45 e armas DEX", url: "https://www.reddit.com/r/darksoulsremastered/comments/hbj83x/" },
+      { label: "Steam · discussão de builds DEX/Pyro", url: "https://steamcommunity.com/app/570940/discussions/0/5283252978688325040/" },
     ],
     icon: Flame,
   },
@@ -185,9 +186,9 @@ export function DarkSoulsBuildLab({ locale }: { locale: Locale }) {
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
-              "Três pontos de partida pensados para PvE, com núcleos claros, variações e fontes. Não são uma tier list: servem como rotas de progressão que você pode adaptar.",
-              "Three PvE-oriented starting points with clear cores, variants and sources. They are not a tier list; use them as progression routes you can adapt.",
-              "Tres puntos de partida para PvE con núcleos claros, variantes y fuentes. No son una tier list; son rutas de progresión que puedes adaptar.",
+              "Três pontos de partida revisados contra discussões recorrentes de jogadores em Steam/Reddit, com núcleos claros, variações e fontes. “MGP Verificada” indica consistência entre referências — não uma tier list.",
+              "Three starting points reviewed against recurring player discussions on Steam/Reddit, with clear cores, variants and sources. “MGP Verified” means consistency across references, not a tier list.",
+              "Tres puntos de partida revisados con discusiones recurrentes de jugadores en Steam/Reddit, con núcleos claros, variantes y fuentes. “MGP Verificada” indica consistencia entre referencias, no una tier list.",
             )}
           </p>
         </div>
