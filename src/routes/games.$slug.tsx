@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Building2,
   CalendarDays,
@@ -94,6 +94,7 @@ function GameHub() {
       new Set(modules.map((moduleKey) => (moduleKey === "maps" ? "modes" : moduleKey))),
     ) as GameModuleKey[];
   }, [game.modules, game.slug]);
+  useEffect(() => { setActive("overview"); setMobileMenuOpen(false); }, [game.slug]);
   const editorial = GAME_EDITORIAL_OVERVIEW[game.slug];
 
   const handleTab = (moduleKey: GameModuleKey, scrollToPanel = false) => {
@@ -186,8 +187,8 @@ function GameHub() {
       </section>
 
       <div className="mx-auto min-w-0 w-full max-w-7xl px-4 sm:px-6">
-        <div className="sticky top-16 z-40 -mx-2 py-2 md:hidden">
-          <div className="rounded-2xl border border-border bg-background/95 p-2 shadow-lift backdrop-blur-xl">
+        <div className="sticky top-16 z-30 -mx-2 py-2 md:hidden">
+          <div className="max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-2xl border border-border bg-background p-2 shadow-lift">
             <button
               type="button"
               aria-expanded={mobileMenuOpen}
@@ -211,15 +212,15 @@ function GameHub() {
               <ChevronDown className={cn("size-4 shrink-0 text-muted-foreground transition-transform", mobileMenuOpen && "rotate-180")} />
             </button>
             {mobileMenuOpen ? (
-              <div id="mobile-hub-navigation" role="tablist" aria-label={game.name} className="mt-1 grid grid-cols-2 gap-1 border-t border-border pt-2">
+              <div id="mobile-hub-navigation" role="group" aria-label={game.name} className="mt-1 grid grid-cols-2 gap-1 border-t border-border pt-2">
                 {visibleModules.map((moduleKey) => {
                   const selected = active === moduleKey;
                   return (
                     <button
                       key={moduleKey}
                       type="button"
-                      role="tab"
-                      aria-selected={selected}
+                      aria-pressed={selected}
+                      aria-controls="hub-panel-content"
                       onClick={() => {
                         handleTab(moduleKey, true);
                         setMobileMenuOpen(false);
@@ -255,6 +256,20 @@ function GameHub() {
                 aria-controls="hub-panel-content"
                 tabIndex={selected ? 0 : -1}
                 onClick={() => handleTab(moduleKey)}
+                onKeyDown={(event) => {
+                  const index = visibleModules.indexOf(moduleKey);
+                  let next = index;
+                  if (event.key === "ArrowRight") next = (index + 1) % visibleModules.length;
+                  else if (event.key === "ArrowLeft") next = (index - 1 + visibleModules.length) % visibleModules.length;
+                  else if (event.key === "Home") next = 0;
+                  else if (event.key === "End") next = visibleModules.length - 1;
+                  else return;
+                  event.preventDefault();
+                  const nextModule = visibleModules[next];
+                  if (!nextModule) return;
+                  handleTab(nextModule);
+                  document.getElementById(`hub-tab-${visibleModules[next]}`)?.focus();
+                }}
                 className={cn(
                   "hub-tab shrink-0 px-3.5 py-3 text-sm font-semibold",
                   selected ? "hub-tab-active text-foreground" : "text-muted-foreground",
@@ -270,7 +285,8 @@ function GameHub() {
           ref={panelRef}
           id="hub-panel-content"
           role="tabpanel"
-          aria-labelledby={`hub-tab-${active}`}
+          aria-label={MODULE_LABELS[active][locale]}
+          tabIndex={0}
           className="min-w-0 scroll-mt-36 py-5 outline-none sm:scroll-mt-24 sm:py-8"
         >
           <div
@@ -413,3 +429,4 @@ function GameFact({
     </div>
   );
 }
+
