@@ -42,7 +42,8 @@
         "Add the GitHub App bridge as the first write-capable Nexus development tool using branch/review/merge by default.",
         "Add explicit human-approval gates before destructive or production-impacting tool actions.",
         "Consider an opt-in multi-model council mode only for difficult admin tasks after normal failover is stable.",
-        "After the VALORANT completion pass, move the same product/content standard to League of Legends, then Dark Souls Remastered/Dark Souls III, then Elden Ring before the broader public test."
+        "After the VALORANT completion pass, move the same product/content standard to League of Legends, then Dark Souls Remastered/Dark Souls III, then Elden Ring before the broader public test.",
+        "After the VALORANT + League live-content audit is stable, proceed with the same quality/provenance standard on Dark Souls Remastered and Dark Souls III."
       ],
       "blocked": [],
       "legacyName": "NEXUS",
@@ -119,7 +120,8 @@
         "Added a local scalable VALORANT card/navigation mark with a dark rounded badge treatment, preserving the separate hub-background provenance and avoiding a new remote logo dependency.",
         "Replaced the provisional VALORANT SVG card treatment with the user-uploaded transparent PNG after visual comparison, copying the exact blob into public assets without recompression.",
         "Standardized the League pass on Riot Data Dragon for item/champion/map icons and splash art, kept ability-video requests lazy, and withheld team/player photos or logos where reusable provenance was not established.",
-        "Kept League ability media lazy-loaded only while previewing and preserved Riot/Data Dragon image provenance while adding full-size splash navigation."
+        "Kept League ability media lazy-loaded only while previewing and preserved Riot/Data Dragon image provenance while adding full-size splash navigation.",
+        "Kept Andromalius in the lifecycle chain as the required provenance/rights reviewer whenever live-game updates introduce new external artwork, videos or other media."
       ],
       "inProgress": [],
       "next": [
@@ -151,7 +153,10 @@
         "Attempted every one of the 115 unique VALORANT handles that lacked sourced settings at the start of the 2026-09-18 completion pass. Five identity-safe records were added (Jerrwin, Eggsterr/Eggster, P0PPIN/Poppin, Boni and alvinboy/Alvin); ambiguous or source-poor matches were rejected instead of inferred.",
         "Current VALORANT directory coverage after the exhaustive pass: 350 roster entries, 239 sourced settings records, 319 verified/observed role labels and at least 55 verified crosshair codes.",
         "Refreshed the static official VALORANT feed with current Brazil-facing Riot/VALORANT Esports/VALORANT Brasil YouTube items reviewed on 2026-09-18.",
-        "Added a dated 2026-09-18 League esports snapshot with starter LCK/LEC/LCS/CBLOL rosters and an official LoL Esports upcoming-match snapshot, keeping TBD bracket slots explicit rather than inferred."
+        "Added a dated 2026-09-18 League esports snapshot with starter LCK/LEC/LCS/CBLOL rosters and an official LoL Esports upcoming-match snapshot, keeping TBD bracket slots explicit rather than inferred.",
+        "Formalized Vassago as MG Profile's live-game content lifecycle owner: daily freshness review covers patches, competitive rotations, agents/champions, weapons/items, modes, skins/cosmetics and competitive schedules for VALORANT and League of Legends.",
+        "Audited the current VALORANT map rotation from Riot patch history and corrected the public 13.04 pool to Abyss, Ascent, Haven, Lotus, Split, Summit and Sunset.",
+        "Completed a dated VALORANT + League source-of-truth audit before moving to Dark Souls Remastered and Dark Souls III, including current Riot patch baselines, LoL Data Dragon 16.18.1, current special modes and competitive schedule snapshots."
       ],
       "inProgress": [
         "Continue individual ProSettings verification for players whose settings remain hidden.",
@@ -162,7 +167,8 @@
         "Track game/editorial data that can become stale and define refresh expectations before automating it.",
         "Add owner/founder and institutional organization facts only when an official organization source confirms them.",
         "Continue individual source review for current-roster players that still lack verified settings or a verified crosshair; do not mass-scrape or infer absent values.",
-        "Refresh the League 2026 roster and LoL Esports schedule snapshot as bracket results resolve; keep TBD slots explicit until the official schedule names the team."
+        "Refresh the League 2026 roster and LoL Esports schedule snapshot as bracket results resolve; keep TBD slots explicit until the official schedule names the team.",
+        "Use the daily lifecycle candidates to keep VALORANT and League public facts current; official Riot changes should be reviewed before stale map pools, modes, champion/agent data, cosmetics or competitive schedules remain public."
       ],
       "blocked": [
         "111 of 350 VALORANT roster entries (110 unique normalized handles) still lack a source-safe public settings record after individual review. Keep those values hidden; do not estimate, alias-match loosely or bulk-scrape."
@@ -191,7 +197,8 @@
         "Created configuration-driven support methods and documented the external Google OAuth setup so credentials remain outside client code and GitHub.",
         "Added reusable MGP media-rail scrollbar styling using the active site accent instead of native-looking horizontal scrollbars.",
         "Separated NEXUS Edge read/send rate-limit buckets and added provider timing plus total latency metadata for successful Edge v3 exchanges so future slow-provider regressions can be diagnosed from runtime data.",
-        "Added private service-role-only nexus_runtime_events telemetry and used live Edge probes to validate the new chain: test replies succeeded on gemini-3.5-flash-lite in ~0.8s and ~1.9s after the earlier all-provider failure."
+        "Added private service-role-only nexus_runtime_events telemetry and used live Edge probes to validate the new chain: test replies succeeded on gemini-3.5-flash-lite in ~0.8s and ~1.9s after the earlier all-provider failure.",
+        "Added the daily Game Lifecycle Watch GitHub workflow and official-source scanner. Marbas owns automation; candidate changes open a review PR and never auto-merge."
       ],
       "inProgress": [],
       "next": [
@@ -241,7 +248,9 @@
         "Redesigned League items into an icon/price-first shop with separated stat rows and a clickable recipe tree; split champions from skins, added class filters and large champion sheets, lazy hover ability previews, full-screen skin splash viewing, and fixed/rotating/TFT mode sections.",
         "Refined League champion detail into a splash-dominant presentation with a compact skill rail and anchored enlarged hover/focus video previews; added wheel-driven League skin splash navigation without leaving the viewer.",
         "Reduced NEXUS latency with cached/best-effort MGP content grounding, lower Gamer reasoning/output budgets, bounded per-provider timeouts, a 42s overall provider budget, and immediate failover across multiple configured providers instead of retrying the same slow provider first.",
-        "Added a low-effort Gemini capacity chain for NEXUS Gamer using stable Flash/Lite models, prioritizing gemini-3.5-flash-lite for fast support responses while retaining 3.6/3.1-lite/3.7/3.8 fallbacks."
+        "Added a low-effort Gemini capacity chain for NEXUS Gamer using stable Flash/Lite models, prioritizing gemini-3.5-flash-lite for fast support responses while retaining 3.6/3.1-lite/3.7/3.8 fallbacks.",
+        "Assigned Andrealphus as the UX/consistency reviewer for lifecycle changes so accurate updates are checked for clean mobile/desktop presentation before public promotion.",
+        "Clarified VALORANT skin VP/RP figures as estimates/reference values rather than presenting tier-derived values as exact individual store prices."
       ],
       "inProgress": [
         "Run page-by-page rendered art-direction QA after Visual System v2 is visible in Lovable, focusing on home, game catalog, communities, profiles, NEXUS and game hubs at mobile and desktop widths."
