@@ -44,12 +44,12 @@ export function ValorantEsportsPanel({ locale }: { locale: Locale }) {
     <section className="surface-panel overflow-hidden">
       <div className="flex items-center justify-between border-b border-border px-5 py-4">
         <div className="flex items-center gap-2">
-          <Radio className="size-4 text-tactical" />
+          <Radio className="size-4 text-gold-strong" />
           <h2 className="font-display text-sm font-semibold uppercase text-foreground">
             {copy("Cenário competitivo", "Competitive scene", "Escena competitiva")}
           </h2>
         </div>
-        <span className={cn("size-2 rounded-full", liveMatches.length || officialLive ? "animate-pulse bg-red-500" : "bg-tactical/70")} aria-hidden="true" />
+        <span className={cn("size-2 rounded-full", liveMatches.length || officialLive ? "animate-pulse bg-red-500" : "bg-gold/70")} aria-hidden="true" />
       </div>
 
       <div className="flex gap-1.5 overflow-x-auto border-b border-border px-4 py-3">
@@ -61,8 +61,8 @@ export function ValorantEsportsPanel({ locale }: { locale: Locale }) {
             className={cn(
               "shrink-0 rounded-full border px-2.5 py-1 text-[0.64rem] font-bold uppercase tracking-[0.08em] transition-colors",
               filter === item
-                ? "border-tactical/45 bg-tactical/10 text-foreground"
-                : "border-border text-muted-foreground hover:border-tactical/25 hover:text-foreground",
+                ? "border-gold/45 bg-gold/10 text-foreground"
+                : "border-border text-muted-foreground hover:border-gold/25 hover:text-foreground",
             )}
           >
             {filterLabel(item, locale)}
@@ -126,7 +126,7 @@ function MatchRow({ match, locale }: { match: ValorantEsportsMatch; locale: Loca
   const dateLabel = new Intl.DateTimeFormat(localeCode, { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }).format(date);
 
   const body = (
-    <div className="rounded-xl border border-border bg-muted/20 p-3 transition-colors hover:border-tactical/30 hover:bg-tactical/[0.035]">
+    <div className="rounded-xl border border-border bg-muted/20 p-3 transition-colors hover:border-gold/30 hover:bg-gold/[0.035]">
       <div className="flex items-center justify-between gap-3 text-[0.62rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         <div className="flex min-w-0 items-center gap-2">
           {match.competitionLogoUrl ? (
@@ -146,7 +146,7 @@ function MatchRow({ match, locale }: { match: ValorantEsportsMatch; locale: Loca
         <Team team={match.teamB} align="right" />
       </div>
       {match.status === "live" && match.broadcastUrl ? (
-        <div className="mt-3 flex items-center justify-center gap-1.5 text-xs font-semibold text-tactical"><ExternalLink className="size-3.5" />{copy("Assistir transmissão", "Watch broadcast", "Ver transmisión")}</div>
+        <div className="mt-3 flex items-center justify-center gap-1.5 text-xs font-semibold text-gold-strong"><ExternalLink className="size-3.5" />{copy("Assistir transmissão", "Watch broadcast", "Ver transmisión")}</div>
       ) : null}
     </div>
   );
@@ -157,7 +157,7 @@ function MatchRow({ match, locale }: { match: ValorantEsportsMatch; locale: Loca
 function Team({ team, align }: { team: ValorantEsportsMatch["teamA"]; align: "left" | "right" }) {
   return (
     <div className={cn("flex min-w-0 items-center gap-2", align === "right" && "flex-row-reverse text-right")}>
-      <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-tactical/20 bg-white p-1 shadow-sm">
+      <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-gold/20 bg-white p-1 shadow-sm">
         {team.logoUrl ? (
           <img src={team.logoUrl} alt={`${team.name} logo`} className="max-h-full max-w-full object-contain" loading="lazy" />
         ) : (
