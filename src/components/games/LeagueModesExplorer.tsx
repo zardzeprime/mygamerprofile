@@ -31,6 +31,7 @@ type ModeKey =
   | "practice"
   | "arena"
   | "aram-mayhem"
+  | "classic"
   | "tft";
 
 type ModeCategory = "fixed" | "rotating" | "tft";
@@ -91,7 +92,7 @@ const MODES: ModeDefinition[] = [
     mapId: "30",
     teamSize: "multi-team",
     icon: Sparkles,
-    officialUrl: "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-18-notes/",
+    officialUrl: "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-17-notes/",
   },
   {
     key: "aram-mayhem",
@@ -99,6 +100,14 @@ const MODES: ModeDefinition[] = [
     mapId: "12",
     teamSize: "5v5",
     icon: Zap,
+    officialUrl: "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-18-notes/",
+  },
+  {
+    key: "classic",
+    category: "rotating",
+    mapId: "11",
+    teamSize: "5v5",
+    icon: Swords,
     officialUrl: "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-18-notes/",
   },
   {
@@ -174,6 +183,24 @@ function modeCopy(locale: Locale, key: ModeKey) {
         "Arena gira alrededor de rondas de combate, Aumentos y builds fuera del Rift estándar. En 2026 Riot sigue actualizando eventos y reglas entre parches.",
       ),
       objective: copy("Sobreviver às rodadas e adaptar sua build.", "Survive rounds and adapt your build.", "Sobrevivir las rondas y adaptar tu build."),
+    },
+    classic: {
+      name: "League of Legends Classic",
+      short: copy(
+        "Uma versão oficial do LoL clássico, mantida e atualizada pela Riot.",
+        "An official Classic LoL experience maintained and updated by Riot.",
+        "Una experiencia oficial de LoL clásico mantenida y actualizada por Riot.",
+      ),
+      description: copy(
+        "Classic recria uma era antiga de League com kits, sistemas, runas e ritmo próprios. A Riot continua adicionando campeões clássicos e ajustes específicos, então o MGP mantém o modo separado do Summoner's Rift moderno.",
+        "Classic recreates an older League era with its own kits, systems, runes and pacing. Riot continues adding classic champions and mode-specific updates, so MGP keeps it separate from modern Summoner's Rift.",
+        "Classic recrea una era antigua de League con kits, sistemas, runas y ritmo propios. Riot sigue añadiendo campeones clásicos y ajustes específicos, así que MGP lo mantiene separado de la Grieta moderna.",
+      ),
+      objective: copy(
+        "Jogar o Rift com as regras e kits da experiência Classic.",
+        "Play the Rift using the Classic ruleset and champion kits.",
+        "Jugar la Grieta con las reglas y kits de la experiencia Classic.",
+      ),
     },
     "aram-mayhem": {
       name: copy("ARAM: Desordem", "ARAM: Mayhem", "ARAM: Caos"),
@@ -298,6 +325,9 @@ export function LeagueModesExplorer({ locale }: { locale: Locale }) {
           <DataSourceIndicator source="verified" />
           <span className="rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">
             Riot Data Dragon · {version}
+          </span>
+          <span className="rounded-full border border-gold/25 bg-gold/[0.06] px-2.5 py-1 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-gold-strong">
+            Estado editorial · Patch 26.18
           </span>
         </div>
         <h2 className="mt-4 font-display text-2xl font-semibold text-foreground sm:text-3xl">
