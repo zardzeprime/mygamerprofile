@@ -21,7 +21,9 @@
         "Verified the hosted Supabase nexus-inference Edge Function is active at version 8 and aligned with the repository runtime.",
         "Published the NEXUS / Os Sete council area in the product navigation with visible core names, sigil letters, specialist roles and distinct accent identities.",
         "Separated transient NEXUS health failures from confirmed no-provider state so the UI no longer reports a disconnected AI engine merely because status loading failed.",
-        "Established the Visual System v2 foundation: a customizable semantic interface signal color, a quick appearance control in the global header, and a shared interaction language designed to avoid generic AI/gamer UI clichés."
+        "Established the Visual System v2 foundation: a customizable semantic interface signal color, a quick appearance control in the global header, and a shared interaction language designed to avoid generic AI/gamer UI clichés.",
+        "Expanded the MG Profile identity/loadout foundation so profile customization has explicit slots for backgrounds, banners, avatar frames, cursors, profile effects, chibis and badges while keeping game-inspired assets rights-gated.",
+        "Aligned this VALORANT completion pass with MG Profile’s product purpose: gamer identity, social discovery, forums/community content, guides/builds/tutorials and LFG rather than a standalone esports database."
       ],
       "inProgress": [
         "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady.",
@@ -31,7 +33,8 @@
         "Configure at least one official inference API credential in deployment secrets and test live model replies end to end.",
         "Add the GitHub App bridge as the first write-capable Nexus development tool using branch/review/merge by default.",
         "Add explicit human-approval gates before destructive or production-impacting tool actions.",
-        "Consider an opt-in multi-model council mode only for difficult admin tasks after normal failover is stable."
+        "Consider an opt-in multi-model council mode only for difficult admin tasks after normal failover is stable.",
+        "After the VALORANT completion pass, move the same product/content standard to League of Legends, then Dark Souls Remastered/Dark Souls III, then Elden Ring before the broader public test."
       ],
       "blocked": [],
       "legacyName": "NEXUS",
@@ -98,14 +101,16 @@
         "Audited all 62 VALORANT competitive teams and attached the current VLR-linked owcdn logo reference to every team record.",
         "Audited an initial cross-region batch of individual ProSettings/VLR player records for roles, crosshairs, settings and complete peripherals while withholding unlicensed player photos.",
         "Kept crosshair previews code-native and player peripheral icons local, avoiding new external media reuse.",
-        "Kept the VALORANT pro-player reader on initials fallbacks when player-photo reuse rights were not explicitly verified; public accessibility alone is not treated as image permission."
+        "Kept the VALORANT pro-player reader on initials fallbacks when player-photo reuse rights were not explicitly verified; public accessibility alone is not treated as image permission.",
+        "Prepared original CSS-only identity-pack concepts for MGP Core, Souls-inspired embers, tactical signal and Rift-inspired magic-tech without reusing third-party game artwork."
       ],
       "inProgress": [],
       "next": [
         "Continue replacing weak fallback artwork when higher-quality, clearly sourced assets are found.",
         "Keep provenance metadata attached to every new external media source.",
         "Keep any formal NEXUS trademark/copyright/business registrations in private legal records rather than the client repository.",
-        "Add player photos only when an official, licensed, permissioned or otherwise clearly reusable source can be documented for each asset."
+        "Add player photos only when an official, licensed, permissioned or otherwise clearly reusable source can be documented for each asset.",
+        "Keep future game-inspired cursors, frames, banners, mascots and animated backgrounds original to MGP unless an official/licensed/permissioned asset with clear reuse rights is documented."
       ],
       "blocked": [
         "Some bosses still lack a sufficiently reliable boss-specific asset from currently reviewed sources.",
@@ -125,7 +130,10 @@
         "Closed the competitive team-logo coverage gap from 16/62 to 62/62 records.",
         "Expanded individually sourced VALORANT settings coverage with a dated cross-region batch and explicit hybrid-role labels.",
         "Checked the full VALORANT directory in CI: 350 players total, 234 have sourced settings, 319 have verified/observed role labels and 50 have a verified crosshair code. Missing values remain hidden instead of being estimated.",
-        "Expanded the manually reviewed current-roster VALORANT crosshair set with eighteen additional individual ProSettings records while retaining per-source provenance and never estimating missing values."
+        "Expanded the manually reviewed current-roster VALORANT crosshair set with eighteen additional individual ProSettings records while retaining per-source provenance and never estimating missing values.",
+        "Attempted every one of the 115 unique VALORANT handles that lacked sourced settings at the start of the 2026-09-18 completion pass. Five identity-safe records were added (Jerrwin, Eggsterr/Eggster, P0PPIN/Poppin, Boni and alvinboy/Alvin); ambiguous or source-poor matches were rejected instead of inferred.",
+        "Current VALORANT directory coverage after the exhaustive pass: 350 roster entries, 239 sourced settings records, 319 verified/observed role labels and at least 55 verified crosshair codes.",
+        "Refreshed the static official VALORANT feed with current Brazil-facing Riot/VALORANT Esports/VALORANT Brasil YouTube items reviewed on 2026-09-18."
       ],
       "inProgress": [
         "Continue individual ProSettings verification for players whose settings remain hidden.",
@@ -138,7 +146,7 @@
         "Continue individual source review for current-roster players that still lack verified settings or a verified crosshair; do not mass-scrape or infer absent values."
       ],
       "blocked": [
-        "116 of 350 current directory entries still lack confirmed public settings, and 31 lack a verified/observed role label. Crosshair coverage is 50/350. Do not estimate or bulk-scrape missing values."
+        "111 of 350 VALORANT roster entries (110 unique normalized handles) still lack a source-safe public settings record after individual review. Keep those values hidden; do not estimate, alias-match loosely or bulk-scrape."
       ],
       "legacyName": "PULSE",
       "epithet": "O Investigador",
@@ -157,13 +165,16 @@
         "Added check:valorant regression validation to CI for sparse merges, source retention, eDPI, coverage and ambiguous shared handles.",
         "Registered a real responsive AVAPGV / Os Sete React Email template with status, owning core, concrete reference, impact and next-action cards, plus plain-text render support.",
         "Raised CI regression coverage for verified VALORANT crosshairs so a future data merge cannot silently drop the newly reviewed set.",
-        "Added an additive profiles.accent_color migration with six-digit hex validation and mirrored the deployed schema change in repository migrations/types."
+        "Added an additive profiles.accent_color migration with six-digit hex validation and mirrored the deployed schema change in repository migrations/types.",
+        "Added a daily official-source VALORANT Brasil news discovery workflow that checks Riot News PT-BR, VALORANT Esports PT-BR and the official VALORANT // Brasil YouTube feed, writes candidates to a review queue and opens/updates a pull request without auto-merging.",
+        "Registered official VALORANT Brasil Instagram and TikTok as future social sources but marked them API-required rather than bypassing platform access controls with fragile scraping."
       ],
       "inProgress": [],
       "next": [
         "Implement scoped OAuth/App credential flows for Nexus administrative tools.",
         "Identify repeated manual project workflows that are stable enough to automate.",
-        "Coordinate with PULSE when recurring content or data refreshes are introduced."
+        "Coordinate with PULSE when recurring content or data refreshes are introduced.",
+        "Enable official Instagram/TikTok ingestion only when an approved API or connector is available; keep the same candidate-review pipeline and never auto-publish social items."
       ],
       "blocked": [
         "No dedicated multi-agent/background-worker runtime exists yet for independent specialist agents."
@@ -194,7 +205,9 @@
         "Normalized VALORANT hub accents across Agents, Maps, Weapons, Skins, News, Esports, live content and mobile navigation from the old tactical blue treatment to the MG Profile gold/graphite identity.",
         "Added a dedicated responsive Os Sete page and navigation entry instead of leaving the AI-core architecture only in internal documentation.",
         "Created Visual System v2 motion tokens, asymmetric MGP control geometry, refined header/navigation microinteractions, customizable semantic color rails and a requestAnimationFrame pointer aura that is disabled for touch and reduced-motion users.",
-        "Kept the existing custom MGP cursor assets and layered a lightweight interaction aura instead of replacing the browser pointer with a heavy state-driven JavaScript cursor."
+        "Kept the existing custom MGP cursor assets and layered a lightweight interaction aura instead of replacing the browser pointer with a heavy state-driven JavaScript cursor.",
+        "Fixed the VALORANT mobile overview clipping shown in the 2026-09-18 screenshot by forcing the overview grid to a minmax(0,1fr) mobile track, constraining the VALORANT sidebar min-content width and allowing synopsis/fact text to wrap.",
+        "Added a responsive Profile Customization Studio scaffold in profile settings with selectable future slots and original identity-pack previews, while only existing background presets are currently equipable."
       ],
       "inProgress": [
         "Run page-by-page rendered art-direction QA after Visual System v2 is visible in Lovable, focusing on home, game catalog, communities, profiles, NEXUS and game hubs at mobile and desktop widths."

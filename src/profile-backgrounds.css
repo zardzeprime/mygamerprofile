@@ -112,3 +112,35 @@
     animation: none !important;
   }
 }
+
+/* Profile identity-pack concept previews. Original MGP CSS; no third-party game artwork. */
+.customization-pack-mgp {
+  background:
+    radial-gradient(circle at 18% 18%, color-mix(in oklab, var(--color-gold) 34%, transparent), transparent 38%),
+    linear-gradient(135deg, #1b1d21, #0b0c0f 72%);
+}
+
+.customization-pack-ashen {
+  background:
+    radial-gradient(circle at 22% 78%, rgba(226, 103, 42, 0.52), transparent 24%),
+    radial-gradient(circle at 72% 18%, rgba(208, 168, 76, 0.2), transparent 32%),
+    repeating-linear-gradient(118deg, transparent 0 18px, rgba(255,255,255,0.025) 19px 20px),
+    linear-gradient(145deg, #2a1710, #0c0c0d 72%);
+}
+
+.customization-pack-signal {
+  background:
+    linear-gradient(112deg, transparent 0 29%, rgba(208, 168, 76, 0.25) 29.3% 30%, transparent 30.3% 100%),
+    linear-gradient(66deg, transparent 0 68%, rgba(255,255,255,0.07) 68.2% 69%, transparent 69.2% 100%),
+    radial-gradient(circle at 76% 28%, color-mix(in oklab, var(--color-gold) 26%, transparent), transparent 34%),
+    linear-gradient(135deg, #171a1e, #090a0c 74%);
+}
+
+.customization-pack-rift {
+  background:
+    radial-gradient(circle at 22% 22%, rgba(93, 119, 206, 0.34), transparent 30%),
+    radial-gradient(circle at 72% 65%, rgba(184, 134, 219, 0.28), transparent 33%),
+    radial-gradient(circle at 86% 12%, color-mix(in oklab, var(--color-gold) 24%, transparent), transparent 26%),
+    linear-gradient(145deg, #17172b, #090a12 72%);
+}
+

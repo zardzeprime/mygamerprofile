@@ -295,8 +295,8 @@ function GameHub() {
           >
             {active === "overview" ? (
               <div className="space-y-6">
-                <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-                  <article className="surface-panel p-6 sm:p-8">
+                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                  <article className="surface-panel min-w-0 overflow-hidden p-6 sm:p-8">
                     <div className="flex items-center gap-2">
                       <Sparkles className="size-4 text-gold-strong" />
                       <span className="section-kicker">
@@ -309,7 +309,7 @@ function GameHub() {
                         <h2 className="font-display text-2xl font-semibold text-foreground">
                           {copy("Sobre o jogo", "About the game", "Sobre el juego")}
                         </h2>
-                        <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
+                        <p className="mt-3 max-w-3xl break-words text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
                           {editorial?.synopsis[locale] ?? game.description[locale]}
                         </p>
 
@@ -425,7 +425,7 @@ function GameFact({
         <Icon className="size-4" />
         <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em]">{label}</span>
       </div>
-      <p className="mt-2 text-sm font-semibold leading-6 text-foreground">{value}</p>
+      <p className="mt-2 break-words text-sm font-semibold leading-6 text-foreground">{value}</p>
     </div>
   );
 }
