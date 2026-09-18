@@ -194,9 +194,6 @@ export function GameCard({ game }: { game: GameConfig }) {
             </li>
           ))}
         </ul>
-        <p className="mt-5 text-xs font-semibold uppercase tracking-[0.1em] text-gold-strong opacity-70 transition-opacity group-hover:opacity-100">
-          {locale === "pt-BR" ? "Clique no card para entrar" : locale === "es" ? "Haz clic para entrar" : "Click the card to enter"}
-        </p>
       </div>
     </article>
   );
