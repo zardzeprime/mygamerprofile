@@ -57,6 +57,7 @@ export function AppearanceQuickPanel() {
       </PopoverTrigger>
 
       <PopoverContent
+        data-mgp-header-overlay="true"
         align="end"
         sideOffset={10}
         className="w-[min(92vw,23rem)] rounded-2xl border-border/80 bg-popover/96 p-0 shadow-2xl backdrop-blur-xl"
@@ -105,11 +106,10 @@ export function AppearanceQuickPanel() {
                     type="button"
                     aria-label={label}
                     aria-pressed={active}
-                    onClick={() =>
-                      palette.color
-                        ? setAccentColor(palette.color)
-                        : resetAccentColor()
-                    }
+                    onClick={() => {
+                      if (palette.color) setAccentColor(palette.color);
+                      else resetAccentColor();
+                    }}
                     className={cn(
                       "group relative grid aspect-square place-items-center rounded-xl border transition-[transform,border-color,background-color] duration-200 hover:-translate-y-0.5",
                       active
