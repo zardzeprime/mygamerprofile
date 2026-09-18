@@ -28,7 +28,7 @@ export function ThemeSelector({ showLabels = false }: { showLabels?: boolean }) 
       <div
         role="group"
         aria-label={t("settings.theme")}
-        className="inline-flex items-center gap-1 rounded-full border border-border bg-surface p-1"
+        className="inline-flex items-center gap-1 rounded-[0.9rem_0.9rem_0.42rem_0.9rem] border border-border bg-surface p-1"
       >
         {OPTIONS.map(({ value, icon: Icon, labelKey }) => {
           const active = preference === value;
@@ -40,7 +40,7 @@ export function ThemeSelector({ showLabels = false }: { showLabels?: boolean }) 
               aria-label={t(labelKey)}
               onClick={() => setPreference(value)}
               className={cn(
-                "inline-flex min-h-10 items-center gap-2 rounded-full px-2.5 py-1.5 text-xs font-semibold transition-[background-color,color,transform] duration-200 active:scale-95",
+                "inline-flex min-h-10 items-center gap-2 rounded-[0.7rem_0.7rem_0.3rem_0.7rem] px-2.5 py-1.5 text-xs font-semibold transition-[background-color,color,transform,border-color] duration-200 active:scale-95",
                 active
                   ? "bg-gold-soft text-gold-strong"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -53,10 +53,10 @@ export function ThemeSelector({ showLabels = false }: { showLabels?: boolean }) 
         })}
       </div>
 
-      <div className="inline-flex items-center gap-1 rounded-full border border-border bg-surface p-1">
+      <div className="inline-flex items-center gap-1 rounded-[0.9rem_0.9rem_0.42rem_0.9rem] border border-border bg-surface p-1">
         <label
           className={cn(
-            "relative inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-full focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 px-2.5 text-xs font-semibold text-muted-foreground transition-[background-color,color,transform] duration-200 hover:bg-accent hover:text-accent-foreground active:scale-95",
+            "relative inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-[0.7rem_0.7rem_0.3rem_0.7rem] focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 px-2.5 text-xs font-semibold text-muted-foreground transition-[background-color,color,transform] duration-200 hover:bg-accent hover:text-accent-foreground active:scale-95",
             accentColor && "text-foreground",
           )}
           title={pickerLabel}
@@ -83,7 +83,7 @@ export function ThemeSelector({ showLabels = false }: { showLabels?: boolean }) 
             onClick={resetAccentColor}
             aria-label={resetLabel}
             title={resetLabel}
-            className="grid size-10 place-items-center rounded-full text-muted-foreground transition-[background-color,color,transform] duration-200 hover:bg-muted hover:text-foreground active:scale-95"
+            className="grid size-10 place-items-center rounded-[0.7rem_0.7rem_0.3rem_0.7rem] text-muted-foreground transition-[background-color,color,transform] duration-200 hover:bg-muted hover:text-foreground active:scale-95"
           >
             <RotateCcw aria-hidden="true" className="size-3.5" />
           </button>
