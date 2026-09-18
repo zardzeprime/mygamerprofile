@@ -14,6 +14,7 @@ import { ValorantNews } from "@/components/games/ValorantNews";
 import { ValorantWeapons } from "@/components/games/ValorantWeapons";
 import { ValorantSkins } from "@/components/games/ValorantSkins";
 import { LeagueChampionExplorer } from "@/components/games/LeagueChampionExplorer";
+import { LeagueBuildLab } from "@/components/games/LeagueBuildLab";
 import { LeagueItemsExplorerV2 } from "@/components/games/LeagueItemsExplorerV2";
 import { LeagueModesExplorer } from "@/components/games/LeagueModesExplorer";
 import { LeagueEsportsPanel } from "@/components/games/LeagueEsportsPanel";
@@ -52,6 +53,7 @@ export function FutureCollection({
   }
 
   if (gameSlug === "league-of-legends") {
+    if (moduleKey === "builds") return <LeagueBuildLab locale={locale} />;
     if (moduleKey === "champions") return <LeagueChampionExplorer locale={locale} />;
     if (moduleKey === "skins") return <LeagueChampionExplorer locale={locale} mode="skins" />;
     if (moduleKey === "items") return <LeagueItemsExplorerV2 locale={locale} />;
