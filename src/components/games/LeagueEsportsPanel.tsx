@@ -1,9 +1,9 @@
-import { CalendarDays, ExternalLink, Globe2, RadioTower, Trophy } from "lucide-react";
+import { CalendarDays, ExternalLink, Globe2, RadioTower, Swords, Trophy } from "lucide-react";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
 
-type EventStatus = "completed" | "upcoming" | "regional";
+type EventStatus = "completed" | "upcoming";
 
 type EsportsEvent = {
   key: string;
@@ -16,19 +16,29 @@ type EsportsEvent = {
   description: Record<Locale, string>;
 };
 
+type UpcomingMatch = {
+  key: string;
+  date: string;
+  league: string;
+  left: string;
+  right: string;
+  format: string;
+  href: string;
+};
+
 const EVENTS: EsportsEvent[] = [
   {
     key: "worlds-2026",
     badge: "W",
     name: "Worlds 2026",
     dates: "15 Oct — 14 Nov 2026",
-    location: "Los Angeles · Allen · Brooklyn",
+    location: "International",
     status: "upcoming",
     href: "https://lolesports.com/",
     description: {
-      "pt-BR": "O Mundial fecha a temporada competitiva com as melhores equipes classificadas das ligas regionais e eventos internacionais.",
-      en: "Worlds closes the competitive season with the best teams qualified through regional leagues and international events.",
-      es: "El Mundial cierra la temporada competitiva con los mejores equipos clasificados desde ligas regionales y eventos internacionales.",
+      "pt-BR": "O Mundial fecha a temporada competitiva com as equipes classificadas pelos circuitos regionais e eventos internacionais.",
+      en: "Worlds closes the competitive season with teams qualified through regional circuits and international events.",
+      es: "El Mundial cierra la temporada competitiva con equipos clasificados desde circuitos regionales y eventos internacionales.",
     },
   },
   {
@@ -40,9 +50,9 @@ const EVENTS: EsportsEvent[] = [
     status: "completed",
     href: "https://lolesports.com/",
     description: {
-      "pt-BR": "Evento internacional de meio de temporada que reúne as principais forças de cada região e influencia a classificação para o Mundial.",
-      en: "The mid-season international event brings together leading teams from every region and affects qualification for Worlds.",
-      es: "El evento internacional de mitad de temporada reúne a las principales fuerzas de cada región e influye en la clasificación al Mundial.",
+      "pt-BR": "O principal evento internacional de meio de temporada reuniu representantes dos circuitos Tier 1.",
+      en: "The main mid-season international event brought together representatives from Tier 1 circuits.",
+      es: "El principal evento internacional de mitad de temporada reunió representantes de los circuitos Tier 1.",
     },
   },
   {
@@ -54,10 +64,58 @@ const EVENTS: EsportsEvent[] = [
     status: "completed",
     href: "https://lolesports.com/",
     description: {
-      "pt-BR": "Primeiro grande encontro internacional da temporada, formado a partir dos melhores desempenhos das etapas regionais iniciais.",
-      en: "The season's first major international meeting, built from the best results of the opening regional stages.",
-      es: "El primer gran encuentro internacional de la temporada, formado por los mejores resultados de las etapas regionales iniciales.",
+      "pt-BR": "Primeiro grande encontro internacional da temporada, formado a partir das etapas regionais iniciais.",
+      en: "The season's first major international meeting, built from the opening regional stages.",
+      es: "El primer gran encuentro internacional de la temporada, formado desde las etapas regionales iniciales.",
     },
+  },
+];
+
+const UPCOMING_MATCHES: UpcomingMatch[] = [
+  {
+    key: "lec-2026-09-18",
+    date: "18 Sep",
+    league: "LEC · Playoffs",
+    left: "Movistar KOI",
+    right: "Natus Vincere",
+    format: "Bo5",
+    href: "https://lolesports.com/",
+  },
+  {
+    key: "lec-2026-09-19",
+    date: "19 Sep",
+    league: "LEC · Playoffs",
+    left: "TBD",
+    right: "Karmine Corp",
+    format: "Bo5",
+    href: "https://lolesports.com/",
+  },
+  {
+    key: "lec-2026-09-20",
+    date: "20 Sep",
+    league: "LEC · Finals",
+    left: "TBD",
+    right: "G2 Esports",
+    format: "Bo5",
+    href: "https://lolesports.com/",
+  },
+  {
+    key: "lcs-2026-09-20",
+    date: "20 Sep",
+    league: "LCS · Playoffs",
+    left: "FlyQuest",
+    right: "Team Liquid Alienware",
+    format: "Bo5",
+    href: "https://lolesports.com/",
+  },
+  {
+    key: "cblol-2026-09-26",
+    date: "26 Sep",
+    league: "CBLOL · Playoffs",
+    left: "TBD",
+    right: "LOS",
+    format: "Bo5",
+    href: "https://lolesports.com/",
   },
 ];
 
@@ -86,35 +144,49 @@ export function LeagueEsportsPanel({
             {copy("Circuito competitivo", "Competitive circuit", "Circuito competitivo")}
           </h2>
           <p className="mt-2 text-xs leading-5 text-muted-foreground">
-            {copy("Os principais eventos globais da temporada e o caminho até o Mundial.", "The season's main global events and the road to Worlds.", "Los principales eventos globales de la temporada y el camino al Mundial.")}
+            {copy(
+              "Eventos globais, agenda recente e acesso ao diretório de times e jogadores.",
+              "Global events, recent schedule and access to the team/player directory.",
+              "Eventos globales, calendario reciente y acceso al directorio de equipos y jugadores.",
+            )}
           </p>
         </div>
 
         <div className="divide-y divide-border">
-          {EVENTS.map((event) => (
-            <a key={event.key} href={event.href} target="_blank" rel="noreferrer" className="group flex gap-3 p-4 transition-colors hover:bg-muted/25">
-              <EventBadge event={event} />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="truncate text-sm font-semibold text-foreground">{event.name}</h3>
-                  <ExternalLink className="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-gold-strong" />
-                </div>
-                <p className="mt-1 text-[0.7rem] font-medium text-muted-foreground">{event.dates}</p>
-                <p className="mt-1 truncate text-[0.68rem] text-muted-foreground/80">{event.location}</p>
+          {UPCOMING_MATCHES.slice(0, 3).map((match) => (
+            <a
+              key={match.key}
+              href={match.href}
+              target="_blank"
+              rel="noreferrer"
+              className="group block p-4 transition-colors hover:bg-muted/25"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[0.65rem] font-black uppercase tracking-[0.1em] text-gold-strong">{match.date}</span>
+                <span className="text-[0.62rem] font-semibold text-muted-foreground">{match.league}</span>
+              </div>
+              <p className="mt-2 truncate text-sm font-semibold text-foreground">
+                {match.left} <span className="text-muted-foreground">×</span> {match.right}
+              </p>
+              <div className="mt-1 flex items-center justify-between gap-2 text-[0.65rem] text-muted-foreground">
+                <span>{match.format}</span>
+                <ExternalLink className="size-3 transition-colors group-hover:text-gold-strong" />
               </div>
             </a>
           ))}
         </div>
 
         <div className="border-t border-border p-4">
-          <div className="flex flex-wrap gap-1.5">
-            {REGIONS.map((region) => (
-              <span key={region} className="rounded-full border border-border bg-muted/20 px-2.5 py-1 text-[0.65rem] font-bold text-muted-foreground">{region}</span>
-            ))}
-          </div>
+          <p className="text-[0.62rem] leading-5 text-muted-foreground">
+            {copy(
+              "Agenda revisada em 18/09/2026. Confrontos marcados como TBD ainda dependem do resultado das chaves.",
+              "Schedule reviewed on 2026-09-18. TBD matchups still depend on bracket results.",
+              "Calendario revisado el 18/09/2026. Los cruces TBD todavía dependen de los resultados del cuadro.",
+            )}
+          </p>
           {onOpenCompetitive ? (
             <button type="button" onClick={onOpenCompetitive} className="mt-4 text-xs font-bold text-gold-strong hover:underline">
-              {copy("Abrir visão competitiva →", "Open competitive view →", "Abrir vista competitiva →")}
+              {copy("Abrir competitivo →", "Open competitive →", "Abrir competitivo →")}
             </button>
           ) : null}
         </div>
@@ -127,15 +199,61 @@ export function LeagueEsportsPanel({
       <div className="surface-panel p-5 sm:p-6">
         <div className="flex items-center gap-2 text-gold-strong">
           <RadioTower className="size-4" />
-          <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em]">LoL Esports · Tier 1</span>
+          <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em]">LoL Esports · 2026</span>
         </div>
         <h2 className="mt-3 font-display text-2xl font-semibold text-foreground sm:text-3xl">
-          {copy("Temporada competitiva de League of Legends", "League of Legends competitive season", "Temporada competitiva de League of Legends")}
+          {copy("Competitivo de League of Legends", "League of Legends competitive", "Competitivo de League of Legends")}
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-          {copy("A temporada global combina ligas regionais, First Stand, MSI e Worlds. Esta seção funciona como porta de entrada; resultados e integrações ao vivo entram quando a API oficial estiver conectada.", "The global season combines regional leagues, First Stand, MSI and Worlds. This section is an entry point; live results and integrations arrive when the official API is connected.", "La temporada global combina ligas regionales, First Stand, MSI y Worlds. Esta sección funciona como punto de entrada; resultados e integraciones en vivo llegarán cuando conectemos la API oficial.")}
+          {copy(
+            "A área competitiva agora combina calendário, eventos internacionais e o diretório MGP de times/jogadores. Configurações pessoais não são inventadas: o perfil mostra função e dados profissionais apenas quando existe fonte.",
+            "The competitive area now combines schedule, international events and MGP's team/player directory. Personal settings are never invented: profiles show role and professional data only when a source exists.",
+            "El área competitiva combina calendario, eventos internacionales y el directorio MGP de equipos/jugadores. Las configuraciones personales nunca se inventan: el perfil muestra rol y datos profesionales solo cuando existe una fuente.",
+          )}
         </p>
       </div>
+
+      <section className="surface-panel overflow-hidden">
+        <div className="flex items-center justify-between gap-3 border-b border-border p-5">
+          <div>
+            <div className="flex items-center gap-2">
+              <Swords className="size-4 text-gold-strong" />
+              <h3 className="font-display text-xl font-semibold text-foreground">
+                {copy("Próximos jogos", "Upcoming matches", "Próximos partidos")}
+              </h3>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {copy("Snapshot do calendário oficial · 18/09/2026", "Official schedule snapshot · 2026-09-18", "Snapshot del calendario oficial · 18/09/2026")}
+            </p>
+          </div>
+          <a href="https://lolesports.com/" target="_blank" rel="noreferrer" className="shrink-0 text-xs font-bold text-gold-strong hover:underline">
+            LoL Esports ↗
+          </a>
+        </div>
+
+        <div className="grid gap-px bg-border sm:grid-cols-2 xl:grid-cols-3">
+          {UPCOMING_MATCHES.map((match) => (
+            <a
+              key={match.key}
+              href={match.href}
+              target="_blank"
+              rel="noreferrer"
+              className="group bg-background p-4 transition-colors hover:bg-muted/20"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="rounded-full border border-gold/25 bg-gold/5 px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.1em] text-gold-strong">{match.date}</span>
+                <span className="text-[0.65rem] font-semibold text-muted-foreground">{match.format}</span>
+              </div>
+              <p className="mt-3 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">{match.league}</p>
+              <div className="mt-2 space-y-1">
+                <p className="truncate text-sm font-semibold text-foreground">{match.left}</p>
+                <p className="text-[0.62rem] font-black uppercase tracking-[0.12em] text-muted-foreground">vs</p>
+                <p className="truncate text-sm font-semibold text-foreground">{match.right}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
 
       <div className="grid gap-4 lg:grid-cols-3">
         {EVENTS.map((event) => (
@@ -160,14 +278,20 @@ export function LeagueEsportsPanel({
       </div>
 
       <div className="surface-panel p-5 sm:p-6">
-        <p className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">{copy("Principais regiões Tier 1", "Main Tier 1 regions", "Principales regiones Tier 1")}</p>
+        <p className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+          {copy("Circuitos Tier 1", "Tier 1 circuits", "Circuitos Tier 1")}
+        </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {REGIONS.map((region) => (
             <span key={region} className="rounded-xl border border-border bg-muted/20 px-3 py-2 text-sm font-bold text-foreground">{region}</span>
           ))}
         </div>
         <p className="mt-4 text-xs leading-5 text-muted-foreground">
-          {copy("Calendário e estrutura desta seção são resumidos a partir do LoL Esports oficial. Logos de terceiros não são copiados automaticamente de wikis; cada mídia precisa ter licença própria compatível.", "Schedule and structure here are summarized from official LoL Esports sources. Third-party logos are not automatically copied from wikis; each media file needs its own compatible license.", "El calendario y la estructura se resumen a partir de fuentes oficiales de LoL Esports. Los logos de terceros no se copian automáticamente de wikis; cada archivo necesita una licencia compatible.")}
+          {copy(
+            "Calendário e estrutura vêm do LoL Esports oficial. O diretório de elencos usa snapshots datados e mantém a fonte visível; logos e fotos só entram quando existe procedência adequada.",
+            "Schedule and structure come from official LoL Esports. The roster directory uses dated snapshots with visible sources; logos and photos are added only when provenance is adequate.",
+            "El calendario y la estructura provienen de LoL Esports oficial. El directorio usa snapshots fechados con fuentes visibles; logos y fotos solo se añaden cuando existe procedencia adecuada.",
+          )}
         </p>
       </div>
     </section>
@@ -176,12 +300,27 @@ export function LeagueEsportsPanel({
 
 function EventBadge({ event, large = false }: { event: EsportsEvent; large?: boolean }) {
   return (
-    <div className={cn("grid shrink-0 place-items-center rounded-xl border border-gold/30 bg-[radial-gradient(circle_at_top,hsl(var(--gold)/0.22),transparent_72%),hsl(var(--muted)/0.2)] font-black tracking-tight text-gold-strong", large ? "size-16 text-sm" : "size-11 text-[0.65rem]")}>{event.badge}</div>
+    <div
+      className={cn(
+        "grid shrink-0 place-items-center rounded-xl border border-gold/30 bg-[radial-gradient(circle_at_top,hsl(var(--gold)/0.22),transparent_72%),hsl(var(--muted)/0.2)] font-black tracking-tight text-gold-strong",
+        large ? "size-16 text-sm" : "size-11 text-[0.65rem]",
+      )}
+    >
+      {event.badge}
+    </div>
   );
 }
 
 function StatusPill({ status, locale }: { status: EventStatus; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const label = status === "upcoming" ? copy("Próximo", "Upcoming", "Próximo") : status === "completed" ? copy("Concluído", "Completed", "Finalizado") : copy("Regional", "Regional", "Regional");
-  return <span className="rounded-full border border-border bg-muted/25 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">{label}</span>;
+  const label =
+    status === "upcoming"
+      ? copy("Próximo", "Upcoming", "Próximo")
+      : copy("Concluído", "Completed", "Finalizado");
+
+  return (
+    <span className="rounded-full border border-border bg-muted/25 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+      {label}
+    </span>
+  );
 }
