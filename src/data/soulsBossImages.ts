@@ -194,6 +194,22 @@ export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
     detailObjectPosition: "50% 33%",
     detailScale: 1.08,
   }),
+  "champion-s-gravetender-and-gravetender-greatwolf": {
+    url: "https://static.gosunoob.com/img/1/2016/10/gravetender-greatwolf-boss-dks3-dlc-1024x581.jpg",
+    sourceUrl: "https://www.gosunoob.com/dark-souls-3/champions-gravetender-boss-fight/",
+    sourceLabel: {
+      "pt-BR": "Screenshot de referência · GosuNoob",
+      en: "Reference screenshot · GosuNoob",
+      es: "Captura de referencia · GosuNoob",
+    },
+    cardObjectPosition: "50% 44%",
+    detailObjectPosition: "50% 46%",
+    cardScale: 1.08,
+    detailScale: 1.12,
+    cardFit: "cover",
+    detailFit: "cover",
+  },
+
   "sister-friede-and-father-ariandel": creativeUncut("ds3-sister-friede", {
     cardObjectPosition: "50% 24%",
     detailObjectPosition: "50% 30%",
