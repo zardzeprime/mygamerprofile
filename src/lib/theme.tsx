@@ -47,6 +47,75 @@ function readableForeground(value: string): "#111318" | "#ffffff" {
   return luminance > 0.42 ? "#111318" : "#ffffff";
 }
 
+function cursorDataUri(svg: string) {
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+}
+
+function applyCursorAppearance() {
+  if (typeof document === "undefined") return;
+
+  const root = document.documentElement;
+  const dark = root.classList.contains("dark");
+  const inlineAccent = root.style.getPropertyValue("--mgp-user-accent").trim();
+  const accent =
+    root.dataset["accent"] === "custom" && isHexColor(inlineAccent)
+      ? inlineAccent
+      : DEFAULT_ACCENT_COLOR;
+
+  // Cursor body intentionally contrasts with the page theme.
+  const bodyStart = dark ? "#ffffff" : "#30343b";
+  const bodyMid = dark ? "#f2eee5" : "#171a20";
+  const bodyEnd = dark ? "#d7d0c4" : "#090b0e";
+  const lensStart = dark ? "#ffffff" : "#343a44";
+  const lensEnd = dark ? "#ddd5c7" : "#0b0d11";
+  const highlight = dark ? "#ffffff" : "#eef1f5";
+  const shadow = dark ? "#0b0d11" : "#000000";
+
+  const arrow = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <linearGradient id="body" x1="5" y1="4" x2="19" y2="24" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="${bodyStart}"/>
+          <stop offset="0.55" stop-color="${bodyMid}"/>
+          <stop offset="1" stop-color="${bodyEnd}"/>
+        </linearGradient>
+      </defs>
+      <path d="M5.2 4.8 23.25 15.15 15.3 17.45 11.05 26.05Z" fill="${shadow}" opacity="0.28" transform="translate(.9 .9)"/>
+      <path d="M4.35 3.65 22.95 14.75 14.65 17.18 10.45 25.92Z" fill="url(#body)" stroke="${accent}" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M6.2 6.05 18.85 13.55" fill="none" stroke="${highlight}" stroke-width="1.05" stroke-linecap="round" opacity="0.34"/>
+      <circle cx="24.2" cy="7.2" r="4.1" fill="${bodyMid}" fill-opacity="0.96" stroke="${accent}" stroke-width="1.2"/>
+      <circle cx="24.2" cy="7.2" r="1.15" fill="${accent}"/>
+      <g fill="none" stroke="${accent}" stroke-width="1.35" stroke-linecap="round">
+        <path d="M24.2 2.25v2.25M24.2 9.9v2.25"/>
+        <path d="M19.25 7.2h2.25M26.9 7.2h2.25"/>
+      </g>
+    </svg>
+  `;
+
+  const pointer = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <defs>
+        <radialGradient id="lens" cx="35%" cy="30%" r="72%">
+          <stop offset="0" stop-color="${lensStart}"/>
+          <stop offset="1" stop-color="${lensEnd}"/>
+        </radialGradient>
+      </defs>
+      <circle cx="16.7" cy="16.8" r="10" fill="${shadow}" opacity="0.24"/>
+      <circle cx="16" cy="16" r="9.7" fill="url(#lens)" stroke="${accent}" stroke-width="1.75"/>
+      <circle cx="16" cy="16" r="6.4" fill="none" stroke="${accent}" stroke-width="0.95" opacity="0.42"/>
+      <circle cx="16" cy="16" r="1.55" fill="${accent}"/>
+      <circle cx="14.2" cy="13.8" r="2.25" fill="${highlight}" opacity="0.2"/>
+      <g fill="none" stroke="${accent}" stroke-width="1.5" stroke-linecap="round">
+        <path d="M16 3.5v5.2M16 23.3v5.2"/>
+        <path d="M3.5 16h5.2M23.3 16h5.2"/>
+      </g>
+    </svg>
+  `;
+
+  root.style.setProperty("--mgp-cursor-default", `${cursorDataUri(arrow)} 4 4`);
+  root.style.setProperty("--mgp-cursor-pointer", `${cursorDataUri(pointer)} 16 16`);
+}
+
 function applyAccentColor(value: string | null) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
@@ -60,6 +129,8 @@ function applyAccentColor(value: string | null) {
     root.style.removeProperty("--mgp-user-accent");
     delete root.dataset["accent"];
   }
+
+  applyCursorAppearance();
 }
 
 function readStored(key: string): string | null {
@@ -113,6 +184,7 @@ function applyTheme(preference: ThemePreference): "light" | "dark" {
   if (typeof document !== "undefined") {
     document.documentElement.classList.toggle("dark", dark);
     document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    applyCursorAppearance();
   }
   return dark ? "dark" : "light";
 }
