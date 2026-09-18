@@ -5,7 +5,7 @@ import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 
 const DDRAGON = "https://ddragon.leagueoflegends.com";
-const FALLBACK_VERSION = "16.18.1";
+const FALLBACK_VERSION = "16.17.1";
 const DATA_DRAGON_LOCALE: Record<Locale, string> = { "pt-BR": "pt_BR", en: "en_US", es: "es_ES" };
 
 type LeagueMap = {
