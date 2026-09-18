@@ -496,6 +496,8 @@ type AbilityPreviewState = {
   left: number;
   top: number;
   width: number;
+  maxHeight: number;
+  placement: "above" | "below";
 };
 
 function AbilityRail({
@@ -514,13 +516,32 @@ function AbilityRail({
   const openPreview = (ability: AbilityView, element: HTMLElement) => {
     if (typeof window === "undefined") return;
     const rect = element.getBoundingClientRect();
-    const width = Math.min(540, Math.max(300, window.innerWidth - 32));
+    const viewportPadding = 16;
+    const gap = 12;
+    const width = Math.min(560, Math.max(300, window.innerWidth - viewportPadding * 2));
     const left = Math.min(
-      Math.max(16, rect.left + rect.width / 2 - width / 2),
-      Math.max(16, window.innerWidth - width - 16),
+      Math.max(viewportPadding, rect.left + rect.width / 2 - width / 2),
+      Math.max(viewportPadding, window.innerWidth - width - viewportPadding),
     );
-    const top = Math.max(16, rect.top - 390);
-    setPreview({ ability, left, top, width });
+
+    const desiredHeight = Math.min(560, window.innerHeight - viewportPadding * 2);
+    const roomAbove = rect.top - viewportPadding - gap;
+    const roomBelow = window.innerHeight - rect.bottom - viewportPadding - gap;
+    const placement: "above" | "below" =
+      roomAbove >= Math.min(420, desiredHeight) || roomAbove >= roomBelow ? "above" : "below";
+    const availableHeight = Math.max(
+      300,
+      Math.min(desiredHeight, placement === "above" ? roomAbove : roomBelow),
+    );
+    const top =
+      placement === "above"
+        ? Math.max(viewportPadding, rect.top - gap - availableHeight)
+        : Math.min(
+            rect.bottom + gap,
+            Math.max(viewportPadding, window.innerHeight - availableHeight - viewportPadding),
+          );
+
+    setPreview({ ability, left, top, width, maxHeight: availableHeight, placement });
   };
 
   return (
@@ -602,16 +623,19 @@ function AbilityPreviewPopover({
 
   return (
     <aside
-      className="pointer-events-none fixed z-[220] overflow-hidden rounded-[1.4rem] border border-gold/30 bg-background/95 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-200"
+      className={cn(
+        "pointer-events-none fixed z-[220] flex flex-col overflow-hidden rounded-[1.4rem] border border-gold/30 bg-background/95 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200",
+        preview.placement === "above" ? "slide-in-from-bottom-2" : "slide-in-from-top-2",
+      )}
       style={{
         left: preview.left,
         top: preview.top,
         width: preview.width,
-        maxHeight: "min(26rem, calc(100dvh - 2rem))",
+        maxHeight: preview.maxHeight,
       }}
       aria-hidden="true"
     >
-      <div className="relative aspect-video overflow-hidden bg-black">
+      <div className="relative aspect-video shrink-0 overflow-hidden bg-black">
         {videoExt ? (
           <video
             key={`${base}.${videoExt}`}
@@ -639,33 +663,55 @@ function AbilityPreviewPopover({
         </div>
       </div>
 
-      <div className="grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_12rem]">
-        <p className="text-xs leading-5 text-muted-foreground">{description}</p>
-        {ability.key !== "P" ? (
-          <div className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-muted/10">
-            {ability.cooldown ? (
-              <AbilityStatRow
-                icon={Clock3}
-                label={copy("Recarga", "Cooldown", "Enfriamiento")}
-                value={ability.cooldown}
-              />
-            ) : null}
-            {ability.cost ? (
-              <AbilityStatRow
-                icon={Droplets}
-                label={partype || copy("Recurso", "Resource", "Recurso")}
-                value={ability.cost}
-              />
-            ) : null}
-            {ability.range && ability.range !== "0" ? (
-              <AbilityStatRow
-                icon={Gauge}
-                label={copy("Alcance", "Range", "Alcance")}
-                value={ability.range}
-              />
+      <div className="mgp-media-rail min-h-0 overflow-y-auto overscroll-contain">
+        <div className="grid gap-4 p-4 sm:grid-cols-[minmax(0,1fr)_12rem]">
+          <div className="min-w-0">
+            <p className="text-xs leading-5 text-muted-foreground">{description}</p>
+            {ability.values?.length ? (
+              <div className="mt-3">
+                <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+                  {copy("Valores por nível", "Values by rank", "Valores por nivel")}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {ability.values.map((value, index) => (
+                    <span
+                      key={`${ability.key}-value-${index}`}
+                      className="rounded-lg border border-border bg-muted/15 px-2 py-1 font-mono text-[0.68rem] font-semibold text-foreground"
+                    >
+                      {value}
+                    </span>
+                  ))}
+                </div>
+              </div>
             ) : null}
           </div>
-        ) : null}
+
+          {ability.key !== "P" ? (
+            <div className="self-start divide-y divide-border overflow-hidden rounded-xl border border-border bg-muted/10">
+              {ability.cooldown ? (
+                <AbilityStatRow
+                  icon={Clock3}
+                  label={copy("Recarga", "Cooldown", "Enfriamiento")}
+                  value={ability.cooldown}
+                />
+              ) : null}
+              {ability.cost ? (
+                <AbilityStatRow
+                  icon={Droplets}
+                  label={partype || copy("Recurso", "Resource", "Recurso")}
+                  value={ability.cost}
+                />
+              ) : null}
+              {ability.range && ability.range !== "0" ? (
+                <AbilityStatRow
+                  icon={Gauge}
+                  label={copy("Alcance", "Range", "Alcance")}
+                  value={ability.range}
+                />
+              ) : null}
+            </div>
+          ) : null}
+        </div>
       </div>
     </aside>
   );
