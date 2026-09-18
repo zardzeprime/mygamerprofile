@@ -493,9 +493,9 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-gold-strong" />
         <p>
           {copy(
-            "Dados, preços, receitas, atributos e ícones vêm do Riot Data Dragon. As categorias do MGP são de navegação: Básico, Épico e Lendário são derivados da posição do item na árvore atual; o antigo sistema de itens Míticos não é usado como filtro atual.",
-            "Data, prices, recipes, stats and icons come from Riot Data Dragon. MGP categories are navigation helpers: Basic, Epic and Legendary are derived from the item's current recipe position; the former Mythic item system is not used as a current filter.",
-            "Datos, precios, recetas, atributos e iconos provienen de Riot Data Dragon. Las categorías de MGP son ayudas de navegación: Básico, Épico y Legendario se derivan de la posición actual del objeto en la receta; el antiguo sistema Mítico no se usa como filtro actual.",
+            "Dados-base, preços, receitas, atributos e ícones vêm do Riot Data Dragon. As categorias Básico/Épico/Lendário são derivadas da árvore atual. As entradas Magistral do Ornn são uma visualização calculada a partir das regras públicas de aprimoramento e ficam separadas dos dados brutos do Data Dragon.",
+            "Base data, prices, recipes, stats and icons come from Riot Data Dragon. Basic/Epic/Legendary labels are derived from the current build tree. Ornn Masterwork entries are a calculated visualization based on public upgrade rules and are kept separate from raw Data Dragon data.",
+            "Los datos base, precios, recetas, atributos e iconos provienen de Riot Data Dragon. Las categorías Básico/Épico/Legendario se derivan del árbol actual. Las entradas Magistrales de Ornn son una visualización calculada a partir de reglas públicas de mejora y se mantienen separadas de los datos brutos.",
           )}
         </p>
       </div>
@@ -678,13 +678,13 @@ function ItemDetail({
           </span>
           <div>
             <p className="text-xs font-black uppercase tracking-[0.1em] text-orange-500">
-              {copy("Elegível ao Magistral do Ornn", "Eligible for Ornn Masterwork", "Elegible para Magistral de Ornn")}
+              {copy("Estimativa de Magistral do Ornn", "Ornn Masterwork estimate", "Estimación de Magistral de Ornn")}
             </p>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">
               {copy(
-                "A versão aprimorada aparece como uma entrada separada no catálogo para não misturar os atributos normais com os bônus do Ornn.",
-                "The upgraded version appears as a separate catalog entry so normal stats are never mixed with Ornn bonuses.",
-                "La versión mejorada aparece como una entrada separada para no mezclar atributos normales con los bonos de Ornn.",
+                "A visualização calculada aparece separada para não misturar os atributos oficiais do item com bônus derivados. Use-a como referência; o Data Dragon não expõe essa versão como um registro oficial independente.",
+                "The calculated view stays separate so official item stats are not mixed with derived bonuses. Treat it as reference; Data Dragon does not expose this as a separate official item record.",
+                "La vista calculada se mantiene separada para no mezclar atributos oficiales con bonos derivados. Úsala como referencia; Data Dragon no la expone como un registro oficial independiente.",
               )}
             </p>
           </div>
