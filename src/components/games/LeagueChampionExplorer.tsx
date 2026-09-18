@@ -429,7 +429,6 @@ function ChampionDetailView({
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const skins = useMemo(() => baseSkinsOnly(detail.skins), [detail.skins]);
-  const builds = useMemo(() => recommendedBuilds(detail), [detail]);
   const [buildsOpen, setBuildsOpen] = useState(false);
   const [skinViewerOpen, setSkinViewerOpen] = useState(false);
   const [previewSkin, setPreviewSkin] = useState<ChampionSkin | null>(skins[0] ?? null);
@@ -571,7 +570,6 @@ function ChampionDetailView({
         <DialogContent className="max-h-[92vh] max-w-5xl overflow-y-auto p-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95">
           <ChampionBuildsView
             detail={detail}
-            builds={builds}
             version={version}
             locale={locale}
           />
@@ -597,41 +595,69 @@ function ChampionDetailView({
 
 function ChampionBuildsView({
   detail,
-  builds,
   version,
   locale,
 }: {
   detail: ChampionDetail;
-  builds: ChampionRecommendedSet[];
   version: string;
   locale: Locale;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [items, setItems] = useState<Record<string, LeagueItemSummary>>({});
-  const [loadingItems, setLoadingItems] = useState(true);
+  const [buildData, setBuildData] = useState<LeagueBuildResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [sourceError, setSourceError] = useState(false);
   const [itemError, setItemError] = useState(false);
 
   useEffect(() => {
     let active = true;
-    setLoadingItems(true);
+    setLoading(true);
+    setSourceError(false);
     setItemError(false);
+    setBuildData(null);
 
-    void loadLeagueItems(version, locale)
-      .then((data) => {
-        if (active) setItems(data);
-      })
-      .catch((error) => {
-        console.warn("[League] build item metadata failed", error);
-        if (active) setItemError(true);
-      })
-      .finally(() => {
-        if (active) setLoadingItems(false);
-      });
+    void Promise.allSettled([
+      getLeagueChampionBuilds(detail.name),
+      loadLeagueItems(version, locale),
+    ]).then((results) => {
+      if (!active) return;
+
+      const [buildResult, itemResult] = results;
+      if (buildResult.status === "fulfilled") setBuildData(buildResult.value);
+      else {
+        console.warn("[League] MGP verified build source failed", buildResult.reason);
+        setSourceError(true);
+      }
+
+      if (itemResult.status === "fulfilled") setItems(itemResult.value);
+      else {
+        console.warn("[League] build item metadata failed", itemResult.reason);
+        setItemError(true);
+      }
+
+      setLoading(false);
+    });
 
     return () => {
       active = false;
     };
-  }, [locale, version]);
+  }, [detail.name, locale, version]);
+
+  const role = buildData?.role
+    ? buildData.role === "middle"
+      ? copy("Meio", "Mid", "Medio")
+      : buildData.role === "bottom"
+        ? copy("Atirador", "Bottom", "Tirador")
+        : buildData.role === "jungle"
+          ? copy("Selva", "Jungle", "Jungla")
+          : buildData.role === "support"
+            ? copy("Suporte", "Support", "Soporte")
+            : buildData.role === "top"
+              ? copy("Topo", "Top", "Top")
+              : buildData.role
+    : null;
+
+  const builds = buildData?.builds ?? [];
 
   return (
     <div className="min-w-0">
@@ -646,21 +672,27 @@ function ChampionBuildsView({
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/35 bg-gold/10 px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.1em] text-gold-strong">
               <ShieldCheck className="size-3.5" />
-              {copy("Riot recomendado", "Riot recommended", "Recomendado por Riot")}
+              {copy("MGP Verificada", "MGP Verified", "MGP Verificada")}
             </span>
             <span className="rounded-full border border-white/15 bg-black/35 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white/70">
-              Data Dragon · {version}
+              {buildData?.patch ? `LoLalytics · ${buildData.patch}` : `Data Dragon · ${version}`}
             </span>
+            {role ? (
+              <span className="rounded-full border border-white/15 bg-black/35 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white/70">
+                {role}
+              </span>
+            ) : null}
           </div>
+
           <DialogHeader className="mt-4 text-left">
             <DialogTitle className="font-display text-3xl text-white sm:text-4xl">
               {copy(`Builds de ${detail.name}`, `${detail.name} builds`, `Builds de ${detail.name}`)}
             </DialogTitle>
             <DialogDescription className="max-w-2xl text-sm leading-6 text-white/65">
               {copy(
-                "Conjuntos de itens recomendados no cliente e expostos pelo Data Dragon para Summoner's Rift. O MGP mostra até dois conjuntos oficiais por campeão e mantém a versão do patch visível.",
-                "Client-recommended item sets exposed by Data Dragon for Summoner's Rift. MGP shows up to two official sets per champion and keeps the patch version visible.",
-                "Conjuntos de objetos recomendados en el cliente y expuestos por Data Dragon para la Grieta del Invocador. MGP muestra hasta dos conjuntos oficiales por campeón y mantiene visible la versión del parche.",
+                "O MGP combina dados atuais de build do LoLalytics com IDs, nomes, preços e ícones oficiais dos itens via Riot Data Dragon. O primeiro caminho segue a recomendação principal da fonte; o segundo usa as alternativas exibidas para os slots posteriores.",
+                "MGP combines current LoLalytics build data with official Riot Data Dragon item IDs, names, prices and icons. The first path follows the source's primary recommendation; the second uses the listed alternatives for later slots.",
+                "MGP combina datos actuales de build de LoLalytics con IDs, nombres, precios e iconos oficiales de Riot Data Dragon. El primer camino sigue la recomendación principal de la fuente; el segundo usa las alternativas mostradas para los slots posteriores.",
               )}
             </DialogDescription>
           </DialogHeader>
@@ -668,125 +700,159 @@ function ChampionBuildsView({
       </div>
 
       <div className="space-y-5 p-5 sm:p-6">
-        {!builds.length ? (
+        {loading ? (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {Array.from({ length: 2 }).map((_, index) => (
+              <div key={index} className="h-72 animate-pulse rounded-[1.35rem] border border-border bg-muted/20" />
+            ))}
+          </div>
+        ) : sourceError || !builds.length ? (
           <div className="rounded-2xl border border-border bg-muted/10 p-5">
             <p className="font-display text-lg font-semibold text-foreground">
               {copy(
-                "A Riot não expôs um conjunto recomendado para este campeão neste payload.",
-                "Riot did not expose a recommended set for this champion in this payload.",
-                "Riot no expuso un conjunto recomendado para este campeón en este payload.",
+                "A build não pôde ser verificada agora.",
+                "The build could not be verified right now.",
+                "La build no pudo verificarse ahora.",
               )}
             </p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {copy(
-                "O MGP não vai inventar uma build. Quando adicionarmos builds próprias, elas aparecerão separadas como MGP Verificada, com patch e critério de revisão.",
-                "MGP will not invent a build. When first-party MGP builds are added, they will appear separately as MGP Verified with patch and review criteria.",
-                "MGP no inventará una build. Cuando se añadan builds propias, aparecerán separadas como MGP Verificada con parche y criterio de revisión.",
+                "O MGP prefere esconder a recomendação a publicar uma build antiga ou inventada. Tente novamente em alguns instantes; o serviço usa cache e a fonte é revisada por patch.",
+                "MGP prefers hiding the recommendation over publishing an old or invented build. Try again shortly; the service is cached and reviewed by patch.",
+                "MGP prefiere ocultar la recomendación antes que publicar una build vieja o inventada. Inténtalo de nuevo en unos instantes; el servicio usa caché y se revisa por parche.",
               )}
             </p>
           </div>
         ) : (
-          builds.map((build, buildIndex) => (
-            <article
-              key={`${build.title ?? "build"}-${buildIndex}`}
-              className="overflow-hidden rounded-[1.35rem] border border-border bg-muted/10"
-            >
-              <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {builds.map((build, buildIndex) => (
+              <article
+                key={build.id}
+                className="overflow-hidden rounded-[1.35rem] border border-border bg-muted/10"
+              >
+                <div className="border-b border-border p-4">
                   <p className="text-[0.62rem] font-black uppercase tracking-[0.12em] text-gold-strong">
-                    {copy(`Build Riot ${buildIndex + 1}`, `Riot build ${buildIndex + 1}`, `Build Riot ${buildIndex + 1}`)}
+                    {buildIndex === 0
+                      ? copy("Caminho principal", "Primary path", "Camino principal")
+                      : copy("Alternativa", "Alternative", "Alternativa")}
                   </p>
                   <h3 className="mt-1 font-display text-xl font-semibold text-foreground">
-                    {build.title?.trim() || copy("Recomendação oficial", "Official recommendation", "Recomendación oficial")}
+                    {copy(
+                      buildIndex === 0 ? "Build recomendada" : "Build alternativa",
+                      buildIndex === 0 ? "Recommended build" : "Alternative build",
+                      buildIndex === 0 ? "Build recomendada" : "Build alternativa",
+                    )}
                   </h3>
                 </div>
-                <div className="flex flex-wrap gap-2 text-[0.65rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-                  <span className="rounded-full border border-border bg-background/55 px-2.5 py-1">
-                    {build.map || "SR"}
-                  </span>
-                  <span className="rounded-full border border-border bg-background/55 px-2.5 py-1">
-                    {build.mode || "CLASSIC"}
-                  </span>
-                </div>
-              </div>
 
-              <div className="divide-y divide-border">
-                {(build.blocks ?? [])
-                  .filter((block) => block.items?.length)
-                  .map((block, blockIndex) => (
-                    <section key={`${block.type ?? "block"}-${blockIndex}`} className="p-4">
-                      <div className="flex items-center justify-between gap-3">
-                        <h4 className="text-xs font-black uppercase tracking-[0.1em] text-muted-foreground">
-                          {block.type?.trim() || copy("Itens", "Items", "Objetos")}
-                        </h4>
-                        {block.recMath ? (
-                          <span className="text-[0.6rem] font-bold uppercase tracking-[0.08em] text-gold-strong">
-                            {copy("Sequência de compra", "Purchase sequence", "Secuencia de compra")}
-                          </span>
-                        ) : null}
-                      </div>
+                <BuildItemSection
+                  title={copy("Início", "Start", "Inicio")}
+                  rows={build.startingItems}
+                  items={items}
+                  version={version}
+                  loadingItems={loading}
+                />
 
-                      <div className="mgp-media-rail mt-3 flex gap-2.5 overflow-x-auto pb-2">
-                        {(block.items ?? []).map((entry, itemIndex) => {
-                          const item = items[entry.id];
-                          const label = item?.name || `#${entry.id}`;
-                          return (
-                            <div
-                              key={`${entry.id}-${itemIndex}`}
-                              className="group w-24 shrink-0 text-center"
-                              title={stripMarkup(item?.description || item?.plaintext || label)}
-                            >
-                              <div className="relative mx-auto size-16 overflow-hidden rounded-xl border border-border bg-background shadow-sm transition-all group-hover:-translate-y-0.5 group-hover:border-gold/40 group-hover:shadow-lift">
-                                <img
-                                  src={itemIcon(version, entry.id, item)}
-                                  alt=""
-                                  loading="lazy"
-                                  decoding="async"
-                                  className="h-full w-full object-cover"
-                                />
-                                {(entry.count ?? 1) > 1 ? (
-                                  <span className="absolute bottom-1 right-1 grid min-w-5 place-items-center rounded-md bg-black/75 px-1 text-[0.6rem] font-black text-white">
-                                    ×{entry.count}
-                                  </span>
-                                ) : null}
-                              </div>
-                              <p className="mt-2 line-clamp-2 text-[0.68rem] font-semibold leading-4 text-foreground">
-                                {loadingItems ? "…" : label}
-                              </p>
-                              {item?.gold?.total ? (
-                                <p className="mt-0.5 text-[0.62rem] font-bold text-gold-strong">
-                                  {item.gold.total}g
-                                </p>
-                              ) : null}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </section>
-                  ))}
-              </div>
-            </article>
-          ))
+                <BuildItemSection
+                  title={copy("Build completa", "Full build", "Build completa")}
+                  rows={build.items}
+                  items={items}
+                  version={version}
+                  loadingItems={loading}
+                  emphasis
+                />
+              </article>
+            ))}
+          </div>
         )}
 
         <div className="flex gap-3 rounded-2xl border border-border bg-background/50 p-4 text-xs leading-5 text-muted-foreground">
           <ShieldCheck className="mt-0.5 size-4 shrink-0 text-gold-strong" />
-          <p>
-            {itemError
-              ? copy(
-                  "Os IDs e a estrutura da build vieram da Riot, mas os nomes dos itens não carregaram agora. Os ícones continuam resolvidos pelo Data Dragon.",
-                  "The build structure and IDs came from Riot, but item names could not be loaded right now. Icons still resolve through Data Dragon.",
-                  "La estructura e IDs de la build vienen de Riot, pero los nombres de los objetos no cargaron ahora. Los iconos siguen resolviéndose mediante Data Dragon.",
-                )
-              : copy(
-                  "Essas builds não são uma tier list do MGP nem uma previsão de meta: são os conjuntos recomendados que a Riot expõe no payload do campeão para este patch.",
-                  "These builds are not an MGP tier list or meta prediction: they are the recommended sets Riot exposes in the champion payload for this patch.",
-                  "Estas builds no son una tier list de MGP ni una predicción del meta: son los conjuntos recomendados que Riot expone en el payload del campeón para este parche.",
+          <div>
+            <p>
+              {copy(
+                "“MGP Verificada” significa que o caminho foi extraído de uma fonte estatística atual e conferido contra o patch; não significa endosso da Riot. Os itens e ícones são resolvidos pelo Data Dragon oficial.",
+                "“MGP Verified” means the path was extracted from a current statistical source and patch-checked; it does not mean Riot endorsement. Items and icons resolve through official Data Dragon.",
+                "“MGP Verificada” significa que el camino fue extraído de una fuente estadística actual y verificado contra el parche; no significa respaldo de Riot. Los objetos e iconos se resuelven mediante Data Dragon oficial.",
+              )}
+            </p>
+            {itemError ? (
+              <p className="mt-1 text-destructive/80">
+                {copy(
+                  "Alguns metadados de item não carregaram; o MGP mantém os IDs da build e evita preencher dados no chute.",
+                  "Some item metadata did not load; MGP keeps the build IDs and avoids guessing missing data.",
+                  "Algunos metadatos de objetos no cargaron; MGP conserva los IDs de la build y evita inventar datos.",
                 )}
-          </p>
+              </p>
+            ) : null}
+            {buildData?.source.url ? (
+              <a
+                href={buildData.source.url}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-2 inline-flex font-bold text-gold-strong hover:underline"
+              >
+                {copy("Abrir fonte da build ↗", "Open build source ↗", "Abrir fuente de la build ↗")}
+              </a>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function BuildItemSection({
+  title,
+  rows,
+  items,
+  version,
+  loadingItems,
+  emphasis = false,
+}: {
+  title: string;
+  rows: Array<{ id: string; name: string }>;
+  items: Record<string, LeagueItemSummary>;
+  version: string;
+  loadingItems: boolean;
+  emphasis?: boolean;
+}) {
+  return (
+    <section className={cn("p-4", emphasis && "border-t border-border")}>
+      <h4 className="text-xs font-black uppercase tracking-[0.1em] text-muted-foreground">{title}</h4>
+      <div className="mgp-media-rail mt-3 flex gap-3 overflow-x-auto pb-2">
+        {rows.map((entry, index) => {
+          const item = items[entry.id];
+          const label = item?.name || entry.name || `#${entry.id}`;
+          return (
+            <div key={`${entry.id}-${index}`} className="group w-24 shrink-0 text-center">
+              <div className="relative mx-auto size-16 overflow-hidden rounded-xl border border-border bg-background shadow-sm transition-all group-hover:-translate-y-0.5 group-hover:border-gold/40 group-hover:shadow-lift">
+                <img
+                  src={itemIcon(version, entry.id, item)}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+                {emphasis ? (
+                  <span className="absolute left-1 top-1 grid size-5 place-items-center rounded-md bg-black/70 text-[0.58rem] font-black text-white">
+                    {index + 1}
+                  </span>
+                ) : null}
+              </div>
+              <p className="mt-2 line-clamp-2 text-[0.68rem] font-semibold leading-4 text-foreground">
+                {loadingItems ? "…" : label}
+              </p>
+              {item?.gold?.total ? (
+                <p className="mt-0.5 text-[0.62rem] font-bold text-gold-strong">
+                  {item.gold.total}g
+                </p>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
