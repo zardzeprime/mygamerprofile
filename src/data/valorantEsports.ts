@@ -72,12 +72,12 @@ function championsMatch(
 // Seeded from the 2026 Champions Shanghai group-stage schedule. A provider sync
 // can replace status/broadcast fields later without changing the UI contract.
 export const VALORANT_ESPORTS_MATCHES: ValorantEsportsMatch[] = [
-  championsMatch("champs-2026-groups-tl-prx", "2026-09-24T09:00:00Z", TEAMS.TL, TEAMS.PRX),
-  championsMatch("champs-2026-groups-tyl-g2", "2026-09-24T12:00:00Z", TEAMS.TYL, TEAMS.G2),
-  championsMatch("champs-2026-groups-ns-nrg", "2026-09-25T09:00:00Z", TEAMS.NS, TEAMS.NRG),
-  championsMatch("champs-2026-groups-kc-xlg", "2026-09-25T12:00:00Z", TEAMS.KC, TEAMS.XLG),
-  championsMatch("champs-2026-groups-ge-vit", "2026-09-26T09:00:00Z", TEAMS.GE, TEAMS.VIT),
-  championsMatch("champs-2026-groups-loud-edg", "2026-09-26T12:00:00Z", TEAMS.LOUD, TEAMS.EDG),
-  championsMatch("champs-2026-groups-100t-t1", "2026-09-27T09:00:00Z", TEAMS["100T"], TEAMS.T1),
-  championsMatch("champs-2026-groups-jdg-fut", "2026-09-27T12:00:00Z", TEAMS.JDG, TEAMS.FUT),
+  championsMatch("champs-2026-groups-tl-prx", "2026-09-24T15:00:00Z", TEAMS.TL, TEAMS.PRX),
+  championsMatch("champs-2026-groups-tyl-g2", "2026-09-24T15:00:00Z", TEAMS.TYL, TEAMS.G2),
+  championsMatch("champs-2026-groups-ns-nrg", "2026-09-25T15:00:00Z", TEAMS.NS, TEAMS.NRG),
+  championsMatch("champs-2026-groups-kc-xlg", "2026-09-25T15:00:00Z", TEAMS.KC, TEAMS.XLG),
+  championsMatch("champs-2026-groups-ge-vit", "2026-09-26T15:00:00Z", TEAMS.GE, TEAMS.VIT),
+  championsMatch("champs-2026-groups-loud-edg", "2026-09-26T15:00:00Z", TEAMS.LOUD, TEAMS.EDG),
+  championsMatch("champs-2026-groups-100t-t1", "2026-09-27T15:00:00Z", TEAMS["100T"], TEAMS.T1),
+  championsMatch("champs-2026-groups-jdg-fut", "2026-09-27T15:00:00Z", TEAMS.JDG, TEAMS.FUT),
 ];
