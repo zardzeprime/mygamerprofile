@@ -17,20 +17,7 @@ import {
 } from "@/components/ui/card";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { signInWithGoogle } from "@/lib/googleAuth";
-
-const PROD_SITE_URL = (
-  import.meta.env["VITE_SITE_URL"] || "https://mygamerprofile.lovable.app"
-).replace(/\/$/, "");
-
-function getConfirmationRedirect() {
-  if (
-    typeof window !== "undefined" &&
-    ["localhost", "127.0.0.1"].includes(window.location.hostname)
-  ) {
-    return `${window.location.origin}/onboarding`;
-  }
-  return `${PROD_SITE_URL}/onboarding`;
-}
+import { getAuthRedirectUrl } from "@/lib/siteUrl";
 
 export const Route = createFileRoute("/register")({
   component: RegisterPage,
@@ -113,7 +100,7 @@ function RegisterPage() {
         email,
         password,
         options: {
-          emailRedirectTo: getConfirmationRedirect(),
+          emailRedirectTo: getAuthRedirectUrl("/onboarding"),
           data: {
             i18n: locale,
             legal_terms_version: LEGAL_ACCEPTANCE_VERSION,
