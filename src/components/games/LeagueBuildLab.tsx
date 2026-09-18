@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import {
@@ -50,6 +51,20 @@ type ItemSummary = {
 
 type ItemPayload = {
   data: Record<string, ItemSummary>;
+};
+
+type SaveBuildRpcClient = {
+  rpc: (
+    fn: "save_user_build_v1",
+    args: {
+      p_game_slug: string;
+      p_subject_key: string;
+      p_title: string;
+      p_build_data: Record<string, unknown>;
+      p_source_context: Record<string, unknown>;
+      p_visibility: "public" | "private";
+    },
+  ) => Promise<{ data: string | null; error: { message?: string } | null }>;
 };
 
 function stripMarkup(value?: string) {
@@ -97,7 +112,10 @@ export function LeagueBuildLab({ locale }: { locale: Locale }) {
   const [itemSearch, setItemSearch] = useState("");
   const [coreCount, setCoreCount] = useState<1 | 2>(2);
   const [customItems, setCustomItems] = useState<string[]>([]);
+  const [customTitle, setCustomTitle] = useState("");
   const [explanation, setExplanation] = useState("");
+  const [savingBuild, setSavingBuild] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "login" | "error">("idle");
 
   useEffect(() => {
     let active = true;
@@ -199,6 +217,65 @@ export function LeagueBuildLab({ locale }: { locale: Locale }) {
 
   const removeItem = (itemId: string) => {
     setCustomItems((current) => current.filter((id) => id !== itemId));
+  };
+
+  const saveCustomBuild = async () => {
+    if (!selectedChampion || customItems.length < coreCount || savingBuild) return;
+
+    setSaveStatus("idle");
+    setSavingBuild(true);
+
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      if (!authData.user) {
+        setSaveStatus("login");
+        return;
+      }
+
+      const title =
+        customTitle.trim() ||
+        copy(
+          `Build de ${selectedChampion.name}`,
+          `${selectedChampion.name} build`,
+          `Build de ${selectedChampion.name}`,
+        );
+
+      const buildItems = customItems.map((id, index) => ({
+        id,
+        name: items[id]?.name ?? id,
+        slot: index + 1,
+        core: index < coreCount,
+      }));
+
+      const rpc = supabase as unknown as SaveBuildRpcClient;
+      const { error } = await rpc.rpc("save_user_build_v1", {
+        p_game_slug: "league-of-legends",
+        p_subject_key: selectedChampion.id,
+        p_title: title,
+        p_build_data: {
+          championId: selectedChampion.id,
+          championName: selectedChampion.name,
+          coreCount,
+          items: buildItems,
+          explanation: explanation.trim(),
+          dataDragonVersion: version,
+        },
+        p_source_context: {
+          verifiedPatch: buildData?.patch ?? null,
+          verifiedSource: buildData?.source?.label ?? null,
+          verifiedSourceUrl: buildData?.source?.url ?? null,
+        },
+        p_visibility: "private",
+      });
+
+      if (error) throw new Error(error.message || "SAVE_BUILD_FAILED");
+      setSaveStatus("saved");
+    } catch (error) {
+      console.error("[LeagueBuildLab] save build failed", error);
+      setSaveStatus("error");
+    } finally {
+      setSavingBuild(false);
+    }
   };
 
   return (
@@ -341,6 +418,27 @@ export function LeagueBuildLab({ locale }: { locale: Locale }) {
             </div>
           </div>
 
+          <label className="mt-5 block">
+            <span className="text-xs font-black uppercase tracking-[0.08em] text-muted-foreground">
+              {copy("Nome da build", "Build name", "Nombre de la build")}
+            </span>
+            <Input
+              value={customTitle}
+              onChange={(event) => setCustomTitle(event.target.value)}
+              maxLength={100}
+              className="mt-2"
+              placeholder={
+                selectedChampion
+                  ? copy(
+                      `Ex.: ${selectedChampion.name} Burst`,
+                      `Example: ${selectedChampion.name} Burst`,
+                      `Ej.: ${selectedChampion.name} Burst`,
+                    )
+                  : undefined
+              }
+            />
+          </label>
+
           <div className="mt-5 grid grid-cols-3 gap-3 sm:grid-cols-6">
             {Array.from({ length: 6 }).map((_, index) => {
               const itemId = customItems[index];
@@ -425,6 +523,32 @@ export function LeagueBuildLab({ locale }: { locale: Locale }) {
               )}
             />
           </label>
+
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => void saveCustomBuild()}
+              disabled={savingBuild || !selectedChampion || customItems.length < coreCount}
+              className="inline-flex min-h-11 items-center rounded-xl bg-gold px-4 text-sm font-bold text-gold-foreground transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              {savingBuild
+                ? copy("Salvando…", "Saving…", "Guardando…")
+                : copy("Salvar no meu perfil", "Save to my profile", "Guardar en mi perfil")}
+            </button>
+            <span className="text-xs leading-5 text-muted-foreground">
+              {saveStatus === "saved"
+                ? copy("Build salva como privada.", "Build saved as private.", "Build guardada como privada.")
+                : saveStatus === "login"
+                  ? copy("Entre na sua conta para salvar permanentemente.", "Sign in to save permanently.", "Inicia sesión para guardar permanentemente.")
+                  : saveStatus === "error"
+                    ? copy("Não foi possível salvar agora.", "Could not save right now.", "No se pudo guardar ahora.")
+                    : copy(
+                        "Escolha todo o core antes de salvar. Variantes podem ficar vazias.",
+                        "Choose the full core before saving. Variant slots may stay empty.",
+                        "Elige todo el core antes de guardar. Las variantes pueden quedar vacías.",
+                      )}
+            </span>
+          </div>
         </div>
 
         <NexusBuildGuide
