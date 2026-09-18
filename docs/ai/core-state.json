@@ -110,7 +110,8 @@
         "Kept the VALORANT pro-player reader on initials fallbacks when player-photo reuse rights were not explicitly verified; public accessibility alone is not treated as image permission.",
         "Prepared original CSS-only identity-pack concepts for MGP Core, Souls-inspired embers, tactical signal and Rift-inspired magic-tech without reusing third-party game artwork.",
         "Support payments remain disabled until a public-safe method is configured; the recommended Pix setup uses a random project key instead of exposing CPF, phone number or personal email.",
-        "Replaced the League of Legends card/hero logo hotlink with the user-provided repository PNG, preserving repository provenance and eliminating the external image dependency."
+        "Replaced the League of Legends card/hero logo hotlink with the user-provided repository PNG, preserving repository provenance and eliminating the external image dependency.",
+        "Added a local scalable VALORANT card/navigation mark with a dark rounded badge treatment, preserving the separate hub-background provenance and avoiding a new remote logo dependency."
       ],
       "inProgress": [],
       "next": [
@@ -220,7 +221,8 @@
         "Kept the existing custom MGP cursor assets and layered a lightweight interaction aura instead of replacing the browser pointer with a heavy state-driven JavaScript cursor.",
         "Fixed the VALORANT mobile overview clipping shown in the 2026-09-18 screenshot by forcing the overview grid to a minmax(0,1fr) mobile track, constraining the VALORANT sidebar min-content width and allowing synopsis/fact text to wrap.",
         "Added a responsive Profile Customization Studio scaffold in profile settings with selectable future slots and original identity-pack previews, while only existing background presets are currently equipable.",
-        "NEXUS chat now restores a failed message to the composer instead of making the user retype it, and shows a friendly transient-provider error for NEXUS_ALL_PROVIDERS_FAILED."
+        "NEXUS chat now restores a failed message to the composer instead of making the user retype it, and shows a friendly transient-provider error for NEXUS_ALL_PROVIDERS_FAILED.",
+        "Matched VALORANT card/home artwork behavior to the clean League logo treatment using a lightweight SVG and contain-based responsive framing."
       ],
       "inProgress": [
         "Run page-by-page rendered art-direction QA after Visual System v2 is visible in Lovable, focusing on home, game catalog, communities, profiles, NEXUS and game hubs at mobile and desktop widths."
