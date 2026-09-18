@@ -6,7 +6,7 @@ import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
 
 const DDRAGON = "https://ddragon.leagueoflegends.com";
-const FALLBACK_VERSION = "16.18.1";
+const FALLBACK_VERSION = "16.17.1";
 const DATA_DRAGON_LOCALE: Record<Locale, string> = {
   "pt-BR": "pt_BR",
   en: "en_US",
