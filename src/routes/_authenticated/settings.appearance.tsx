@@ -51,7 +51,7 @@ function SettingsAppearancePage() {
               <ThemeSelector showLabels />
             </div>
             <div className="border-t border-border pt-5">
-              <h3 className="flex items-center gap-2 text-sm font-semibold"><Palette className="size-4 text-gold-strong" aria-hidden="true" />{copy("Cor de apoio", "Accent palette", "Color complementario")}</h3>
+              <h3 className="flex items-center gap-2 text-sm font-semibold"><Palette className="size-4 text-gold-strong" aria-hidden="true" />{copy("Cor principal", "Primary color", "Color principal")}</h3>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{copy("Escolha uma combinação ou use o seletor para criar a sua. A cor passa a comandar botões, barras, foco e destaques. Logado, ela fica sincronizada com a sua conta.", "Choose a palette or use the picker to create your own. It drives buttons, rails, focus and highlights. When signed in, it syncs with your account.", "Elige una combinación o crea la tuya con el selector. Controla botones, barras, foco y destacados. Con sesión iniciada, se sincroniza con tu cuenta.")}</p>
               <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label={copy("Paletas de cores", "Color palettes", "Paletas de colores")}>
                 {palettes.map(({ color, name }) => {
