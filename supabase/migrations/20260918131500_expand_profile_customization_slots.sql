@@ -49,3 +49,15 @@ comment on column public.profile_loadouts.cursor_slug is
   'Equipped site cursor cosmetic; client must respect touch and reduced-motion accessibility.';
 comment on column public.profile_loadouts.effect_slug is
   'Equipped profile presentation effect cosmetic.';
+
+create index if not exists profile_loadouts_avatar_frame_slug_idx
+  on public.profile_loadouts(avatar_frame_slug)
+  where avatar_frame_slug is not null;
+
+create index if not exists profile_loadouts_cursor_slug_idx
+  on public.profile_loadouts(cursor_slug)
+  where cursor_slug is not null;
+
+create index if not exists profile_loadouts_effect_slug_idx
+  on public.profile_loadouts(effect_slug)
+  where effect_slug is not null;
