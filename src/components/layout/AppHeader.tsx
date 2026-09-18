@@ -3,7 +3,7 @@ import { Menu, Search, X, Settings, LogOut, UserRound } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
-import { ThemeSelector } from "@/components/common/ThemeSelector";
+import { AppearanceQuickPanel } from "@/components/common/AppearanceQuickPanel";
 import { useI18n, type TranslationKey } from "@/i18n";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -140,18 +140,18 @@ export function AppHeader() {
   };
 
   return (
-    <header ref={headerRef} className="sticky top-0 z-40 border-b border-border bg-background/88 backdrop-blur-xl">
-      <div className="mx-auto grid h-16 w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 sm:px-6">
+    <header ref={headerRef} className="mgp-header sticky top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-xl">
+      <div className="mx-auto grid h-[4.25rem] w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 sm:px-6">
         <BrandLogoPlaceholder />
 
-        <nav aria-label={t("navigation.menu")} className="hidden items-center gap-1 xl:flex">
+        <nav aria-label={t("navigation.menu")} className="hidden items-center gap-0.5 xl:flex">
           {NAV.map((item) => (
             <Link
               key={item.key}
               to={item.to}
               activeOptions={{ exact: item.to === "/" }}
-              activeProps={{ className: "bg-gold-soft/60 text-gold-strong" }}
-              className="rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              activeProps={{ className: "mgp-nav-link-active" }}
+              className="mgp-nav-link px-3 py-2 text-sm font-medium text-muted-foreground"
             >
               {t(item.key)}
             </Link>
@@ -159,13 +159,13 @@ export function AppHeader() {
         </nav>
 
         <div className="col-start-3 flex min-w-0 items-center justify-end gap-1 sm:gap-2">
-          <Link to="/games" className="hidden min-h-11 items-center gap-2 rounded-full border border-border bg-surface px-3 text-sm text-muted-foreground transition-colors hover:text-foreground sm:flex" aria-label={t("games.search")}>
+          <Link to="/games" className="mgp-header-action hidden min-h-11 items-center gap-2 px-3 text-sm text-muted-foreground sm:flex" aria-label={t("games.search")}>
             <Search aria-hidden="true" className="size-4" />
             <span className="hidden 2xl:inline">{t("games.search")}</span>
           </Link>
           <div className="hidden items-center gap-2 xl:flex">
             <LanguageSelector />
-            <ThemeSelector />
+            <AppearanceQuickPanel />
           </div>
           <AudioControl />
           <div className="hidden xl:block">
@@ -178,7 +178,7 @@ export function AppHeader() {
             onClick={() => setOpen((value) => !value)}
             aria-expanded={open}
             aria-label={open ? t("navigation.closeMenu") : t("navigation.openMenu")}
-            className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-foreground transition-colors hover:bg-muted xl:hidden"
+            className="mgp-icon-button inline-flex size-11 shrink-0 items-center justify-center text-foreground xl:hidden"
           >
             {open ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
           </button>
@@ -186,7 +186,7 @@ export function AppHeader() {
       </div>
 
       {open ? (
-        <div id="site-mobile-navigation" className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-border bg-surface px-4 py-4 xl:hidden">
+        <div id="site-mobile-navigation" className="mgp-mobile-panel max-h-[calc(100dvh-4.25rem)] overflow-y-auto border-t border-border bg-surface px-4 py-4 xl:hidden">
           <nav aria-label={t("navigation.menu")} className="flex flex-col gap-1">
             {NAV.map((item) => (
               <Link
@@ -194,8 +194,8 @@ export function AppHeader() {
                 to={item.to}
                 onClick={() => setOpen(false)}
                 activeOptions={{ exact: item.to === "/" }}
-                activeProps={{ className: "text-gold-strong" }}
-                className="rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                activeProps={{ className: "mgp-nav-link-active" }}
+                className="mgp-nav-link rounded-lg px-3 py-2.5 text-sm font-medium text-foreground"
               >
                 {t(item.key)}
               </Link>
@@ -204,7 +204,7 @@ export function AppHeader() {
           <div className="mt-4 flex flex-col gap-3 border-t border-border pt-4">
             <div className="flex flex-wrap items-center gap-3">
               <LanguageSelector />
-              <ThemeSelector />
+              <AppearanceQuickPanel />
               <AudioControl />
             </div>
             {!loading && !user ? (
