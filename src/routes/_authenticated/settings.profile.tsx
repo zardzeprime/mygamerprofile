@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { GameArtwork } from "@/components/games/GameArtwork";
+import { ProfileCustomizationStudio } from "@/components/profile/ProfileCustomizationStudio";
 import {
   PROFILE_BACKGROUNDS,
   getProfileBackground,
@@ -328,6 +329,8 @@ function SettingsProfilePage() {
             })}
           </div>
         </section>
+
+        <ProfileCustomizationStudio locale={locale} />
 
         <section className="surface-panel rounded-2xl p-4 sm:p-6">
           <div className="flex items-center gap-2">
