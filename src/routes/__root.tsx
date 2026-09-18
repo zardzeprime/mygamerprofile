@@ -153,7 +153,8 @@ function RootComponent() {
 
       const hostname = parsed.hostname.toLowerCase();
       const isFandom = hostname.endsWith("fandom.com") || hostname.endsWith("wikia.nocookie.net");
-      const isCreativeUncut = hostname === "creativeuncut.com" || hostname === "www.creativeuncut.com";
+      const isCreativeUncut =
+        hostname === "creativeuncut.com" || hostname === "www.creativeuncut.com";
       if (!isFandom && !isCreativeUncut) return;
 
       image.removeAttribute("srcset");
@@ -180,7 +181,8 @@ function RootComponent() {
       image.dataset["mgpFallbackApplied"] = "1";
 
       const isDarkSoulsThree =
-        window.location.pathname.includes("dark-souls-iii") || parsed.pathname.includes("/gallery-30/");
+        window.location.pathname.includes("dark-souls-iii") ||
+        parsed.pathname.includes("/gallery-30/");
       image.src = isDarkSoulsThree ? "/game-covers/ds3.webp" : darkSoulsAtmosphere;
     };
 

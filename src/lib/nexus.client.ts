@@ -35,7 +35,8 @@ async function invokeNexus<T>(body: Record<string, unknown>, accessToken?: strin
     }
 
     if (!response.ok) {
-      const code = typeof payload["error"] === "string" ? payload["error"] : `NEXUS_EDGE_${response.status}`;
+      const code =
+        typeof payload["error"] === "string" ? payload["error"] : `NEXUS_EDGE_${response.status}`;
       throw new Error(code);
     }
 

@@ -49,24 +49,30 @@ export function AppHeader() {
         .select("username")
         .eq("id", userId)
         .maybeSingle();
-        if (cancelled) return;
-        if (error) {
-          console.error("[MGP] Failed to load current profile username", error);
-          setProfileUsername(null);
-          return;
-        }
-        setProfileUsername(data?.username ?? null);
-      })().finally(() => {
-        if (!cancelled) setProfileLoading(false);
-      });
+      if (cancelled) return;
+      if (error) {
+        console.error("[MGP] Failed to load current profile username", error);
+        setProfileUsername(null);
+        return;
+      }
+      setProfileUsername(data?.username ?? null);
+    })().finally(() => {
+      if (!cancelled) setProfileLoading(false);
+    });
 
     return () => {
       cancelled = true;
     };
   }, [userId]);
 
-  const profileLabel = locale === "pt-BR" ? "Ver meu perfil" : locale === "es" ? "Ver mi perfil" : "View my profile";
-  const profileUnavailableLabel = locale === "pt-BR" ? "Perfil indisponível" : locale === "es" ? "Perfil no disponible" : "Profile unavailable";
+  const profileLabel =
+    locale === "pt-BR" ? "Ver meu perfil" : locale === "es" ? "Ver mi perfil" : "View my profile";
+  const profileUnavailableLabel =
+    locale === "pt-BR"
+      ? "Perfil indisponível"
+      : locale === "es"
+        ? "Perfil no disponible"
+        : "Profile unavailable";
 
   const AuthSection = () => {
     if (loading) return null;
@@ -96,7 +102,11 @@ export function AppHeader() {
         <DropdownMenuContent align="end">
           {profileUsername ? (
             <DropdownMenuItem asChild>
-              <Link to="/u/$username" params={{ username: profileUsername }} className="flex items-center gap-2">
+              <Link
+                to="/u/$username"
+                params={{ username: profileUsername }}
+                className="flex items-center gap-2"
+              >
                 <UserRound className="size-4" />
                 {profileLabel}
               </Link>
@@ -167,7 +177,11 @@ export function AppHeader() {
             aria-label={open ? t("navigation.closeMenu") : t("navigation.openMenu")}
             className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-foreground transition-colors hover:bg-muted lg:hidden"
           >
-            {open ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
+            {open ? (
+              <X aria-hidden="true" className="size-4" />
+            ) : (
+              <Menu aria-hidden="true" className="size-4" />
+            )}
           </button>
         </div>
       </div>
@@ -196,15 +210,27 @@ export function AppHeader() {
             </div>
             {!loading && !user ? (
               <div className="flex flex-col gap-2">
-                <Button asChild><Link to="/register" onClick={() => setOpen(false)}>{t("auth.register")}</Link></Button>
-                <Button variant="outline" asChild><Link to="/login" onClick={() => setOpen(false)}>{t("auth.login")}</Link></Button>
+                <Button asChild>
+                  <Link to="/register" onClick={() => setOpen(false)}>
+                    {t("auth.register")}
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/login" onClick={() => setOpen(false)}>
+                    {t("auth.login")}
+                  </Link>
+                </Button>
               </div>
             ) : null}
             {!loading && user ? (
               <div className="flex flex-col gap-2">
                 {profileUsername ? (
                   <Button variant="outline" asChild>
-                    <Link to="/u/$username" params={{ username: profileUsername }} onClick={() => setOpen(false)}>
+                    <Link
+                      to="/u/$username"
+                      params={{ username: profileUsername }}
+                      onClick={() => setOpen(false)}
+                    >
                       <UserRound className="mr-2 size-4" />
                       {profileLabel}
                     </Link>
@@ -221,7 +247,13 @@ export function AppHeader() {
                     {t("navigation.settings")}
                   </Link>
                 </Button>
-                <Button variant="destructive" onClick={() => { void signOut(); setOpen(false); }}>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    void signOut();
+                    setOpen(false);
+                  }}
+                >
                   <LogOut className="mr-2 size-4" />
                   {t("auth.logout")}
                 </Button>

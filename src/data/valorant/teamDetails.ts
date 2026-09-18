@@ -35,11 +35,21 @@ export const VALORANT_TEAM_DETAILS: Record<string, TeamDetailSeed> = {
       staff("Wenty", "Carlos Lira Portela", "manager", "https://www.vlr.gg/team/6961/loud"),
       staff("Romanilly", "Gonzalo Manzano", "head-coach", "https://www.vlr.gg/team/6961/loud"),
       staff("Bati", "Miguel Batista", "assistant-coach", "https://www.vlr.gg/team/6961/loud"),
-      staff("bajerski", "Lucas Bajerski Pereira", "performance-coach", "https://www.vlr.gg/team/6961/loud"),
+      staff(
+        "bajerski",
+        "Lucas Bajerski Pereira",
+        "performance-coach",
+        "https://www.vlr.gg/team/6961/loud",
+      ),
     ],
     organization: {
       websiteUrl: "https://loud.gg/",
-      sources: [vlrSource("https://www.vlr.gg/team/6961/loud", "Official website linked by the team profile.")],
+      sources: [
+        vlrSource(
+          "https://www.vlr.gg/team/6961/loud",
+          "Official website linked by the team profile.",
+        ),
+      ],
     },
   },
   lev: {
@@ -51,13 +61,23 @@ export const VALORANT_TEAM_DETAILS: Record<string, TeamDetailSeed> = {
     staff: [
       staff("Nandinnn", undefined, "manager", "https://www.vlr.gg/team/7386/mibr"),
       staff("fRoD", "Daniel Montaner", "head-coach", "https://www.vlr.gg/team/7386/mibr"),
-      staff("Happy", "Vincent Schopenhauer", "assistant-coach", "https://www.vlr.gg/team/7386/mibr"),
+      staff(
+        "Happy",
+        "Vincent Schopenhauer",
+        "assistant-coach",
+        "https://www.vlr.gg/team/7386/mibr",
+      ),
     ],
   },
   sen: {
     staff: [
       staff("Zyto", "Bryan Ybanez", "manager", "https://www.vlr.gg/team/2/sentinels"),
-      staff("Ewok", "Marthinus Jacobus Van Der Walt", "head-coach", "https://www.vlr.gg/team/2/sentinels"),
+      staff(
+        "Ewok",
+        "Marthinus Jacobus Van Der Walt",
+        "head-coach",
+        "https://www.vlr.gg/team/2/sentinels",
+      ),
       staff("GUNTER", "Luke Clives", "assistant-coach", "https://www.vlr.gg/team/2/sentinels"),
     ],
   },

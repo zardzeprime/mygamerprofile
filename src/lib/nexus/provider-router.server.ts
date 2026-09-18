@@ -40,8 +40,20 @@ export type NexusRuntimeHealth = {
 };
 
 const ALL_PROVIDERS: NexusProviderId[] = ["openai", "gemini", "groq", "openrouter", "anthropic"];
-const DEFAULT_PROVIDER_ORDER: NexusProviderId[] = ["openai", "gemini", "groq", "openrouter", "anthropic"];
-const DEFAULT_GUEST_PROVIDER_ORDER: NexusProviderId[] = ["gemini", "groq", "openrouter", "openai", "anthropic"];
+const DEFAULT_PROVIDER_ORDER: NexusProviderId[] = [
+  "openai",
+  "gemini",
+  "groq",
+  "openrouter",
+  "anthropic",
+];
+const DEFAULT_GUEST_PROVIDER_ORDER: NexusProviderId[] = [
+  "gemini",
+  "groq",
+  "openrouter",
+  "openai",
+  "anthropic",
+];
 
 function serverEnv(name: string) {
   return process.env[name]?.trim() || undefined;
@@ -113,7 +125,10 @@ export function getNexusProviderStatus(): NexusProviderStatus[] {
 }
 
 export function hasNexusInferenceTransport() {
-  return Boolean(publicSupabaseConfig()) || getNexusProviderStatus().some((provider) => provider.configured);
+  return (
+    Boolean(publicSupabaseConfig()) ||
+    getNexusProviderStatus().some((provider) => provider.configured)
+  );
 }
 
 function compactError(error: unknown) {
@@ -218,11 +233,18 @@ export async function getNexusRuntimeHealth(): Promise<NexusRuntimeHealth> {
         providers,
       };
     } catch (error) {
-      console.warn("[NEXUS] Edge health check failed; checking direct server providers.", compactError(error));
+      console.warn(
+        "[NEXUS] Edge health check failed; checking direct server providers.",
+        compactError(error),
+      );
     }
   }
 
-  const providers = getNexusProviderStatus().map(({ id, configured, model }) => ({ id, configured, model }));
+  const providers = getNexusProviderStatus().map(({ id, configured, model }) => ({
+    id,
+    configured,
+    model,
+  }));
   return {
     ready: providers.some((provider) => provider.configured),
     transport: "direct-server",
@@ -230,7 +252,9 @@ export async function getNexusRuntimeHealth(): Promise<NexusRuntimeHealth> {
   };
 }
 
-async function completeOpenAI(request: NexusCompletionRequest): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
+async function completeOpenAI(
+  request: NexusCompletionRequest,
+): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
   const apiKey = serverEnv("OPENAI_API_KEY");
   if (!apiKey) throw new Error("OpenAI is not configured");
 
@@ -276,7 +300,9 @@ async function completeOpenAI(request: NexusCompletionRequest): Promise<Omit<Nex
   return { text, provider: "openai", model };
 }
 
-async function completeGemini(request: NexusCompletionRequest): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
+async function completeGemini(
+  request: NexusCompletionRequest,
+): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
   const apiKey = serverEnv("GEMINI_API_KEY") ?? serverEnv("GOOGLE_API_KEY");
   if (!apiKey) throw new Error("Gemini is not configured");
 
@@ -308,7 +334,10 @@ async function completeGemini(request: NexusCompletionRequest): Promise<Omit<Nex
   const data = (await response.json()) as {
     candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
   };
-  const text = data.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("").trim();
+  const text = data.candidates?.[0]?.content?.parts
+    ?.map((part) => part.text ?? "")
+    .join("")
+    .trim();
   if (!text) throw new Error("Gemini returned no text");
   return { text, provider: "gemini", model };
 }
@@ -337,10 +366,7 @@ async function completeCompatibleChat({
     },
     body: JSON.stringify({
       model,
-      messages: [
-        { role: "system", content: request.system },
-        ...request.messages,
-      ],
+      messages: [{ role: "system", content: request.system }, ...request.messages],
       max_tokens: request.maxOutputTokens ?? 1800,
     }),
   });
@@ -355,14 +381,20 @@ async function completeCompatibleChat({
     model?: string;
   };
   const raw = data.choices?.[0]?.message?.content;
-  const text = typeof raw === "string"
-    ? raw.trim()
-    : raw?.map((part) => part.text ?? "").join("\n").trim();
+  const text =
+    typeof raw === "string"
+      ? raw.trim()
+      : raw
+          ?.map((part) => part.text ?? "")
+          .join("\n")
+          .trim();
   if (!text) throw new Error(`${provider} returned no text`);
   return { text, provider, model: data.model ?? model };
 }
 
-async function completeGroq(request: NexusCompletionRequest): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
+async function completeGroq(
+  request: NexusCompletionRequest,
+): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
   const apiKey = serverEnv("GROQ_API_KEY");
   if (!apiKey) throw new Error("Groq is not configured");
   return completeCompatibleChat({
@@ -374,7 +406,9 @@ async function completeGroq(request: NexusCompletionRequest): Promise<Omit<Nexus
   });
 }
 
-async function completeOpenRouter(request: NexusCompletionRequest): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
+async function completeOpenRouter(
+  request: NexusCompletionRequest,
+): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
   const apiKey = serverEnv("OPENROUTER_API_KEY");
   if (!apiKey) throw new Error("OpenRouter is not configured");
 
@@ -392,7 +426,9 @@ async function completeOpenRouter(request: NexusCompletionRequest): Promise<Omit
   });
 }
 
-async function completeAnthropic(request: NexusCompletionRequest): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
+async function completeAnthropic(
+  request: NexusCompletionRequest,
+): Promise<Omit<NexusCompletionResult, "attemptedProviders">> {
   const apiKey = serverEnv("ANTHROPIC_API_KEY");
   if (!apiKey) throw new Error("Anthropic is not configured");
 
