@@ -29,7 +29,8 @@
         "Added a transparent independent-project support area that explains the founder story, AI-assisted/human-led development model, current low-budget stage, non-financial ways to help and voluntary financial support boundaries.",
         "Prepared Google as the first social sign-in path across login, registration and the logged-out header while keeping email/password authentication available.",
         "Completed the first League of Legends product pass across items, champions, skins, modes and competitive surfaces, keeping each module focused instead of mixing collections.",
-        "Unified VALORANT skin preview interaction around the shared MGP media player: autoplay can attempt muted playback on touch devices, controls auto-hide when idle, and preview clip rails use fixed wheel-to-horizontal navigation without changing the selected level until click."
+        "Unified VALORANT skin preview interaction around the shared MGP media player: autoplay can attempt muted playback on touch devices, controls auto-hide when idle, and preview clip rails use fixed wheel-to-horizontal navigation without changing the selected level until click.",
+        "Reworked the NEXUS Gamer response path for reliability: single-call member bootstrap, shorter chat context, delayed thread creation until inference succeeds, batch persistence, and graceful ephemeral member replies if persistence fails after a successful model response."
       ],
       "inProgress": [
         "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady.",
@@ -58,7 +59,8 @@
         "Protected anonymous Nexus storage from direct browser access with deny RLS policies and revoked anon/authenticated grants.",
         "Added server-side guest quota enforcement, atomic assistant-response counting and a short-window per-session rate limit.",
         "Removed direct anon/authenticated EXECUTE access from Nexus guest SECURITY DEFINER RPCs, leaving them server-side for service_role only.",
-        "Standardized browser auth redirects on https://mgprofile.online for Google OAuth, email confirmation and password recovery, while retaining localhost and the published Lovable host as explicit test origins."
+        "Standardized browser auth redirects on https://mgprofile.online for Google OAuth, email confirmation and password recovery, while retaining localhost and the published Lovable host as explicit test origins.",
+        "Kept NEXUS guest/member authorization boundaries intact while deploying Edge v3 with custom guest-compatible gateway authentication; raw public completion remains disabled and the legacy direct-server router no longer calls that disabled route by default."
       ],
       "inProgress": [],
       "next": [
@@ -186,7 +188,8 @@
         "Registered official VALORANT Brasil Instagram and TikTok as future social sources but marked them API-required rather than bypassing platform access controls with fragile scraping.",
         "Aligned provider fallback priority toward low-latency configured providers while preserving environment-configured provider order overrides.",
         "Created configuration-driven support methods and documented the external Google OAuth setup so credentials remain outside client code and GitHub.",
-        "Added reusable MGP media-rail scrollbar styling using the active site accent instead of native-looking horizontal scrollbars."
+        "Added reusable MGP media-rail scrollbar styling using the active site accent instead of native-looking horizontal scrollbars.",
+        "Separated NEXUS Edge read/send rate-limit buckets and added provider timing plus total latency metadata for successful Edge v3 exchanges so future slow-provider regressions can be diagnosed from runtime data."
       ],
       "inProgress": [],
       "next": [
@@ -234,7 +237,8 @@
         "Matched VALORANT card/home artwork behavior to the clean League logo treatment using a lightweight SVG and contain-based responsive framing.",
         "Tightened VALORANT card/hero contain framing for the uploaded 500x281 transparent artwork so the badge reads larger and cleaner in the existing card aspect ratios.",
         "Redesigned League items into an icon/price-first shop with separated stat rows and a clickable recipe tree; split champions from skins, added class filters and large champion sheets, lazy hover ability previews, full-screen skin splash viewing, and fixed/rotating/TFT mode sections.",
-        "Refined League champion detail into a splash-dominant presentation with a compact skill rail and anchored enlarged hover/focus video previews; added wheel-driven League skin splash navigation without leaving the viewer."
+        "Refined League champion detail into a splash-dominant presentation with a compact skill rail and anchored enlarged hover/focus video previews; added wheel-driven League skin splash navigation without leaving the viewer.",
+        "Reduced NEXUS latency with cached/best-effort MGP content grounding, lower Gamer reasoning/output budgets, bounded per-provider timeouts, a 42s overall provider budget, and immediate failover across multiple configured providers instead of retrying the same slow provider first."
       ],
       "inProgress": [
         "Run page-by-page rendered art-direction QA after Visual System v2 is visible in Lovable, focusing on home, game catalog, communities, profiles, NEXUS and game hubs at mobile and desktop widths."
