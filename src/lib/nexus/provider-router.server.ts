@@ -41,12 +41,13 @@ export type NexusRuntimeHealth = {
 
 const ALL_PROVIDERS: NexusProviderId[] = ["openai", "gemini", "groq", "openrouter", "anthropic"];
 const DEFAULT_PROVIDER_ORDER: NexusProviderId[] = [
-  "openai",
   "gemini",
   "groq",
-  "openrouter",
+  "openai",
   "anthropic",
+  "openrouter",
 ];
+const DIRECT_PROVIDER_TIMEOUT_MS = 18_000;
 const DEFAULT_GUEST_PROVIDER_ORDER: NexusProviderId[] = [
   "gemini",
   "groq",
@@ -275,6 +276,7 @@ async function completeOpenAI(
       reasoning: { effort: request.effort ?? "medium" },
       max_output_tokens: request.maxOutputTokens ?? 1800,
     }),
+    signal: AbortSignal.timeout(DIRECT_PROVIDER_TIMEOUT_MS),
   });
 
   if (!response.ok) {
@@ -324,6 +326,7 @@ async function completeGemini(
         maxOutputTokens: request.maxOutputTokens ?? 1800,
       },
     }),
+    signal: AbortSignal.timeout(DIRECT_PROVIDER_TIMEOUT_MS),
   });
 
   if (!response.ok) {
@@ -369,6 +372,7 @@ async function completeCompatibleChat({
       messages: [{ role: "system", content: request.system }, ...request.messages],
       max_tokens: request.maxOutputTokens ?? 1800,
     }),
+    signal: AbortSignal.timeout(DIRECT_PROVIDER_TIMEOUT_MS),
   });
 
   if (!response.ok) {
@@ -446,6 +450,7 @@ async function completeAnthropic(
       messages: request.messages,
       max_tokens: request.maxOutputTokens ?? 1800,
     }),
+    signal: AbortSignal.timeout(DIRECT_PROVIDER_TIMEOUT_MS),
   });
 
   if (!response.ok) {
@@ -481,7 +486,13 @@ export async function completeWithNexusRouter(
 ): Promise<NexusCompletionResult> {
   const failures: string[] = [];
 
-  if (publicSupabaseConfig()) {
+  // The public Edge gateway intentionally disables raw "completion" requests.
+  // Only opt into the legacy completion route when a deployment explicitly
+  // re-enables that contract; normal in-product NEXUS chat uses guest/member actions.
+  if (
+    publicSupabaseConfig() &&
+    serverEnv("NEXUS_ALLOW_LEGACY_EDGE_COMPLETION") === "true"
+  ) {
     try {
       return await completeViaEdge(request);
     } catch (error) {
