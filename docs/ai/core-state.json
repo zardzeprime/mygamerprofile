@@ -20,10 +20,12 @@
         "Preserved the first guest prompt during session bootstrap instead of silently dropping an early Enter submission.",
         "Verified the hosted Supabase nexus-inference Edge Function is active at version 8 and aligned with the repository runtime.",
         "Published the NEXUS / Os Sete council area in the product navigation with visible core names, sigil letters, specialist roles and distinct accent identities.",
-        "Separated transient NEXUS health failures from confirmed no-provider state so the UI no longer reports a disconnected AI engine merely because status loading failed."
+        "Separated transient NEXUS health failures from confirmed no-provider state so the UI no longer reports a disconnected AI engine merely because status loading failed.",
+        "Established the Visual System v2 foundation: a customizable semantic interface signal color, a quick appearance control in the global header, and a shared interaction language designed to avoid generic AI/gamer UI clichés."
       ],
       "inProgress": [
-        "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady."
+        "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady.",
+        "Continue page-by-page visual art-direction review on top of Visual System v2 after the foundation PR is merged and rendered in Lovable."
       ],
       "next": [
         "Configure at least one official inference API credential in deployment secrets and test live model replies end to end.",
@@ -68,7 +70,8 @@
         "Implemented anonymous Nexus sessions with an opaque HTTP-only cookie rather than email or device fingerprinting.",
         "Set anonymous trial records to expire after 30 days and added automated daily deletion of expired guest sessions/messages.",
         "Added UI disclosure that guest messages may be processed by MGP's configured official AI providers.",
-        "Added user-facing export and confirmed deletion controls for authenticated NEXUS conversations without exposing another user's history."
+        "Added user-facing export and confirmed deletion controls for authenticated NEXUS conversations without exposing another user's history.",
+        "Made appearance preferences local-first for fast first paint while synchronizing theme and optional accent_color to the authenticated user profile, with no cross-user preference reads."
       ],
       "inProgress": [],
       "next": [
@@ -153,7 +156,8 @@
         "Replaced six-front report branding with Os Sete; all seven named roles report directly, preserving stable IDs and historical records.",
         "Added check:valorant regression validation to CI for sparse merges, source retention, eDPI, coverage and ambiguous shared handles.",
         "Registered a real responsive AVAPGV / Os Sete React Email template with status, owning core, concrete reference, impact and next-action cards, plus plain-text render support.",
-        "Raised CI regression coverage for verified VALORANT crosshairs so a future data merge cannot silently drop the newly reviewed set."
+        "Raised CI regression coverage for verified VALORANT crosshairs so a future data merge cannot silently drop the newly reviewed set.",
+        "Added an additive profiles.accent_color migration with six-digit hex validation and mirrored the deployed schema change in repository migrations/types."
       ],
       "inProgress": [],
       "next": [
@@ -188,9 +192,13 @@
         "Merged settings per field and review date, retained contributing sources, removed team-country fallback for players and localized observed roles with compact agent chips.",
         "Merged the validated responsive header, compact home and game-hub navigation, mobile media retry/error handling, personal appearance refinements and related accessibility improvements through PR #56.",
         "Normalized VALORANT hub accents across Agents, Maps, Weapons, Skins, News, Esports, live content and mobile navigation from the old tactical blue treatment to the MG Profile gold/graphite identity.",
-        "Added a dedicated responsive Os Sete page and navigation entry instead of leaving the AI-core architecture only in internal documentation."
+        "Added a dedicated responsive Os Sete page and navigation entry instead of leaving the AI-core architecture only in internal documentation.",
+        "Created Visual System v2 motion tokens, asymmetric MGP control geometry, refined header/navigation microinteractions, customizable semantic color rails and a requestAnimationFrame pointer aura that is disabled for touch and reduced-motion users.",
+        "Kept the existing custom MGP cursor assets and layered a lightweight interaction aura instead of replacing the browser pointer with a heavy state-driven JavaScript cursor."
       ],
-      "inProgress": [],
+      "inProgress": [
+        "Run page-by-page rendered art-direction QA after Visual System v2 is visible in Lovable, focusing on home, game catalog, communities, profiles, NEXUS and game hubs at mobile and desktop widths."
+      ],
       "next": [
         "Review external boss-art delivery for image weight, caching and layout stability after visual approval.",
         "Profile Nexus latency and provider failure rates before adding parallel council inference.",
