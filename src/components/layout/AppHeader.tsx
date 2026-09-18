@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Menu, Search, X, Settings, LogOut, UserRound } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
 import { ThemeSelector } from "@/components/common/ThemeSelector";
@@ -30,6 +30,20 @@ export function AppHeader() {
   const { user, loading, signOut } = useAuth();
   const userId = user?.id;
   const [open, setOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") { setOpen(false); menuButtonRef.current?.focus(); }
+    };
+    const outside = (event: PointerEvent) => {
+      if (!headerRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    document.addEventListener("keydown", close);
+    document.addEventListener("pointerdown", outside);
+    return () => { document.removeEventListener("keydown", close); document.removeEventListener("pointerdown", outside); };
+  }, [open]);
   const [profileUsername, setProfileUsername] = useState<string | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
 
@@ -43,36 +57,31 @@ export function AppHeader() {
     }
 
     setProfileLoading(true);
-    void (async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("username")
-        .eq("id", userId)
-        .maybeSingle();
-      if (cancelled) return;
-      if (error) {
-        console.error("[MGP] Failed to load current profile username", error);
-        setProfileUsername(null);
-        return;
-      }
-      setProfileUsername(data?.username ?? null);
-    })().finally(() => {
-      if (!cancelled) setProfileLoading(false);
-    });
+    void Promise.resolve(supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", userId)
+      .maybeSingle())
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          console.error("[MGP] Failed to load current profile username", error);
+          setProfileUsername(null);
+          return;
+        }
+        setProfileUsername(data?.username ?? null);
+      })
+      .finally(() => {
+        if (!cancelled) setProfileLoading(false);
+      });
 
     return () => {
       cancelled = true;
     };
   }, [userId]);
 
-  const profileLabel =
-    locale === "pt-BR" ? "Ver meu perfil" : locale === "es" ? "Ver mi perfil" : "View my profile";
-  const profileUnavailableLabel =
-    locale === "pt-BR"
-      ? "Perfil indisponível"
-      : locale === "es"
-        ? "Perfil no disponible"
-        : "Profile unavailable";
+  const profileLabel = locale === "pt-BR" ? "Ver meu perfil" : locale === "es" ? "Ver mi perfil" : "View my profile";
+  const profileUnavailableLabel = locale === "pt-BR" ? "Perfil indisponível" : locale === "es" ? "Perfil no disponible" : "Profile unavailable";
 
   const AuthSection = () => {
     if (loading) return null;
@@ -102,11 +111,7 @@ export function AppHeader() {
         <DropdownMenuContent align="end">
           {profileUsername ? (
             <DropdownMenuItem asChild>
-              <Link
-                to="/u/$username"
-                params={{ username: profileUsername }}
-                className="flex items-center gap-2"
-              >
+              <Link to="/u/$username" params={{ username: profileUsername }} className="flex items-center gap-2">
                 <UserRound className="size-4" />
                 {profileLabel}
               </Link>
@@ -134,11 +139,11 @@ export function AppHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/88 backdrop-blur-xl">
+    <header ref={headerRef} className="sticky top-0 z-40 border-b border-border bg-background/88 backdrop-blur-xl">
       <div className="mx-auto grid h-16 w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 sm:px-6">
         <BrandLogoPlaceholder />
 
-        <nav aria-label={t("navigation.menu")} className="hidden items-center gap-1 md:flex">
+        <nav aria-label={t("navigation.menu")} className="hidden items-center gap-1 xl:flex">
           {NAV.map((item) => (
             <Link
               key={item.key}
@@ -152,42 +157,35 @@ export function AppHeader() {
           ))}
         </nav>
 
-        <div className="flex min-w-0 items-center justify-end gap-1 sm:gap-2">
-          <label className="hidden items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 sm:flex">
-            <Search aria-hidden="true" className="size-4 text-muted-foreground" />
-            <span className="sr-only">{t("common.search")}</span>
-            <input
-              type="search"
-              placeholder={t("common.search")}
-              className="w-28 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground lg:w-40"
-            />
-          </label>
-          <div className="hidden items-center gap-2 lg:flex">
+        <div className="col-start-3 flex min-w-0 items-center justify-end gap-1 sm:gap-2">
+          <Link to="/games" className="hidden min-h-11 items-center gap-2 rounded-full border border-border bg-surface px-3 text-sm text-muted-foreground transition-colors hover:text-foreground sm:flex" aria-label={t("games.search")}>
+            <Search aria-hidden="true" className="size-4" />
+            <span className="hidden 2xl:inline">{t("games.search")}</span>
+          </Link>
+          <div className="hidden items-center gap-2 xl:flex">
             <LanguageSelector />
             <ThemeSelector />
           </div>
           <AudioControl />
-          <div className="hidden lg:block">
+          <div className="hidden xl:block">
             <AuthSection />
           </div>
           <button
             type="button"
+            ref={menuButtonRef}
+            aria-controls="site-mobile-navigation"
             onClick={() => setOpen((value) => !value)}
             aria-expanded={open}
             aria-label={open ? t("navigation.closeMenu") : t("navigation.openMenu")}
-            className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-foreground transition-colors hover:bg-muted lg:hidden"
+            className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-foreground transition-colors hover:bg-muted xl:hidden"
           >
-            {open ? (
-              <X aria-hidden="true" className="size-4" />
-            ) : (
-              <Menu aria-hidden="true" className="size-4" />
-            )}
+            {open ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
           </button>
         </div>
       </div>
 
       {open ? (
-        <div className="border-t border-border bg-surface px-4 py-4 lg:hidden">
+        <div id="site-mobile-navigation" className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-border bg-surface px-4 py-4 xl:hidden">
           <nav aria-label={t("navigation.menu")} className="flex flex-col gap-1">
             {NAV.map((item) => (
               <Link
@@ -210,27 +208,15 @@ export function AppHeader() {
             </div>
             {!loading && !user ? (
               <div className="flex flex-col gap-2">
-                <Button asChild>
-                  <Link to="/register" onClick={() => setOpen(false)}>
-                    {t("auth.register")}
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link to="/login" onClick={() => setOpen(false)}>
-                    {t("auth.login")}
-                  </Link>
-                </Button>
+                <Button asChild><Link to="/register" onClick={() => setOpen(false)}>{t("auth.register")}</Link></Button>
+                <Button variant="outline" asChild><Link to="/login" onClick={() => setOpen(false)}>{t("auth.login")}</Link></Button>
               </div>
             ) : null}
             {!loading && user ? (
               <div className="flex flex-col gap-2">
                 {profileUsername ? (
                   <Button variant="outline" asChild>
-                    <Link
-                      to="/u/$username"
-                      params={{ username: profileUsername }}
-                      onClick={() => setOpen(false)}
-                    >
+                    <Link to="/u/$username" params={{ username: profileUsername }} onClick={() => setOpen(false)}>
                       <UserRound className="mr-2 size-4" />
                       {profileLabel}
                     </Link>
@@ -247,13 +233,7 @@ export function AppHeader() {
                     {t("navigation.settings")}
                   </Link>
                 </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    void signOut();
-                    setOpen(false);
-                  }}
-                >
+                <Button variant="destructive" onClick={() => { void signOut(); setOpen(false); }}>
                   <LogOut className="mr-2 size-4" />
                   {t("auth.logout")}
                 </Button>
@@ -265,3 +245,4 @@ export function AppHeader() {
     </header>
   );
 }
+
