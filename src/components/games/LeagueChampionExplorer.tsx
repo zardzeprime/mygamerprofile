@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, Clock3, Droplets, Gauge, Search, ShieldCheck, Sparkles, Swords, WandSparkles } from "lucide-react";
 import { DataSourceIndicator } from "@/components/common/DataSourceIndicator";
@@ -785,12 +785,12 @@ function SkinSplashPreview({
   const label = skin.name === "default" ? championName : skin.name;
   const image = skinSplash(championId, skin.num);
 
-  const move = (direction: -1 | 1) => {
+  const move = useCallback((direction: -1 | 1) => {
     if (skins.length <= 1) return;
     const nextIndex = (currentIndex + direction + skins.length) % skins.length;
     const nextSkin = skins[nextIndex];
     if (nextSkin) onSkin(nextSkin);
-  };
+  }, [currentIndex, onSkin, skins]);
 
   useEffect(() => {
     const viewer = viewerRef.current;
@@ -812,7 +812,7 @@ function SkinSplashPreview({
 
     viewer.addEventListener("wheel", handleWheel, { passive: false });
     return () => viewer.removeEventListener("wheel", handleWheel);
-  }, [currentIndex, skins]);
+  }, [move, skins.length]);
 
   return (
     <div
