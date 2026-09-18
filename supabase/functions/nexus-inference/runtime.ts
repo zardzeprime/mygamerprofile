@@ -215,10 +215,7 @@ export async function handleGuestSend(raw: Record<string, unknown>) {
   };
 }
 
-export async function handleMemberStatus(req: Request) {
-  const userId = await authenticatedUser(req);
-  const db = adminDb();
-  const admin = await isAdmin(db, userId);
+function memberStatusPayload(admin: boolean) {
   return {
     isAdmin: admin,
     aiReady: aiReady(),
@@ -230,9 +227,7 @@ export async function handleMemberStatus(req: Request) {
   };
 }
 
-export async function handleMemberThreads(req: Request) {
-  const userId = await authenticatedUser(req);
-  const db = adminDb();
+async function memberThreadsForUser(db: any, userId: string) {
   const { data, error } = await db
     .from("nexus_threads")
     .select("id,title,mode,created_at,updated_at,last_message_at")
@@ -241,6 +236,32 @@ export async function handleMemberThreads(req: Request) {
     .limit(30);
   if (error) throw new Error("NEXUS_THREADS_FAILED");
   return data ?? [];
+}
+
+export async function handleMemberStatus(req: Request) {
+  const userId = await authenticatedUser(req);
+  const db = adminDb();
+  const admin = await isAdmin(db, userId);
+  return memberStatusPayload(admin);
+}
+
+export async function handleMemberThreads(req: Request) {
+  const userId = await authenticatedUser(req);
+  return memberThreadsForUser(adminDb(), userId);
+}
+
+export async function handleMemberBootstrap(req: Request) {
+  const userId = await authenticatedUser(req);
+  const db = adminDb();
+  const [admin, threads] = await Promise.all([
+    isAdmin(db, userId),
+    memberThreadsForUser(db, userId),
+  ]);
+
+  return {
+    status: memberStatusPayload(admin),
+    threads,
+  };
 }
 
 async function ownedThread(db: any, userId: string, threadId: unknown) {
