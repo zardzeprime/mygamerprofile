@@ -32,7 +32,9 @@
         "Unified VALORANT skin preview interaction around the shared MGP media player: autoplay can attempt muted playback on touch devices, controls auto-hide when idle, and preview clip rails use fixed wheel-to-horizontal navigation without changing the selected level until click.",
         "Reworked the NEXUS Gamer response path for reliability: single-call member bootstrap, shorter chat context, delayed thread creation until inference succeeds, batch persistence, and graceful ephemeral member replies if persistence fails after a successful model response.",
         "Diagnosed the intermittent NEXUS Gamer provider failure as real Gemini capacity pressure, not a frontend/auth bug: live tests showed 3.6/3.7 timeouts and Gemini 3.8 returning 503 high-demand errors while the API key remained valid.",
-        "Added a non-chat NEXUS Build Guide beside the League build creator. It uses champion context, selected core items and the current verified statistical path to surface short decisions/questions without opening the NEXUS chat."
+        "Added a non-chat NEXUS Build Guide beside the League build creator. It uses champion context, selected core items and the current verified statistical path to surface short decisions/questions without opening the NEXUS chat.",
+        "League Build Guide now grounds contextual NEXUS cards in live source cross-check metadata: confirmed sources count, OP.GG core-item agreement when available, and blocked sources are explicitly excluded from verification.",
+        "Reset legacy MGP account/profile state for pre-public onboarding: non-admin test Auth users were removed; the sole admin Auth identity/role was preserved to avoid lockout while its public profile/onboarding data was reset."
       ],
       "inProgress": [
         "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady.",
@@ -63,7 +65,9 @@
         "Added server-side guest quota enforcement, atomic assistant-response counting and a short-window per-session rate limit.",
         "Removed direct anon/authenticated EXECUTE access from Nexus guest SECURITY DEFINER RPCs, leaving them server-side for service_role only.",
         "Standardized browser auth redirects on https://mgprofile.online for Google OAuth, email confirmation and password recovery, while retaining localhost and the published Lovable host as explicit test origins.",
-        "Kept NEXUS guest/member authorization boundaries intact while deploying Edge v3 with custom guest-compatible gateway authentication; raw public completion remains disabled and the legacy direct-server router no longer calls that disabled route by default."
+        "Kept NEXUS guest/member authorization boundaries intact while deploying Edge v3 with custom guest-compatible gateway authentication; raw public completion remains disabled and the legacy direct-server router no longer calls that disabled route by default.",
+        "Profile reset preserved the existing admin Auth identity and admin role while removing all non-admin test accounts and resetting app-level profile/onboarding records, preventing accidental administrator lockout.",
+        "Atomic onboarding RPC rejects unauthenticated callers, duplicate onboarding, invalid usernames/languages/age/gender values, and creates private account attributes inside a single database transaction."
       ],
       "inProgress": [],
       "next": [
@@ -159,7 +163,9 @@
         "Formalized Vassago as MG Profile's live-game content lifecycle owner: daily freshness review covers patches, competitive rotations, agents/champions, weapons/items, modes, skins/cosmetics and competitive schedules for VALORANT and League of Legends.",
         "Audited the current VALORANT map rotation from Riot patch history and corrected the public 13.04 pool to Abyss, Ascent, Haven, Lotus, Split, Summit and Sunset.",
         "Completed a dated VALORANT + League source-of-truth audit before moving to Dark Souls Remastered and Dark Souls III, including current Riot patch baselines, LoL Data Dragon 16.18.1, current special modes and competitive schedule snapshots.",
-        "League build freshness now resolves on demand by current LoLalytics patch through the league-builds Edge service, while Riot Data Dragon remains the source for champion/item presentation data."
+        "League build freshness now resolves on demand by current LoLalytics patch through the league-builds Edge service, while Riot Data Dragon remains the source for champion/item presentation data.",
+        "Reverified existing Dark Souls Remastered build presets against recurring Steam/Reddit player guidance and replaced weaker references with dated community sources.",
+        "Added three MGP Verified Dark Souls III PvE build presets sourced across Reddit/Steam: Sellsword Twinblades DEX, Strength/Vordt-heavy, and 40 INT/40 FTH Pyromancy."
       ],
       "inProgress": [
         "Continue individual ProSettings verification for players whose settings remain hidden.",
@@ -203,7 +209,10 @@
         "Added private service-role-only nexus_runtime_events telemetry and used live Edge probes to validate the new chain: test replies succeeded on gemini-3.5-flash-lite in ~0.8s and ~1.9s after the earlier all-provider failure.",
         "Added the daily Game Lifecycle Watch GitHub workflow and official-source scanner. Marbas owns automation; candidate changes open a review PR and never auto-merge.",
         "Deployed the public, project-key-gated league-builds Supabase Edge Function with bounded upstream timeout, per-isolate cache and rate limiting; verified live responses for Akali, Garen, Jinx and Yasuo.",
-        "Re-optimized League ability preview video delivery for mobile by preferring MP4 on coarse/mobile pointers, reducing preload, suspending hidden playback and retaining WebM-first behavior on desktop."
+        "Re-optimized League ability preview video delivery for mobile by preferring MP4 on coarse/mobile pointers, reducing preload, suspending hidden playback and retaining WebM-first behavior on desktop.",
+        "Added atomic profile onboarding RPC so profile, private age/demographic records, starter loadout/inventory and favorite games commit together or roll back together.",
+        "Added persistent user_builds storage with RLS and save_user_build_v1 RPC; League custom builds can now be saved privately to an authenticated profile.",
+        "Optimized user_builds RLS policies for auth.uid() init-plan performance before public scale."
       ],
       "inProgress": [],
       "next": [
@@ -257,7 +266,9 @@
         "Assigned Andrealphus as the UX/consistency reviewer for lifecycle changes so accurate updates are checked for clean mobile/desktop presentation before public promotion.",
         "Clarified VALORANT skin VP/RP figures as estimates/reference values rather than presenting tier-derived values as exact individual store prices.",
         "Added the League Builds hub with verified primary/alternative paths, 1- or 2-core custom build composition, situational slots, source cross-check links and contextual NEXUS guidance.",
-        "Added a Dark Souls Remastered Build Lab with three PvE starter presets—Quality Claymore, Strength Great Club and Dexterity + Pyromancy—plus a custom core/variant builder."
+        "Added a Dark Souls Remastered Build Lab with three PvE starter presets—Quality Claymore, Strength Great Club and Dexterity + Pyromancy—plus a custom core/variant builder.",
+        "Opened previously locked/placeholder game modules: incomplete areas now render explicit in-development panels instead of padlocks, while completed DS1/DS3 builds/guides route to functional modules.",
+        "Dark Souls Remastered and Dark Souls III boss pages now intentionally omit external boss artwork and label the visual area as MGP gameplay screenshots in development."
       ],
       "inProgress": [
         "Run page-by-page rendered art-direction QA after Visual System v2 is visible in Lovable, focusing on home, game catalog, communities, profiles, NEXUS and game hubs at mobile and desktop widths."
