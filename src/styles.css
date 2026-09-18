@@ -201,14 +201,44 @@
   }
 }
 
-/* Native cursors keep text editing and disabled affordances predictable. */
+/* Native cursors keep text editing and disabled affordances predictable.
+ * The cursor itself uses the opposite body contrast of the page:
+ * dark cursor on light theme, light cursor on dark theme.
+ * ThemeProvider may override the two CSS variables with accent-aware data URIs.
+ */
 @media (hover: hover) and (pointer: fine) {
-  html { cursor: url('/cursor-light.svg') 4 4, default; }
-  html.dark { cursor: url('/cursor-dark.svg') 4 4, default; }
-  a, button, [role="button"], [role="tab"], [role="radio"], select, label[for], input[type="color"] { cursor: url('/cursor-pointer-light.svg') 4 4, pointer; }
-  html.dark :is(a, button, [role="button"], [role="tab"], [role="radio"], select, label[for], input[type="color"]) { cursor: url('/cursor-pointer-dark.svg') 4 4, pointer; }
-  input:not([type="color"]):not([type="range"]):not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable="true"] { cursor: text; }
-  :is(button, input, select, textarea):disabled, [aria-disabled="true"] { cursor: not-allowed; }
+  html {
+    --mgp-cursor-default: url('/cursor-dark.svg') 4 4;
+    --mgp-cursor-pointer: url('/cursor-pointer-dark.svg') 16 16;
+    cursor: var(--mgp-cursor-default), default;
+  }
+
+  html.dark {
+    --mgp-cursor-default: url('/cursor-light.svg') 4 4;
+    --mgp-cursor-pointer: url('/cursor-pointer-light.svg') 16 16;
+  }
+
+  a,
+  button,
+  [role="button"],
+  [role="tab"],
+  [role="radio"],
+  select,
+  label[for],
+  input[type="color"] {
+    cursor: var(--mgp-cursor-pointer), pointer;
+  }
+
+  input:not([type="color"]):not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  [contenteditable="true"] {
+    cursor: text;
+  }
+
+  :is(button, input, select, textarea):disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
 }
 
 /*
@@ -263,6 +293,25 @@
 
 .appearance-preview { background: var(--mgp-personal-gradient); }
 ::selection { background: var(--gold-soft); color: var(--foreground); }
+/* Riot/VALORANT ability and role glyph assets are authored as light monochrome SVGs.
+ * Give them explicit contrast in light mode while preserving their original look in dark mode.
+ */
+:root:not(.dark) .mgp-adaptive-glyph {
+  filter: brightness(0) saturate(100%);
+  opacity: 0.82;
+}
+
+:root:not(.dark) .mgp-adaptive-glyph-strong {
+  filter: brightness(0) saturate(100%);
+  opacity: 0.95;
+}
+
+.dark .mgp-adaptive-glyph,
+.dark .mgp-adaptive-glyph-strong {
+  filter: none;
+  opacity: 1;
+}
+
 @media (pointer: coarse) {
   input, select, textarea { font-size: max(1rem, 1em); }
 }
