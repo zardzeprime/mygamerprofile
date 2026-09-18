@@ -6,6 +6,7 @@ Este arquivo existe para permitir a retomada do projeto caso a sessão atual sej
 
 - Repositório: `zardzeprime/mygamerprofile`
 - Branch desta rodada: `chatgpt/mgp-valorant-council-finalize-20260918`
+- Pull request: `#59` — `Finalize VALORANT session and add NEXUS Os Sete area`
 - Base antes desta rodada: `main` após os merges de responsividade/mobile, correção de readiness da NEXUS e template AVAPGV.
 - Fonte de estado: `docs/ai/core-state.json`
 - Roadmaps: `roadmap.md` e `docs/0_1_9_TO_0_2_ROADMAP.md`
@@ -68,7 +69,7 @@ O compêndio continua source-tracked. Nesta rodada foram revisadas manualmente p
 
 As configurações/periféricos consolidados existentes foram preservados. Valores ausentes não são estimados.
 
-O CI agora deve exigir pelo menos 50 jogadores com `crosshairCode` verificado, além dos pisos já existentes de settings/roles.
+Validação CI desta rodada: **350 jogadores**, **234 com settings verificados**, **319 com função/role verificada ou observada**, **50 com `crosshairCode` verificado**. O CI exige pelo menos esses pisos para impedir regressão silenciosa.
 
 ### Imagens
 
