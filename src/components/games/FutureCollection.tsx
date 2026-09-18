@@ -1,4 +1,4 @@
-import { LockKeyhole, Search } from "lucide-react";
+import { Construction, FlaskConical, Search, Wrench } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { Input } from "@/components/ui/input";
 import type { GameModuleKey, GameThemeKey } from "@/config/games";
@@ -8,6 +8,7 @@ import { CompetitiveCompendium } from "@/components/games/CompetitiveCompendium"
 import { DarkSoulsBossWiki } from "@/components/games/DarkSoulsBossWiki";
 import { DarkSoulsGuides } from "@/components/games/DarkSoulsGuides";
 import { DarkSoulsBuildLab } from "@/components/games/DarkSoulsBuildLab";
+import { DarkSouls3BuildLab } from "@/components/games/DarkSouls3BuildLab";
 import { ValorantAgents } from "@/components/games/ValorantAgents";
 import { ValorantMaps } from "@/components/games/ValorantMaps";
 import { ValorantNews } from "@/components/games/ValorantNews";
@@ -39,6 +40,9 @@ export function FutureCollection({
   }
 
   if (gameSlug === "dark-souls-iii" || gameSlug === "elden-ring") {
+    if (gameSlug === "dark-souls-iii" && moduleKey === "builds") {
+      return <DarkSouls3BuildLab locale={locale} />;
+    }
     if (moduleKey === "bosses") return <SoulsBossExplorer gameSlug={gameSlug} locale={locale} />;
     if (moduleKey === "guides") return <SoulsGameGuides gameSlug={gameSlug} locale={locale} />;
   }
@@ -138,29 +142,81 @@ export function FutureCollection({
   ];
   const collectionModules: GameModuleKey[] = ["bosses", "agents", "champions", "maps", "weapons", "items", "modes", "skins"];
   const isCollection = collectionModules.includes(moduleKey);
-  const slots = isCollection ? 6 : 3;
-  const tacticalTheme = themeKey === "valorant" || themeKey === "competitive";
+  const developmentCards = [
+    {
+      icon: Construction,
+      title: copy("Em desenvolvimento", "In development", "En desarrollo"),
+      text: copy(
+        "A estrutura desta área já está aberta no hub e será preenchida progressivamente.",
+        "This hub area is now open and will be populated progressively.",
+        "Esta área del hub ya está abierta y se completará progresivamente.",
+      ),
+    },
+    {
+      icon: Wrench,
+      title: copy("Dados e interação", "Data and interaction", "Datos e interacción"),
+      text: copy(
+        "Filtros, busca e componentes finais entram conforme as fontes e assets forem validados.",
+        "Filters, search and final components will land as sources and assets are validated.",
+        "Los filtros, búsqueda y componentes finales llegarán conforme se validen fuentes y recursos.",
+      ),
+    },
+    {
+      icon: FlaskConical,
+      title: copy("Revisão MGP", "MGP review", "Revisión MGP"),
+      text: copy(
+        "Conteúdo incompleto fica identificado como desenvolvimento em vez de aparecer bloqueado.",
+        "Incomplete content is labeled as development instead of appearing locked.",
+        "El contenido incompleto se identifica como desarrollo en vez de aparecer bloqueado.",
+      ),
+    },
+  ];
 
   return (
     <div className="space-y-5">
-      {isCollection && (
+      {isCollection ? (
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
-          <label className="flex max-w-sm flex-1 items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 transition-colors focus-within:border-gold/60">
+          <label className="flex max-w-sm flex-1 items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 opacity-80">
             <Search className="size-4 text-muted-foreground" />
-            <Input disabled className="h-auto border-0 p-0 shadow-none" placeholder={copy("Buscar na coleção", "Search the collection", "Buscar en la colección")} />
+            <Input
+              disabled
+              className="h-auto border-0 p-0 shadow-none"
+              placeholder={copy("Busca entra com o conteúdo", "Search arrives with content", "La búsqueda llega con el contenido")}
+            />
           </label>
-          <span className="text-xs font-semibold uppercase text-muted-foreground">{copy("Conteúdo futuro", "Future content", "Contenido futuro")}</span>
+          <span className="rounded-full border border-gold/25 bg-gold/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-gold-strong">
+            {copy("Em desenvolvimento", "In development", "En desarrollo")}
+          </span>
         </div>
-      )}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: slots }).map((_, index) => (
-          <div key={index} className={`future-card ${tacticalTheme ? "future-card-tactical" : "future-card-ember"}`} aria-hidden="true">
-            <LockKeyhole className="size-5" />
-            <span>{String(index + 1).padStart(2, "0")}</span>
-          </div>
-        ))}
+      ) : null}
+
+      <div className="surface-panel overflow-hidden">
+        <div className="border-b border-border p-5 sm:p-6">
+          <h2 className="font-display text-2xl font-bold text-foreground">{title}</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{description}</p>
+        </div>
+        <div className="grid gap-3 p-4 sm:grid-cols-3 sm:p-6">
+          {developmentCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <div key={card.title} className="rounded-2xl border border-border bg-muted/10 p-4">
+                <Icon className="size-5 text-gold-strong" />
+                <p className="mt-3 font-display text-base font-semibold text-foreground">{card.title}</p>
+                <p className="mt-2 text-xs leading-5 text-muted-foreground">{card.text}</p>
+              </div>
+            );
+          })}
+        </div>
       </div>
-      <EmptyState title={title} description={description} />
+
+      <EmptyState
+        title={copy("Área aberta para desenvolvimento", "Area open for development", "Área abierta para desarrollo")}
+        description={copy(
+          "O módulo não está mais bloqueado. O que ainda depender de pesquisa, licença, screenshot ou fonte aparecerá explicitamente como em desenvolvimento.",
+          "The module is no longer locked. Anything still depending on research, licensing, screenshots or source validation is explicitly marked as in development.",
+          "El módulo ya no está bloqueado. Lo que dependa de investigación, licencia, capturas o fuentes aparecerá explícitamente como en desarrollo.",
+        )}
+      />
     </div>
   );
 }
