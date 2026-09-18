@@ -778,6 +778,7 @@ function SkinSplashPreview({
   skin: ChampionSkin;
   onSkin: (skin: ChampionSkin) => void;
 }) {
+  const viewerRef = useRef<HTMLDivElement>(null);
   const wheelAccumulatorRef = useRef(0);
   const lastWheelStepRef = useRef(0);
   const currentIndex = Math.max(0, skins.findIndex((entry) => entry.num === skin.num));
@@ -791,24 +792,31 @@ function SkinSplashPreview({
     if (nextSkin) onSkin(nextSkin);
   };
 
-  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    if (skins.length <= 1) return;
-    event.preventDefault();
-    event.stopPropagation();
+  useEffect(() => {
+    const viewer = viewerRef.current;
+    if (!viewer || skins.length <= 1) return;
 
-    wheelAccumulatorRef.current += event.deltaY || event.deltaX;
-    const now = performance.now();
-    if (Math.abs(wheelAccumulatorRef.current) < 28 || now - lastWheelStepRef.current < 120) return;
+    const handleWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-    const direction = wheelAccumulatorRef.current > 0 ? 1 : -1;
-    wheelAccumulatorRef.current = 0;
-    lastWheelStepRef.current = now;
-    move(direction);
-  };
+      wheelAccumulatorRef.current += event.deltaY || event.deltaX;
+      const now = performance.now();
+      if (Math.abs(wheelAccumulatorRef.current) < 28 || now - lastWheelStepRef.current < 120) return;
+
+      const direction: -1 | 1 = wheelAccumulatorRef.current > 0 ? 1 : -1;
+      wheelAccumulatorRef.current = 0;
+      lastWheelStepRef.current = now;
+      move(direction);
+    };
+
+    viewer.addEventListener("wheel", handleWheel, { passive: false });
+    return () => viewer.removeEventListener("wheel", handleWheel);
+  }, [currentIndex, skins]);
 
   return (
     <div
-      onWheel={handleWheel}
+      ref={viewerRef}
       onPointerLeave={() => {
         wheelAccumulatorRef.current = 0;
       }}
