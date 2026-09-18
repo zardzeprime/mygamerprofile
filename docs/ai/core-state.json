@@ -55,7 +55,8 @@
         "Applied per-user RLS to Nexus conversations and optimized Nexus auth.uid() RLS evaluation.",
         "Protected anonymous Nexus storage from direct browser access with deny RLS policies and revoked anon/authenticated grants.",
         "Added server-side guest quota enforcement, atomic assistant-response counting and a short-window per-session rate limit.",
-        "Removed direct anon/authenticated EXECUTE access from Nexus guest SECURITY DEFINER RPCs, leaving them server-side for service_role only."
+        "Removed direct anon/authenticated EXECUTE access from Nexus guest SECURITY DEFINER RPCs, leaving them server-side for service_role only.",
+        "Standardized browser auth redirects on https://mgprofile.online for Google OAuth, email confirmation and password recovery, while retaining localhost and the published Lovable host as explicit test origins."
       ],
       "inProgress": [],
       "next": [
