@@ -65,8 +65,8 @@ export function GameArtwork({
               : "object-contain p-[11%]"
             : isValorantArtwork
               ? variant === "hero"
-                ? "object-contain p-[12%] opacity-95"
-                : "object-contain p-[7%]"
+                ? "object-contain p-[6%] opacity-95"
+                : "object-contain p-[2%]"
               : "object-cover",
           imageClassName,
         )}
