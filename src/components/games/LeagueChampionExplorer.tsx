@@ -175,6 +175,30 @@ function itemIcon(version: string, itemId: string, item?: LeagueItemSummary) {
   return `${DDRAGON}/cdn/${version}/img/item/${file}`;
 }
 
+const LEAGUE_ITEM_CACHE = new Map<string, Promise<Record<string, LeagueItemSummary>>>();
+
+function loadLeagueItems(version: string, locale: Locale) {
+  const key = `${version}:${locale}`;
+  const cached = LEAGUE_ITEM_CACHE.get(key);
+  if (cached) return cached;
+
+  const request = fetch(
+    `${DDRAGON}/cdn/${version}/data/${DATA_DRAGON_LOCALE[locale]}/item.json`,
+  )
+    .then((response) => {
+      if (!response.ok) throw new Error(`Data Dragon items returned ${response.status}`);
+      return response.json() as Promise<LeagueItemPayload>;
+    })
+    .then((payload) => payload.data)
+    .catch((error) => {
+      LEAGUE_ITEM_CACHE.delete(key);
+      throw error;
+    });
+
+  LEAGUE_ITEM_CACHE.set(key, request);
+  return request;
+}
+
 
 function roleLabel(role: string, locale: Locale) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
