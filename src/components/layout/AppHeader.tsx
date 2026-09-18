@@ -38,7 +38,14 @@ export function AppHeader() {
       if (event.key === "Escape") { setOpen(false); menuButtonRef.current?.focus(); }
     };
     const outside = (event: PointerEvent) => {
-      if (!headerRef.current?.contains(event.target as Node)) setOpen(false);
+      const target = event.target;
+      if (
+        target instanceof Element &&
+        target.closest('[data-mgp-header-overlay="true"]')
+      ) {
+        return;
+      }
+      if (!headerRef.current?.contains(target as Node)) setOpen(false);
     };
     document.addEventListener("keydown", close);
     document.addEventListener("pointerdown", outside);

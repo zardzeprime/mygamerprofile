@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -120,6 +121,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [preference, setPreferenceState] = useState<ThemePreference>("system");
   const [resolved, setResolved] = useState<"light" | "dark">("light");
   const [accentColor, setAccentColorState] = useState<string | null>(null);
+  const userChangeRevision = useRef(0);
 
   useEffect(() => {
     let active = true;
@@ -137,6 +139,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     applyAccentColor(initialAccent);
 
     const hydrateAccount = async (userId: string) => {
+      const revisionAtStart = userChangeRevision.current;
       const { data: profile, error } = await supabase
         .from("profiles")
         .select("theme_preference,accent_color")
@@ -144,6 +147,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         .maybeSingle();
 
       if (!active || error || !profile) return;
+
+      // A late account fetch must never undo a color/theme the user just picked.
+      if (userChangeRevision.current !== revisionAtStart) return;
 
       const accountTheme = isThemePreference(profile.theme_preference)
         ? profile.theme_preference
@@ -199,6 +205,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, [preference]);
 
   const setPreference = useCallback((value: ThemePreference) => {
+    userChangeRevision.current += 1;
     setPreferenceState(value);
     persist(THEME_STORAGE_KEY, value);
     setResolved(applyTheme(value));
@@ -207,6 +214,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const setAccentColor = useCallback((value: string) => {
     if (!isHexColor(value)) return;
+    userChangeRevision.current += 1;
     const normalized = value.toLowerCase();
     setAccentColorState(normalized);
     persist(ACCENT_STORAGE_KEY, normalized);
@@ -215,6 +223,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resetAccentColor = useCallback(() => {
+    userChangeRevision.current += 1;
     setAccentColorState(null);
     persist(ACCENT_STORAGE_KEY, null);
     applyAccentColor(null);
