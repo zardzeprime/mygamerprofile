@@ -33,7 +33,7 @@ const decodeHtml = (value = "") =>
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&#x2F;/g, "/")
-    .replace(/&#(\\d+);/g, (_, code) => String.fromCharCode(Number(code)))
+    .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
     .replace(/\s+/g, " ")
     .trim();
 
