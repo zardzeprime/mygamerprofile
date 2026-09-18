@@ -320,6 +320,7 @@ async function fetchBuilds(champion: string): Promise<BuildPayload> {
   const html = await response.text();
   const meta = pageMeta(html);
   const builds = buildVariants(html);
+  const crossChecks = await crossCheckSources(slug, builds[0]?.items ?? []);
 
   return {
     champion,
@@ -332,6 +333,7 @@ async function fetchBuilds(champion: string): Promise<BuildPayload> {
       verifiedAt: new Date().toISOString(),
     },
     builds,
+    crossChecks,
   };
 }
 
