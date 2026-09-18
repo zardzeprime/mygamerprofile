@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="title desc">
+  <title id="title">VALORANT — MGP card mark</title>
+  <desc id="desc">Minimal dark rounded badge with a red VALORANT emblem treatment for MG Profile game cards.</desc>
+  <defs>
+    <linearGradient id="panel" x1="160" y1="120" x2="840" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17191f"/>
+      <stop offset=".56" stop-color="#0b0d12"/>
+      <stop offset="1" stop-color="#141017"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="290" y1="270" x2="700" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff7a83"/>
+      <stop offset=".38" stop-color="#ff4655"/>
+      <stop offset="1" stop-color="#e92f46"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientTransform="translate(500 520) rotate(90) scale(370)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff4655" stop-opacity=".16"/>
+      <stop offset=".65" stop-color="#ff4655" stop-opacity=".035"/>
+      <stop offset="1" stop-color="#ff4655" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect x="92" y="92" width="816" height="816" rx="180" fill="#06070a" fill-opacity=".44"/>
+  <rect x="108" y="108" width="784" height="784" rx="166" fill="url(#panel)" stroke="#2b2d35" stroke-width="10"/>
+  <rect x="120" y="120" width="760" height="760" rx="154" fill="none" stroke="#ff4655" stroke-opacity=".78" stroke-width="7"/>
+  <rect x="136" y="136" width="728" height="728" rx="140" fill="none" stroke="#ffffff" stroke-opacity=".055" stroke-width="2"/>
+  <circle cx="500" cy="520" r="360" fill="url(#halo)"/>
+
+  <path d="M185 350 390 650 476 650 280 430 280 350Z" fill="#ffffff" fill-opacity=".028"/>
+  <path d="M815 410 640 610 560 610 736 422 736 350Z" fill="#ffffff" fill-opacity=".02"/>
+
+  <g filter="url(#glow)" fill="url(#mark)">
+    <path d="M278 300c-13 0-22 9-22 22v211c0 13 5 24 14 34l176 205c8 10 18 15 30 15h118c17 0 25-20 14-33L313 312c-10-9-21-12-35-12Z"/>
+    <path d="M722 300c13 0 22 9 22 22v211c0 13-5 24-14 34l-82 96c-8 10-18 15-30 15H493c-17 0-25-20-14-33l208-333c10-9 21-12 35-12Z"/>
+  </g>
+
+  <path d="M286 322 574 758" stroke="#ffffff" stroke-opacity=".24" stroke-width="3" stroke-linecap="round"/>
+  <path d="M714 322 505 649" stroke="#ffffff" stroke-opacity=".18" stroke-width="3" stroke-linecap="round"/>
+</svg>
