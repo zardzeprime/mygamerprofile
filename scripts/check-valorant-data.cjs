@@ -45,6 +45,7 @@ for (const player of players) {
 }
 assert.ok(players.filter((player) => player.settings).length >= 230, "Settings coverage unexpectedly dropped");
 assert.ok(players.filter((player) => player.role).length >= 310, "Role coverage unexpectedly dropped");
+assert.ok(players.filter((player) => player.settings?.crosshairCode).length >= 42, "Crosshair coverage unexpectedly dropped");
 for (const id of ["sharper-laz", "ns-ivy", "varrel-klaus"]) {
   assert.equal(players.find((player) => player.id === id)?.settings, undefined, `Do not reuse another person's settings: ${id}`);
 }
