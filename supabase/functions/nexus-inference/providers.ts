@@ -24,7 +24,7 @@ const PROVIDERS: ProviderId[] = ["openai", "gemini", "groq", "openrouter", "anth
 // because free-router latency/availability can vary substantially.
 const DEFAULT_ORDER: ProviderId[] = ["gemini", "groq", "openai", "anthropic", "openrouter"];
 const PROVIDER_TIMEOUT_MS: Record<ProviderId, number> = {
-  gemini: 15_000,
+  gemini: 28_000,
   groq: 10_000,
   openai: 18_000,
   anthropic: 18_000,
@@ -172,7 +172,7 @@ async function gemini(request: CompletionRequest) {
     if (remainingBudget <= 1_000) break;
 
     const perModelTimeoutMs = Math.min(
-      model === primaryModel ? 7_000 : 5_000,
+      model === primaryModel ? 16_000 : 8_000,
       remainingBudget,
     );
 
@@ -355,7 +355,8 @@ export async function complete(request: CompletionRequest) {
     system: groundedSystem,
   };
 
-  const allowSameProviderRetry = orderedProviders.length === 1;
+  const allowSameProviderRetry =
+    orderedProviders.length === 1 && orderedProviders[0] !== "gemini";
 
   for (const provider of orderedProviders) {
     if (Date.now() >= deadlineAt) break;
