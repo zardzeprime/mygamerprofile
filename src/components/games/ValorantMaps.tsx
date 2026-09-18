@@ -10,7 +10,7 @@ const STANDARD_MAPS = new Set([
   "Abyss", "Ascent", "Bind", "Breeze", "Corrode", "Fracture", "Haven", "Icebox", "Lotus", "Pearl", "Split", "Summit", "Sunset",
 ]);
 
-const COMPETITIVE_ROTATION_13_04 = new Set(["Abyss", "Ascent", "Corrode", "Haven", "Icebox", "Summit", "Sunset"]);
+const COMPETITIVE_ROTATION_13_04 = new Set(["Abyss", "Ascent", "Haven", "Lotus", "Split", "Summit", "Sunset"]);
 
 type Filter = "all" | "competitive";
 
@@ -70,7 +70,7 @@ export function ValorantMaps({ locale }: { locale: Locale }) {
           {copy("Conheça a identidade tática de cada mapa, veja o minimapa e acompanhe a rotação competitiva atual do MGP.", "Learn each map's tactical identity, inspect its minimap and track the current competitive rotation in MGP.", "Conoce la identidad táctica de cada mapa, revisa el minimapa y sigue la rotación competitiva actual en MGP.")}
         </p>
         <div className="mt-4 inline-flex rounded-full border border-gold/25 bg-gold/10 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
-          {copy("Rotação marcada conforme a Atualização 13.04", "Rotation marked for Patch 13.04", "Rotación marcada según la versión 13.04")}
+          {copy("Rotação competitiva atual · Atualização 13.04", "Current competitive rotation · Patch 13.04", "Rotación competitiva actual · versión 13.04")}
         </div>
       </header>
 
