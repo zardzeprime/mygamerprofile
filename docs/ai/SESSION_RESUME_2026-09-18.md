@@ -45,7 +45,7 @@ Os tokens `tactical` globais continuam existindo onde pertencem a presets/semân
 
 ### VALORANT — competitivo / miras
 
-O compêndio continua source-tracked. Nesta rodada foram revisadas manualmente páginas individuais atuais do ProSettings e adicionadas dez miras ao conjunto existente:
+O compêndio continua source-tracked. Nesta rodada foram revisadas manualmente páginas individuais atuais do ProSettings e adicionadas dezoito miras ao conjunto existente:
 
 - Asuna — https://prosettings.net/players/asuna/
 - bang — https://prosettings.net/players/bang/
@@ -57,10 +57,18 @@ O compêndio continua source-tracked. Nesta rodada foram revisadas manualmente p
 - koalanoob — https://prosettings.net/players/koalanoob/
 - mwzera — https://prosettings.net/players/mwzera/
 - heat — https://prosettings.net/players/heat/
+- reduxx — https://prosettings.net/players/reduxx/
+- JonahP — https://prosettings.net/players/jonahp/
+- Marved — https://prosettings.net/players/marved/
+- valyn — https://prosettings.net/players/valyn/
+- jawgemo — https://prosettings.net/players/jawgemo/
+- trent — https://prosettings.net/players/trent/
+- leaf — https://prosettings.net/players/leaf/
+- keznit — https://prosettings.net/players/keznit/
 
 As configurações/periféricos consolidados existentes foram preservados. Valores ausentes não são estimados.
 
-O CI agora deve exigir pelo menos 42 jogadores com `crosshairCode` verificado, além dos pisos já existentes de settings/roles.
+O CI agora deve exigir pelo menos 50 jogadores com `crosshairCode` verificado, além dos pisos já existentes de settings/roles.
 
 ### Imagens
 
