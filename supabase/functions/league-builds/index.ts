@@ -12,17 +12,6 @@ type BuildVariant = {
   items: BuildItem[];
 };
 
-type SourceCrossCheck = {
-  id: "riot" | "opgg" | "mobalytics" | "leagueofgraphs";
-  label: string;
-  url: string;
-  status: "confirmed" | "reachable" | "blocked" | "unavailable";
-  patch?: string | null;
-  role?: string | null;
-  items?: BuildItem[];
-  note?: string;
-};
-
 type BuildPayload = {
   champion: string;
   slug: string;
@@ -34,7 +23,6 @@ type BuildPayload = {
     verifiedAt: string;
   };
   builds: BuildVariant[];
-  crossChecks: SourceCrossCheck[];
 };
 
 const CACHE_TTL_MS = 30 * 60 * 1000;
@@ -102,29 +90,6 @@ function decodeHtml(value: string) {
     .replace(/&gt;/g, ">")
     .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
     .trim();
-}
-
-function stripHtml(value: string) {
-  return decodeHtml(
-    value
-      .replace(/<!--.*?-->/gs, " ")
-      .replace(/<script\b[\s\S]*?<\/script>/gi, " ")
-      .replace(/<style\b[\s\S]*?<\/style>/gi, " ")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " "),
-  );
-}
-
-async function fetchSourceHtml(url: string, timeoutMs = 7000) {
-  const response = await fetch(url, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; MGProfileGuideBot/1.0; +https://mgprofile.online)",
-      "Accept-Language": "en-US,en;q=0.9",
-    },
-    signal: AbortSignal.timeout(timeoutMs),
-  });
-  const html = await response.text();
-  return { response, html };
 }
 
 function slugifyChampion(name: string) {
