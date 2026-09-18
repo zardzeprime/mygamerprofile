@@ -10,9 +10,8 @@ import { localeCopy } from "@/i18n/locale-utils";
 import {
   deleteNexusThread,
   getNexusGuestStatus,
-  getNexusStatus,
+  getNexusMemberBootstrap,
   listNexusMessages,
-  listNexusThreads,
   sendNexusGuestMessage,
   sendNexusMessage,
 } from "@/lib/nexus.functions";
@@ -117,14 +116,16 @@ export function NexusChat() {
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData.session?.access_token;
       if (!accessToken) throw new Error("NEXUS_AUTH_SESSION_MISSING");
-      const [nextStatus, threads] = await Promise.all([
-        getNexusStatus({ data: { accessToken } }),
-        listNexusThreads({ data: { accessToken } }),
-      ]);
+      const bootstrap = (await getNexusMemberBootstrap({
+        data: { accessToken },
+      })) as {
+        status: NexusStatus;
+        threads: Array<{ id: string; mode: NexusMode }>;
+      };
       if (!active) return;
-      setStatus(nextStatus as NexusStatus);
+      setStatus(bootstrap.status);
 
-      const preferred = (threads as Array<{ id: string; mode: NexusMode }>).find(
+      const preferred = bootstrap.threads.find(
         (thread) => thread.mode === mode,
       );
       if (!preferred) return;
