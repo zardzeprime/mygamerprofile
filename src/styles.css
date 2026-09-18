@@ -202,20 +202,20 @@
 }
 
 /* Native cursors keep text editing and disabled affordances predictable.
- * The cursor itself uses the opposite body contrast of the page:
- * dark cursor on light theme, light cursor on dark theme.
+ * Cursor body follows the active theme (light on light, dark on dark).
+ * A neutral keyline plus the active MGP accent keeps it readable.
  * ThemeProvider may override the two CSS variables with accent-aware data URIs.
  */
 @media (hover: hover) and (pointer: fine) {
   html {
-    --mgp-cursor-default: url('/cursor-dark.svg') 4 4;
-    --mgp-cursor-pointer: url('/cursor-pointer-dark.svg') 16 16;
+    --mgp-cursor-default: url('/cursor-light.svg') 6 5;
+    --mgp-cursor-pointer: url('/cursor-pointer-light.svg') 20 20;
     cursor: var(--mgp-cursor-default), default;
   }
 
   html.dark {
-    --mgp-cursor-default: url('/cursor-light.svg') 4 4;
-    --mgp-cursor-pointer: url('/cursor-pointer-light.svg') 16 16;
+    --mgp-cursor-default: url('/cursor-dark.svg') 6 5;
+    --mgp-cursor-pointer: url('/cursor-pointer-dark.svg') 20 20;
   }
 
   a,
