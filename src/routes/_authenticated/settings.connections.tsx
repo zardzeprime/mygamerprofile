@@ -18,6 +18,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { supabase } from "@/integrations/supabase/client";
+import { getRiotApiReadiness } from "@/lib/riot.functions";
+import { getSteamApiReadiness } from "@/lib/steam.functions";
 
 export const Route = createFileRoute("/_authenticated/settings/connections")({
   head: () => ({
@@ -49,6 +51,11 @@ type VerificationState = {
   provider_name: string | null;
   verified_at: string | null;
   expires_at: string | null;
+};
+
+type ApiReadiness = {
+  steam: { configured: boolean; openIdReady: boolean } | null;
+  riot: { apiKeyConfigured: boolean; rsoConfigured: boolean; publicAppUrlConfigured: boolean } | null;
 };
 
 type ConnectedAccountsReadClient = {
@@ -120,6 +127,7 @@ function SettingsConnectionsPage() {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [accounts, setAccounts] = useState<ConnectedAccount[]>([]);
   const [verification, setVerification] = useState<VerificationState | null>(null);
+  const [apiReadiness, setApiReadiness] = useState<ApiReadiness>({ steam: null, riot: null });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -134,7 +142,7 @@ function SettingsConnectionsPage() {
       const accountsClient = supabase as unknown as ConnectedAccountsReadClient;
       const verificationClient = supabase as unknown as VerificationReadClient;
 
-      const [accountsResult, verificationResult] = await Promise.all([
+      const [accountsResult, verificationResult, steamReadiness, riotReadiness] = await Promise.all([
         accountsClient
           .from("connected_accounts")
           .select("provider,display_name,status,connected_at,last_synced_at")
@@ -144,11 +152,14 @@ function SettingsConnectionsPage() {
           .select("status,verified_over_18,method,provider_name,verified_at,expires_at")
           .eq("user_id", user.id)
           .maybeSingle(),
+        getSteamApiReadiness().catch(() => null),
+        getRiotApiReadiness().catch(() => null),
       ]);
 
       if (cancelled) return;
       if (!accountsResult.error) setAccounts(accountsResult.data ?? []);
       if (!verificationResult.error) setVerification(verificationResult.data);
+      setApiReadiness({ steam: steamReadiness, riot: riotReadiness });
       setLoading(false);
     };
 
@@ -197,6 +208,13 @@ function SettingsConnectionsPage() {
                   account={account}
                   locale={locale}
                   loading={loading}
+                  readiness={
+                    provider.key === "steam"
+                      ? apiReadiness.steam
+                      : provider.key === "riot"
+                        ? apiReadiness.riot
+                        : null
+                  }
                 />
               );
             })}
@@ -287,11 +305,16 @@ function ProviderCard({
   account,
   locale,
   loading,
+  readiness,
 }: {
   provider: (typeof PROVIDERS)[number];
   account: ConnectedAccount | undefined;
   locale: "pt-BR" | "en" | "es";
   loading: boolean;
+  readiness:
+    | ApiReadiness["steam"]
+    | ApiReadiness["riot"]
+    | null;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const Icon = provider.icon;
@@ -321,6 +344,27 @@ function ProviderCard({
       <div className="mt-4 rounded-lg border border-border/70 bg-background/50 px-3 py-2 text-xs text-muted-foreground">
         <span className="font-semibold text-foreground">{provider.futureData[locale === "pt-BR" ? 0 : locale === "en" ? 1 : 2]}</span>
         {account?.display_name ? <span className="mt-1 block">{account.display_name}</span> : null}
+        {provider.key === "steam" && readiness && "configured" in readiness ? (
+          <span className={`mt-2 block font-semibold ${readiness.configured ? "text-emerald-500" : "text-amber-500"}`}>
+            {readiness.configured
+              ? copy("Web API pronta no servidor", "Web API ready on server", "Web API lista en el servidor")
+              : copy("Aguardando STEAM_WEB_API_KEY", "Waiting for STEAM_WEB_API_KEY", "Esperando STEAM_WEB_API_KEY")}
+          </span>
+        ) : null}
+        {provider.key === "riot" && readiness && "apiKeyConfigured" in readiness ? (
+          <span className="mt-2 block space-y-1">
+            <span className={`block font-semibold ${readiness.apiKeyConfigured ? "text-emerald-500" : "text-amber-500"}`}>
+              {readiness.apiKeyConfigured
+                ? copy("Riot API pronta no servidor", "Riot API ready on server", "Riot API lista en el servidor")
+                : copy("Aguardando RIOT_API_KEY", "Waiting for RIOT_API_KEY", "Esperando RIOT_API_KEY")}
+            </span>
+            <span className={`block font-semibold ${readiness.rsoConfigured ? "text-emerald-500" : "text-muted-foreground"}`}>
+              {readiness.rsoConfigured
+                ? "RSO · ready"
+                : copy("RSO · depende da aprovação de produção da Riot", "RSO · requires Riot production approval", "RSO · requiere aprobación de producción de Riot")}
+            </span>
+          </span>
+        ) : null}
       </div>
       <Button variant={connected ? "outline" : "default"} className="mt-4 w-full" disabled={!connected}>
         {connected ? <RefreshCw className="mr-2 size-4" /> : <Link2 className="mr-2 size-4" />}
