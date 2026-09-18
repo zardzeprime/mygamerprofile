@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
+import { getAuthRedirectUrl } from "@/lib/siteUrl";
 
 export const Route = createFileRoute("/forgot-password")({
   component: ForgotPasswordPage,
@@ -30,7 +31,7 @@ function ForgotPasswordPage() {
     setLoading(true);
     setError("");
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin,
+      redirectTo: getAuthRedirectUrl("/"),
     });
     setLoading(false);
     if (resetError) {
