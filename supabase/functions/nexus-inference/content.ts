@@ -24,6 +24,15 @@ type GameRow = {
   description: string | null;
 };
 
+const CATALOG_CACHE_TTL_MS = 90_000;
+const CATALOG_STALE_TTL_MS = 10 * 60_000;
+const CATALOG_FETCH_TIMEOUT_MS = 2_500;
+
+let catalogCache:
+  | { rows: CatalogRow[]; freshUntil: number; staleUntil: number }
+  | undefined;
+let catalogLoadInFlight: Promise<CatalogRow[]> | null = null;
+
 function env(name: string) {
   return Deno.env.get(name)?.trim() || undefined;
 }
@@ -49,46 +58,52 @@ function serverHeaders(serviceRole: string) {
   };
 }
 
-async function loadCatalog(): Promise<CatalogRow[]> {
+async function fetchJson<T>(url: string, headers: Record<string, string>): Promise<T> {
+  const response = await fetch(url, {
+    headers,
+    signal: AbortSignal.timeout(CATALOG_FETCH_TIMEOUT_MS),
+  });
+  if (!response.ok) throw new Error(`MGP catalog HTTP ${response.status}`);
+  return await response.json() as T;
+}
+
+async function refreshCatalog(): Promise<CatalogRow[]> {
   const url = env("SUPABASE_URL");
   const serviceRole = env("SUPABASE_SERVICE_ROLE_KEY");
-  if (!url || !serviceRole) return [];
+  if (!url || !serviceRole) return catalogCache?.rows ?? [];
 
-  const [catalogResponse, gamesResponse] = await Promise.all([
-    fetch(
+  const headers = serverHeaders(serviceRole);
+  const [catalogResult, gamesResult] = await Promise.allSettled([
+    fetchJson<CatalogRow[]>(
       `${url}/rest/v1/mgp_content_catalog?published=eq.true&select=content_key,game_slug,module_key,title,description,path,keywords`,
-      { headers: serverHeaders(serviceRole) },
+      headers,
     ),
-    fetch(
+    fetchJson<GameRow[]>(
       `${url}/rest/v1/games?active=eq.true&select=slug,name,description`,
-      { headers: serverHeaders(serviceRole) },
+      headers,
     ),
   ]);
 
-  if (!catalogResponse.ok) {
-    console.warn("[NEXUS] MGP content catalog unavailable", catalogResponse.status);
-    return [];
+  if (catalogResult.status !== "fulfilled") {
+    console.warn("[NEXUS] MGP content catalog unavailable", String(catalogResult.reason).slice(0, 180));
+    return catalogCache?.rows ?? [];
   }
 
-  const catalog = await catalogResponse.json() as CatalogRow[];
+  const catalog = catalogResult.value;
 
-  // Fail closed for game-specific recommendations: if the platform availability
-  // lookup fails, NEXUS may still mention global MGP content, but it must not
-  // advertise a game section that could be paused or unavailable.
-  if (!gamesResponse.ok) {
-    console.warn("[NEXUS] active MGP game catalog unavailable", gamesResponse.status);
+  // Fail closed for game-specific recommendations when live game availability
+  // cannot be refreshed, but keep global catalog rows available.
+  if (gamesResult.status !== "fulfilled") {
+    console.warn("[NEXUS] active MGP game catalog unavailable", String(gamesResult.reason).slice(0, 180));
     return catalog.filter((row) => !row.game_slug);
   }
 
-  const activeGames = await gamesResponse.json() as GameRow[];
+  const activeGames = gamesResult.value;
   const activeSlugs = new Set(activeGames.map((game) => game.slug));
   const publishedForActiveGames = catalog.filter(
     (row) => !row.game_slug || activeSlugs.has(row.game_slug),
   );
 
-  // The games table is the live availability source of truth. Add an overview
-  // entry for every active game even if a dedicated catalog row has not been
-  // curated yet, so NEXUS can truthfully answer whether that game exists on MGP.
   const syntheticGameRows: CatalogRow[] = activeGames
     .filter((game) => !publishedForActiveGames.some(
       (row) => row.game_slug === game.slug && row.module_key === "overview",
@@ -104,6 +119,36 @@ async function loadCatalog(): Promise<CatalogRow[]> {
     }));
 
   return [...publishedForActiveGames, ...syntheticGameRows];
+}
+
+async function loadCatalog(): Promise<CatalogRow[]> {
+  const now = Date.now();
+  if (catalogCache && catalogCache.freshUntil > now) return catalogCache.rows;
+  if (catalogLoadInFlight) return catalogLoadInFlight;
+
+  catalogLoadInFlight = refreshCatalog()
+    .then((rows) => {
+      const refreshedAt = Date.now();
+      if (rows.length || !catalogCache) {
+        catalogCache = {
+          rows,
+          freshUntil: refreshedAt + CATALOG_CACHE_TTL_MS,
+          staleUntil: refreshedAt + CATALOG_STALE_TTL_MS,
+        };
+        return rows;
+      }
+      return catalogCache.rows;
+    })
+    .catch((error) => {
+      console.warn("[NEXUS] MGP catalog refresh failed", String(error).slice(0, 180));
+      if (catalogCache && catalogCache.staleUntil > Date.now()) return catalogCache.rows;
+      return [];
+    })
+    .finally(() => {
+      catalogLoadInFlight = null;
+    });
+
+  return catalogLoadInFlight;
 }
 
 export async function findMgpContent(query: string, limit = 4): Promise<MgpContentMatch[]> {
