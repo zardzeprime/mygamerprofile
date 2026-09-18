@@ -30,6 +30,23 @@ const REGION_LABELS: Record<Exclude<RegionFilter, "all">, string> = {
   china: "China",
 };
 
+function regionLabel(region: EsportsTeam["region"], fallback?: string) {
+  if (!region) return fallback ?? "";
+  const labels: Record<string, string> = {
+    americas: "Americas",
+    emea: "EMEA",
+    pacific: "Pacific",
+    china: "China",
+    lck: "LCK",
+    lec: "LEC",
+    lcs: "LCS",
+    lpl: "LPL",
+    cblol: "CBLOL",
+    lcp: "LCP",
+  };
+  return labels[region] ?? region.toUpperCase();
+}
+
 export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const teams = getEsportsTeams(game);
@@ -124,7 +141,11 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
               {copy("Buscar time ou jogador", "Find team or player", "Buscar equipo o jugador")}
             </span>
             <input type="search" value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }}
-              placeholder={copy("Ex.: LOUD, aspas…", "E.g. LOUD, aspas…", "Ej.: LOUD, aspas…")}
+              placeholder={
+                game === "valorant"
+                  ? copy("Ex.: LOUD, aspas…", "E.g. LOUD, aspas…", "Ej.: LOUD, aspas…")
+                  : copy("Ex.: T1, Faker…", "E.g. T1, Faker…", "Ej.: T1, Faker…")
+              }
               className="h-11 w-full min-w-0 rounded-xl border border-border bg-background px-3 text-base text-foreground outline-none focus-visible:ring-2 focus-visible:ring-gold/40" />
           </label>
 
@@ -173,7 +194,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                         {team.name}
                       </p>
                       <p className="mt-0.5 truncate text-[10px] text-muted-foreground sm:text-xs">
-                        {team.region ?? team.countryCode ?? "VALORANT"}
+                        {regionLabel(team.region, team.countryCode ?? (game === "valorant" ? "VALORANT" : "LoL Esports"))}
                         {roster.length > 0 ? ` · ${roster.length}` : ""}
                       </p>
                     </div>
@@ -251,7 +272,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                       {selectedTeam.name}
                     </DialogTitle>
                     <DialogDescription className="mt-0.5 text-xs sm:mt-1 sm:text-sm">
-                      {selectedTeam.region ?? copy("Competitivo", "Competitive", "Competitivo")}
+                      {regionLabel(selectedTeam.region, copy("Competitivo", "Competitive", "Competitivo"))}
                     </DialogDescription>
                   </div>
                 </div>
@@ -388,7 +409,7 @@ function TeamProvenance({
 }) {
   const vlrSource = team.sources.find((source) => source.label.startsWith("VLR.gg"));
   const officialSource = team.sources.find((source) => source.label.startsWith("VALORANT Esports"));
-  const source = vlrSource ?? officialSource;
+  const source = vlrSource ?? officialSource ?? team.sources[0];
   if (!source) return null;
 
   return (
@@ -402,9 +423,7 @@ function TeamProvenance({
         rel="noreferrer"
         className="mt-1.5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-gold-strong hover:underline sm:mt-2 sm:text-xs"
       >
-        {vlrSource
-          ? copy("Elenco: VLR.gg", "Roster: VLR.gg", "Plantilla: VLR.gg")
-          : copy("Time: VALORANT Esports", "Team: VALORANT Esports", "Equipo: VALORANT Esports")}
+        {copy("Elenco", "Roster", "Plantilla")}: {source.label}
         <ExternalLink className="size-3" />
       </a>
       <p className="mt-1 text-[9px] text-muted-foreground sm:text-[10px]">
@@ -518,6 +537,11 @@ function playerRoleLabel(role: string, copy: (pt: string, en: string, es: string
       Iniciador: ["Iniciador", "Initiator", "Iniciador"],
       Sentinela: ["Sentinela", "Sentinel", "Centinela"],
       Operador: ["Operador", "Operator", "Operador"],
+      Top: ["Topo", "Top", "Top"],
+      Jungle: ["Selva", "Jungle", "Jungla"],
+      Mid: ["Meio", "Mid", "Medio"],
+      Bot: ["Atirador / Bot", "Bot", "Tirador / Bot"],
+      Support: ["Suporte", "Support", "Soporte"],
     };
     return labels[part] ? copy(...labels[part]) : part;
   }).join(" / ");
@@ -535,6 +559,7 @@ function PlayerPanel({
   const settings = player.settings;
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
   const vlrSource = player.observation?.source ?? player.sources.find((source) => source.label.startsWith("VLR.gg"));
+  const primarySource = vlrSource ?? player.sources[0];
   const proSources = player.sources.filter((source) => source.label === "ProSettings.net");
 
   return (
@@ -564,14 +589,14 @@ function PlayerPanel({
               </span>
             ) : null}
           </div>
-          {vlrSource ? (
+          {primarySource ? (
             <a
-              href={vlrSource.url}
+              href={primarySource.url}
               target="_blank"
               rel="noreferrer"
               className="mt-2 inline-flex items-center gap-1 text-[10px] font-semibold text-gold-strong hover:underline sm:mt-3 sm:text-xs"
             >
-              VLR.gg <ExternalLink className="size-3" />
+              {primarySource.label} <ExternalLink className="size-3" />
             </a>
           ) : null}
         </div>
@@ -596,6 +621,42 @@ function PlayerPanel({
             <p className="mt-2 text-[10px] text-muted-foreground">{copy("Consulta", "Reviewed", "Consulta")}: {player.observation.source.verifiedAt} · VLR.gg</p>
           </div>
         ) : null}
+        {player.game === "league-of-legends" ? (
+          <div className="rounded-2xl border border-border bg-background/40 p-4">
+            <div className="flex items-center gap-2">
+              <UsersRound className="size-4 text-gold-strong" />
+              <h5 className="font-display text-base font-semibold text-foreground sm:text-lg">
+                {copy("Função competitiva", "Competitive role", "Rol competitivo")}
+              </h5>
+            </div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-border bg-muted/10 p-3">
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                  {copy("Posição", "Position", "Posición")}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-foreground">
+                  {player.role ? playerRoleLabel(player.role, copy) : copy("Não verificada", "Not verified", "No verificada")}
+                </p>
+              </div>
+              <div className="rounded-xl border border-border bg-muted/10 p-3">
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                  {copy("Status no elenco", "Roster status", "Estado en plantilla")}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-foreground">
+                  {rosterStatusLabel(player.rosterStatus, copy)}
+                </p>
+              </div>
+            </div>
+            <p className="mt-3 text-xs leading-5 text-muted-foreground">
+              {copy(
+                "O MGP não publica configurações pessoais de jogadores de LoL sem uma fonte pública confiável. Nesta fase, o diretório prioriza time, posição, status e procedência.",
+                "MGP does not publish LoL player settings without a reliable public source. At this stage the directory prioritizes team, position, status and provenance.",
+                "MGP no publica configuraciones personales de jugadores de LoL sin una fuente pública fiable. En esta fase el directorio prioriza equipo, posición, estado y procedencia.",
+              )}
+            </p>
+          </div>
+        ) : (
+          <>
         <div className="flex items-center gap-2">
           <MousePointer2 className="size-4 text-gold-strong" />
           <h5 className="font-display text-base font-semibold text-foreground sm:text-lg">
@@ -699,6 +760,9 @@ function PlayerPanel({
               "Aún no encontramos configuraciones públicas confirmadas para este jugador. No se rellenan valores estimados.",
             )}
           </div>
+        )}
+          </>
+        )}
         )}
       </div>
     </article>
