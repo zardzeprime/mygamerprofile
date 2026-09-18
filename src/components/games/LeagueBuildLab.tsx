@@ -616,13 +616,38 @@ function ReferenceLinks({
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   if (!championName) return null;
   const slug = slugifyChampion(championName);
+  const checks = source?.crossChecks ?? [];
+  const fallbackLinks = [
+    { id: "riot", label: "Riot", url: `https://www.leagueoflegends.com/en-us/champions/${slug}/` },
+    { id: "opgg", label: "OP.GG", url: `https://www.op.gg/champions/${slug}/build` },
+    { id: "mobalytics", label: "Mobalytics", url: `https://mobalytics.gg/lol/champions/${slug}/build` },
+    { id: "leagueofgraphs", label: "League of Graphs", url: `https://www.leagueofgraphs.com/champions/builds/${slug}` },
+  ];
   const links = [
-    source?.source.url ? { label: "LoLalytics", url: source.source.url } : null,
-    { label: "Riot", url: `https://www.leagueoflegends.com/en-us/champions/${slug}/` },
-    { label: "OP.GG", url: `https://www.op.gg/champions/${slug}/build` },
-    { label: "Mobalytics", url: `https://mobalytics.gg/lol/champions/${slug}/build` },
-    { label: "League of Graphs", url: `https://www.leagueofgraphs.com/champions/builds/${slug}` },
-  ].filter((entry): entry is { label: string; url: string } => Boolean(entry));
+    source?.source.url
+      ? {
+          id: "lolalytics",
+          label: "LoLalytics",
+          url: source.source.url,
+          status: "confirmed" as const,
+          detail: source.patch ? `Patch ${source.patch}` : null,
+        }
+      : null,
+    ...fallbackLinks.map((entry) => {
+      const check = checks.find((item) => item.id === entry.id);
+      const detail =
+        check?.matchedPrimaryItems != null && check.primaryItemsChecked
+          ? `${check.matchedPrimaryItems}/${check.primaryItemsChecked} core`
+          : check?.patch
+            ? `Patch ${check.patch}`
+            : null;
+      return {
+        ...entry,
+        status: check?.status ?? ("reachable" as const),
+        detail,
+      };
+    }),
+  ].filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
 
   return (
     <div className="mt-5 rounded-2xl border border-border bg-background/50 p-4">
@@ -632,21 +657,31 @@ function ReferenceLinks({
       <div className="mt-3 flex flex-wrap gap-2">
         {links.map((entry) => (
           <a
-            key={entry.label}
+            key={entry.id}
             href={entry.url}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full border border-border bg-muted/10 px-3 py-1.5 text-xs font-bold text-foreground transition-colors hover:border-gold/35 hover:text-gold-strong"
+            className={cn(
+              "rounded-full border px-3 py-1.5 text-xs font-bold transition-colors",
+              entry.status === "confirmed"
+                ? "border-success/35 bg-success/10 text-foreground hover:border-success/60"
+                : entry.status === "blocked"
+                  ? "border-border bg-muted/10 text-muted-foreground"
+                  : "border-border bg-muted/10 text-foreground hover:border-gold/35 hover:text-gold-strong",
+            )}
           >
-            {entry.label} ↗
+            {entry.label}
+            {entry.status === "confirmed" ? " ✓" : entry.status === "blocked" ? " · manual" : ""}
+            {entry.detail ? ` · ${entry.detail}` : ""}
+            {" ↗"}
           </a>
         ))}
       </div>
       <p className="mt-3 text-xs leading-5 text-muted-foreground">
         {copy(
-          "A build automática exibida acima usa LoLalytics no backend. Os demais links são referências de cross-check para revisão humana/NEXUS, não fontes misturadas silenciosamente.",
-          "The automatic build above uses LoLalytics in the backend. The other links are cross-check references for human/NEXUS review, not silently mixed sources.",
-          "La build automática usa LoLalytics en el backend. Los demás enlaces son referencias de cross-check para revisión humana/NEXUS, no fuentes mezcladas silenciosamente.",
+          "A build-base vem do LoLalytics. Fontes com ✓ responderam à verificação automática; quando aparece “manual”, a fonte bloqueou a consulta automatizada e continua apenas como referência de revisão. O MGP nunca conta uma fonte bloqueada como confirmação.",
+          "The base build comes from LoLalytics. Sources with ✓ answered the automatic cross-check; “manual” means the source blocked automated access and remains a review reference only. MGP never counts a blocked source as confirmation.",
+          "La build base viene de LoLalytics. Las fuentes con ✓ respondieron al cross-check automático; “manual” significa que la fuente bloqueó el acceso automatizado y queda solo como referencia de revisión. MGP nunca cuenta una fuente bloqueada como confirmación.",
         )}
       </p>
     </div>
