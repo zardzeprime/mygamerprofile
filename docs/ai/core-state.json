@@ -111,7 +111,8 @@
         "Prepared original CSS-only identity-pack concepts for MGP Core, Souls-inspired embers, tactical signal and Rift-inspired magic-tech without reusing third-party game artwork.",
         "Support payments remain disabled until a public-safe method is configured; the recommended Pix setup uses a random project key instead of exposing CPF, phone number or personal email.",
         "Replaced the League of Legends card/hero logo hotlink with the user-provided repository PNG, preserving repository provenance and eliminating the external image dependency.",
-        "Added a local scalable VALORANT card/navigation mark with a dark rounded badge treatment, preserving the separate hub-background provenance and avoiding a new remote logo dependency."
+        "Added a local scalable VALORANT card/navigation mark with a dark rounded badge treatment, preserving the separate hub-background provenance and avoiding a new remote logo dependency.",
+        "Replaced the provisional VALORANT SVG card treatment with the user-uploaded transparent PNG after visual comparison, copying the exact blob into public assets without recompression."
       ],
       "inProgress": [],
       "next": [
@@ -222,7 +223,8 @@
         "Fixed the VALORANT mobile overview clipping shown in the 2026-09-18 screenshot by forcing the overview grid to a minmax(0,1fr) mobile track, constraining the VALORANT sidebar min-content width and allowing synopsis/fact text to wrap.",
         "Added a responsive Profile Customization Studio scaffold in profile settings with selectable future slots and original identity-pack previews, while only existing background presets are currently equipable.",
         "NEXUS chat now restores a failed message to the composer instead of making the user retype it, and shows a friendly transient-provider error for NEXUS_ALL_PROVIDERS_FAILED.",
-        "Matched VALORANT card/home artwork behavior to the clean League logo treatment using a lightweight SVG and contain-based responsive framing."
+        "Matched VALORANT card/home artwork behavior to the clean League logo treatment using a lightweight SVG and contain-based responsive framing.",
+        "Tightened VALORANT card/hero contain framing for the uploaded 500x281 transparent artwork so the badge reads larger and cleaner in the existing card aspect ratios."
       ],
       "inProgress": [
         "Run page-by-page rendered art-direction QA after Visual System v2 is visible in Lovable, focusing on home, game catalog, communities, profiles, NEXUS and game hubs at mobile and desktop widths."
