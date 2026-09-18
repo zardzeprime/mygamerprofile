@@ -393,5 +393,5 @@ export async function complete(request: CompletionRequest) {
   }
 
   console.error("[NEXUS] all providers failed", failures.join(" | "));
-  throw new Error("NEXUS_ALL_PROVIDERS_FAILED");
+  throw new Error(`NEXUS_ALL_PROVIDERS_FAILED: ${failures.join(" | ").slice(0, 1800)}`);
 }
