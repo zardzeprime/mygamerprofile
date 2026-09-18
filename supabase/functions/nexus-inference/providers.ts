@@ -157,11 +157,11 @@ async function gemini(request: CompletionRequest) {
   if (!key) throw new Error("Gemini is not configured");
 
   const primaryModel = env("NEXUS_GEMINI_MODEL") ?? "gemini-3.8-flash";
-  const models = [
-    primaryModel,
-    "gemini-3.7-flash",
-    "gemini-3.6-flash",
-  ].filter((model, index, all) => all.indexOf(model) === index);
+  const models = (
+    request.effort === "low"
+      ? ["gemini-3.6-flash", "gemini-3.7-flash", primaryModel]
+      : [primaryModel, "gemini-3.7-flash", "gemini-3.6-flash"]
+  ).filter((model, index, all) => all.indexOf(model) === index);
 
   const providerBudgetMs = request.timeoutMs ?? PROVIDER_TIMEOUT_MS.gemini;
   const deadlineAt = Date.now() + providerBudgetMs;
@@ -172,7 +172,13 @@ async function gemini(request: CompletionRequest) {
     if (remainingBudget <= 1_000) break;
 
     const perModelTimeoutMs = Math.min(
-      model === primaryModel ? 16_000 : 8_000,
+      request.effort === "low"
+        ? model === "gemini-3.6-flash"
+          ? 12_000
+          : 7_000
+        : model === primaryModel
+          ? 16_000
+          : 8_000,
       remainingBudget,
     );
 
