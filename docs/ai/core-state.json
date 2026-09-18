@@ -108,7 +108,8 @@
         "Kept crosshair previews code-native and player peripheral icons local, avoiding new external media reuse.",
         "Kept the VALORANT pro-player reader on initials fallbacks when player-photo reuse rights were not explicitly verified; public accessibility alone is not treated as image permission.",
         "Prepared original CSS-only identity-pack concepts for MGP Core, Souls-inspired embers, tactical signal and Rift-inspired magic-tech without reusing third-party game artwork.",
-        "Support payments remain disabled until a public-safe method is configured; the recommended Pix setup uses a random project key instead of exposing CPF, phone number or personal email."
+        "Support payments remain disabled until a public-safe method is configured; the recommended Pix setup uses a random project key instead of exposing CPF, phone number or personal email.",
+        "Replaced the League of Legends card/hero logo hotlink with the user-provided repository PNG, preserving repository provenance and eliminating the external image dependency."
       ],
       "inProgress": [],
       "next": [
