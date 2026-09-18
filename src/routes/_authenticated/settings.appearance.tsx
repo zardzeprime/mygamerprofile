@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Palette, SlidersHorizontal, Volume2 } from "lucide-react";
-import { useTheme } from "@/lib/theme";
+import { DEFAULT_ACCENT_COLOR, useTheme } from "@/lib/theme";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { SettingsLayout } from "@/components/settings/SettingsLayout";
@@ -30,7 +30,7 @@ function SettingsAppearancePage() {
         <header>
           <p className="section-kicker">{copy("Seu espaço", "Your space", "Tu espacio")}</p>
           <h2 className="mt-1 font-display text-2xl font-semibold">{t("settings.appearance")}</h2>
-          <p className="mt-2 max-w-xl text-sm text-muted-foreground">{copy("Dê o seu tom ao MGP. O dourado continua na assinatura; o resto acompanha você.", "Make MGP feel like you. Gold stays in the signature; the rest follows your style.", "Dale tu tono a MGP. El dorado mantiene la identidad; el resto sigue tu estilo.")}</p>
+          <p className="mt-2 max-w-xl text-sm text-muted-foreground">{copy("Dê o seu tom ao MGP. A cor principal da interface pode mudar com você, sem perder a estrutura da marca.", "Make MGP feel like you. The interface signal color can change with you without losing the brand structure.", "Dale tu tono a MGP. El color principal de la interfaz puede cambiar contigo sin perder la estructura de la marca.")}</p>
         </header>
 
         <section className="surface-panel overflow-hidden">
@@ -52,12 +52,12 @@ function SettingsAppearancePage() {
             </div>
             <div className="border-t border-border pt-5">
               <h3 className="flex items-center gap-2 text-sm font-semibold"><Palette className="size-4 text-gold-strong" aria-hidden="true" />{copy("Cor de apoio", "Accent palette", "Color complementario")}</h3>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{copy("Escolha uma combinação ou use o seletor para criar a sua. Fundos e gradientes se ajustam ao tema.", "Choose a palette or use the picker to create your own. Backgrounds and gradients adapt to your theme.", "Elige una combinación o crea la tuya con el selector. Los fondos y degradados se adaptan al tema.")}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{copy("Escolha uma combinação ou use o seletor para criar a sua. A cor passa a comandar botões, barras, foco e destaques. Logado, ela fica sincronizada com a sua conta.", "Choose a palette or use the picker to create your own. It drives buttons, rails, focus and highlights. When signed in, it syncs with your account.", "Elige una combinación o crea la tuya con el selector. Controla botones, barras, foco y destacados. Con sesión iniciada, se sincroniza con tu cuenta.")}</p>
               <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label={copy("Paletas de cores", "Color palettes", "Paletas de colores")}>
                 {palettes.map(({ color, name }) => {
                   const active = color === accentColor;
                   return <button key={name} type="button" aria-pressed={active} onClick={() => color ? setAccentColor(color) : resetAccentColor()} className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition-colors ${active ? "border-gold bg-gold-soft text-gold-strong" : "border-border hover:bg-muted"}`}>
-                    <span className="size-4 rounded-full border border-black/10" style={{ background: color ?? "#d4a72c" }} aria-hidden="true" />{name}{active && <Check className="size-3.5" aria-hidden="true" />}
+                    <span className="size-4 rounded-full border border-black/10" style={{ background: color ?? DEFAULT_ACCENT_COLOR }} aria-hidden="true" />{name}{active && <Check className="size-3.5" aria-hidden="true" />}
                   </button>;
                 })}
               </div>
