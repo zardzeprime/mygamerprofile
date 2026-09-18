@@ -8,12 +8,30 @@ export type CompletionRequest = {
   effort?: "low" | "medium" | "high";
   maxOutputTokens?: number;
   providerOrder?: ProviderId[];
+  timeoutMs?: number;
+};
+
+export type ProviderTiming = {
+  provider: ProviderId;
+  durationMs: number;
+  ok: boolean;
 };
 
 const PROVIDERS: ProviderId[] = ["openai", "gemini", "groq", "openrouter", "anthropic"];
-const DEFAULT_ORDER: ProviderId[] = ["groq", "gemini", "openai", "anthropic", "openrouter"];
-const PROVIDER_TIMEOUT_MS = 25_000;
-const PROVIDER_RETRY_DELAY_MS = 650;
+
+// Prefer the provider that has already been serving successful NEXUS traffic,
+// then fail over to the other configured providers. OpenRouter/free stays last
+// because free-router latency/availability can vary substantially.
+const DEFAULT_ORDER: ProviderId[] = ["gemini", "groq", "openai", "anthropic", "openrouter"];
+const PROVIDER_TIMEOUT_MS: Record<ProviderId, number> = {
+  gemini: 12_000,
+  groq: 10_000,
+  openai: 18_000,
+  anthropic: 18_000,
+  openrouter: 10_000,
+};
+const OVERALL_PROVIDER_BUDGET_MS = 42_000;
+const SINGLE_PROVIDER_RETRY_DELAY_MS = 300;
 
 function env(name: string) {
   return Deno.env.get(name)?.trim() || undefined;
@@ -23,8 +41,8 @@ function errorText(error: unknown) {
   return (error instanceof Error ? error.message : String(error)).slice(0, 500);
 }
 
-function requestSignal() {
-  return AbortSignal.timeout(PROVIDER_TIMEOUT_MS);
+function requestSignal(timeoutMs: number) {
+  return AbortSignal.timeout(Math.max(1_000, timeoutMs));
 }
 
 function isRetryableProviderFailure(error: unknown) {
@@ -47,17 +65,32 @@ function sleep(ms: number) {
 async function completeWithRetry(
   provider: ProviderId,
   request: CompletionRequest,
+  allowSameProviderRetry: boolean,
+  deadlineAt: number,
 ) {
   let lastError: unknown;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  const attempts = allowSameProviderRetry ? 2 : 1;
+
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    const remainingBudget = deadlineAt - Date.now();
+    if (remainingBudget <= 1_000) throw new Error("NEXUS_PROVIDER_BUDGET_EXHAUSTED");
+
+    const timeoutMs = Math.min(PROVIDER_TIMEOUT_MS[provider], remainingBudget);
     try {
-      return await COMPLETERS[provider](request);
+      return await COMPLETERS[provider]({ ...request, timeoutMs });
     } catch (error) {
       lastError = error;
-      if (attempt === 1 || !isRetryableProviderFailure(error)) throw error;
-      await sleep(PROVIDER_RETRY_DELAY_MS);
+      if (
+        attempt === attempts - 1 ||
+        !isRetryableProviderFailure(error) ||
+        deadlineAt - Date.now() <= SINGLE_PROVIDER_RETRY_DELAY_MS + 1_000
+      ) {
+        throw error;
+      }
+      await sleep(SINGLE_PROVIDER_RETRY_DELAY_MS);
     }
   }
+
   throw lastError;
 }
 
@@ -100,9 +133,9 @@ async function openai(request: CompletionRequest) {
       instructions: request.system,
       input: request.messages,
       reasoning: { effort: request.effort ?? "medium" },
-      max_output_tokens: request.maxOutputTokens ?? 1600,
+      max_output_tokens: request.maxOutputTokens ?? 1200,
     }),
-    signal: requestSignal(),
+    signal: requestSignal(request.timeoutMs ?? PROVIDER_TIMEOUT_MS.openai),
   });
   if (!response.ok) throw new Error(`OpenAI ${response.status}: ${(await response.text()).slice(0, 220)}`);
   const data = await response.json() as {
@@ -135,19 +168,27 @@ async function gemini(request: CompletionRequest) {
           parts: [{ text: message.content }],
         })),
         generationConfig: {
-          maxOutputTokens: request.maxOutputTokens ?? 1600,
+          maxOutputTokens: request.maxOutputTokens ?? 1200,
           thinkingConfig: {
             thinkingLevel: request.effort === "high" ? "high" : "low",
           },
         },
       }),
-      signal: requestSignal(),
+      signal: requestSignal(request.timeoutMs ?? PROVIDER_TIMEOUT_MS.gemini),
     },
   );
   if (!response.ok) throw new Error(`Gemini ${response.status}: ${(await response.text()).slice(0, 220)}`);
-  const data = await response.json() as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
+  const data = await response.json() as {
+    candidates?: Array<{
+      finishReason?: string;
+      content?: { parts?: Array<{ text?: string }> };
+    }>;
+  };
   const text = data.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("").trim();
-  if (!text) throw new Error("Gemini returned no text");
+  if (!text) {
+    const finishReason = data.candidates?.[0]?.finishReason;
+    throw new Error(`Gemini returned no text${finishReason ? ` (${finishReason})` : ""}`);
+  }
   return { text, provider: "gemini" as const, model };
 }
 
@@ -166,7 +207,7 @@ async function compatible(request: CompletionRequest, provider: "groq" | "openro
     "Content-Type": "application/json",
   };
   if (!isGroq) {
-    headers["HTTP-Referer"] = env("PUBLIC_APP_URL") ?? "https://mygamerprofile.lovable.app";
+    headers["HTTP-Referer"] = env("PUBLIC_APP_URL") ?? "https://mgprofile.online";
     headers["X-OpenRouter-Title"] = "MG Profile NEXUS";
   }
   const response = await fetch(endpoint, {
@@ -175,9 +216,10 @@ async function compatible(request: CompletionRequest, provider: "groq" | "openro
     body: JSON.stringify({
       model,
       messages: [{ role: "system", content: request.system }, ...request.messages],
-      max_tokens: request.maxOutputTokens ?? 1600,
+      max_tokens: request.maxOutputTokens ?? 1200,
+      temperature: 0.6,
     }),
-    signal: requestSignal(),
+    signal: requestSignal(request.timeoutMs ?? PROVIDER_TIMEOUT_MS[provider]),
   });
   if (!response.ok) throw new Error(`${provider} ${response.status}: ${(await response.text()).slice(0, 220)}`);
   const data = await response.json() as {
@@ -205,9 +247,9 @@ async function anthropic(request: CompletionRequest) {
       model,
       system: request.system,
       messages: request.messages,
-      max_tokens: request.maxOutputTokens ?? 1600,
+      max_tokens: request.maxOutputTokens ?? 1200,
     }),
-    signal: requestSignal(),
+    signal: requestSignal(request.timeoutMs ?? PROVIDER_TIMEOUT_MS.anthropic),
   });
   if (!response.ok) throw new Error(`Anthropic ${response.status}: ${(await response.text()).slice(0, 220)}`);
   const data = await response.json() as { content?: Array<{ type?: string; text?: string }> };
@@ -232,29 +274,74 @@ const COMPLETERS: Record<
 };
 
 export async function complete(request: CompletionRequest) {
-  const state = new Map<ProviderId, ReturnType<typeof providerStatuses>[number]>(
+  const providerState = new Map<ProviderId, ReturnType<typeof providerStatuses>[number]>(
     providerStatuses().map((entry) => [entry.id, entry]),
   );
+  const orderedProviders = providerOrder(request.providerOrder).filter(
+    (provider) => providerState.get(provider)?.configured,
+  );
+
+  if (!orderedProviders.length) throw new Error("NEXUS_NO_PROVIDER");
+
   const attemptedProviders: ProviderId[] = [];
+  const providerTimings: ProviderTiming[] = [];
   const failures: string[] = [];
-  const latestUserMessage = [...request.messages].reverse().find((message) => message.role === "user")?.content ?? "";
+  const overallStartedAt = Date.now();
+  const deadlineAt = overallStartedAt + OVERALL_PROVIDER_BUDGET_MS;
+
+  const latestUserMessage =
+    [...request.messages].reverse().find((message) => message.role === "user")?.content ?? "";
+
+  let groundedSystem = request.system;
+  try {
+    groundedSystem = await augmentSystemWithMgpContent(request.system, latestUserMessage);
+  } catch (error) {
+    // Site-content grounding is useful context, but it must never prevent the
+    // support AI from answering if the catalog/database is temporarily slow.
+    console.warn("[NEXUS] content grounding skipped", errorText(error));
+  }
+
   const groundedRequest: CompletionRequest = {
     ...request,
-    system: await augmentSystemWithMgpContent(request.system, latestUserMessage),
+    system: groundedSystem,
   };
 
-  for (const provider of providerOrder(request.providerOrder)) {
-    if (!state.get(provider)?.configured) continue;
+  const allowSameProviderRetry = orderedProviders.length === 1;
+
+  for (const provider of orderedProviders) {
+    if (Date.now() >= deadlineAt) break;
+
     attemptedProviders.push(provider);
+    const startedAt = Date.now();
+
     try {
-      const result = await completeWithRetry(provider, groundedRequest);
-      return { ...result, attemptedProviders };
+      const result = await completeWithRetry(
+        provider,
+        groundedRequest,
+        allowSameProviderRetry,
+        deadlineAt,
+      );
+      providerTimings.push({
+        provider,
+        durationMs: Date.now() - startedAt,
+        ok: true,
+      });
+      return {
+        ...result,
+        attemptedProviders,
+        providerTimings,
+        latencyMs: Date.now() - overallStartedAt,
+      };
     } catch (error) {
+      providerTimings.push({
+        provider,
+        durationMs: Date.now() - startedAt,
+        ok: false,
+      });
       failures.push(`${provider}: ${errorText(error)}`);
     }
   }
 
-  if (!attemptedProviders.length) throw new Error("NEXUS_NO_PROVIDER");
   console.error("[NEXUS] all providers failed", failures.join(" | "));
   throw new Error("NEXUS_ALL_PROVIDERS_FAILED");
 }
