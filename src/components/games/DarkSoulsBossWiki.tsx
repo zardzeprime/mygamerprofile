@@ -21,7 +21,6 @@ import type { Locale } from "@/i18n";
 import { localeCopy, toContentLocale } from "@/i18n/locale-utils";
 import { DARK_SOULS_BOSSES, type DarkSoulsBoss } from "@/data/darkSoulsBosses";
 import { DARK_SOULS_BOSS_WIKI } from "@/data/darkSoulsBossWiki";
-import { getDarkSoulsBossImage } from "@/data/darkSoulsBossImages";
 
 type Filter = "all" | "required" | "optional" | "dlc";
 
@@ -50,8 +49,6 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
 
   const selected =
     DARK_SOULS_BOSSES.find((boss) => boss.slug === selectedSlug) ?? filtered[0] ?? DARK_SOULS_BOSSES[0];
-  const selectedImage = getDarkSoulsBossImage(selected?.slug);
-  const selectedImageUrl = selectedImage?.url ?? selected?.image_url ?? null;
 
   const selectBoss = (boss: DarkSoulsBoss) => {
     setSelectedSlug(boss.slug);
@@ -112,76 +109,33 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
           <aside className="border-t border-border bg-muted/20 p-5 xl:border-l xl:border-t-0 sm:p-6">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
-                <p className="section-kicker">{copy("ARTE", "ART", "ARTE")}</p>
+                <p className="section-kicker">{copy("SCREENSHOT", "SCREENSHOT", "CAPTURA")}</p>
                 <p className="mt-1 text-sm font-semibold text-foreground">
-                  {selectedImage
-                    ? copy("Imagem de referência disponível", "Reference image available", "Imagen de referencia disponible")
-                    : copy("Asset em preparação", "Asset in preparation", "Recurso en preparación")}
+                  {copy("Em produção pelo MGP", "In production by MGP", "En producción por MGP")}
                 </p>
               </div>
               <Sparkles className="size-5 text-gold-strong" />
             </div>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-border bg-background">
-              {selectedImage ? (
-                <>
-                  <img
-                    src={selectedImage.url}
-                    alt=""
-                    aria-hidden="true"
-                    referrerPolicy="no-referrer"
-                    className="absolute inset-0 h-full w-full scale-110 object-cover opacity-20 blur-2xl"
-                    style={{ objectPosition: selectedImage.cardObjectPosition ?? "50% 35%" }}
-                  />
-                  <div className="absolute inset-0 bg-background/25" />
-                  <img
-                    src={selectedImage.url}
-                    alt={selected?.name ?? ""}
-                    referrerPolicy="no-referrer"
-                    className={cn(
-                      "relative z-10 h-full w-full opacity-95",
-                      selectedImage.detailFit === "cover" ? "object-cover" : "object-contain p-3",
-                    )}
-                    style={{
-                      objectPosition: selectedImage.detailObjectPosition ?? "50% 38%",
-                      transform: `scale(${selectedImage.detailScale ?? 1})`,
-                    }}
-                  />
-                </>
-              ) : (
-                <img
-                  src={selectedImageUrl ?? darkSoulsAtmosphere}
-                  alt={selectedImageUrl ? selected?.name ?? "" : ""}
-                  referrerPolicy="no-referrer"
-                  className={cn(
-                    "h-full w-full object-cover",
-                    !selectedImageUrl && "scale-110 opacity-45 blur-[1px]",
-                  )}
-                />
-              )}
-              {!selectedImageUrl ? (
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-gradient-to-t from-background via-background/40 to-transparent p-6 text-center">
-                  <Skull className="size-10 text-gold-strong" />
-                  <p className="mt-4 font-display text-2xl font-bold text-foreground">{selected?.name}</p>
-                  <p className="mt-2 max-w-xs text-xs leading-relaxed text-muted-foreground">
-                    {copy(
-                      "A imagem individual ainda não foi adicionada.",
-                      "Individual artwork has not been added yet.",
-                      "La imagen individual todavía no ha sido añadida.",
-                    )}
-                  </p>
-                </div>
-              ) : null}
+
+            <div className="flex aspect-[4/5] flex-col items-center justify-center rounded-xl border border-dashed border-gold/25 bg-[radial-gradient(circle_at_top,hsl(var(--gold)/0.08),transparent_55%)] p-6 text-center">
+              <Skull className="size-11 text-gold-strong" />
+              <p className="mt-4 font-display text-2xl font-bold text-foreground">{selected?.name}</p>
+              <p className="mt-3 max-w-xs text-xs leading-6 text-muted-foreground">
+                {copy(
+                  "As screenshots próprias dos encontros ainda serão capturadas, tratadas e enquadradas pelo MGP. Até lá, esta ficha permanece sem arte externa.",
+                  "Original encounter screenshots will still be captured, processed and framed by MGP. Until then, this entry intentionally ships without external boss artwork.",
+                  "Las capturas propias de los encuentros aún serán tomadas, tratadas y encuadradas por MGP. Hasta entonces, esta ficha permanece sin arte externa.",
+                )}
+              </p>
             </div>
-            {selectedImage ? (
-              <a
-                href={selectedImage.sourceUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-3 block text-xs leading-relaxed text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-              >
-                {selectedImage.sourceLabel[contentLocale]}
-              </a>
-            ) : null}
+
+            <p className="mt-3 text-xs leading-5 text-muted-foreground">
+              {copy(
+                "Objetivo: substituir esta área por screenshots consistentes de gameplay, com o mesmo enquadramento e identidade visual em todos os chefes.",
+                "Goal: replace this area with consistent gameplay screenshots using the same framing and visual identity across every boss.",
+                "Objetivo: reemplazar esta área con capturas de gameplay consistentes y el mismo encuadre visual para todos los jefes.",
+              )}
+            </p>
           </aside>
         </div>
       </section>
@@ -224,9 +178,6 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((boss) => {
             const wiki = DARK_SOULS_BOSS_WIKI[boss.slug];
-            const imageAsset = getDarkSoulsBossImage(boss.slug);
-            const imageUrl = imageAsset?.url ?? boss.image_url ?? darkSoulsAtmosphere;
-            const hasImage = Boolean(imageAsset || boss.image_url);
             const active = boss.slug === selected?.slug;
 
             return (
@@ -239,24 +190,11 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                   active && "border-gold/70 ring-1 ring-gold/20",
                 )}
               >
-                <div className="relative h-28 overflow-hidden border-b border-border bg-muted">
-                  <img
-                    src={imageUrl}
-                    alt=""
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    className={cn(
-                      "h-full w-full transition-[opacity,transform] duration-300",
-                      imageAsset?.cardFit === "contain" ? "object-contain p-2" : "object-cover",
-                      hasImage ? "opacity-80 group-hover:opacity-95" : "opacity-40 group-hover:opacity-55",
-                    )}
-                    style={{
-                      objectPosition: imageAsset?.cardObjectPosition ?? "50% 38%",
-                      transform: `scale(${imageAsset?.cardScale ?? 1})`,
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-                  <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3">
+                <div className="relative flex h-28 items-end overflow-hidden border-b border-border bg-[radial-gradient(circle_at_top_left,hsl(var(--gold)/0.08),transparent_65%)] p-4">
+                  <div className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-gold/20 bg-background/60">
+                    <Skull className="size-4 text-gold-strong" />
+                  </div>
+                  <div className="flex w-full items-end justify-between gap-3">
                     <span className="text-xs font-bold uppercase tracking-[0.16em] text-gold-strong">
                       #{String(boss.order).padStart(2, "0")}
                     </span>
@@ -284,6 +222,9 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                   <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
                     {boss.shortSummary[contentLocale]}
                   </p>
+                  <p className="mt-3 text-[0.67rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                    {copy("Screenshot MGP em desenvolvimento", "MGP screenshot in development", "Captura MGP en desarrollo")}
+                  </p>
                   {wiki ? (
                     <p className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-foreground">
                       <Coins className="size-3.5 text-gold-strong" />
@@ -309,9 +250,9 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
 
       <p className="text-xs leading-relaxed text-muted-foreground">
         {copy(
-          "Nota editorial: os textos do MGP são resumos originais baseados em fatos do jogo e referências consolidadas. As artes de chefes combinam concept art, artwork e screenshots catalogados em fontes externas, sempre com atribuição no painel. O enquadramento é ajustado por chefe para priorizar a criatura em vez de preservar bordas vazias da imagem original.",
-          "Editorial note: MGP copy is original summary text based on in-game facts and established references. Boss visuals combine concept art, artwork and screenshots catalogued by external sources, with attribution in the art panel. Framing is tuned per boss to prioritize the creature rather than preserve empty borders from the original image.",
-          "Nota editorial: los textos de MGP son resúmenes originales basados en hechos del juego y referencias consolidadas. Las imágenes de jefes combinan arte conceptual, ilustraciones y capturas catalogadas por fuentes externas, con atribución en el panel. El encuadre se ajusta por jefe para priorizar la criatura en vez de conservar bordes vacíos de la imagen original.",
+          "Nota editorial: os textos do MGP são resumos originais baseados em fatos do jogo e referências consolidadas. As imagens individuais dos chefes foram temporariamente retiradas; screenshots próprias de gameplay ainda serão capturadas, tratadas e padronizadas pela equipe MGP.",
+          "Editorial note: MGP copy is original summary text based on game facts and established references. Individual boss images are temporarily withheld; original gameplay screenshots will still be captured, processed and standardized by MGP.",
+          "Nota editorial: los textos de MGP son resúmenes originales basados en hechos del juego y referencias consolidadas. Las imágenes individuales de jefes fueron retiradas temporalmente; MGP todavía capturará, tratará y estandarizará screenshots propias de gameplay.",
         )}
       </p>
     </div>
