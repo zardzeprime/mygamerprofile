@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Clock3, Droplets, Gauge, Search, ShieldCheck, Sparkles, Swords, WandSparkles } from "lucide-react";
 import { DataSourceIndicator } from "@/components/common/DataSourceIndicator";
 import {
@@ -409,52 +410,95 @@ function ChampionDetailView({
 
   return (
     <div className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[30rem] overflow-hidden" aria-hidden="true">
-        <img src={splash} alt="" className="h-full w-full scale-110 object-cover opacity-20 blur-3xl motion-safe:animate-pulse" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[42rem] overflow-hidden" aria-hidden="true">
+        <img
+          src={splash}
+          alt=""
+          className="h-full w-full scale-110 object-cover opacity-20 blur-3xl saturate-125 motion-safe:animate-pulse"
+        />
       </div>
 
-      <div className="relative min-h-[24rem] overflow-hidden border-b border-border bg-black">
+      <section className="relative h-[58vh] min-h-[30rem] max-h-[44rem] overflow-hidden border-b border-border bg-black">
         <img
           src={splash}
           alt={detail.name}
-          className="absolute inset-0 h-full w-full object-cover object-top opacity-85"
+          className="absolute inset-0 h-full w-full object-cover object-top"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/5" />
-        <div className="relative flex min-h-[24rem] items-end p-6 sm:p-8">
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/5" />
+        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/95 via-black/65 to-transparent" />
+
+        <div className="relative flex h-full items-end p-6 sm:p-8">
           <div className="max-w-3xl text-white">
             <div className="flex flex-wrap items-center gap-2">
               {detail.tags.map((tag) => (
-                <span key={tag} className="rounded-full border border-white/15 bg-black/30 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white/80 backdrop-blur">
+                <span
+                  key={tag}
+                  className="rounded-full border border-white/15 bg-black/35 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white/85 backdrop-blur"
+                >
                   {roleLabel(tag, locale)}
                 </span>
               ))}
             </div>
             <DialogHeader className="mt-3 text-left">
               <DialogTitle className="font-display text-4xl text-white sm:text-6xl">{detail.name}</DialogTitle>
-              <DialogDescription className="text-sm font-semibold text-white/70 sm:text-base">{detail.title}</DialogDescription>
+              <DialogDescription className="text-sm font-semibold text-white/75 sm:text-base">
+                {detail.title}
+              </DialogDescription>
             </DialogHeader>
           </div>
         </div>
+      </section>
+
+      <div className="relative border-b border-border bg-background/96 px-4 py-4 sm:px-6">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <WandSparkles className="size-4 text-gold-strong" />
+            <h3 className="font-display text-lg font-semibold text-foreground">
+              {copy("Habilidades", "Abilities", "Habilidades")}
+            </h3>
+          </div>
+          <span className="hidden text-[0.65rem] font-semibold text-muted-foreground sm:block">
+            {copy(
+              "Passe o mouse para ampliar a prévia",
+              "Hover to enlarge the preview",
+              "Pasa el cursor para ampliar la vista previa",
+            )}
+          </span>
+        </div>
+
+        <AbilityRail
+          abilities={abilities}
+          championKey={detail.key}
+          partype={detail.partype}
+          locale={locale}
+        />
       </div>
 
-      <div className="relative space-y-8 p-6 sm:p-8">
+      <div className="relative p-6 sm:p-8">
         <section>
           <div className="flex items-center gap-2">
             <Sparkles className="size-4 text-gold-strong" />
-            <h3 className="font-display text-xl font-semibold text-foreground">{copy("Sobre", "About", "Acerca de")}</h3>
+            <h3 className="font-display text-xl font-semibold text-foreground">
+              {copy("Sobre", "About", "Acerca de")}
+            </h3>
           </div>
           <p className="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground">
             {stripMarkup(detail.lore || detail.blurb)}
           </p>
         </section>
-
-        <AbilityGrid abilities={abilities} championKey={detail.key} partype={detail.partype} locale={locale} />
       </div>
     </div>
   );
 }
 
-function AbilityGrid({
+type AbilityPreviewState = {
+  ability: AbilityView;
+  left: number;
+  top: number;
+  width: number;
+};
+
+function AbilityRail({
   abilities,
   championKey,
   partype,
@@ -465,67 +509,110 @@ function AbilityGrid({
   partype: string;
   locale: Locale;
 }) {
-  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const [preview, setPreview] = useState<AbilityPreviewState | null>(null);
+
+  const openPreview = (ability: AbilityView, element: HTMLElement) => {
+    if (typeof window === "undefined") return;
+    const rect = element.getBoundingClientRect();
+    const width = Math.min(540, Math.max(300, window.innerWidth - 32));
+    const left = Math.min(
+      Math.max(16, rect.left + rect.width / 2 - width / 2),
+      Math.max(16, window.innerWidth - width - 16),
+    );
+    const top = Math.max(16, rect.top - 390);
+    setPreview({ ability, left, top, width });
+  };
 
   return (
-    <section>
-      <div className="flex items-center gap-2">
-        <WandSparkles className="size-4 text-gold-strong" />
-        <h3 className="font-display text-xl font-semibold text-foreground">
-          {copy("Habilidades", "Abilities", "Habilidades")}
-        </h3>
+    <>
+      <div className="mgp-media-rail flex gap-3 overflow-x-auto overscroll-x-contain pb-2 pt-1">
+        {abilities.map((ability) => {
+          const description = stripMarkup(ability.description);
+          return (
+            <button
+              key={`${ability.key}-${ability.name}`}
+              type="button"
+              onMouseEnter={(event) => openPreview(ability, event.currentTarget)}
+              onMouseLeave={() => setPreview(null)}
+              onFocus={(event) => openPreview(ability, event.currentTarget)}
+              onBlur={() => setPreview(null)}
+              onClick={(event) => {
+                if (preview?.ability.key === ability.key) setPreview(null);
+                else openPreview(ability, event.currentTarget);
+              }}
+              className="group min-h-32 w-[13rem] shrink-0 rounded-2xl border border-border bg-muted/10 p-3 text-left transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:bg-muted/20 hover:shadow-lift focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+            >
+              <div className="flex items-start gap-3">
+                <div className="relative shrink-0">
+                  <img
+                    src={ability.image}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    className="size-14 rounded-xl border border-border bg-black object-cover shadow-sm"
+                  />
+                  <span className="absolute -bottom-1 -right-1 grid size-6 place-items-center rounded-lg border border-gold/35 bg-background text-[0.65rem] font-black text-gold-strong">
+                    {ability.key}
+                  </span>
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate font-display text-sm font-semibold text-foreground">{ability.name}</p>
+                  <p className="mt-1 line-clamp-3 text-[0.68rem] leading-4 text-muted-foreground">
+                    {description}
+                  </p>
+                </div>
+              </div>
+            </button>
+          );
+        })}
       </div>
-      <p className="mt-2 text-xs leading-5 text-muted-foreground">
-        {copy(
-          "Passe o mouse sobre uma habilidade para carregar a prévia oficial. Em telas touch, o card mantém todos os dados sem baixar o vídeo automaticamente.",
-          "Hover an ability to load its official preview. On touch screens, the card keeps all data without automatically downloading video.",
-          "Pasa el cursor sobre una habilidad para cargar la vista previa oficial. En pantallas táctiles, el card mantiene los datos sin descargar el video automáticamente.",
-        )}
-      </p>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
-        {abilities.map((ability) => (
-          <AbilityCard
-            key={`${ability.key}-${ability.name}`}
-            ability={ability}
-            championKey={championKey}
-            partype={partype}
-            locale={locale}
-          />
-        ))}
-      </div>
-    </section>
+      {preview && typeof document !== "undefined"
+        ? createPortal(
+            <AbilityPreviewPopover
+              key={`${preview.ability.key}-${preview.ability.name}`}
+              preview={preview}
+              championKey={championKey}
+              partype={partype}
+              locale={locale}
+            />,
+            document.body,
+          )
+        : null}
+    </>
   );
 }
 
-function AbilityCard({
-  ability,
+function AbilityPreviewPopover({
+  preview,
   championKey,
   partype,
   locale,
 }: {
-  ability: AbilityView;
+  preview: AbilityPreviewState;
   championKey: string;
   partype: string;
   locale: Locale;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const [previewing, setPreviewing] = useState(false);
   const [videoExt, setVideoExt] = useState<"webm" | "mp4" | null>("webm");
+  const ability = preview.ability;
   const base = abilityVideoBase(championKey, ability.key);
   const description = stripMarkup(ability.tooltip || ability.description);
 
   return (
-    <article
-      onMouseEnter={() => setPreviewing(true)}
-      onMouseLeave={() => setPreviewing(false)}
-      onFocus={() => setPreviewing(true)}
-      onBlur={() => setPreviewing(false)}
-      tabIndex={0}
-      className="group relative overflow-hidden rounded-[1.35rem] border border-border bg-muted/10 transition-all duration-300 hover:-translate-y-1 hover:border-gold/35 hover:shadow-lift focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+    <aside
+      className="pointer-events-none fixed z-[220] overflow-hidden rounded-[1.4rem] border border-gold/30 bg-background/95 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-200"
+      style={{
+        left: preview.left,
+        top: preview.top,
+        width: preview.width,
+        maxHeight: "min(26rem, calc(100dvh - 2rem))",
+      }}
+      aria-hidden="true"
     >
-      <div className="relative min-h-44 overflow-hidden border-b border-border bg-[radial-gradient(circle_at_top,hsl(var(--gold)/0.1),transparent_70%),hsl(var(--background))]">
-        {previewing && videoExt ? (
+      <div className="relative aspect-video overflow-hidden bg-black">
+        {videoExt ? (
           <video
             key={`${base}.${videoExt}`}
             src={`${base}.${videoExt}`}
@@ -533,35 +620,35 @@ function AbilityCard({
             muted
             loop
             playsInline
-            preload="none"
+            preload="metadata"
             onError={() => setVideoExt((current) => (current === "webm" ? "mp4" : null))}
-            className="absolute inset-0 h-full w-full object-cover animate-in fade-in duration-300"
+            className="h-full w-full object-cover"
           />
         ) : (
-          <div className="absolute inset-0 grid place-items-center">
-            <img
-              src={ability.image}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="size-20 rounded-2xl border border-border bg-black object-cover shadow-lift transition-transform duration-300 group-hover:scale-105"
-            />
+          <div className="grid h-full place-items-center bg-[radial-gradient(circle_at_center,hsl(var(--gold)/0.1),transparent_70%),black]">
+            <img src={ability.image} alt="" className="size-24 rounded-2xl border border-white/10 object-cover" />
           </div>
         )}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-        <span className="absolute left-3 top-3 grid size-8 place-items-center rounded-lg border border-gold/35 bg-background/85 text-xs font-black text-gold-strong backdrop-blur">
-          {ability.key}
-        </span>
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-4 pt-14 text-white">
+          <div className="flex items-center gap-2">
+            <span className="grid size-7 place-items-center rounded-lg border border-white/20 bg-black/45 text-[0.68rem] font-black">
+              {ability.key}
+            </span>
+            <h4 className="font-display text-lg font-semibold">{ability.name}</h4>
+          </div>
+        </div>
       </div>
 
-      <div className="p-4">
-        <h4 className="font-display text-lg font-semibold text-foreground">{ability.name}</h4>
-        <p className="mt-2 text-xs leading-5 text-muted-foreground">{description}</p>
-
+      <div className="grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_12rem]">
+        <p className="text-xs leading-5 text-muted-foreground">{description}</p>
         {ability.key !== "P" ? (
-          <div className="mt-4 divide-y divide-border overflow-hidden rounded-xl border border-border bg-background/45">
+          <div className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-muted/10">
             {ability.cooldown ? (
-              <AbilityStatRow icon={Clock3} label={copy("Recarga", "Cooldown", "Enfriamiento")} value={ability.cooldown} />
+              <AbilityStatRow
+                icon={Clock3}
+                label={copy("Recarga", "Cooldown", "Enfriamiento")}
+                value={ability.cooldown}
+              />
             ) : null}
             {ability.cost ? (
               <AbilityStatRow
@@ -571,27 +658,16 @@ function AbilityCard({
               />
             ) : null}
             {ability.range && ability.range !== "0" ? (
-              <AbilityStatRow icon={Gauge} label={copy("Alcance", "Range", "Alcance")} value={ability.range} />
+              <AbilityStatRow
+                icon={Gauge}
+                label={copy("Alcance", "Range", "Alcance")}
+                value={ability.range}
+              />
             ) : null}
           </div>
         ) : null}
-
-        {ability.values?.length ? (
-          <div className="mt-3">
-            <p className="text-[0.62rem] font-black uppercase tracking-[0.12em] text-muted-foreground">
-              {copy("Valores por nível", "Rank values", "Valores por nivel")}
-            </p>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {ability.values.map((value) => (
-                <span key={value} className="rounded-md border border-border bg-background/55 px-2 py-1 font-mono text-[0.65rem] text-foreground">
-                  {value}
-                </span>
-              ))}
-            </div>
-          </div>
-        ) : null}
       </div>
-    </article>
+    </aside>
   );
 }
 
