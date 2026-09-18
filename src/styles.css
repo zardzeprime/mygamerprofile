@@ -517,7 +517,7 @@
     radial-gradient(55% 90% at 82% 12%, color-mix(in oklab, var(--color-gold) 24%, transparent), transparent 70%),
     linear-gradient(135deg, var(--profile-hero-elevated), var(--profile-hero-base));
 }
-.profile-bg-tactical {
+.profile-bg-gold {
   background-color: var(--profile-hero-base);
   background-image:
     linear-gradient(120deg, color-mix(in oklab, var(--color-tactical) 34%, transparent), transparent 54%),
@@ -559,7 +559,7 @@
 
 @utility hub-atmosphere-valorant {
   background-image:
-    linear-gradient(115deg, var(--color-tactical) 0%, transparent 45%),
+    linear-gradient(115deg, color-mix(in oklab, var(--color-gold) 22%, transparent) 0%, transparent 45%),
     radial-gradient(90% 80% at 85% 0%, var(--color-gold-soft) 0%, transparent 60%);
 }
 
