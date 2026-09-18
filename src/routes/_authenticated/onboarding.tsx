@@ -31,35 +31,25 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
   }),
 });
 
-type AgeDataRow = {
-  user_id: string;
-  birth_date: string;
-  guardian_status: "not_applicable" | "required" | "pending" | "confirmed";
-  age_assurance_method: "self_reported_birth_date" | "guardian_confirmed" | "provider_assured";
-};
-
-type AgeDataClient = {
-  from: (table: "account_age_data") => {
-    insert: (values: AgeDataRow) => Promise<{ error: { code?: string; message?: string } | null }>;
-  };
+type OnboardingRpcClient = {
+  rpc: (
+    fn: "complete_mgp_onboarding_v1",
+    args: {
+      p_username: string;
+      p_display_name: string;
+      p_language: Locale;
+      p_birth_date: string;
+      p_gender_identity: GenderIdentity;
+      p_gender_custom_label: string | null;
+      p_favorite_game_slugs: string[];
+    },
+  ) => Promise<{
+    data: Array<{ username: string; display_name: string }> | null;
+    error: { code?: string; message?: string } | null;
+  }>;
 };
 
 type GenderIdentity = "male" | "female" | "non_binary" | "custom" | "prefer_not_to_say";
-
-type DemographicsRow = {
-  user_id: string;
-  gender_identity: GenderIdentity;
-  gender_custom_label: string | null;
-};
-
-type DemographicsClient = {
-  from: (table: "account_demographics") => {
-    upsert: (
-      values: DemographicsRow,
-      options: { onConflict: "user_id" },
-    ) => Promise<{ error: { message?: string } | null }>;
-  };
-};
 
 function ageFromBirthDate(value: string, today = new Date()) {
   const [year, month, day] = value.split("-").map(Number);
@@ -175,102 +165,45 @@ function OnboardingPage() {
         return;
       }
 
-      const ageDataClient = supabase as unknown as AgeDataClient;
-      const { error: ageDataError } = await ageDataClient.from("account_age_data").insert({
-        user_id: user.id,
-        birth_date: birthDate,
-        guardian_status: calculatedAge < 18 ? "required" : "not_applicable",
-        age_assurance_method: "self_reported_birth_date",
-      });
-      // A previous onboarding attempt may already have created the immutable client-side record.
-      // Any later correction/guardian confirmation must happen through a trusted server flow.
-      if (ageDataError && ageDataError.code !== "23505") {
-        throw new Error(
-          ageDataError.message ||
-            copy(
-              "Não foi possível salvar sua informação de idade com segurança.",
-              "Could not securely save your age information.",
-              "No se pudo guardar de forma segura tu información de edad.",
-            ),
-        );
-      }
-
-      const demographicsClient = supabase as unknown as DemographicsClient;
-      const { error: demographicsError } = await demographicsClient.from("account_demographics").upsert(
+      const onboardingClient = supabase as unknown as OnboardingRpcClient;
+      const { data: onboardingRows, error: onboardingError } = await onboardingClient.rpc(
+        "complete_mgp_onboarding_v1",
         {
-          user_id: user.id,
-          gender_identity: genderIdentity,
-          gender_custom_label: genderIdentity === "custom" ? customGender.trim().slice(0, 60) : null,
+          p_username: normalized,
+          p_display_name: displayName.trim(),
+          p_language: language,
+          p_birth_date: birthDate,
+          p_gender_identity: genderIdentity,
+          p_gender_custom_label:
+            genderIdentity === "custom" ? customGender.trim().slice(0, 60) : null,
+          p_favorite_game_slugs: favoriteGameSlugs,
         },
-        { onConflict: "user_id" },
       );
-      if (demographicsError) {
-        throw new Error(
-          demographicsError.message ||
-            copy(
-              "Não foi possível salvar seus dados privados da conta.",
-              "Could not save your private account data.",
-              "No se pudieron guardar los datos privados de tu cuenta.",
-            ),
-        );
-      }
 
-      let favoriteGames: Array<{ id: string; slug: string }> = [];
-      if (favoriteGameSlugs.length > 0) {
-        const { data: gameRows, error: gamesError } = await supabase
-          .from("games")
-          .select("id,slug")
-          .in("slug", favoriteGameSlugs)
-          .eq("active", true);
-
-        if (gamesError) throw gamesError;
-        favoriteGames = gameRows ?? [];
-
-        if (favoriteGames.length !== favoriteGameSlugs.length) {
-          throw new Error(
-            copy(
-              "Não foi possível localizar todos os jogos escolhidos.",
-              "Could not find every selected game.",
-              "No se pudieron encontrar todos los juegos elegidos.",
-            ),
-          );
-        }
-      }
-
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .insert({
-          id: user.id,
-          username: normalized,
-          display_name: displayName.trim(),
-          language,
-          theme_preference: "system",
-          visibility: "public",
-        })
-        .select("username")
-        .single();
-
-      if (profileError) {
-        if (profileError.code === "23505") {
+      if (onboardingError) {
+        if (onboardingError.message?.includes("MGP_USERNAME_TAKEN")) {
           setError(t("auth.errors.usernameTaken"));
           return;
         }
-        throw profileError;
+        throw new Error(
+          onboardingError.message ||
+            copy(
+              "Não foi possível concluir seu perfil com segurança.",
+              "Could not securely complete your profile.",
+              "No se pudo completar tu perfil de forma segura.",
+            ),
+        );
       }
 
-      if (favoriteGames.length > 0) {
-        const rows = favoriteGames.map((game) => ({
-          user_id: user.id,
-          game_id: game.id,
-          profile_data: { favorite: true },
-          visibility: "public",
-        }));
-        const { error: favoritesError } = await supabase
-          .from("game_profiles")
-          .upsert(rows, { onConflict: "user_id,game_id" });
-
-        // Favorite-game selection must never trap a user after the profile itself was created.
-        if (favoritesError) console.error("[MGP onboarding] favorite games:", favoritesError);
+      const profile = onboardingRows?.[0];
+      if (!profile?.username) {
+        throw new Error(
+          copy(
+            "O perfil não retornou um username válido.",
+            "The profile did not return a valid username.",
+            "El perfil no devolvió un nombre de usuario válido.",
+          ),
+        );
       }
 
       setLocale(language);
