@@ -14,3 +14,7 @@ content_path = "./templates/confirmation.html"
 
 [functions.nexus-inference]
 verify_jwt = false
+
+
+[functions.league-builds]
+verify_jwt = false
