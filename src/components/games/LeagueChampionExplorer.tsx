@@ -981,7 +981,6 @@ function AbilityPreviewPopover({
   locale: Locale;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const [videoExt, setVideoExt] = useState<"webm" | "mp4" | null>("webm");
   const ability = preview.ability;
   const base = abilityVideoBase(championKey, ability.key);
   const description = stripMarkup(ability.tooltip || ability.description);
@@ -1001,23 +1000,11 @@ function AbilityPreviewPopover({
       aria-hidden="true"
     >
       <div className="relative aspect-video shrink-0 overflow-hidden bg-black">
-        {videoExt ? (
-          <video
-            key={`${base}.${videoExt}`}
-            src={`${base}.${videoExt}`}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            onError={() => setVideoExt((current) => (current === "webm" ? "mp4" : null))}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="grid h-full place-items-center bg-[radial-gradient(circle_at_center,hsl(var(--gold)/0.1),transparent_70%),black]">
-            <img src={ability.image} alt="" className="size-24 rounded-2xl border border-white/10 object-cover" />
-          </div>
-        )}
+        <OptimizedAbilityVideo
+          base={base}
+          poster={ability.image}
+          label={ability.name}
+        />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-4 pt-14 text-white">
           <div className="flex items-center gap-2">
             <span className="grid size-7 place-items-center rounded-lg border border-white/20 bg-black/45 text-[0.68rem] font-black">
@@ -1079,6 +1066,114 @@ function AbilityPreviewPopover({
         </div>
       </div>
     </aside>
+  );
+}
+
+function OptimizedAbilityVideo({
+  base,
+  poster,
+  label,
+}: {
+  base: string;
+  poster: string;
+  label: string;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [sourceIndex, setSourceIndex] = useState(0);
+  const [failed, setFailed] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [mobileOrTouch, setMobileOrTouch] = useState(false);
+  const [saveData, setSaveData] = useState(false);
+
+  useEffect(() => {
+    const touch = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
+    const connection = (navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+    }).connection;
+    setMobileOrTouch(touch);
+    setSaveData(Boolean(connection?.saveData));
+  }, []);
+
+  const sources = mobileOrTouch
+    ? [`${base}.mp4`, `${base}.webm`]
+    : [`${base}.webm`, `${base}.mp4`];
+  const src = sources[sourceIndex];
+
+  useEffect(() => {
+    setSourceIndex(0);
+    setFailed(false);
+    setReady(false);
+  }, [base, mobileOrTouch]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || failed || saveData) return;
+
+    const play = () => {
+      if (document.visibilityState === "hidden") return;
+      void video.play().catch(() => {});
+    };
+    const pauseWhenHidden = () => {
+      if (document.visibilityState === "hidden") video.pause();
+      else play();
+    };
+
+    const frame = window.requestAnimationFrame(play);
+    document.addEventListener("visibilitychange", pauseWhenHidden);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      document.removeEventListener("visibilitychange", pauseWhenHidden);
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+    };
+  }, [failed, saveData, src]);
+
+  if (failed || saveData) {
+    return (
+      <div className="grid h-full place-items-center bg-[radial-gradient(circle_at_center,hsl(var(--gold)/0.1),transparent_70%),black]">
+        <img src={poster} alt="" className="size-24 rounded-2xl border border-white/10 object-cover" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative h-full w-full overflow-hidden bg-black">
+      {!ready ? (
+        <img
+          src={poster}
+          alt=""
+          className="absolute inset-0 z-10 h-full w-full object-cover opacity-70 blur-[1px]"
+        />
+      ) : null}
+      <video
+        ref={videoRef}
+        key={src}
+        src={src}
+        aria-label={label}
+        muted
+        loop
+        playsInline
+        disablePictureInPicture
+        preload={mobileOrTouch ? "none" : "metadata"}
+        onLoadedData={() => setReady(true)}
+        onCanPlay={(event) => {
+          setReady(true);
+          if (document.visibilityState !== "hidden") {
+            void event.currentTarget.play().catch(() => {});
+          }
+        }}
+        onError={() => {
+          if (sourceIndex < sources.length - 1) {
+            setReady(false);
+            setSourceIndex((value) => value + 1);
+          } else {
+            setFailed(true);
+          }
+        }}
+        className="h-full w-full object-cover [backface-visibility:hidden] [transform:translateZ(0)] [will-change:transform]"
+      />
+    </div>
   );
 }
 
