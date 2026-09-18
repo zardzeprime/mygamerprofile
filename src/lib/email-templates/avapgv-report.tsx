@@ -272,35 +272,3 @@ export function AvapgvReportEmail({
     </Html>
   );
 }
-
-export const avapgvReportTemplate = {
-  component: AvapgvReportEmail,
-  displayName: "AVAPGV · Os Sete",
-  subject: (data: Record<string, unknown>) => {
-    const status =
-      data["status"] === "BOM" || data["status"] === "+/-" || data["status"] === "RUIM"
-        ? data["status"]
-        : "+/-";
-    const title =
-      typeof data["title"] === "string" && data["title"].trim()
-        ? data["title"].trim()
-        : "Relatório operacional";
-    return `[AVAPGV ${status}] ${title}`;
-  },
-  previewData: {
-    status: "+/-",
-    severity: "warning",
-    title: "Revisão operacional do MG Profile",
-    owningCore: "NEXUS (Coordenação e IA)",
-    changed:
-      "Uma alteração relevante foi detectada e precisa de validação antes de ser considerada concluída.",
-    reference: "main · commit fcd91c5",
-    impact:
-      "A alteração não indica incidente crítico, mas pode afetar a experiência se ficar sem revisão.",
-    nextAction:
-      "Validar o comportamento no ambiente publicado e registrar o resultado no estado persistente do projeto.",
-    timestamp: "18/09/2026 02:35",
-    details:
-      "Exemplo de pré-visualização. O relatório real deve diferenciar o que foi verificado do que não foi avaliado.",
-  } satisfies AvapgvReportData,
-};
