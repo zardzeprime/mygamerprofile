@@ -22,6 +22,43 @@ function p(url: string, settings: ProPlayerSettings, note?: string): RecordEntry
  * long-standing hand-verified settings.ts records still remain the final layer.
  */
 export const INDIVIDUAL_EXTRA_SETTINGS: Record<string, RecordEntry> = {
+  reduxx: p("https://prosettings.net/players/reduxx/", {
+    ...EXTRA_VERIFIED_SETTINGS["reduxx"]?.settings,
+    crosshairCode: "0;P;o;1;d;1;0b;0;1b;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained."),
+  jonahp: p("https://prosettings.net/players/jonahp/", {
+    ...EXTRA_VERIFIED_SETTINGS["jonahp"]?.settings,
+    crosshairCode: "0;P;c;4;h;0;0a;1;0f;0;1b;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained."),
+  marved: p("https://prosettings.net/players/marved/", {
+    crosshairCode: "0;P;o;1;0l;4;0o;0;0a;1;0f;0;1b;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair checked on the individual player page on 2026-09-18; other sourced fields remain supplied by older merge layers."),
+  valyn: p("https://prosettings.net/players/valyn/", {
+    ...EXTRA_VERIFIED_SETTINGS["valyn"]?.settings,
+    crosshairCode: "0;p;0;s;1;P;c;7;o;1;0t;1;0l;2;0v;2;0o;2;0a;1;0f;0;1b;0;A;c;7;h;0;0l;4;0v;4;0o;0;0a;1;0f;0;1b;0;S;s;1.019",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained."),
+  jawgemo: p("https://prosettings.net/players/jawgemo/", {
+    ...EXTRA_VERIFIED_SETTINGS["jawgemo"]?.settings,
+    crosshairCode: "0;s;1;P;o;1;d;1;f;0;m;1;0l;2;0v;1;0g;1;0o;0;0a;1;0f;0;1b;0;S;s;0.652;o;1",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained."),
+  trent: p("https://prosettings.net/players/trent/", {
+    ...EXTRA_VERIFIED_SETTINGS["trent"]?.settings,
+    crosshairCode: "0;P;o;1;0l;3;0o;2;0a;1;0f;0;1b;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained."),
+  leaf: p("https://prosettings.net/players/leaf/", {
+    crosshairCode: "0;P;c;8;u;FF99FFFF;h;0;b;1;0l;8;0o;1;0a;1;0f;0;1t;4;1l;0;1o;3;1a;1;1m;0;1f;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair checked on the individual player page on 2026-09-18; other sourced fields remain supplied by older merge layers."),
+  keznit: p("https://prosettings.net/players/keznit/", {
+    crosshairCode: "0;p;0;c;1;P;c;5;h;0;0l;2;0o;1;0a;1;0f;0;1b;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair checked on the individual player page on 2026-09-18; other sourced fields remain supplied by older merge layers."),
   asuna: p("https://prosettings.net/players/asuna/", {
     ...EXTRA_VERIFIED_SETTINGS["asuna"]?.settings,
     crosshairCode: "0;P;o;1;m;1;0t;1;0l;2;0o;2;0a;1;0f;0;1t;1;1o;3;1a;1;1m;0;1f;0",
