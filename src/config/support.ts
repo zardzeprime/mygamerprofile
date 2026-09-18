@@ -29,7 +29,7 @@ export const SUPPORT_METHODS: SupportMethod[] = [
     status: "setup",
     label: "Apoio recorrente",
     description: "Apoio mensal para ajudar o MGP a manter custos contínuos.",
-    provider: "APOIA.se",
+    provider: "Ko-fi",
     url: null,
   },
 ];
