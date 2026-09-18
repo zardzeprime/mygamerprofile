@@ -670,6 +670,34 @@
 .game-hub-tactical { --game-accent: var(--color-gold); }
 
 .hub-tablist { scrollbar-width: thin; scrollbar-color: color-mix(in oklab, var(--game-accent) 32%, transparent) transparent; }
+
+.mgp-media-rail {
+  scrollbar-width: thin;
+  scrollbar-color:
+    color-mix(in oklab, var(--color-gold) 62%, var(--color-border))
+    color-mix(in oklab, var(--color-surface) 82%, transparent);
+  scrollbar-gutter: stable;
+}
+
+.mgp-media-rail::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.mgp-media-rail::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-surface) 88%, transparent);
+}
+
+.mgp-media-rail::-webkit-scrollbar-thumb {
+  border: 2px solid color-mix(in oklab, var(--color-surface) 88%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-gold) 68%, var(--color-border));
+}
+
+.mgp-media-rail::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold);
+}
 .hub-tab {
   position: relative;
   isolation: isolate;
