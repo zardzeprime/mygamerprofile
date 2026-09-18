@@ -96,8 +96,9 @@ export function NexusChat() {
 
     const load = async () => {
       if (!user) {
+        const storedGuestId = readStoredGuestId();
         const nextGuest = (await getNexusGuestStatus({
-          data: { guestId: readStoredGuestId() },
+          data: storedGuestId ? { guestId: storedGuestId } : {},
         })) as NexusGuestStatus;
         if (!active) return;
         persistGuestId(nextGuest.guestId);
@@ -193,8 +194,9 @@ export function NexusChat() {
         // Resolve the session here instead of silently discarding the user's first message.
         let activeGuest = guestStatus;
         if (!activeGuest) {
+          const storedGuestId = readStoredGuestId();
           activeGuest = (await getNexusGuestStatus({
-            data: { guestId: readStoredGuestId() },
+            data: storedGuestId ? { guestId: storedGuestId } : {},
           })) as NexusGuestStatus;
           persistGuestId(activeGuest.guestId);
           setGuestStatus(activeGuest);
@@ -226,7 +228,7 @@ export function NexusChat() {
       const accessToken = sessionData.session?.access_token;
       if (!accessToken) throw new Error("NEXUS_AUTH_SESSION_MISSING");
       const response = await sendNexusMessage({
-        data: { threadId, mode, message, locale, accessToken },
+        data: { ...(threadId ? { threadId } : {}), mode, message, locale, accessToken },
       });
       setThreadId(response.threadId);
       setMessages((current) => [

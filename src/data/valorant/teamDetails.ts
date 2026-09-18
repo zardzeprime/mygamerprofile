@@ -19,7 +19,7 @@ function staff(
 ): TeamStaffMember {
   return {
     handle,
-    realName,
+    ...(realName ? { realName } : {}),
     role,
     sources: [vlrSource(teamUrl, "Current staff listing checked for MGP.")],
   };

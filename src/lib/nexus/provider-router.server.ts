@@ -143,7 +143,7 @@ async function callNexusEdge(body: Record<string, unknown>) {
   }
 
   if (!response.ok) {
-    const message = typeof data.error === "string" ? data.error : text.slice(0, 180);
+    const message = typeof data["error"] === "string" ? data["error"] : text.slice(0, 180);
     throw new Error(`NEXUS Edge ${response.status}: ${message}`);
   }
 
@@ -160,28 +160,28 @@ async function completeViaEdge(request: NexusCompletionRequest): Promise<NexusCo
     providerOrder: request.providerOrder,
   });
 
-  const provider = data.provider;
-  const attemptedProviders = Array.isArray(data.attemptedProviders)
-    ? data.attemptedProviders.filter(
+  const provider = data["provider"];
+  const attemptedProviders = Array.isArray(data["attemptedProviders"])
+    ? data["attemptedProviders"].filter(
         (value): value is NexusProviderId =>
           typeof value === "string" && ALL_PROVIDERS.includes(value as NexusProviderId),
       )
     : [];
 
   if (
-    typeof data.text !== "string" ||
-    !data.text.trim() ||
+    typeof data["text"] !== "string" ||
+    !data["text"].trim() ||
     typeof provider !== "string" ||
     !ALL_PROVIDERS.includes(provider as NexusProviderId) ||
-    typeof data.model !== "string"
+    typeof data["model"] !== "string"
   ) {
     throw new Error("NEXUS Edge returned an invalid completion payload");
   }
 
   return {
-    text: data.text.trim(),
+    text: data["text"].trim(),
     provider: provider as NexusProviderId,
-    model: data.model,
+    model: data["model"],
     attemptedProviders,
   };
 }
@@ -190,30 +190,30 @@ export async function getNexusRuntimeHealth(): Promise<NexusRuntimeHealth> {
   if (publicSupabaseConfig()) {
     try {
       const data = await callNexusEdge({ type: "health" });
-      const providers = Array.isArray(data.providers)
-        ? data.providers.flatMap((raw) => {
+      const providers = Array.isArray(data["providers"])
+        ? data["providers"].flatMap((raw) => {
             if (!raw || typeof raw !== "object") return [];
             const item = raw as Record<string, unknown>;
             if (
-              typeof item.id !== "string" ||
-              !ALL_PROVIDERS.includes(item.id as NexusProviderId) ||
-              typeof item.configured !== "boolean" ||
-              typeof item.model !== "string"
+              typeof item["id"] !== "string" ||
+              !ALL_PROVIDERS.includes(item["id"] as NexusProviderId) ||
+              typeof item["configured"] !== "boolean" ||
+              typeof item["model"] !== "string"
             ) {
               return [];
             }
             return [
               {
-                id: item.id as NexusProviderId,
-                configured: item.configured,
-                model: item.model,
+                id: item["id"] as NexusProviderId,
+                configured: item["configured"],
+                model: item["model"],
               },
             ];
           })
         : [];
 
       return {
-        ready: data.ready === true,
+        ready: data["ready"] === true,
         transport: "supabase-edge",
         providers,
       };

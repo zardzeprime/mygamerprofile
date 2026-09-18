@@ -43,12 +43,12 @@ export function AppHeader() {
     }
 
     setProfileLoading(true);
-    void supabase
-      .from("profiles")
-      .select("username")
-      .eq("id", userId)
-      .maybeSingle()
-      .then(({ data, error }) => {
+    void (async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", userId)
+        .maybeSingle();
         if (cancelled) return;
         if (error) {
           console.error("[MGP] Failed to load current profile username", error);
@@ -56,8 +56,7 @@ export function AppHeader() {
           return;
         }
         setProfileUsername(data?.username ?? null);
-      })
-      .finally(() => {
+      })().finally(() => {
         if (!cancelled) setProfileLoading(false);
       });
 

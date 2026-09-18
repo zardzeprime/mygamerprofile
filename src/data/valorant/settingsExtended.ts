@@ -19,7 +19,18 @@ function v(
   note?: string,
 ): RecordEntry {
   return {
-    settings: { dpi, sensitivity, edpi, pollingRateHz, mouse, keyboard, monitor, headset, mousepad, resolution },
+    settings: {
+      ...(dpi !== undefined ? { dpi } : {}),
+      ...(sensitivity !== undefined ? { sensitivity } : {}),
+      ...(edpi !== undefined ? { edpi } : {}),
+      ...(pollingRateHz !== undefined ? { pollingRateHz } : {}),
+      ...(mouse !== undefined ? { mouse } : {}),
+      ...(keyboard !== undefined ? { keyboard } : {}),
+      ...(monitor !== undefined ? { monitor } : {}),
+      ...(headset !== undefined ? { headset } : {}),
+      ...(mousepad !== undefined ? { mousepad } : {}),
+      ...(resolution !== undefined ? { resolution } : {}),
+    },
     source: {
       url: URL,
       label: "ProSettings.net",
