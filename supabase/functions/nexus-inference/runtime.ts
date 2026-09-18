@@ -37,6 +37,26 @@ function adminDb() {
   }) as any;
 }
 
+function runtimeErrorText(error: unknown) {
+  return (error instanceof Error ? error.message : String(error)).slice(0, 1800);
+}
+
+async function recordRuntimeEvent(
+  db: any,
+  kind: string,
+  detail: string,
+  metadata: Record<string, unknown> = {},
+) {
+  const { error } = await db.from("nexus_runtime_events").insert({
+    kind,
+    detail: detail.slice(0, 1800),
+    metadata,
+  });
+  if (error) {
+    console.warn("[NEXUS] runtime telemetry write failed", error.message);
+  }
+}
+
 export async function authenticatedUser(req: Request) {
   const authorization = req.headers.get("authorization")?.trim();
   if (!authorization?.toLowerCase().startsWith("bearer ")) throw new Error("NEXUS_AUTH_REQUIRED");
@@ -164,12 +184,23 @@ export async function handleGuestSend(raw: Record<string, unknown>) {
   const history = compactChatHistory([...rows].reverse(), 12, 12_000);
   history.push({ role: "user", content: message });
 
-  const completion = await complete({
-    system: buildSystemPrompt("gaming", false, coreIds, locale),
-    messages: history,
-    effort: "low",
-    maxOutputTokens: 850,
-  });
+  let completion: Awaited<ReturnType<typeof complete>>;
+  try {
+    completion = await complete({
+      system: buildSystemPrompt("gaming", false, coreIds, locale),
+      messages: history,
+      effort: "low",
+      maxOutputTokens: 850,
+    });
+  } catch (error) {
+    await recordRuntimeEvent(
+      db,
+      "provider_chain_failure",
+      runtimeErrorText(error),
+      { mode: "gaming", locale, guest: true, runtime: "edge-v3" },
+    );
+    throw error;
+  }
 
   const { data: quotaRows, error } = await db.rpc("record_nexus_guest_exchange", {
     p_session_id: guest.session_id,
@@ -379,12 +410,29 @@ export async function handleMemberSend(req: Request, raw: Record<string, unknown
   history.push({ role: "user", content: message });
 
   const coreIds = selectCores(message, threadMode);
-  const completion = await complete({
-    system: buildSystemPrompt(threadMode, admin, coreIds, locale),
-    messages: history,
-    effort: threadMode === "development" ? "medium" : "low",
-    maxOutputTokens: threadMode === "development" ? 1800 : 1000,
-  });
+  let completion: Awaited<ReturnType<typeof complete>>;
+  try {
+    completion = await complete({
+      system: buildSystemPrompt(threadMode, admin, coreIds, locale),
+      messages: history,
+      effort: threadMode === "development" ? "medium" : "low",
+      maxOutputTokens: threadMode === "development" ? 1800 : 1000,
+    });
+  } catch (error) {
+    await recordRuntimeEvent(
+      db,
+      "provider_chain_failure",
+      runtimeErrorText(error),
+      {
+        mode: threadMode,
+        locale,
+        guest: false,
+        runtime: "edge-v3",
+        threadId: threadId ?? null,
+      },
+    );
+    throw error;
+  }
 
   let isNewThread = false;
   let persistence = "stored";
