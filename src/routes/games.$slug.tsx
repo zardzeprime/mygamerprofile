@@ -197,7 +197,7 @@ function GameHub() {
               className="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left"
             >
               <span className="flex min-w-0 items-center gap-2.5">
-                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-tactical/10 text-tactical">
+                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-gold/10 text-gold-strong">
                   <Menu className="size-4" />
                 </span>
                 <span className="min-w-0">
@@ -227,7 +227,7 @@ function GameHub() {
                       }}
                       className={cn(
                         "min-w-0 rounded-lg px-3 py-2.5 text-left text-xs font-semibold transition-colors",
-                        selected ? "bg-tactical/10 text-foreground" : "text-muted-foreground hover:bg-muted/35 hover:text-foreground",
+                        selected ? "bg-gold/10 text-foreground" : "text-muted-foreground hover:bg-muted/35 hover:text-foreground",
                       )}
                     >
                       <span className="block truncate">{MODULE_LABELS[moduleKey][locale]}</span>
