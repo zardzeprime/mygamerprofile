@@ -475,6 +475,17 @@ function ChampionDetailView({
   locale: Locale;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const skins = useMemo(() => baseSkinsOnly(detail.skins), [detail.skins]);
+  const builds = useMemo(() => recommendedBuilds(detail), [detail]);
+  const [buildsOpen, setBuildsOpen] = useState(false);
+  const [skinViewerOpen, setSkinViewerOpen] = useState(false);
+  const [previewSkin, setPreviewSkin] = useState<ChampionSkin | null>(skins[0] ?? null);
+
+  useEffect(() => {
+    setPreviewSkin(skins[0] ?? null);
+    setBuildsOpen(false);
+    setSkinViewerOpen(false);
+  }, [detail.id, skins]);
 
   const abilities: AbilityView[] = [
     {
@@ -499,83 +510,328 @@ function ChampionDetailView({
   const splash = skinSplash(detail.id, 0);
 
   return (
-    <div className="relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[42rem] overflow-hidden" aria-hidden="true">
-        <img
-          src={splash}
-          alt=""
-          className="h-full w-full scale-110 object-cover opacity-20 blur-3xl saturate-125 motion-safe:animate-pulse"
-        />
-      </div>
+    <>
+      <div className="relative overflow-hidden">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[42rem] overflow-hidden" aria-hidden="true">
+          <img
+            src={splash}
+            alt=""
+            className="h-full w-full scale-110 object-cover opacity-20 blur-3xl saturate-125 motion-safe:animate-pulse"
+          />
+        </div>
 
-      <section className="relative h-[58vh] min-h-[30rem] max-h-[44rem] overflow-hidden border-b border-border bg-black">
-        <img
-          src={splash}
-          alt={detail.name}
-          className="absolute inset-0 h-full w-full object-cover object-top"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/5" />
-        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-black/95 via-black/65 to-transparent" />
+        <section className="relative h-[58vh] min-h-[30rem] max-h-[44rem] overflow-hidden border-b border-border bg-black">
+          <img
+            src={splash}
+            alt={detail.name}
+            className="absolute inset-0 h-full w-full object-cover object-top"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/5" />
+          <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-black/95 via-black/65 to-transparent" />
 
-        <div className="relative flex h-full items-end p-6 sm:p-8">
-          <div className="max-w-3xl text-white">
-            <div className="flex flex-wrap items-center gap-2">
-              {detail.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-white/15 bg-black/35 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white/85 backdrop-blur"
-                >
-                  {roleLabel(tag, locale)}
-                </span>
-              ))}
+          <div className="absolute bottom-7 right-5 z-20 flex flex-col items-end gap-2 sm:bottom-8 sm:right-8">
+            <button
+              type="button"
+              onClick={() => setBuildsOpen(true)}
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-gold/40 bg-black/55 px-4 text-sm font-bold text-white backdrop-blur-md transition-all hover:-translate-y-0.5 hover:border-gold/70 hover:bg-black/70 hover:shadow-lift focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/50"
+            >
+              <PackageOpen className="size-4 text-gold-strong" />
+              {copy("Ver builds", "View builds", "Ver builds")}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setPreviewSkin(skins[0] ?? null);
+                setSkinViewerOpen(true);
+              }}
+              disabled={!skins.length}
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/20 bg-black/45 px-4 text-sm font-bold text-white/90 backdrop-blur-md transition-all hover:-translate-y-0.5 hover:border-white/40 hover:bg-black/65 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+            >
+              <Images className="size-4" />
+              {copy("Ver skins", "View skins", "Ver skins")}
+            </button>
+          </div>
+
+          <div className="relative flex h-full items-end p-6 sm:p-8">
+            <div className="max-w-3xl pr-32 text-white sm:pr-44">
+              <div className="flex flex-wrap items-center gap-2">
+                {detail.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-white/15 bg-black/35 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white/85 backdrop-blur"
+                  >
+                    {roleLabel(tag, locale)}
+                  </span>
+                ))}
+              </div>
+              <DialogHeader className="mt-3 text-left">
+                <DialogTitle className="font-display text-4xl text-white sm:text-6xl">{detail.name}</DialogTitle>
+                <DialogDescription className="text-sm font-semibold text-white/75 sm:text-base">
+                  {detail.title}
+                </DialogDescription>
+              </DialogHeader>
             </div>
-            <DialogHeader className="mt-3 text-left">
-              <DialogTitle className="font-display text-4xl text-white sm:text-6xl">{detail.name}</DialogTitle>
-              <DialogDescription className="text-sm font-semibold text-white/75 sm:text-base">
-                {detail.title}
-              </DialogDescription>
-            </DialogHeader>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <div className="relative border-b border-border bg-background/96 px-4 py-4 sm:px-6">
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <WandSparkles className="size-4 text-gold-strong" />
-            <h3 className="font-display text-lg font-semibold text-foreground">
-              {copy("Habilidades", "Abilities", "Habilidades")}
-            </h3>
+        <div className="relative border-b border-border bg-background/96 px-4 py-4 sm:px-6">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <WandSparkles className="size-4 text-gold-strong" />
+              <h3 className="font-display text-lg font-semibold text-foreground">
+                {copy("Habilidades", "Abilities", "Habilidades")}
+              </h3>
+            </div>
+            <span className="hidden text-[0.65rem] font-semibold text-muted-foreground sm:block">
+              {copy(
+                "Passe o mouse para ampliar a prévia",
+                "Hover to enlarge the preview",
+                "Pasa el cursor para ampliar la vista previa",
+              )}
+            </span>
           </div>
-          <span className="hidden text-[0.65rem] font-semibold text-muted-foreground sm:block">
-            {copy(
-              "Passe o mouse para ampliar a prévia",
-              "Hover to enlarge the preview",
-              "Pasa el cursor para ampliar la vista previa",
-            )}
-          </span>
+
+          <AbilityRail
+            abilities={abilities}
+            championKey={detail.key}
+            partype={detail.partype}
+            locale={locale}
+          />
         </div>
 
-        <AbilityRail
-          abilities={abilities}
-          championKey={detail.key}
-          partype={detail.partype}
-          locale={locale}
-        />
+        <div className="relative p-6 sm:p-8">
+          <section>
+            <div className="flex items-center gap-2">
+              <Sparkles className="size-4 text-gold-strong" />
+              <h3 className="font-display text-xl font-semibold text-foreground">
+                {copy("Sobre", "About", "Acerca de")}
+              </h3>
+            </div>
+            <p className="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground">
+              {stripMarkup(detail.lore || detail.blurb)}
+            </p>
+          </section>
+        </div>
       </div>
 
-      <div className="relative p-6 sm:p-8">
-        <section>
-          <div className="flex items-center gap-2">
-            <Sparkles className="size-4 text-gold-strong" />
-            <h3 className="font-display text-xl font-semibold text-foreground">
-              {copy("Sobre", "About", "Acerca de")}
-            </h3>
+      <Dialog open={buildsOpen} onOpenChange={setBuildsOpen}>
+        <DialogContent className="max-h-[92vh] max-w-5xl overflow-y-auto p-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95">
+          <ChampionBuildsView
+            detail={detail}
+            builds={builds}
+            version={version}
+            locale={locale}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={skinViewerOpen} onOpenChange={setSkinViewerOpen}>
+        <DialogContent className="h-[min(90vh,920px)] w-[calc(100vw-1rem)] max-w-[1500px] overflow-hidden border-white/10 bg-black/90 p-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95">
+          {previewSkin ? (
+            <SkinSplashPreview
+              championName={detail.name}
+              championId={detail.id}
+              skins={skins}
+              skin={previewSkin}
+              onSkin={setPreviewSkin}
+            />
+          ) : null}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+function ChampionBuildsView({
+  detail,
+  builds,
+  version,
+  locale,
+}: {
+  detail: ChampionDetail;
+  builds: ChampionRecommendedSet[];
+  version: string;
+  locale: Locale;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const [items, setItems] = useState<Record<string, LeagueItemSummary>>({});
+  const [loadingItems, setLoadingItems] = useState(true);
+  const [itemError, setItemError] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    setLoadingItems(true);
+    setItemError(false);
+
+    void loadLeagueItems(version, locale)
+      .then((data) => {
+        if (active) setItems(data);
+      })
+      .catch((error) => {
+        console.warn("[League] build item metadata failed", error);
+        if (active) setItemError(true);
+      })
+      .finally(() => {
+        if (active) setLoadingItems(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [locale, version]);
+
+  return (
+    <div className="min-w-0">
+      <div className="relative overflow-hidden border-b border-border bg-black">
+        <img
+          src={skinSplash(detail.id, 0)}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-top opacity-35"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/45" />
+        <div className="relative p-6 pr-12 sm:p-8 sm:pr-14">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/35 bg-gold/10 px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.1em] text-gold-strong">
+              <ShieldCheck className="size-3.5" />
+              {copy("Riot recomendado", "Riot recommended", "Recomendado por Riot")}
+            </span>
+            <span className="rounded-full border border-white/15 bg-black/35 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white/70">
+              Data Dragon · {version}
+            </span>
           </div>
-          <p className="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground">
-            {stripMarkup(detail.lore || detail.blurb)}
+          <DialogHeader className="mt-4 text-left">
+            <DialogTitle className="font-display text-3xl text-white sm:text-4xl">
+              {copy(`Builds de ${detail.name}`, `${detail.name} builds`, `Builds de ${detail.name}`)}
+            </DialogTitle>
+            <DialogDescription className="max-w-2xl text-sm leading-6 text-white/65">
+              {copy(
+                "Conjuntos de itens recomendados no cliente e expostos pelo Data Dragon para Summoner's Rift. O MGP mostra até dois conjuntos oficiais por campeão e mantém a versão do patch visível.",
+                "Client-recommended item sets exposed by Data Dragon for Summoner's Rift. MGP shows up to two official sets per champion and keeps the patch version visible.",
+                "Conjuntos de objetos recomendados en el cliente y expuestos por Data Dragon para la Grieta del Invocador. MGP muestra hasta dos conjuntos oficiales por campeón y mantiene visible la versión del parche.",
+              )}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+      </div>
+
+      <div className="space-y-5 p-5 sm:p-6">
+        {!builds.length ? (
+          <div className="rounded-2xl border border-border bg-muted/10 p-5">
+            <p className="font-display text-lg font-semibold text-foreground">
+              {copy(
+                "A Riot não expôs um conjunto recomendado para este campeão neste payload.",
+                "Riot did not expose a recommended set for this champion in this payload.",
+                "Riot no expuso un conjunto recomendado para este campeón en este payload.",
+              )}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              {copy(
+                "O MGP não vai inventar uma build. Quando adicionarmos builds próprias, elas aparecerão separadas como MGP Verificada, com patch e critério de revisão.",
+                "MGP will not invent a build. When first-party MGP builds are added, they will appear separately as MGP Verified with patch and review criteria.",
+                "MGP no inventará una build. Cuando se añadan builds propias, aparecerán separadas como MGP Verificada con parche y criterio de revisión.",
+              )}
+            </p>
+          </div>
+        ) : (
+          builds.map((build, buildIndex) => (
+            <article
+              key={`${build.title ?? "build"}-${buildIndex}`}
+              className="overflow-hidden rounded-[1.35rem] border border-border bg-muted/10"
+            >
+              <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-[0.62rem] font-black uppercase tracking-[0.12em] text-gold-strong">
+                    {copy(`Build Riot ${buildIndex + 1}`, `Riot build ${buildIndex + 1}`, `Build Riot ${buildIndex + 1}`)}
+                  </p>
+                  <h3 className="mt-1 font-display text-xl font-semibold text-foreground">
+                    {build.title?.trim() || copy("Recomendação oficial", "Official recommendation", "Recomendación oficial")}
+                  </h3>
+                </div>
+                <div className="flex flex-wrap gap-2 text-[0.65rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+                  <span className="rounded-full border border-border bg-background/55 px-2.5 py-1">
+                    {build.map || "SR"}
+                  </span>
+                  <span className="rounded-full border border-border bg-background/55 px-2.5 py-1">
+                    {build.mode || "CLASSIC"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="divide-y divide-border">
+                {(build.blocks ?? [])
+                  .filter((block) => block.items?.length)
+                  .map((block, blockIndex) => (
+                    <section key={`${block.type ?? "block"}-${blockIndex}`} className="p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <h4 className="text-xs font-black uppercase tracking-[0.1em] text-muted-foreground">
+                          {block.type?.trim() || copy("Itens", "Items", "Objetos")}
+                        </h4>
+                        {block.recMath ? (
+                          <span className="text-[0.6rem] font-bold uppercase tracking-[0.08em] text-gold-strong">
+                            {copy("Sequência de compra", "Purchase sequence", "Secuencia de compra")}
+                          </span>
+                        ) : null}
+                      </div>
+
+                      <div className="mgp-media-rail mt-3 flex gap-2.5 overflow-x-auto pb-2">
+                        {(block.items ?? []).map((entry, itemIndex) => {
+                          const item = items[entry.id];
+                          const label = item?.name || `#${entry.id}`;
+                          return (
+                            <div
+                              key={`${entry.id}-${itemIndex}`}
+                              className="group w-24 shrink-0 text-center"
+                              title={stripMarkup(item?.description || item?.plaintext || label)}
+                            >
+                              <div className="relative mx-auto size-16 overflow-hidden rounded-xl border border-border bg-background shadow-sm transition-all group-hover:-translate-y-0.5 group-hover:border-gold/40 group-hover:shadow-lift">
+                                <img
+                                  src={itemIcon(version, entry.id, item)}
+                                  alt=""
+                                  loading="lazy"
+                                  decoding="async"
+                                  className="h-full w-full object-cover"
+                                />
+                                {(entry.count ?? 1) > 1 ? (
+                                  <span className="absolute bottom-1 right-1 grid min-w-5 place-items-center rounded-md bg-black/75 px-1 text-[0.6rem] font-black text-white">
+                                    ×{entry.count}
+                                  </span>
+                                ) : null}
+                              </div>
+                              <p className="mt-2 line-clamp-2 text-[0.68rem] font-semibold leading-4 text-foreground">
+                                {loadingItems ? "…" : label}
+                              </p>
+                              {item?.gold?.total ? (
+                                <p className="mt-0.5 text-[0.62rem] font-bold text-gold-strong">
+                                  {item.gold.total}g
+                                </p>
+                              ) : null}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  ))}
+              </div>
+            </article>
+          ))
+        )}
+
+        <div className="flex gap-3 rounded-2xl border border-border bg-background/50 p-4 text-xs leading-5 text-muted-foreground">
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-gold-strong" />
+          <p>
+            {itemError
+              ? copy(
+                  "Os IDs e a estrutura da build vieram da Riot, mas os nomes dos itens não carregaram agora. Os ícones continuam resolvidos pelo Data Dragon.",
+                  "The build structure and IDs came from Riot, but item names could not be loaded right now. Icons still resolve through Data Dragon.",
+                  "La estructura e IDs de la build vienen de Riot, pero los nombres de los objetos no cargaron ahora. Los iconos siguen resolviéndose mediante Data Dragon.",
+                )
+              : copy(
+                  "Essas builds não são uma tier list do MGP nem uma previsão de meta: são os conjuntos recomendados que a Riot expõe no payload do campeão para este patch.",
+                  "These builds are not an MGP tier list or meta prediction: they are the recommended sets Riot exposes in the champion payload for this patch.",
+                  "Estas builds no son una tier list de MGP ni una predicción del meta: son los conjuntos recomendados que Riot expone en el payload del campeón para este parche.",
+                )}
           </p>
-        </section>
+        </div>
       </div>
     </div>
   );
