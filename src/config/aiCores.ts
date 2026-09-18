@@ -15,6 +15,8 @@ export type AiCoreDefinition = {
   legacyName: string;
   epithet: string;
   reportLabel: string;
+  letter: string;
+  accent: string;
   parentId: "nexus" | null;
   executionModel: "orchestrated-specialization";
   kind: AiCoreKind;
@@ -32,6 +34,8 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     legacyName: "NEXUS",
     epithet: "A Regente",
     reportLabel: "NEXUS (Coordenação e IA)",
+    letter: "N",
+    accent: "#C9A95D",
     parentId: null,
     executionModel: "orchestrated-specialization",
     kind: "orchestrator",
@@ -54,6 +58,8 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     legacyName: "AEGIS",
     epithet: "A Fortaleza",
     reportLabel: "Sabnock (Segurança)",
+    letter: "S",
+    accent: "#C95C65",
     parentId: "nexus",
     executionModel: "orchestrated-specialization",
     kind: "specialist",
@@ -84,6 +90,8 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     legacyName: "VEIL",
     epithet: "O Véu",
     reportLabel: "Bael (Privacidade)",
+    letter: "B",
+    accent: "#8B73D9",
     parentId: "nexus",
     executionModel: "orchestrated-specialization",
     kind: "specialist",
@@ -114,6 +122,8 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     legacyName: "ATLAS",
     epithet: "O Guardião da Procedência",
     reportLabel: "Andromalius (Direitos e procedência)",
+    letter: "A",
+    accent: "#D88955",
     parentId: "nexus",
     executionModel: "orchestrated-specialization",
     kind: "specialist",
@@ -145,6 +155,8 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     legacyName: "PULSE",
     epithet: "O Investigador",
     reportLabel: "Vassago (Pesquisa e atualizações)",
+    letter: "V",
+    accent: "#4FAF8F",
     parentId: "nexus",
     executionModel: "orchestrated-specialization",
     kind: "specialist",
@@ -175,6 +187,8 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     legacyName: "GEAR",
     epithet: "O Artífice",
     reportLabel: "Marbas (Automação)",
+    letter: "M",
+    accent: "#D9A441",
     parentId: "nexus",
     executionModel: "orchestrated-specialization",
     kind: "specialist",
@@ -205,6 +219,8 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     legacyName: "VECTOR",
     epithet: "O Geômetra",
     reportLabel: "Andrealphus (Performance e UX)",
+    letter: "A",
+    accent: "#6F83D6",
     parentId: "nexus",
     executionModel: "orchestrated-specialization",
     kind: "specialist",
