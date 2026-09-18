@@ -105,7 +105,7 @@ export function ValorantAgents({ locale }: { locale: Locale }) {
             </div>
             <div className="p-6 sm:p-8">
               <div className="flex items-start gap-3">
-                {selected.role?.icon ? <img src={selected.role.icon} alt="" className="size-10 rounded-lg bg-muted/40 p-2" /> : <ShieldCheck className="size-8 text-gold-strong" />}
+                {selected.role?.icon ? <img src={selected.role.icon} alt="" className="mgp-adaptive-glyph-strong size-10 rounded-lg bg-muted/40 p-2" /> : <ShieldCheck className="size-8 text-gold-strong" />}
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">{copy("Função", "Role", "Rol")}</p>
                   <p className="font-semibold">{selected.role?.name ?? "—"}</p>
@@ -119,7 +119,7 @@ export function ValorantAgents({ locale }: { locale: Locale }) {
                 {selected.abilities.filter((ability) => ability.name).map((ability, index, abilities) => (
                   <div key={`${ability.slot}-${ability.name}`} className="rounded-xl border border-border bg-muted/15 p-4">
                     <div className="flex items-center gap-3">
-                      {ability.icon ? <img src={ability.icon} alt="" className="size-9 rounded-lg bg-background/60 p-1.5" /> : null}
+                      {ability.icon ? <img src={ability.icon} alt="" className="mgp-adaptive-glyph size-9 rounded-lg bg-background/60 p-1.5" /> : null}
                       <div>
                         <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-gold-strong">{abilityLabel(ability.slot, index, abilities, locale)}</p>
                         <p className="font-semibold">{ability.name}</p>
