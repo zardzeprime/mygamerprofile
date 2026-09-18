@@ -23,7 +23,9 @@
         "Separated transient NEXUS health failures from confirmed no-provider state so the UI no longer reports a disconnected AI engine merely because status loading failed.",
         "Established the Visual System v2 foundation: a customizable semantic interface signal color, a quick appearance control in the global header, and a shared interaction language designed to avoid generic AI/gamer UI clichés.",
         "Expanded the MG Profile identity/loadout foundation so profile customization has explicit slots for backgrounds, banners, avatar frames, cursors, profile effects, chibis and badges while keeping game-inspired assets rights-gated.",
-        "Aligned this VALORANT completion pass with MG Profile’s product purpose: gamer identity, social discovery, forums/community content, guides/builds/tutorials and LFG rather than a standalone esports database."
+        "Aligned this VALORANT completion pass with MG Profile’s product purpose: gamer identity, social discovery, forums/community content, guides/builds/tutorials and LFG rather than a standalone esports database.",
+        "Removed the internal NEXUS/Os Sete council from public navigation and turned /nexus into a noindex redirect so public visitors only interact with the NEXUS gamer chat surface.",
+        "Hardened NEXUS inference against transient provider failures: provider requests now use abortable 25s timeouts, one retry for transient 429/5xx/network failures, low-latency reasoning in gamer mode, and explicit 503 handling for NEXUS_ALL_PROVIDERS_FAILED."
       ],
       "inProgress": [
         "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady.",
@@ -167,7 +169,8 @@
         "Raised CI regression coverage for verified VALORANT crosshairs so a future data merge cannot silently drop the newly reviewed set.",
         "Added an additive profiles.accent_color migration with six-digit hex validation and mirrored the deployed schema change in repository migrations/types.",
         "Added a daily official-source VALORANT Brasil news discovery workflow that checks Riot News PT-BR, VALORANT Esports PT-BR and the official VALORANT // Brasil YouTube feed, writes candidates to a review queue and opens/updates a pull request without auto-merging.",
-        "Registered official VALORANT Brasil Instagram and TikTok as future social sources but marked them API-required rather than bypassing platform access controls with fragile scraping."
+        "Registered official VALORANT Brasil Instagram and TikTok as future social sources but marked them API-required rather than bypassing platform access controls with fragile scraping.",
+        "Aligned provider fallback priority toward low-latency configured providers while preserving environment-configured provider order overrides."
       ],
       "inProgress": [],
       "next": [
@@ -207,7 +210,8 @@
         "Created Visual System v2 motion tokens, asymmetric MGP control geometry, refined header/navigation microinteractions, customizable semantic color rails and a requestAnimationFrame pointer aura that is disabled for touch and reduced-motion users.",
         "Kept the existing custom MGP cursor assets and layered a lightweight interaction aura instead of replacing the browser pointer with a heavy state-driven JavaScript cursor.",
         "Fixed the VALORANT mobile overview clipping shown in the 2026-09-18 screenshot by forcing the overview grid to a minmax(0,1fr) mobile track, constraining the VALORANT sidebar min-content width and allowing synopsis/fact text to wrap.",
-        "Added a responsive Profile Customization Studio scaffold in profile settings with selectable future slots and original identity-pack previews, while only existing background presets are currently equipable."
+        "Added a responsive Profile Customization Studio scaffold in profile settings with selectable future slots and original identity-pack previews, while only existing background presets are currently equipable.",
+        "NEXUS chat now restores a failed message to the composer instead of making the user retype it, and shows a friendly transient-provider error for NEXUS_ALL_PROVIDERS_FAILED."
       ],
       "inProgress": [
         "Run page-by-page rendered art-direction QA after Visual System v2 is visible in Lovable, focusing on home, game catalog, communities, profiles, NEXUS and game hubs at mobile and desktop widths."

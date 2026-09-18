@@ -11,8 +11,9 @@ export type CompletionRequest = {
 };
 
 const PROVIDERS: ProviderId[] = ["openai", "gemini", "groq", "openrouter", "anthropic"];
-const DEFAULT_ORDER: ProviderId[] = ["gemini", "openai", "groq", "openrouter", "anthropic"];
-const PROVIDER_TIMEOUT_MS = 12_000;
+const DEFAULT_ORDER: ProviderId[] = ["groq", "gemini", "openai", "anthropic", "openrouter"];
+const PROVIDER_TIMEOUT_MS = 25_000;
+const PROVIDER_RETRY_DELAY_MS = 650;
 
 function env(name: string) {
   return Deno.env.get(name)?.trim() || undefined;
@@ -22,18 +23,42 @@ function errorText(error: unknown) {
   return (error instanceof Error ? error.message : String(error)).slice(0, 500);
 }
 
-async function withTimeout<T>(promise: Promise<T>, provider: ProviderId): Promise<T> {
-  let timer: number | undefined;
-  try {
-    return await Promise.race([
-      promise,
-      new Promise<T>((_, reject) => {
-        timer = setTimeout(() => reject(new Error(`${provider} timed out`)), PROVIDER_TIMEOUT_MS);
-      }),
-    ]);
-  } finally {
-    if (timer !== undefined) clearTimeout(timer);
+function requestSignal() {
+  return AbortSignal.timeout(PROVIDER_TIMEOUT_MS);
+}
+
+function isRetryableProviderFailure(error: unknown) {
+  const message = errorText(error).toLowerCase();
+  return (
+    message.includes(" 429:") ||
+    /\s5\d\d:/.test(message) ||
+    message.includes("timed out") ||
+    message.includes("timeout") ||
+    message.includes("aborted") ||
+    message.includes("network") ||
+    message.includes("fetch failed")
+  );
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function completeWithRetry(
+  provider: ProviderId,
+  request: CompletionRequest,
+) {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      return await COMPLETERS[provider](request);
+    } catch (error) {
+      lastError = error;
+      if (attempt === 1 || !isRetryableProviderFailure(error)) throw error;
+      await sleep(PROVIDER_RETRY_DELAY_MS);
+    }
   }
+  throw lastError;
 }
 
 export function providerStatuses() {
@@ -77,6 +102,7 @@ async function openai(request: CompletionRequest) {
       reasoning: { effort: request.effort ?? "medium" },
       max_output_tokens: request.maxOutputTokens ?? 1600,
     }),
+    signal: requestSignal(),
   });
   if (!response.ok) throw new Error(`OpenAI ${response.status}: ${(await response.text()).slice(0, 220)}`);
   const data = await response.json() as {
@@ -108,8 +134,14 @@ async function gemini(request: CompletionRequest) {
           role: message.role === "assistant" ? "model" : "user",
           parts: [{ text: message.content }],
         })),
-        generationConfig: { maxOutputTokens: request.maxOutputTokens ?? 1600 },
+        generationConfig: {
+          maxOutputTokens: request.maxOutputTokens ?? 1600,
+          thinkingConfig: {
+            thinkingLevel: request.effort === "high" ? "high" : "low",
+          },
+        },
       }),
+      signal: requestSignal(),
     },
   );
   if (!response.ok) throw new Error(`Gemini ${response.status}: ${(await response.text()).slice(0, 220)}`);
@@ -145,6 +177,7 @@ async function compatible(request: CompletionRequest, provider: "groq" | "openro
       messages: [{ role: "system", content: request.system }, ...request.messages],
       max_tokens: request.maxOutputTokens ?? 1600,
     }),
+    signal: requestSignal(),
   });
   if (!response.ok) throw new Error(`${provider} ${response.status}: ${(await response.text()).slice(0, 220)}`);
   const data = await response.json() as {
@@ -174,6 +207,7 @@ async function anthropic(request: CompletionRequest) {
       messages: request.messages,
       max_tokens: request.maxOutputTokens ?? 1600,
     }),
+    signal: requestSignal(),
   });
   if (!response.ok) throw new Error(`Anthropic ${response.status}: ${(await response.text()).slice(0, 220)}`);
   const data = await response.json() as { content?: Array<{ type?: string; text?: string }> };
@@ -213,7 +247,7 @@ export async function complete(request: CompletionRequest) {
     if (!state.get(provider)?.configured) continue;
     attemptedProviders.push(provider);
     try {
-      const result = await withTimeout(COMPLETERS[provider](groundedRequest), provider);
+      const result = await completeWithRetry(provider, groundedRequest);
       return { ...result, attemptedProviders };
     } catch (error) {
       failures.push(`${provider}: ${errorText(error)}`);

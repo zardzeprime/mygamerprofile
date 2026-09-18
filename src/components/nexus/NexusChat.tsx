@@ -297,6 +297,8 @@ export function NexusChat() {
         if (last?.role === "user" && last.content === message) return current.slice(0, -1);
         return current;
       });
+      // Do not make the user retype a message after a transient provider failure.
+      setInput((current) => (current.trim() ? current : message));
       setError(formatNexusError(reason, Boolean(user), copy));
     } finally {
       setSending(false);
@@ -676,9 +678,19 @@ function formatNexusError(
   }
 
   if (
-    raw.includes("NEXUS_NO_PROVIDER") ||
-    raw.includes("no official model API configured") ||
+    raw.includes("NEXUS_ALL_PROVIDERS_FAILED") ||
     raw.includes("All configured NEXUS providers failed")
+  ) {
+    return copy(
+      "A NEXUS teve uma falha temporária nos provedores. Sua mensagem voltou para a caixa — tente enviar de novo em alguns segundos.",
+      "NEXUS hit a temporary provider failure. Your message is back in the box — try sending it again in a few seconds.",
+      "NEXUS tuvo una falla temporal con los proveedores. Tu mensaje volvió a la caja — intenta enviarlo otra vez en unos segundos.",
+    );
+  }
+
+  if (
+    raw.includes("NEXUS_NO_PROVIDER") ||
+    raw.includes("no official model API configured")
   ) {
     return copy(
       "A NEXUS está instalada, mas ainda falta conectar um provedor de IA no servidor.",
@@ -686,7 +698,6 @@ function formatNexusError(
       "NEXUS está instalada, pero todavía falta conectar un proveedor de IA en el servidor.",
     );
   }
-
 
   if (
     raw.includes("NEXUS_LOAD_TIMEOUT") ||

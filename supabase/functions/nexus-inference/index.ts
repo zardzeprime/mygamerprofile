@@ -119,9 +119,19 @@ Deno.serve(async (req: Request) => {
       code === "NEXUS_AUTH_REQUIRED" || code === "NEXUS_AUTH_INVALID" ? 401 :
       code === "NEXUS_ADMIN_REQUIRED" ? 403 :
       code === "NEXUS_RATE_LIMIT" || code === "NEXUS_GUEST_RATE_LIMIT" ? 429 :
-      code === "NEXUS_NO_PROVIDER" ? 503 :
+      code === "NEXUS_NO_PROVIDER" || code === "NEXUS_ALL_PROVIDERS_FAILED" ? 503 :
       code === "NEXUS_GUEST_LIMIT_REACHED" ? 402 :
       code === "NEXUS_INVALID_MESSAGE" || code === "NEXUS_THREAD_INVALID" ? 400 : 502;
-    return reply({ error: code }, status);
+    return reply(
+      {
+        error: code,
+        retryable:
+          code === "NEXUS_ALL_PROVIDERS_FAILED" ||
+          code === "NEXUS_RUNTIME_ERROR" ||
+          code === "NEXUS_RATE_LIMIT" ||
+          code === "NEXUS_GUEST_RATE_LIMIT",
+      },
+      status,
+    );
   }
 });
