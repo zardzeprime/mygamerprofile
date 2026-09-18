@@ -120,6 +120,8 @@ At least one inference provider must be configured for NEXUS to generate live re
 
 The default strategy is **failover**, not sending every prompt to every model. This keeps latency, privacy exposure and cost under control.
 
+The current Edge runtime also uses bounded latency: content grounding is cached/best-effort, each provider has a deadline, the provider chain has an overall response budget, and multi-provider deployments fail over instead of spending a second full timeout retrying the same provider. Gamer mode uses a lower reasoning/output budget than Development mode to keep support responses responsive.
+
 Later, NEXUS may support an explicit `council` mode for difficult admin-only tasks. In council mode, a bounded number of providers can independently analyze the same problem and NEXUS can synthesize their outputs. It must be opt-in because it multiplies inference cost and data disclosure.
 
 ## 7. Brand provenance
@@ -133,3 +135,4 @@ The NEXUS brand/provenance boundary is documented in `docs/NEXUS_BRAND_PROVENANC
 - The Lovable MCP OAuth client is registered architecturally but still needs a runtime MCP client + user authorization before NEXUS can invoke it from the MGP server.
 - GitHub and Supabase administrative bridges likewise need their own scoped credentials before in-product execution is enabled.
 - Specialist cores are routing contracts today; they become independent agents only when a real worker/runtime is implemented for them.
+- Provider timing and total inference latency are stored in message metadata for successful Edge v3 exchanges so slow/failing providers can be diagnosed without storing secrets.
