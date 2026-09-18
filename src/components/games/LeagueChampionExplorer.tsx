@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Clock3, Droplets, Gauge, Search, ShieldCheck, Sparkles, Swords, WandSparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock3, Droplets, Gauge, Search, ShieldCheck, Sparkles, Swords, WandSparkles } from "lucide-react";
 import { DataSourceIndicator } from "@/components/common/DataSourceIndicator";
 import {
   Dialog,
@@ -753,8 +753,10 @@ function SkinCollectionView({ detail, locale }: { detail: ChampionDetail; locale
           {previewSkin ? (
             <SkinSplashPreview
               championName={detail.name}
+              championId={detail.id}
+              skins={skins}
               skin={previewSkin}
-              image={skinSplash(detail.id, previewSkin.num)}
+              onSkin={setPreviewSkin}
             />
           ) : null}
         </DialogContent>
@@ -765,32 +767,105 @@ function SkinCollectionView({ detail, locale }: { detail: ChampionDetail; locale
 
 function SkinSplashPreview({
   championName,
+  championId,
+  skins,
   skin,
-  image,
+  onSkin,
 }: {
   championName: string;
+  championId: string;
+  skins: ChampionSkin[];
   skin: ChampionSkin;
-  image: string;
+  onSkin: (skin: ChampionSkin) => void;
 }) {
+  const wheelAccumulatorRef = useRef(0);
+  const lastWheelStepRef = useRef(0);
+  const currentIndex = Math.max(0, skins.findIndex((entry) => entry.num === skin.num));
   const label = skin.name === "default" ? championName : skin.name;
+  const image = skinSplash(championId, skin.num);
+
+  const move = (direction: -1 | 1) => {
+    if (skins.length <= 1) return;
+    const nextIndex = (currentIndex + direction + skins.length) % skins.length;
+    const nextSkin = skins[nextIndex];
+    if (nextSkin) onSkin(nextSkin);
+  };
+
+  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    if (skins.length <= 1) return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    wheelAccumulatorRef.current += event.deltaY || event.deltaX;
+    const now = performance.now();
+    if (Math.abs(wheelAccumulatorRef.current) < 28 || now - lastWheelStepRef.current < 120) return;
+
+    const direction = wheelAccumulatorRef.current > 0 ? 1 : -1;
+    wheelAccumulatorRef.current = 0;
+    lastWheelStepRef.current = now;
+    move(direction);
+  };
 
   return (
-    <div className="relative flex h-full min-h-0 items-center justify-center overflow-hidden bg-black">
+    <div
+      onWheel={handleWheel}
+      onPointerLeave={() => {
+        wheelAccumulatorRef.current = 0;
+      }}
+      className="relative flex h-full min-h-0 items-center justify-center overflow-hidden bg-black"
+      style={{ overscrollBehavior: "contain" }}
+    >
       <img
+        key={`ambient-${skin.num}`}
         src={image}
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-45 blur-3xl saturate-150 motion-safe:animate-pulse"
+        className="absolute inset-0 h-full w-full scale-110 animate-in object-cover opacity-45 blur-3xl saturate-150 fade-in duration-500 motion-safe:animate-pulse"
       />
       <div className="absolute inset-0 bg-black/45" />
       <img
+        key={`splash-${skin.num}`}
         src={image}
         alt={`${championName} — ${label}`}
-        className="relative z-10 max-h-full max-w-full object-contain drop-shadow-2xl"
+        className="relative z-10 max-h-full max-w-full animate-in object-contain drop-shadow-2xl fade-in zoom-in-95 duration-350"
       />
-      <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/85 to-transparent p-6 pt-16">
-        <p className="font-display text-xl font-semibold text-white sm:text-2xl">{label}</p>
-        <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-white/60">{championName}</p>
+
+      {skins.length > 1 ? (
+        <>
+          <button
+            type="button"
+            onClick={() => move(-1)}
+            className="absolute left-3 top-1/2 z-30 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/45 text-white/85 backdrop-blur transition-all hover:border-gold/50 hover:bg-black/65 hover:text-white"
+            aria-label="Skin anterior"
+          >
+            <ChevronLeft className="size-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => move(1)}
+            className="absolute right-3 top-1/2 z-30 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/45 text-white/85 backdrop-blur transition-all hover:border-gold/50 hover:bg-black/65 hover:text-white"
+            aria-label="Próxima skin"
+          >
+            <ChevronRight className="size-5" />
+          </button>
+        </>
+      ) : null}
+
+      <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/90 via-black/55 to-transparent p-6 pt-20">
+        <div className="flex items-end justify-between gap-4">
+          <div className="min-w-0">
+            <p className="truncate font-display text-xl font-semibold text-white sm:text-2xl">{label}</p>
+            <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-white/60">{championName}</p>
+          </div>
+          <div className="shrink-0 text-right">
+            <p className="text-xs font-bold tabular-nums text-white/85">
+              {currentIndex + 1} / {skins.length}
+            </p>
+            <p className="mt-1 hidden text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-white/55 sm:block">
+              Scroll ↑ ↓
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
