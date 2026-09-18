@@ -10,6 +10,7 @@ import { mergeSettings } from "@/data/valorant/mergeSettings";
 import { PLAYER_OBSERVATIONS } from "@/data/valorant/playerObservations";
 import { observedRole } from "@/data/valorant/observedRole";
 import { VALORANT_TEAM_DETAILS } from "@/data/valorant/teamDetails";
+import { LEAGUE_ESPORTS_PLAYERS, LEAGUE_ESPORTS_TEAMS } from "@/data/league/esports2026";
 import type {
   CompetitiveSourceLink,
   EsportsGameSlug,
@@ -104,11 +105,12 @@ function playerFromSeed(team: ValorantRosterSeed, seed: PlayerSeed): EsportsPlay
   };
 }
 
-export const ESPORTS_PLAYERS: EsportsPlayer[] = VALORANT_TEAMS_2026.flatMap((team) =>
-  team.players.map((player) => playerFromSeed(team, player)),
-);
+export const ESPORTS_PLAYERS: EsportsPlayer[] = [
+  ...VALORANT_TEAMS_2026.flatMap((team) => team.players.map((player) => playerFromSeed(team, player))),
+  ...LEAGUE_ESPORTS_PLAYERS,
+];
 
-export const ESPORTS_TEAMS: EsportsTeam[] = VALORANT_TEAMS_2026.map((team) => ({
+const VALORANT_ESPORTS_TEAMS: EsportsTeam[] = VALORANT_TEAMS_2026.map((team) => ({
   id: team.id,
   game: "valorant",
   name: team.name,
@@ -127,6 +129,11 @@ export const ESPORTS_TEAMS: EsportsTeam[] = VALORANT_TEAMS_2026.map((team) => ({
     },
   ],
 }));
+
+export const ESPORTS_TEAMS: EsportsTeam[] = [
+  ...VALORANT_ESPORTS_TEAMS,
+  ...LEAGUE_ESPORTS_TEAMS,
+];
 
 /**
  * The competitive directory is a dated, provenance-tracked snapshot. VLR is the
