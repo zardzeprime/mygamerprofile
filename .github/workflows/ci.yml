@@ -31,7 +31,9 @@ jobs:
         run: bun run check:valorant
 
       - name: Validate editorial automation syntax
-        run: node --check scripts/valorant-news-watch.mjs
+        run: |
+          node --check scripts/valorant-news-watch.mjs
+          node --check scripts/game-lifecycle-watch.mjs
 
       - name: Build
         run: bun run build
