@@ -337,6 +337,23 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
     detailFit: "cover",
   }),
 
+  "demon-firesage": {
+    url: fandomFileUrl("Firesage-Hammer-Smash.gif"),
+    sourceUrl: "https://dark-souls-remastered.fandom.com/wiki/Demon_Firesage",
+    sourceLabel: {
+      "pt-BR": "GIF de combate · Dark Souls Remastered Wiki (Fandom)",
+      en: "Combat GIF · Dark Souls Remastered Wiki (Fandom)",
+      es: "GIF de combate · Dark Souls Remastered Wiki (Fandom)",
+    },
+    kind: "wiki-image",
+    cardObjectPosition: "50% 44%",
+    detailObjectPosition: "50% 46%",
+    cardScale: 1.08,
+    detailScale: 1.12,
+    cardFit: "cover",
+    detailFit: "cover",
+  },
+
   "centipede-demon": fandomAsset("Centipede Demon.jpg", {
     cardObjectPosition: "50% 40%",
     detailObjectPosition: "50% 43%",
