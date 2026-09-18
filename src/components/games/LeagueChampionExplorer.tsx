@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
+import { getLeagueChampionBuilds, type LeagueBuildResponse } from "@/lib/league-builds";
 import { cn } from "@/lib/utils";
 
 const DDRAGON = "https://ddragon.leagueoflegends.com";
@@ -55,29 +56,6 @@ type ChampionSpell = {
   effectBurn?: Array<string | null>;
 };
 
-type ChampionRecommendedItem = {
-  id: string;
-  count?: number;
-  hideCount?: boolean;
-};
-
-type ChampionRecommendedBlock = {
-  type?: string;
-  recMath?: boolean;
-  items?: ChampionRecommendedItem[];
-};
-
-type ChampionRecommendedSet = {
-  champion?: string;
-  title?: string;
-  map?: string;
-  mode?: string;
-  type?: string;
-  priority?: boolean;
-  sortrank?: number;
-  blocks?: ChampionRecommendedBlock[];
-};
-
 type LeagueItemSummary = {
   name: string;
   description?: string;
@@ -96,7 +74,6 @@ type ChampionDetail = ChampionSummary & {
   skins: ChampionSkin[];
   passive: { name: string; description: string; image: { full: string } };
   spells: ChampionSpell[];
-  recommended?: ChampionRecommendedSet[];
 };
 
 type ChampionPayload<T> = { data: Record<string, T> };
@@ -144,30 +121,6 @@ function skinSplash(championId: string, skinNumber: number) {
 
 function baseSkinsOnly(skins: ChampionSkin[]) {
   return skins.filter((skin) => skin.parentSkin === undefined || skin.parentSkin === null);
-}
-
-function recommendedBuilds(detail: ChampionDetail) {
-  const seen = new Set<string>();
-
-  return (detail.recommended ?? [])
-    .filter((entry) => {
-      const map = (entry.map ?? "any").toUpperCase();
-      const mode = (entry.mode ?? "any").toUpperCase();
-      const summonersRift = map === "SR" || map === "ANY" || map.includes("SUMMONER");
-      const classic = mode === "CLASSIC" || mode === "ANY";
-      return summonersRift && classic && Boolean(entry.blocks?.some((block) => block.items?.length));
-    })
-    .sort((a, b) => {
-      if (Boolean(a.priority) !== Boolean(b.priority)) return a.priority ? -1 : 1;
-      return (b.sortrank ?? 0) - (a.sortrank ?? 0);
-    })
-    .filter((entry) => {
-      const key = `${entry.title ?? "recommended"}:${entry.map ?? "any"}:${entry.mode ?? "any"}`.toLowerCase();
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .slice(0, 2);
 }
 
 function itemIcon(version: string, itemId: string, item?: LeagueItemSummary) {
