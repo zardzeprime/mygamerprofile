@@ -44,7 +44,7 @@ function FeaturedPanel({
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const overview = GAME_EDITORIAL_OVERVIEW[gameSlug];
   const featured = overview?.featured ?? [];
-  const accentClass = themeKey === "dark_souls" ? "text-ember" : "text-tactical";
+  const accentClass = themeKey === "dark_souls" ? "text-ember" : "text-gold-strong";
 
   return (
     <section className="surface-panel overflow-hidden">
@@ -105,8 +105,8 @@ function FeaturedCard({
         : item.type === "lineup"
           ? "Lineup"
           : copy("Coleção", "Collection", "Colección");
-  const hoverClass = themeKey === "valorant" ? "hover:border-tactical/35 hover:bg-tactical/[0.035]" : "hover:border-gold/35 hover:bg-gold-soft/10";
-  const actionClass = themeKey === "valorant" ? "text-tactical hover:text-foreground" : "text-gold-strong hover:text-foreground";
+  const hoverClass = themeKey === "valorant" ? "hover:border-gold/35 hover:bg-gold/[0.035]" : "hover:border-gold/35 hover:bg-gold-soft/10";
+  const actionClass = themeKey === "valorant" ? "text-gold-strong hover:text-foreground" : "text-gold-strong hover:text-foreground";
 
   return (
     <article className={`group rounded-xl border border-border bg-muted/25 p-4 transition-all duration-200 hover:-translate-y-0.5 ${hoverClass}`}>
