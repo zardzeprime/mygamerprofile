@@ -27,6 +27,7 @@ import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authent
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings.account'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings.appearance'
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
+import { Route as AuthenticatedSettingsIdentityRouteImport } from './routes/_authenticated/settings.identity'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as UUsernameGamesSlugRouteImport } from './routes/u.$username.games.$slug'
 
@@ -123,6 +124,12 @@ const AuthenticatedSettingsConnectionsRoute =
     path: '/settings/connections',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSettingsIdentityRoute =
+  AuthenticatedSettingsIdentityRouteImport.update({
+    id: '/settings/identity',
+    path: '/settings/identity',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsProfileRoute =
   AuthenticatedSettingsProfileRouteImport.update({
     id: '/settings/profile',
@@ -153,6 +160,7 @@ export interface FileRoutesByFullPath {
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
+  '/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -174,6 +182,7 @@ export interface FileRoutesByTo {
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
+  '/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -197,6 +206,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
+  '/_authenticated/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -220,6 +230,7 @@ export interface FileRouteTypes {
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/connections'
+    | '/settings/identity'
     | '/settings/profile'
     | '/u/$username/games/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/connections'
+    | '/settings/identity'
     | '/settings/profile'
     | '/u/$username/games/$slug'
   id:
@@ -263,6 +275,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
     | '/_authenticated/settings/connections'
+    | '/_authenticated/settings/identity'
     | '/_authenticated/settings/profile'
     | '/u/$username/games/$slug'
   fileRoutesById: FileRoutesById
@@ -411,6 +424,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsConnectionsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/settings/identity': {
+      id: '/_authenticated/settings/identity'
+      path: '/settings/identity'
+      fullPath: '/settings/identity'
+      preLoaderRoute: typeof AuthenticatedSettingsIdentityRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings/profile': {
       id: '/_authenticated/settings/profile'
       path: '/settings/profile'
@@ -434,6 +454,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsAccountRoute: typeof AuthenticatedSettingsAccountRoute
   AuthenticatedSettingsAppearanceRoute: typeof AuthenticatedSettingsAppearanceRoute
   AuthenticatedSettingsConnectionsRoute: typeof AuthenticatedSettingsConnectionsRoute
+  AuthenticatedSettingsIdentityRoute: typeof AuthenticatedSettingsIdentityRoute
   AuthenticatedSettingsProfileRoute: typeof AuthenticatedSettingsProfileRoute
 }
 
@@ -443,6 +464,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsAccountRoute: AuthenticatedSettingsAccountRoute,
   AuthenticatedSettingsAppearanceRoute: AuthenticatedSettingsAppearanceRoute,
   AuthenticatedSettingsConnectionsRoute: AuthenticatedSettingsConnectionsRoute,
+  AuthenticatedSettingsIdentityRoute: AuthenticatedSettingsIdentityRoute,
   AuthenticatedSettingsProfileRoute: AuthenticatedSettingsProfileRoute,
 }
 
