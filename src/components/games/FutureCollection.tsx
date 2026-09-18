@@ -15,6 +15,7 @@ import { ValorantSkins } from "@/components/games/ValorantSkins";
 import { LeagueChampionExplorer } from "@/components/games/LeagueChampionExplorer";
 import { LeagueItemsExplorerV2 } from "@/components/games/LeagueItemsExplorerV2";
 import { LeagueModesExplorer } from "@/components/games/LeagueModesExplorer";
+import { LeagueEsportsPanel } from "@/components/games/LeagueEsportsPanel";
 import { SoulsBossExplorer } from "@/components/games/SoulsBossExplorer";
 import { SoulsGameGuides } from "@/components/games/SoulsGameGuides";
 
@@ -53,7 +54,14 @@ export function FutureCollection({
     if (moduleKey === "skins") return <LeagueChampionExplorer locale={locale} mode="skins" />;
     if (moduleKey === "items") return <LeagueItemsExplorerV2 locale={locale} />;
     if (moduleKey === "modes") return <LeagueModesExplorer locale={locale} />;
-    if (moduleKey === "competitive") return <CompetitiveCompendium game="league-of-legends" locale={locale} />;
+    if (moduleKey === "competitive") {
+      return (
+        <div className="space-y-8">
+          <LeagueEsportsPanel locale={locale} />
+          <CompetitiveCompendium game="league-of-legends" locale={locale} />
+        </div>
+      );
+    }
   }
 
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
