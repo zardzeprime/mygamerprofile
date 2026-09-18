@@ -29,6 +29,7 @@ import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_a
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
 import { Route as AuthenticatedSettingsIdentityRouteImport } from './routes/_authenticated/settings.identity'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as UUsernameGamesSlugRouteImport } from './routes/u.$username.games.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -136,6 +137,12 @@ const AuthenticatedSettingsProfileRoute =
     path: '/settings/profile',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const UUsernameGamesSlugRoute = UUsernameGamesSlugRouteImport.update({
   id: '/games/$slug',
   path: '/games/$slug',
@@ -162,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
 export interface FileRoutesByTo {
@@ -184,6 +192,7 @@ export interface FileRoutesByTo {
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
 export interface FileRoutesById {
@@ -208,6 +217,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
 export interface FileRouteTypes {
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/settings/connections'
     | '/settings/identity'
     | '/settings/profile'
+    | '/lovable/email/transactional/preview'
     | '/u/$username/games/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/settings/connections'
     | '/settings/identity'
     | '/settings/profile'
+    | '/lovable/email/transactional/preview'
     | '/u/$username/games/$slug'
   id:
     | '__root__'
@@ -277,6 +289,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/connections'
     | '/_authenticated/settings/identity'
     | '/_authenticated/settings/profile'
+    | '/lovable/email/transactional/preview'
     | '/u/$username/games/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -294,6 +307,7 @@ export interface RootRouteChildren {
   UUsernameRoute: typeof UUsernameRouteWithChildren
   CommunitiesIndexRoute: typeof CommunitiesIndexRoute
   GamesIndexRoute: typeof GamesIndexRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -438,6 +452,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/u/$username/games/$slug': {
       id: '/u/$username/games/$slug'
       path: '/games/$slug'
@@ -497,6 +518,7 @@ const rootRouteChildren: RootRouteChildren = {
   UUsernameRoute: UUsernameRouteWithChildren,
   CommunitiesIndexRoute: CommunitiesIndexRoute,
   GamesIndexRoute: GamesIndexRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
