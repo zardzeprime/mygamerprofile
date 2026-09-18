@@ -1,15 +1,12 @@
 import { useMemo, useState } from "react";
 import {
   Anvil,
-  BookOpen,
   Flame,
   Hammer,
-  Plus,
   ShieldCheck,
   Sparkles,
   Sword,
   WandSparkles,
-  X,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import type { Locale } from "@/i18n";
