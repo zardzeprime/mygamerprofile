@@ -31,7 +31,8 @@
         "Completed the first League of Legends product pass across items, champions, skins, modes and competitive surfaces, keeping each module focused instead of mixing collections.",
         "Unified VALORANT skin preview interaction around the shared MGP media player: autoplay can attempt muted playback on touch devices, controls auto-hide when idle, and preview clip rails use fixed wheel-to-horizontal navigation without changing the selected level until click.",
         "Reworked the NEXUS Gamer response path for reliability: single-call member bootstrap, shorter chat context, delayed thread creation until inference succeeds, batch persistence, and graceful ephemeral member replies if persistence fails after a successful model response.",
-        "Diagnosed the intermittent NEXUS Gamer provider failure as real Gemini capacity pressure, not a frontend/auth bug: live tests showed 3.6/3.7 timeouts and Gemini 3.8 returning 503 high-demand errors while the API key remained valid."
+        "Diagnosed the intermittent NEXUS Gamer provider failure as real Gemini capacity pressure, not a frontend/auth bug: live tests showed 3.6/3.7 timeouts and Gemini 3.8 returning 503 high-demand errors while the API key remained valid.",
+        "Added a non-chat NEXUS Build Guide beside the League build creator. It uses champion context, selected core items and the current verified statistical path to surface short decisions/questions without opening the NEXUS chat."
       ],
       "inProgress": [
         "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady.",
@@ -121,7 +122,8 @@
         "Replaced the provisional VALORANT SVG card treatment with the user-uploaded transparent PNG after visual comparison, copying the exact blob into public assets without recompression.",
         "Standardized the League pass on Riot Data Dragon for item/champion/map icons and splash art, kept ability-video requests lazy, and withheld team/player photos or logos where reusable provenance was not established.",
         "Kept League ability media lazy-loaded only while previewing and preserved Riot/Data Dragon image provenance while adding full-size splash navigation.",
-        "Kept Andromalius in the lifecycle chain as the required provenance/rights reviewer whenever live-game updates introduce new external artwork, videos or other media."
+        "Kept Andromalius in the lifecycle chain as the required provenance/rights reviewer whenever live-game updates introduce new external artwork, videos or other media.",
+        "Completed boss-image coverage for Dark Souls Remastered and Dark Souls III: all 26 DS1 boss slugs and all 25 DS3 boss slugs now resolve to attributed encounter/reference media instead of generic cover fallbacks."
       ],
       "inProgress": [],
       "next": [
@@ -156,7 +158,8 @@
         "Added a dated 2026-09-18 League esports snapshot with starter LCK/LEC/LCS/CBLOL rosters and an official LoL Esports upcoming-match snapshot, keeping TBD bracket slots explicit rather than inferred.",
         "Formalized Vassago as MG Profile's live-game content lifecycle owner: daily freshness review covers patches, competitive rotations, agents/champions, weapons/items, modes, skins/cosmetics and competitive schedules for VALORANT and League of Legends.",
         "Audited the current VALORANT map rotation from Riot patch history and corrected the public 13.04 pool to Abyss, Ascent, Haven, Lotus, Split, Summit and Sunset.",
-        "Completed a dated VALORANT + League source-of-truth audit before moving to Dark Souls Remastered and Dark Souls III, including current Riot patch baselines, LoL Data Dragon 16.18.1, current special modes and competitive schedule snapshots."
+        "Completed a dated VALORANT + League source-of-truth audit before moving to Dark Souls Remastered and Dark Souls III, including current Riot patch baselines, LoL Data Dragon 16.18.1, current special modes and competitive schedule snapshots.",
+        "League build freshness now resolves on demand by current LoLalytics patch through the league-builds Edge service, while Riot Data Dragon remains the source for champion/item presentation data."
       ],
       "inProgress": [
         "Continue individual ProSettings verification for players whose settings remain hidden.",
@@ -198,7 +201,9 @@
         "Added reusable MGP media-rail scrollbar styling using the active site accent instead of native-looking horizontal scrollbars.",
         "Separated NEXUS Edge read/send rate-limit buckets and added provider timing plus total latency metadata for successful Edge v3 exchanges so future slow-provider regressions can be diagnosed from runtime data.",
         "Added private service-role-only nexus_runtime_events telemetry and used live Edge probes to validate the new chain: test replies succeeded on gemini-3.5-flash-lite in ~0.8s and ~1.9s after the earlier all-provider failure.",
-        "Added the daily Game Lifecycle Watch GitHub workflow and official-source scanner. Marbas owns automation; candidate changes open a review PR and never auto-merge."
+        "Added the daily Game Lifecycle Watch GitHub workflow and official-source scanner. Marbas owns automation; candidate changes open a review PR and never auto-merge.",
+        "Deployed the public, project-key-gated league-builds Supabase Edge Function with bounded upstream timeout, per-isolate cache and rate limiting; verified live responses for Akali, Garen, Jinx and Yasuo.",
+        "Re-optimized League ability preview video delivery for mobile by preferring MP4 on coarse/mobile pointers, reducing preload, suspending hidden playback and retaining WebM-first behavior on desktop."
       ],
       "inProgress": [],
       "next": [
@@ -250,7 +255,9 @@
         "Reduced NEXUS latency with cached/best-effort MGP content grounding, lower Gamer reasoning/output budgets, bounded per-provider timeouts, a 42s overall provider budget, and immediate failover across multiple configured providers instead of retrying the same slow provider first.",
         "Added a low-effort Gemini capacity chain for NEXUS Gamer using stable Flash/Lite models, prioritizing gemini-3.5-flash-lite for fast support responses while retaining 3.6/3.1-lite/3.7/3.8 fallbacks.",
         "Assigned Andrealphus as the UX/consistency reviewer for lifecycle changes so accurate updates are checked for clean mobile/desktop presentation before public promotion.",
-        "Clarified VALORANT skin VP/RP figures as estimates/reference values rather than presenting tier-derived values as exact individual store prices."
+        "Clarified VALORANT skin VP/RP figures as estimates/reference values rather than presenting tier-derived values as exact individual store prices.",
+        "Added the League Builds hub with verified primary/alternative paths, 1- or 2-core custom build composition, situational slots, source cross-check links and contextual NEXUS guidance.",
+        "Added a Dark Souls Remastered Build Lab with three PvE starter presets—Quality Claymore, Strength Great Club and Dexterity + Pyromancy—plus a custom core/variant builder."
       ],
       "inProgress": [
         "Run page-by-page rendered art-direction QA after Visual System v2 is visible in Lovable, focusing on home, game catalog, communities, profiles, NEXUS and game hubs at mobile and desktop widths."
