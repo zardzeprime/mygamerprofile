@@ -156,7 +156,8 @@
         "Track model IDs and provider API changes so Nexus defaults do not become stale.",
         "Track game/editorial data that can become stale and define refresh expectations before automating it.",
         "Add owner/founder and institutional organization facts only when an official organization source confirms them.",
-        "Continue individual source review for current-roster players that still lack verified settings or a verified crosshair; do not mass-scrape or infer absent values."
+        "Continue individual source review for current-roster players that still lack verified settings or a verified crosshair; do not mass-scrape or infer absent values.",
+        "Refresh the League 2026 roster and LoL Esports schedule snapshot as bracket results resolve; keep TBD slots explicit until the official schedule names the team."
       ],
       "blocked": [
         "111 of 350 VALORANT roster entries (110 unique normalized handles) still lack a source-safe public settings record after individual review. Keep those values hidden; do not estimate, alias-match loosely or bulk-scrape."
@@ -189,7 +190,8 @@
         "Implement scoped OAuth/App credential flows for Nexus administrative tools.",
         "Identify repeated manual project workflows that are stable enough to automate.",
         "Coordinate with PULSE when recurring content or data refreshes are introduced.",
-        "Enable official Instagram/TikTok ingestion only when an approved API or connector is available; keep the same candidate-review pipeline and never auto-publish social items."
+        "Enable official Instagram/TikTok ingestion only when an approved API or connector is available; keep the same candidate-review pipeline and never auto-publish social items.",
+        "Add a review-gated League Esports schedule refresh workflow from an official source once the snapshot format is stable; do not auto-publish bracket guesses."
       ],
       "blocked": [
         "No dedicated multi-agent/background-worker runtime exists yet for independent specialist agents.",
