@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-17",
+  "updatedAt": "2026-09-18",
   "cores": {
     "nexus": {
       "name": "NEXUS",
@@ -17,10 +17,11 @@
         "Added a first-message NEXUS greeting, gamer-native public persona and the original angular N/Z interface mark.",
         "Grounded MGP content recommendations in the live active-games table plus the published content catalog so paused games are not advertised.",
         "Aligned browser and provider timeout budgets so server-side failover can finish before the client abandons a reply.",
-        "Preserved the first guest prompt during session bootstrap instead of silently dropping an early Enter submission."
+        "Preserved the first guest prompt during session bootstrap instead of silently dropping an early Enter submission.",
+        "Verified the hosted Supabase nexus-inference Edge Function is active at version 8 and aligned with the repository runtime."
       ],
       "inProgress": [
-        "Connect scoped GitHub, Supabase Management API and Lovable MCP credentials to executable Nexus tools."
+        "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady."
       ],
       "next": [
         "Configure at least one official inference API credential in deployment secrets and test live model replies end to end.",
@@ -143,7 +144,8 @@
         "Standardized AVAPGV Watch on a responsive branded MG Profile HTML email contract with plain-text fallback and secret-safe reporting.",
         "Standardized AVAPGV user-facing reports around the six fronts and documented temporary email-connector incident handling.",
         "Replaced six-front report branding with Os Sete; all seven named roles report directly, preserving stable IDs and historical records.",
-        "Added check:valorant regression validation to CI for sparse merges, source retention, eDPI, coverage and ambiguous shared handles."
+        "Added check:valorant regression validation to CI for sparse merges, source retention, eDPI, coverage and ambiguous shared handles.",
+        "Registered a real responsive AVAPGV / Os Sete React Email template with status, owning core, concrete reference, impact and next-action cards, plus plain-text render support."
       ],
       "inProgress": [],
       "next": [
@@ -175,13 +177,15 @@
         "Deferred mobile video preloading and reduced high-frequency player polling on touch/small-screen devices.",
         "Replaced the small-screen game-hub tab strip with a sticky compact navigator, constrained horizontal overflow and shortened the mobile hero.",
         "Added browser-rendered light/dark VALORANT crosshair previews and icon-led peripheral cards without external image assets.",
-        "Merged settings per field and review date, retained contributing sources, removed team-country fallback for players and localized observed roles with compact agent chips."
+        "Merged settings per field and review date, retained contributing sources, removed team-country fallback for players and localized observed roles with compact agent chips.",
+        "Merged the validated responsive header, compact home and game-hub navigation, mobile media retry/error handling, personal appearance refinements and related accessibility improvements through PR #56."
       ],
       "inProgress": [],
       "next": [
         "Review external boss-art delivery for image weight, caching and layout stability after visual approval.",
         "Profile Nexus latency and provider failure rates before adding parallel council inference.",
-        "Profile high-cost routes before proposing additional performance work."
+        "Profile high-cost routes before proposing additional performance work.",
+        "Run rendered QA at 360/390/768/1024/1440px and real Android VALORANT skin playback after the current main is published; browser hardware decoding cannot be forced by application code."
       ],
       "blocked": [],
       "legacyName": "VECTOR",
