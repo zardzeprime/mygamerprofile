@@ -91,7 +91,7 @@ function SupportPage() {
             <p className="mt-3 text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
               {copy("Quem está por trás", "Who is behind it", "Quién está detrás")}
             </p>
-            <p className="mt-2 font-display text-lg font-semibold text-foreground">Edras, 22</p>
+            <p className="mt-2 font-display text-lg font-semibold text-foreground">ESDRAS, 22 anos</p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {copy(
                 "Graduando em uma área fora da programação, aprendendo desenvolvimento enquanto transforma uma ideia antiga em produto real.",
@@ -175,7 +175,7 @@ function SupportPage() {
 
           <SupportCard
             icon={BadgeDollarSign}
-            title={recurring?.provider ?? "APOIA.se"}
+            title={recurring?.provider ?? "Ko-fi"}
             badge={copy("Para apoio mensal", "For monthly support", "Para apoyo mensual")}
             description={copy(
               "Uma campanha recorrente permite que quem quiser ajude com um valor mensal, sem transformar o MGP em assinatura obrigatória.",
@@ -202,6 +202,20 @@ function SupportPage() {
             }
           />
         </div>
+      </section>
+
+      <section className="mt-8 rounded-[1.2rem_1.2rem_0.55rem_1.2rem] border border-gold/20 bg-gold/[0.04] p-5 sm:p-6">
+        <p className="section-kicker">{copy("MONETIZAÇÃO FUTURA", "FUTURE MONETIZATION", "MONETIZACIÓN FUTURA")}</p>
+        <h2 className="mt-2 font-display text-xl font-semibold text-foreground">
+          {copy("Apoio hoje não é uma promessa de benefício amanhã.", "Support today is not a promise of future perks.", "Apoyar hoy no es una promesa de beneficios futuros.")}
+        </h2>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
+          {copy(
+            "O MGP ainda é pequeno e gerido por uma pessoa. Mais adiante, podem existir formas internas de monetização, como cosméticos e personalizações exclusivas, comunidades ou áreas especiais para apoiadores e conteúdos produzidos em colaboração com criadores, influenciadores ou jogadores do cenário quando isso for viável. Nada disso está sendo vendido ou garantido nesta fase.",
+            "MGP is still small and run by one person. Later, internal monetization may include exclusive cosmetics and customization, supporter-only community spaces, or content produced with creators, influencers or competitive-scene players when feasible. None of those future ideas are being sold or guaranteed at this stage.",
+            "MGP todavía es pequeño y está gestionado por una sola persona. Más adelante podrían existir formas internas de monetización como cosméticos y personalización exclusiva, espacios especiales para seguidores o contenido con creadores, influencers o jugadores del escenario competitivo cuando sea viable. Nada de eso se vende ni se garantiza en esta fase.",
+          )}
+        </p>
       </section>
 
       <section className="mt-8 rounded-[1.2rem_1.2rem_0.55rem_1.2rem] border border-border bg-muted/15 p-5 sm:p-6">
@@ -241,7 +255,7 @@ function SupportPage() {
         <Link to="/games" className="brand-button-secondary min-h-11">
           {copy("Continuar explorando o MGP", "Keep exploring MGP", "Seguir explorando MGP")}
         </Link>
-        <a href="mailto:zardzeprime@gmail.com" className="brand-button-secondary min-h-11">
+        <a href="mailto:contato@mgprofile.online" className="brand-button-secondary min-h-11">
           {copy("Falar com o projeto", "Contact the project", "Contactar el proyecto")}
         </a>
       </div>
