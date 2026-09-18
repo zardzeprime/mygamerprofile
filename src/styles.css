@@ -68,6 +68,10 @@
 
 :root {
   --radius: 0.75rem;
+  --motion-fast: 140ms;
+  --motion-base: 220ms;
+  --motion-slow: 420ms;
+  --ease-mgp: cubic-bezier(0.16, 1, 0.3, 1);
 
   --background: oklch(0.968 0.006 95);
   --foreground: oklch(0.22 0.008 260);
@@ -207,24 +211,56 @@
   :is(button, input, select, textarea):disabled, [aria-disabled="true"] { cursor: not-allowed; }
 }
 
-/* A second color adds atmosphere; gold remains the brand/action color. */
+/*
+ * Personal signal color.
+ * The default remains MGP gold. A chosen color becomes the interface signal
+ * (actions, rails, focus, tabs and highlights) while danger/success stay semantic.
+ */
 :root {
-  --mgp-user-accent: var(--gold);
+  --mgp-user-accent: #c9a95d;
+  --mgp-user-accent-foreground: #111318;
   --mgp-user-accent-soft: color-mix(in oklab, var(--mgp-user-accent) 12%, var(--surface));
-  --mgp-user-accent-strong: var(--foreground);
-  --mgp-personal-gradient: linear-gradient(125deg, var(--gold-soft), var(--mgp-user-accent-soft) 72%, var(--surface));
+  --mgp-personal-gradient:
+    linear-gradient(128deg, var(--gold-soft), var(--mgp-user-accent-soft) 70%, var(--surface));
 }
+
 :root[data-accent="custom"] {
-  --accent: var(--mgp-user-accent-soft);
+  --gold: var(--mgp-user-accent);
+  --gold-strong: color-mix(in oklab, var(--mgp-user-accent) 78%, black 22%);
+  --gold-soft: color-mix(in oklab, var(--mgp-user-accent) 16%, var(--surface));
+  --gold-foreground: var(--mgp-user-accent-foreground);
+  --primary: var(--mgp-user-accent);
+  --primary-foreground: var(--mgp-user-accent-foreground);
+  --ring: var(--mgp-user-accent);
+  --accent: color-mix(in oklab, var(--mgp-user-accent) 13%, var(--surface));
   --accent-foreground: var(--foreground);
 }
+
+:root.dark[data-accent="custom"] {
+  --gold-strong: color-mix(in oklab, var(--mgp-user-accent) 82%, white 18%);
+  --gold-soft: color-mix(in oklab, var(--mgp-user-accent) 20%, var(--surface));
+  --accent: color-mix(in oklab, var(--mgp-user-accent) 18%, var(--surface));
+}
+
 :root[data-accent="custom"] main {
-  background-image: radial-gradient(ellipse at 100% 0%, color-mix(in oklab, var(--mgp-user-accent) 7%, transparent), transparent 48rem);
+  background-image:
+    radial-gradient(
+      ellipse at 100% 0%,
+      color-mix(in oklab, var(--mgp-user-accent) 6%, transparent),
+      transparent 46rem
+    );
   background-repeat: no-repeat;
 }
+
 :root[data-accent="custom"] .surface-panel {
-  background-image: linear-gradient(130deg, color-mix(in oklab, var(--mgp-user-accent) 8%, transparent), transparent 65%);
+  background-image:
+    linear-gradient(
+      132deg,
+      color-mix(in oklab, var(--mgp-user-accent) 5%, transparent),
+      transparent 58%
+    );
 }
+
 .appearance-preview { background: var(--mgp-personal-gradient); }
 ::selection { background: var(--gold-soft); color: var(--foreground); }
 @media (pointer: coarse) {
@@ -244,7 +280,7 @@
 @utility surface-panel {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-xl) var(--radius-xl) calc(var(--radius-xl) - 6px) var(--radius-xl);
   box-shadow: var(--shadow-soft);
 }
 
@@ -290,6 +326,229 @@
   text-transform: uppercase;
 }
 
+
+/* MGP interaction language: restrained asymmetry + signal-line microinteractions. */
+.mgp-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 0.9rem 0.9rem 0.42rem 0.9rem;
+  transition:
+    transform var(--motion-fast) var(--ease-mgp),
+    border-color var(--motion-base) ease,
+    background-color var(--motion-base) ease,
+    box-shadow var(--motion-base) var(--ease-mgp),
+    color var(--motion-base) ease,
+    opacity var(--motion-base) ease,
+    filter var(--motion-base) ease;
+}
+
+.mgp-button:not([data-variant="link"])::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  background:
+    linear-gradient(
+      108deg,
+      transparent 28%,
+      color-mix(in oklab, white 13%, transparent) 49%,
+      transparent 69%
+    );
+  transform: translateX(-42%);
+  transition:
+    opacity var(--motion-fast) ease,
+    transform 520ms var(--ease-mgp);
+}
+
+.mgp-button:not([data-variant="link"]):hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lift);
+}
+
+.mgp-button:not([data-variant="link"]):hover::after {
+  opacity: 1;
+  transform: translateX(42%);
+}
+
+.mgp-button:not([data-variant="link"]):active {
+  transform: translateY(0) scale(0.985);
+}
+
+.mgp-header {
+  isolation: isolate;
+  box-shadow: 0 12px 30px color-mix(in oklab, var(--color-background) 88%, transparent);
+}
+
+.mgp-header::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: min(94vw, 74rem);
+  height: 1px;
+  transform: translateX(-50%);
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--color-gold) 34%, transparent) 18%,
+      color-mix(in oklab, var(--color-gold) 62%, transparent) 50%,
+      color-mix(in oklab, var(--color-gold) 34%, transparent) 82%,
+      transparent
+    );
+}
+
+.mgp-nav-link {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 0.8rem 0.8rem 0.36rem 0.8rem;
+  transition:
+    color var(--motion-fast) ease,
+    border-color var(--motion-base) ease,
+    background-color var(--motion-base) ease,
+    transform var(--motion-fast) var(--ease-mgp);
+}
+
+.mgp-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0.7rem;
+  right: 0.7rem;
+  bottom: 0.28rem;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: var(--color-gold);
+  opacity: 0.88;
+  transition: transform var(--motion-base) var(--ease-mgp);
+}
+
+.mgp-nav-link:hover {
+  color: var(--color-foreground);
+  border-color: color-mix(in oklab, var(--color-gold) 16%, var(--color-border));
+  background: color-mix(in oklab, var(--color-gold) 4%, transparent);
+  transform: translateY(-1px);
+}
+
+.mgp-nav-link:hover::after { transform: scaleX(0.34); }
+
+.mgp-nav-link-active {
+  color: var(--color-gold-strong);
+  border-color: color-mix(in oklab, var(--color-gold) 24%, var(--color-border));
+  background: color-mix(in oklab, var(--color-gold) 7%, transparent);
+}
+
+.mgp-nav-link-active::after { transform: scaleX(1); }
+
+.mgp-header-action,
+.mgp-icon-button,
+.appearance-dial {
+  border: 1px solid var(--color-border);
+  border-radius: 0.82rem 0.82rem 0.34rem 0.82rem;
+  background: color-mix(in oklab, var(--color-surface) 90%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, white 5%, transparent);
+  transition:
+    transform var(--motion-fast) var(--ease-mgp),
+    border-color var(--motion-base) ease,
+    background-color var(--motion-base) ease,
+    color var(--motion-base) ease;
+}
+
+.mgp-header-action:hover,
+.mgp-icon-button:hover,
+.appearance-dial:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in oklab, var(--color-gold) 34%, var(--color-border));
+  background: color-mix(in oklab, var(--color-gold) 7%, var(--color-surface));
+  color: var(--color-foreground);
+}
+
+.appearance-dial {
+  position: relative;
+  display: inline-grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  color: var(--color-foreground);
+}
+
+.appearance-dial-swatch {
+  position: absolute;
+  right: 0.32rem;
+  bottom: 0.32rem;
+  width: 0.48rem;
+  height: 0.48rem;
+  border: 1px solid color-mix(in oklab, black 18%, transparent);
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px var(--color-surface);
+}
+
+.mgp-mobile-panel {
+  background-image:
+    linear-gradient(
+      145deg,
+      color-mix(in oklab, var(--color-gold) 4%, transparent),
+      transparent 48%
+    );
+}
+
+.mgp-pointer-aura {
+  pointer-events: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 70;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid color-mix(in oklab, var(--color-gold) 74%, transparent);
+  border-radius: 999px;
+  opacity: 0;
+  background:
+    radial-gradient(
+      circle,
+      color-mix(in oklab, var(--color-gold) 8%, transparent),
+      transparent 66%
+    );
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--color-background) 72%, transparent),
+    0 0 20px color-mix(in oklab, var(--color-gold) 16%, transparent);
+  will-change: transform, width, height, opacity;
+  transition:
+    width var(--motion-base) var(--ease-mgp),
+    height var(--motion-base) var(--ease-mgp),
+    opacity var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    background-color var(--motion-fast) ease;
+}
+
+.mgp-pointer-aura[data-visible="true"] { opacity: 0.76; }
+
+.mgp-pointer-aura[data-interactive="true"] {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-color: color-mix(in oklab, var(--color-gold) 92%, transparent);
+  background:
+    radial-gradient(
+      circle,
+      color-mix(in oklab, var(--color-gold) 12%, transparent),
+      transparent 68%
+    );
+}
+
+.mgp-pointer-aura[data-pressed="true"] {
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0.92;
+}
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .mgp-pointer-aura { display: none; }
+}
+
 .brand-mark {
   position: relative;
   border-radius: 999px;
@@ -324,9 +583,9 @@
   position: relative;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-lg) var(--radius-lg) calc(var(--radius-lg) - 5px) var(--radius-lg);
   box-shadow: var(--shadow-soft);
-  transition: transform 280ms cubic-bezier(.2,.8,.2,1), border-color 220ms ease, box-shadow 280ms ease;
+  transition: transform 280ms var(--ease-mgp), border-color var(--motion-base) ease, box-shadow 280ms var(--ease-mgp);
 }
 
 .game-card::after {
