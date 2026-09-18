@@ -138,7 +138,7 @@ export async function handleGuestSend(raw: Record<string, unknown>) {
   const completion = await complete({
     system: buildSystemPrompt("gaming", false, coreIds, locale),
     messages: history,
-    effort: "low",
+    effort: "medium",
     maxOutputTokens: 1000,
   });
 
@@ -325,7 +325,7 @@ export async function handleMemberSend(req: Request, raw: Record<string, unknown
     const completion = await complete({
       system: buildSystemPrompt(threadMode, admin, coreIds, locale),
       messages: history,
-      effort: threadMode === "development" ? "high" : "low",
+      effort: threadMode === "development" ? "high" : "medium",
       maxOutputTokens: threadMode === "development" ? 2400 : 1600,
     });
 
