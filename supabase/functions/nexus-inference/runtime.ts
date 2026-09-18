@@ -161,7 +161,7 @@ export async function handleGuestSend(raw: Record<string, unknown>) {
 
   const coreIds = selectCores(message, "gaming");
   const rows = await guestMessages(db, guest.session_id, 12);
-  const history = compactChatHistory(rows, 12, 12_000);
+  const history = compactChatHistory([...rows].reverse(), 12, 12_000);
   history.push({ role: "user", content: message });
 
   const completion = await complete({
