@@ -5,9 +5,9 @@
 For the current Brazil-first, low-budget stage, the recommended support stack is:
 
 1. **Pix with a random key** for one-time support.
-2. **APOIA.se continuous campaign** for recurring monthly support.
+2. **Ko-fi monthly support / memberships** for recurring support.
 
-Patreon can be revisited later if the audience becomes meaningfully international.
+Keep the public MGP experience free at launch; supporter tiers can be introduced only when the benefits are concrete and deliverable.
 
 ## Why Pix first
 
@@ -25,11 +25,11 @@ When ready, update `src/config/support.ts`:
 
 A QR code can be added later from a valid Pix Copia e Cola payload.
 
-## Why APOIA.se for recurring support
+## Why Ko-fi for recurring support
 
-The target audience is currently Brazil-first and the platform supports recurring campaigns without a fixed monthly subscription for the creator. Keep the public MGP experience free; recurring support should be voluntary rather than a required membership.
+Ko-fi supports both simple recurring monthly payments and membership tiers. For the current one-person project stage, start with voluntary monthly support rather than promising a large rewards program. If supporter tiers are enabled later, benefits should be limited to things MGP can reliably deliver, such as optional profile cosmetics, supporter community spaces or special editorial/community content.
 
-When the campaign exists, update `src/config/support.ts` with the public campaign URL and set its status to `active`.
+When the Ko-fi page exists, update `src/config/support.ts` with the public page URL and set its status to `active`.
 
 ## Public copy / legal posture
 
@@ -42,8 +42,8 @@ It does **not**:
 - buy preferential treatment;
 - guarantee that a requested feature will be implemented.
 
-If rewards or supporter tiers are introduced later, document exactly what is offered before accepting money for them.
+If rewards or supporter tiers are introduced later, document exactly what is offered before accepting money for them. Possible future directions may include MGP cosmetics/customization, supporter-only community spaces, and special content or collaborations when the project has capacity. Do not promise access to specific pro players, influencers, events or collaborations before those arrangements exist.
 
 ## Current state
 
-The public `/support` page is live-ready but intentionally shows the financial methods as “being configured” until a public random Pix key and/or APOIA.se campaign URL is supplied.
+The public `/support` page is live-ready but intentionally shows the financial methods as “being configured” until a public random Pix key and/or Ko-fi page URL is supplied.
