@@ -35,6 +35,12 @@ export function AppFooter() {
               >
                 {copy("Privacidade", "Privacy", "Privacidad")}
               </Link>
+              <Link
+                to="/support"
+                className="font-semibold text-gold-strong transition-colors hover:text-foreground"
+              >
+                {copy("Apoie o projeto", "Support the project", "Apoya el proyecto")}
+              </Link>
               <a
                 href={LEGAL_CONTACT_URL}
                 className="transition-colors hover:text-gold-strong"
