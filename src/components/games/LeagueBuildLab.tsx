@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  BookOpen,
-  Boxes,
   BrainCircuit,
   CheckCircle2,
   CircleHelp,
@@ -147,7 +145,7 @@ export function LeagueBuildLab({ locale }: { locale: Locale }) {
     return () => {
       active = false;
     };
-  }, [locale, selectedId, version]);
+  }, [locale, version]);
 
   const selectedChampion =
     champions.find((champion) => champion.id === selectedId) ?? champions[0] ?? null;
