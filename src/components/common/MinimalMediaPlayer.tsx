@@ -253,12 +253,6 @@ export function MinimalYouTubePlayer({
       <div ref={mountRef} className="pointer-events-none absolute inset-0 h-full w-full [&>iframe]:h-full [&>iframe]:w-full" />
       <PlayerStatus buffering={buffering} error={error} locale={locale} onRetry={() => setAttempt((value) => value + 1)} />
       <PlayerControls
-        className={cn(
-          "transition-all duration-300",
-          controlsVisible
-            ? "translate-y-0 opacity-100"
-            : "pointer-events-none translate-y-2 opacity-0",
-        )}
         playing={playing}
         ready={ready && !error}
         currentTime={currentTime}
@@ -485,6 +479,12 @@ export function MinimalVideoPlayer({
         </button>
       ) : null}
       <PlayerControls
+        className={cn(
+          "transition-all duration-300",
+          controlsVisible
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none translate-y-2 opacity-0",
+        )}
         playing={playing}
         ready={ready}
         canPlay={!error}
