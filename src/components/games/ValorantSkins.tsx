@@ -160,8 +160,8 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
 
   return (
     <div className="space-y-7">
-      <header className="animate-in fade-in slide-in-from-bottom-2 rounded-2xl border border-tactical/25 bg-[radial-gradient(circle_at_top_right,rgba(255,70,85,0.12),transparent_34%),hsl(var(--surface))] p-6 duration-500 sm:p-8">
-        <div className="flex items-center gap-2 text-tactical"><Sparkles className="size-4" /><span className="section-kicker">{copy("COLEÇÃO", "COLLECTION", "COLECCIÓN")}</span></div>
+      <header className="animate-in fade-in slide-in-from-bottom-2 rounded-2xl border border-gold/25 bg-[radial-gradient(circle_at_top_right,rgba(255,70,85,0.12),transparent_34%),hsl(var(--surface))] p-6 duration-500 sm:p-8">
+        <div className="flex items-center gap-2 text-gold-strong"><Sparkles className="size-4" /><span className="section-kicker">{copy("COLEÇÃO", "COLLECTION", "COLECCIÓN")}</span></div>
         <h2 className="mt-3 font-display text-3xl font-bold">{copy("Skins", "Skins", "Skins")}</h2>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
           {copy(
@@ -173,7 +173,7 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
       </header>
 
       <div className="flex flex-col gap-3 border-y border-border py-4 lg:flex-row lg:items-center lg:justify-between">
-        <label className="flex max-w-md flex-1 items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 transition-colors focus-within:border-tactical/60">
+        <label className="flex max-w-md flex-1 items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 transition-colors focus-within:border-gold/60">
           <Search className="size-4 text-muted-foreground" />
           <Input value={weaponQuery} onChange={(event) => setWeaponQuery(event.target.value)} className="h-auto border-0 p-0 shadow-none" placeholder={copy("Buscar arma", "Search weapon", "Buscar arma")} />
         </label>
@@ -190,8 +190,8 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
             onClick={() => chooseWeapon(weapon)}
             style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}
             className={cn(
-              "group animate-in fade-in slide-in-from-bottom-2 rounded-xl border bg-surface p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-tactical/40 hover:shadow-lift",
-              selectedWeapon?.uuid === weapon.uuid ? "border-tactical/55 ring-1 ring-tactical/20" : "border-border",
+              "group animate-in fade-in slide-in-from-bottom-2 rounded-xl border bg-surface p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-lift",
+              selectedWeapon?.uuid === weapon.uuid ? "border-gold/55 ring-1 ring-gold/20" : "border-border",
             )}
           >
             <div className="flex h-24 items-center justify-center rounded-lg bg-muted/20 p-3">
@@ -199,22 +199,22 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
             </div>
             <div className="mt-3 flex items-end justify-between gap-3">
               <div><p className="font-display text-lg font-semibold">{weapon.name}</p><p className="mt-1 text-xs text-muted-foreground">{weapon.skins.length} skins</p></div>
-              {weapon.isMelee ? <span className="rounded-full border border-tactical/20 px-2 py-1 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-tactical">Melee</span> : null}
+              {weapon.isMelee ? <span className="rounded-full border border-gold/20 px-2 py-1 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-gold-strong">Melee</span> : null}
             </div>
           </button>
         ))}
       </div>
 
       {selectedWeapon && selectedSkin ? (
-        <section ref={wheelRef} className="scroll-mt-24 overflow-hidden rounded-2xl border border-tactical/25 bg-surface shadow-soft">
+        <section ref={wheelRef} className="scroll-mt-24 overflow-hidden rounded-2xl border border-gold/25 bg-surface shadow-soft">
           <div className="border-b border-border px-5 py-4 sm:px-7">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-tactical">{selectedWeapon.name}</p>
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-gold-strong">{selectedWeapon.name}</p>
                 <h3 className="mt-1 font-display text-2xl font-semibold">{selectedSkin.name}</h3>
               </div>
               <div className="flex w-full max-w-xl items-center gap-3 lg:justify-end">
-                <label className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-border bg-background/65 px-3 py-2 transition-colors focus-within:border-tactical/55">
+                <label className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-border bg-background/65 px-3 py-2 transition-colors focus-within:border-gold/55">
                   <Search className="size-4 shrink-0 text-muted-foreground" />
                   <Input
                     value={skinQuery}
@@ -239,11 +239,11 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
                   onPointerLeave={() => {
                     wheelAccumulatorRef.current = 0;
                   }}
-                  className="relative mx-auto hidden h-[34rem] max-w-[54rem] select-none overflow-hidden rounded-[2.5rem] border border-tactical/15 bg-tactical/[0.018] shadow-[inset_0_0_90px_rgba(80,150,255,0.025)] md:block"
+                  className="relative mx-auto hidden h-[34rem] max-w-[54rem] select-none overflow-hidden rounded-[2.5rem] border border-gold/15 bg-gold/[0.018] shadow-[inset_0_0_90px_rgba(201,169,93,0.04)] md:block"
                   style={{ overscrollBehavior: "contain" }}
                 >
-                  <div className="pointer-events-none absolute left-1/2 top-1/2 h-[26rem] w-[88%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-tactical/10" />
-                  <div className="pointer-events-none absolute left-1/2 top-1/2 h-[18rem] w-[63%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-dashed border-tactical/10" />
+                  <div className="pointer-events-none absolute left-1/2 top-1/2 h-[26rem] w-[88%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-gold/10" />
+                  <div className="pointer-events-none absolute left-1/2 top-1/2 h-[18rem] w-[63%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-dashed border-gold/10" />
 
                   {wheelItems.map(({ skin, offset }, index) => {
                     const angle = (index / Math.max(1, wheelItems.length)) * Math.PI * 2 - Math.PI / 2;
@@ -258,7 +258,7 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
                         type="button"
                         onClick={() => chooseSkin(skin)}
                         style={{ left: `${left}%`, top: `${top}%`, opacity }}
-                        className="absolute z-20 w-20 -translate-x-1/2 -translate-y-1/2 animate-in fade-in zoom-in-75 rounded-xl border border-border/70 bg-background/82 p-1.5 text-left shadow-md backdrop-blur-md transition-[left,top,opacity,border-color,box-shadow] duration-500 ease-[cubic-bezier(.2,.9,.2,1)] hover:z-30 hover:border-tactical/55 hover:opacity-100 hover:shadow-lift motion-reduce:transition-none"
+                        className="absolute z-20 w-20 -translate-x-1/2 -translate-y-1/2 animate-in fade-in zoom-in-75 rounded-xl border border-border/70 bg-background/82 p-1.5 text-left shadow-md backdrop-blur-md transition-[left,top,opacity,border-color,box-shadow] duration-500 ease-[cubic-bezier(.2,.9,.2,1)] hover:z-30 hover:border-gold/55 hover:opacity-100 hover:shadow-lift motion-reduce:transition-none"
                       >
                         <div style={{ transform: `scale(${scale})` }} className="transition-transform duration-500 ease-[cubic-bezier(.2,.9,.2,1)] group-hover:scale-105">
                           <div className="flex h-11 items-center justify-center">{skin.icon ? <img src={skin.icon} alt="" className="max-h-full max-w-full object-contain" /> : null}</div>
@@ -268,7 +268,7 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
                     );
                   })}
 
-                  <div key={selectedSkin.uuid} className="absolute left-1/2 top-1/2 z-10 flex h-72 w-[25rem] -translate-x-1/2 -translate-y-1/2 animate-in flex-col items-center justify-center rounded-[2.25rem] border border-tactical/30 bg-background/90 p-6 shadow-2xl backdrop-blur-xl fade-in zoom-in-95 duration-300">
+                  <div key={selectedSkin.uuid} className="absolute left-1/2 top-1/2 z-10 flex h-72 w-[25rem] -translate-x-1/2 -translate-y-1/2 animate-in flex-col items-center justify-center rounded-[2.25rem] border border-gold/30 bg-background/90 p-6 shadow-2xl backdrop-blur-xl fade-in zoom-in-95 duration-300">
                     {previewImage ? <img key={`${selectedSkin.uuid}-${selectedChroma?.uuid ?? "base"}`} src={previewImage} alt={selectedSkin.name} className="h-40 w-full animate-in object-contain drop-shadow-2xl fade-in zoom-in-95 duration-300" /> : null}
                     <p className="mt-4 max-w-full truncate font-display text-2xl font-bold">{selectedSkin.name}</p>
                     <p className="mt-1 text-xs text-muted-foreground">{selectedSkin.rarity ?? "—"}</p>
@@ -279,9 +279,9 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
                           setPreviewIndex(0);
                           setPreviewOpen(true);
                         }}
-                        className="mt-4 inline-flex items-center gap-2 rounded-full border border-tactical/35 bg-tactical/10 px-4 py-2 text-xs font-bold text-foreground transition-all hover:-translate-y-0.5 hover:border-tactical/60 hover:bg-tactical/15"
+                        className="mt-4 inline-flex items-center gap-2 rounded-full border border-gold/35 bg-gold/10 px-4 py-2 text-xs font-bold text-foreground transition-all hover:-translate-y-0.5 hover:border-gold/60 hover:bg-gold/15"
                       >
-                        <Play className="size-3.5 fill-current text-tactical" />
+                        <Play className="size-3.5 fill-current text-gold-strong" />
                         {copy("Ver preview", "Watch preview", "Ver preview")}
                       </button>
                     ) : null}
@@ -294,17 +294,17 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
               )}
 
               <div className="md:hidden">
-                <div className="flex min-h-64 items-center justify-center rounded-2xl border border-tactical/20 bg-background/70 p-5">
+                <div className="flex min-h-64 items-center justify-center rounded-2xl border border-gold/20 bg-background/70 p-5">
                   {previewImage ? <img key={`${selectedSkin.uuid}-mobile`} src={previewImage} alt={selectedSkin.name} className="max-h-52 w-full animate-in object-contain fade-in zoom-in-95 duration-300" /> : null}
                 </div>
                 {previewClips.length ? (
-                  <button type="button" onClick={() => setPreviewOpen(true)} className="mx-auto mt-3 flex items-center gap-2 rounded-full border border-tactical/30 bg-tactical/10 px-4 py-2 text-xs font-bold">
-                    <Play className="size-3.5 fill-current text-tactical" />{copy("Ver preview", "Watch preview", "Ver preview")}
+                  <button type="button" onClick={() => setPreviewOpen(true)} className="mx-auto mt-3 flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-2 text-xs font-bold">
+                    <Play className="size-3.5 fill-current text-gold-strong" />{copy("Ver preview", "Watch preview", "Ver preview")}
                   </button>
                 ) : null}
                 <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
                   {skinPool.map((skin) => (
-                    <button key={skin.uuid} type="button" onClick={() => chooseSkin(skin)} className={cn("w-28 shrink-0 rounded-xl border bg-background/70 p-2 transition-all duration-200 active:scale-95", skin.uuid === selectedSkin.uuid ? "scale-[1.02] border-tactical/60 shadow-md" : "border-border")}>
+                    <button key={skin.uuid} type="button" onClick={() => chooseSkin(skin)} className={cn("w-28 shrink-0 rounded-xl border bg-background/70 p-2 transition-all duration-200 active:scale-95", skin.uuid === selectedSkin.uuid ? "scale-[1.02] border-gold/60 shadow-md" : "border-border")}>
                       <div className="h-14">{skin.icon ? <img src={skin.icon} alt="" className="h-full w-full object-contain" /> : null}</div><p className="mt-1 truncate text-[0.62rem] font-semibold">{skin.name}</p>
                     </button>
                   ))}
@@ -312,16 +312,16 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
               </div>
 
               <div className="mt-3 flex items-center justify-center gap-3">
-                <button type="button" onClick={() => rotate(-1)} disabled={skinPool.length <= 1} className="grid size-10 place-items-center rounded-full border border-border bg-background/80 transition-all hover:-translate-x-0.5 hover:border-tactical/45 hover:text-tactical disabled:opacity-40" aria-label={copy("Skin anterior", "Previous skin", "Skin anterior")}><ChevronLeft className="size-5" /></button>
+                <button type="button" onClick={() => rotate(-1)} disabled={skinPool.length <= 1} className="grid size-10 place-items-center rounded-full border border-border bg-background/80 transition-all hover:-translate-x-0.5 hover:border-gold/45 hover:text-gold-strong disabled:opacity-40" aria-label={copy("Skin anterior", "Previous skin", "Skin anterior")}><ChevronLeft className="size-5" /></button>
                 <span className="min-w-14 text-center text-xs font-semibold tabular-nums text-muted-foreground">{selectedPoolIndex >= 0 ? selectedPoolIndex + 1 : 0}/{skinPool.length}</span>
-                <button type="button" onClick={() => rotate(1)} disabled={skinPool.length <= 1} className="grid size-10 place-items-center rounded-full border border-border bg-background/80 transition-all hover:translate-x-0.5 hover:border-tactical/45 hover:text-tactical disabled:opacity-40" aria-label={copy("Próxima skin", "Next skin", "Siguiente skin")}><ChevronRight className="size-5" /></button>
+                <button type="button" onClick={() => rotate(1)} disabled={skinPool.length <= 1} className="grid size-10 place-items-center rounded-full border border-border bg-background/80 transition-all hover:translate-x-0.5 hover:border-gold/45 hover:text-gold-strong disabled:opacity-40" aria-label={copy("Próxima skin", "Next skin", "Siguiente skin")}><ChevronRight className="size-5" /></button>
               </div>
             </div>
 
             <aside className="border-t border-border p-5 sm:p-7 xl:border-l xl:border-t-0">
               <SkinInfo skin={selectedSkin} weapon={selectedWeapon} locale={locale} previewCount={previewClips.length} onPreview={() => setPreviewOpen(true)} />
               <div className="mt-6">
-                <div className="flex items-center gap-2"><Palette className="size-4 text-tactical" /><p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">{copy("Variantes", "Variants", "Variantes")}</p></div>
+                <div className="flex items-center gap-2"><Palette className="size-4 text-gold-strong" /><p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">{copy("Variantes", "Variants", "Variantes")}</p></div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {selectedSkin.chromas.map((chroma, index) => (
                     <button
@@ -329,7 +329,7 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
                       type="button"
                       onClick={() => setChromaId(chroma.uuid)}
                       title={chroma.name}
-                      className={cn("grid size-10 place-items-center overflow-hidden rounded-full border bg-muted/20 p-1 transition-all hover:scale-105", selectedChroma?.uuid === chroma.uuid ? "border-tactical/70 ring-2 ring-tactical/20" : "border-border hover:border-tactical/35")}
+                      className={cn("grid size-10 place-items-center overflow-hidden rounded-full border bg-muted/20 p-1 transition-all hover:scale-105", selectedChroma?.uuid === chroma.uuid ? "border-gold/70 ring-2 ring-gold/20" : "border-border hover:border-gold/35")}
                     >
                       {chroma.swatch ? <img src={chroma.swatch} alt="" className="h-full w-full rounded-full object-cover" /> : chroma.fullRender ? <img src={chroma.fullRender} alt="" className="h-full w-full object-contain" /> : <span className="text-xs font-bold">{index + 1}</span>}
                     </button>
@@ -338,7 +338,7 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
               </div>
 
               <div className="mt-6">
-                <div className="flex items-center gap-2"><Layers3 className="size-4 text-tactical" /><p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">{copy("Níveis de evolução", "Upgrade levels", "Niveles de mejora")}</p></div>
+                <div className="flex items-center gap-2"><Layers3 className="size-4 text-gold-strong" /><p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">{copy("Níveis de evolução", "Upgrade levels", "Niveles de mejora")}</p></div>
                 <div className="mt-3 space-y-2">
                   {selectedSkin.levels.map((level, index) => (
                     <div key={level.uuid} className="rounded-xl border border-border bg-muted/15 px-3 py-2.5 transition-colors hover:bg-muted/25">
@@ -435,15 +435,15 @@ function SkinPreviewModal({
     >
       <div className="max-h-[94dvh] w-full max-w-5xl overflow-y-auto overscroll-contain rounded-2xl border border-white/15 bg-background shadow-2xl animate-in fade-in zoom-in-95 duration-250 motion-reduce:animate-none">
         <div className="flex items-center justify-between gap-4 border-b border-border px-4 py-3 sm:px-5 sm:py-4">
-          <div className="min-w-0"><p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-tactical">{copy("PREVIEW DE SKIN", "SKIN PREVIEW", "PREVIEW DE SKIN")}</p><h3 className="mt-1 truncate font-display text-lg font-semibold sm:text-xl">{skin.name}</h3></div>
-          <button type="button" onClick={onClose} className="grid size-11 shrink-0 place-items-center rounded-full border border-border transition-all hover:rotate-90 hover:border-tactical/45 hover:text-tactical" aria-label={copy("Fechar preview", "Close preview", "Cerrar preview")}><X className="size-4" /></button>
+          <div className="min-w-0"><p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-gold-strong">{copy("PREVIEW DE SKIN", "SKIN PREVIEW", "PREVIEW DE SKIN")}</p><h3 className="mt-1 truncate font-display text-lg font-semibold sm:text-xl">{skin.name}</h3></div>
+          <button type="button" onClick={onClose} className="grid size-11 shrink-0 place-items-center rounded-full border border-border transition-all hover:rotate-90 hover:border-gold/45 hover:text-gold-strong" aria-label={copy("Fechar preview", "Close preview", "Cerrar preview")}><X className="size-4" /></button>
         </div>
         <MinimalVideoPlayer key={active.url} src={active.url} locale={locale} autoPlay className="aspect-video w-full" />
         <div className="flex flex-col gap-3 border-t border-border p-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="truncate text-sm font-semibold text-foreground">{active.label}</p>
           <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
             {clips.map((clip, index) => (
-              <button key={clip.id} type="button" onClick={() => onIndex(index)} aria-pressed={index === activeIndex} className={cn("min-h-11 shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all", index === activeIndex ? "border-tactical/55 bg-tactical/10 text-foreground" : "border-border text-muted-foreground hover:border-tactical/30 hover:text-foreground")}>{index + 1}. {clip.label}</button>
+              <button key={clip.id} type="button" onClick={() => onIndex(index)} aria-pressed={index === activeIndex} className={cn("min-h-11 shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all", index === activeIndex ? "border-gold/55 bg-gold/10 text-foreground" : "border-border text-muted-foreground hover:border-gold/30 hover:text-foreground")}>{index + 1}. {clip.label}</button>
             ))}
           </div>
         </div>
@@ -473,7 +473,7 @@ function SkinInfo({
   return (
     <div>
       <div className="flex items-center gap-3">
-        {skin.rarityIcon ? <img src={skin.rarityIcon} alt="" className="size-9 rounded-lg bg-muted/25 p-1.5" /> : <Sparkles className="size-7 text-tactical" />}
+        {skin.rarityIcon ? <img src={skin.rarityIcon} alt="" className="size-9 rounded-lg bg-muted/25 p-1.5" /> : <Sparkles className="size-7 text-gold-strong" />}
         <div><p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">{copy("Raridade", "Edition", "Rareza")}</p><p className="font-semibold">{skin.rarity ?? "—"}</p></div>
       </div>
 
@@ -496,9 +496,9 @@ function SkinInfo({
       </div>
 
       {previewCount ? (
-        <button type="button" onClick={onPreview} className="mt-4 flex w-full items-center justify-between rounded-xl border border-tactical/25 bg-tactical/[0.06] px-4 py-3 text-left transition-all hover:-translate-y-0.5 hover:border-tactical/50 hover:bg-tactical/10">
-          <span><span className="block text-xs font-bold uppercase tracking-[0.1em] text-tactical">{copy("Preview disponível", "Preview available", "Preview disponible")}</span><span className="mt-1 block text-xs text-muted-foreground">{copy(`${previewCount} clipe(s) detectado(s)`, `${previewCount} clip(s) detected`, `${previewCount} clip(s) detectado(s)`)}</span></span>
-          <Play className="size-4 fill-current text-tactical" />
+        <button type="button" onClick={onPreview} className="mt-4 flex w-full items-center justify-between rounded-xl border border-gold/25 bg-gold/[0.06] px-4 py-3 text-left transition-all hover:-translate-y-0.5 hover:border-gold/50 hover:bg-gold/10">
+          <span><span className="block text-xs font-bold uppercase tracking-[0.1em] text-gold-strong">{copy("Preview disponível", "Preview available", "Preview disponible")}</span><span className="mt-1 block text-xs text-muted-foreground">{copy(`${previewCount} clipe(s) detectado(s)`, `${previewCount} clip(s) detected`, `${previewCount} clip(s) detectado(s)`)}</span></span>
+          <Play className="size-4 fill-current text-gold-strong" />
         </button>
       ) : null}
     </div>
@@ -506,7 +506,7 @@ function SkinInfo({
 }
 
 function InfoBox({ icon: Icon, label, value }: { icon: typeof Coins; label: string; value: string }) {
-  return <div className="rounded-xl border border-border bg-muted/15 p-3"><Icon className="size-4 text-tactical" /><p className="mt-2 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">{label}</p><p className="mt-1 font-display text-lg font-bold">{value}</p></div>;
+  return <div className="rounded-xl border border-border bg-muted/15 p-3"><Icon className="size-4 text-gold-strong" /><p className="mt-2 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">{label}</p><p className="mt-1 font-display text-lg font-bold">{value}</p></div>;
 }
 
 function getSkinPreviewClips(skin: ValorantSkin): PreviewClip[] {
