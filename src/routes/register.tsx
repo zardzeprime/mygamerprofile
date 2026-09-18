@@ -16,6 +16,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
+import { signInWithGoogle } from "@/lib/googleAuth";
 
 const PROD_SITE_URL = (
   import.meta.env["VITE_SITE_URL"] || "https://mygamerprofile.lovable.app"
@@ -51,8 +52,39 @@ function RegisterPage() {
   const [confirm, setConfirm] = useState("");
   const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
   const [error, setError] = useState("");
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+
+  const handleGoogle = async () => {
+    setError("");
+    if (!acceptedLegal) {
+      setError(
+        copy(
+          "Você precisa aceitar os Termos de Uso e a Política de Privacidade antes de continuar com o Google.",
+          "You need to accept the Terms of Use and Privacy Policy before continuing with Google.",
+          "Debes aceptar los Términos de Uso y la Política de Privacidad antes de continuar con Google.",
+        ),
+      );
+      return;
+    }
+
+    setOauthLoading(true);
+    try {
+      await signInWithGoogle("/onboarding");
+    } catch (err) {
+      setOauthLoading(false);
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : copy(
+              "Não foi possível iniciar o login com Google.",
+              "Could not start Google sign-in.",
+              "No se pudo iniciar sesión con Google.",
+            ),
+      );
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,6 +191,25 @@ function RegisterPage() {
           <CardDescription>MGP — {t("brand.full")}</CardDescription>
         </CardHeader>
         <CardContent>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={() => void handleGoogle()}
+            disabled={oauthLoading || loading}
+          >
+            <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-bold">G</span>
+            {oauthLoading
+              ? t("common.loading")
+              : copy("Continuar com Google", "Continue with Google", "Continuar con Google")}
+          </Button>
+
+          <div className="my-5 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="h-px flex-1 bg-border" />
+            {copy("ou e-mail", "or email", "o correo")}
+            <span className="h-px flex-1 bg-border" />
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">{t("auth.email")}</Label>
@@ -238,7 +289,7 @@ function RegisterPage() {
             </div>
 
             {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading || oauthLoading}>
               {loading ? t("common.loading") : t("auth.submitRegister")}
             </Button>
           </form>
