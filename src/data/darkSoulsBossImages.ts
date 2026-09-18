@@ -338,7 +338,7 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
   }),
 
   "demon-firesage": {
-    url: fandomFileUrl("Firesage-Hammer-Smash.gif"),
+    url: remasteredFileUrl("Firesage-Hammer-Smash.gif"),
     sourceUrl: "https://dark-souls-remastered.fandom.com/wiki/Demon_Firesage",
     sourceLabel: {
       "pt-BR": "GIF de combate · Dark Souls Remastered Wiki (Fandom)",
