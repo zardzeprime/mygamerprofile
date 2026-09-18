@@ -34,7 +34,7 @@ export function PointerAura() {
       currentX += (targetX - currentX) * 0.22;
       currentY += (targetY - currentY) * 0.22;
       aura.style.transform =
-        \`translate3d(\${currentX}px, \${currentY}px, 0) translate(-50%, -50%)\`;
+        `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
       frame = window.requestAnimationFrame(animate);
     };
 
