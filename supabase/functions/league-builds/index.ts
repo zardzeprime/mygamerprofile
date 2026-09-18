@@ -12,6 +12,17 @@ type BuildVariant = {
   items: BuildItem[];
 };
 
+type SourceCrossCheck = {
+  id: "riot" | "opgg" | "mobalytics" | "leagueofgraphs";
+  label: string;
+  url: string;
+  status: "confirmed" | "reachable" | "blocked" | "unavailable";
+  patch?: string | null;
+  role?: string | null;
+  items?: BuildItem[];
+  note?: string;
+};
+
 type BuildPayload = {
   champion: string;
   slug: string;
@@ -23,6 +34,7 @@ type BuildPayload = {
     verifiedAt: string;
   };
   builds: BuildVariant[];
+  crossChecks: SourceCrossCheck[];
 };
 
 const CACHE_TTL_MS = 30 * 60 * 1000;
