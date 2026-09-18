@@ -226,6 +226,85 @@ function pageMeta(html: string) {
   return { patch, role };
 }
 
+async function crossCheckSources(
+  slug: string,
+  primaryItems: BuildItem[],
+): Promise<SourceCrossCheck[]> {
+  const sources = [
+    {
+      id: "riot" as const,
+      label: "Riot Games",
+      url: "https://www.leagueoflegends.com/en-us/champions/" + slug + "/",
+    },
+    {
+      id: "opgg" as const,
+      label: "OP.GG",
+      url: "https://www.op.gg/champions/" + slug + "/build",
+    },
+    {
+      id: "mobalytics" as const,
+      label: "Mobalytics",
+      url: "https://mobalytics.gg/lol/champions/" + slug + "/build",
+    },
+    {
+      id: "leagueofgraphs" as const,
+      label: "League of Graphs",
+      url: "https://www.leagueofgraphs.com/champions/builds/" + slug,
+    },
+  ];
+
+  const checks = await Promise.allSettled(
+    sources.map(async (source): Promise<SourceCrossCheck> => {
+      const response = await fetch(source.url, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (compatible; MGProfileGuideBot/1.0; +https://mgprofile.online)",
+          "Accept-Language": "en-US,en;q=0.9",
+        },
+        signal: AbortSignal.timeout(6500),
+      });
+
+      if (response.status === 403 || response.status === 429) {
+        return { ...source, status: "blocked" };
+      }
+      if (!response.ok) {
+        return { ...source, status: "unavailable" };
+      }
+
+      if (source.id === "riot") {
+        return { ...source, status: "confirmed" };
+      }
+
+      const html = decodeHtml(await response.text());
+      const patch =
+        html.match(/(?:Patch|patch|\/lol\/)(\d+\.\d+(?:\.\d+)?)/)?.[1] ?? null;
+      let matchedPrimaryItems = 0;
+
+      for (const item of primaryItems) {
+        const idNeedle = "/item/" + item.id + ".";
+        if (
+          html.includes(idNeedle) ||
+          html.toLowerCase().includes(item.name.toLowerCase())
+        ) {
+          matchedPrimaryItems += 1;
+        }
+      }
+
+      return {
+        ...source,
+        status: "confirmed",
+        patch,
+        matchedPrimaryItems,
+        primaryItemsChecked: primaryItems.length,
+      };
+    }),
+  );
+
+  return checks.map((check, index) => {
+    if (check.status === "fulfilled") return check.value;
+    return { ...sources[index], status: "unavailable" as const };
+  });
+}
+
 async function fetchBuilds(champion: string): Promise<BuildPayload> {
   const slug = slugifyChampion(champion);
   const sourceUrl = `https://lolalytics.com/lol/${slug}/build/`;
