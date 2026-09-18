@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Code2, Gamepad2, Loader2, LockKeyhole, Plus, Send, X } from "lucide-react";
+import { Code2, Download, Gamepad2, Loader2, LockKeyhole, Plus, Send, Trash2, X } from "lucide-react";
 
 import { NexusMark } from "@/components/nexus/NexusMark";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import {
+  deleteNexusThread,
   getNexusGuestStatus,
   getNexusStatus,
   listNexusMessages,
@@ -178,6 +179,51 @@ export function NexusChat() {
     if (!user) return;
     if (nextMode === "development" && !status?.isAdmin) return;
     startNewChat(nextMode);
+  };
+
+  const exportCurrentChat = () => {
+    if (!user || messages.length === 0 || typeof window === "undefined") return;
+    const title = mode === "development" ? "NEXUS Development" : "NEXUS Gamer";
+    const body = [
+      `${title} · MG Profile`,
+      new Date().toLocaleString(locale),
+      "",
+      ...messages.map((message) =>
+        `${message.role === "user" ? copy("Você", "You", "Tú") : "NEXUS"}: ${message.content}`,
+      ),
+    ].join("\n\n");
+    const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `mg-profile-nexus-${mode}-${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const deleteCurrentChat = async () => {
+    if (!user || !threadId || sending) return;
+    const confirmed = window.confirm(
+      copy(
+        "Excluir esta conversa da NEXUS? Essa ação não pode ser desfeita.",
+        "Delete this NEXUS conversation? This cannot be undone.",
+        "¿Eliminar esta conversación de NEXUS? Esta acción no se puede deshacer.",
+      ),
+    );
+    if (!confirmed) return;
+
+    setError("");
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error("NEXUS_AUTH_SESSION_MISSING");
+      await deleteNexusThread({ data: { threadId, accessToken } });
+      startNewChat(mode);
+    } catch (reason) {
+      setError(formatNexusError(reason, true, copy));
+    }
   };
 
   const submit = async (event: FormEvent) => {
@@ -352,15 +398,37 @@ export function NexusChat() {
               </div>
 
               {user ? (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => startNewChat()}
-                  title={copy("Nova conversa", "New chat", "Nueva conversación")}
-                >
-                  <Plus className="size-4" />
-                </Button>
+                <div className="flex items-center gap-1">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={exportCurrentChat}
+                    disabled={messages.length === 0}
+                    title={copy("Exportar conversa", "Export chat", "Exportar conversación")}
+                  >
+                    <Download className="size-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => void deleteCurrentChat()}
+                    disabled={!threadId}
+                    title={copy("Excluir conversa", "Delete chat", "Eliminar conversación")}
+                  >
+                    <Trash2 className="size-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => startNewChat()}
+                    title={copy("Nova conversa", "New chat", "Nueva conversación")}
+                  >
+                    <Plus className="size-4" />
+                  </Button>
+                </div>
               ) : (
                 <Link
                   to="/login"

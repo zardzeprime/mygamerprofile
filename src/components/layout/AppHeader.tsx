@@ -23,6 +23,7 @@ const NAV: { to: string; key: TranslationKey }[] = [
   { to: "/games", key: "navigation.games" },
   { to: "/communities", key: "navigation.communities" },
   { to: "/lfg", key: "navigation.lfg" },
+  { to: "/nexus", key: "navigation.nexus" },
 ];
 
 export function AppHeader() {

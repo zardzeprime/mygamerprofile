@@ -63,19 +63,19 @@ export function ValorantMaps({ locale }: { locale: Locale }) {
 
   return (
     <div className="space-y-6">
-      <header className="rounded-2xl border border-tactical/25 bg-[radial-gradient(circle_at_top_right,rgba(255,70,85,0.10),transparent_34%),hsl(var(--surface))] p-6 sm:p-8">
-        <div className="flex items-center gap-2 text-tactical"><MapPinned className="size-4" /><span className="section-kicker">{copy("CAMPO DE BATALHA", "BATTLEFIELD", "CAMPO DE BATALLA")}</span></div>
+      <header className="rounded-2xl border border-gold/25 bg-[radial-gradient(circle_at_top_right,rgba(255,70,85,0.10),transparent_34%),hsl(var(--surface))] p-6 sm:p-8">
+        <div className="flex items-center gap-2 text-gold-strong"><MapPinned className="size-4" /><span className="section-kicker">{copy("CAMPO DE BATALHA", "BATTLEFIELD", "CAMPO DE BATALLA")}</span></div>
         <h2 className="mt-3 font-display text-3xl font-bold">{copy("Mapas", "Maps", "Mapas")}</h2>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
           {copy("Conheça a identidade tática de cada mapa, veja o minimapa e acompanhe a rotação competitiva atual do MGP.", "Learn each map's tactical identity, inspect its minimap and track the current competitive rotation in MGP.", "Conoce la identidad táctica de cada mapa, revisa el minimapa y sigue la rotación competitiva actual en MGP.")}
         </p>
-        <div className="mt-4 inline-flex rounded-full border border-tactical/25 bg-tactical/10 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
+        <div className="mt-4 inline-flex rounded-full border border-gold/25 bg-gold/10 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
           {copy("Rotação marcada conforme a Atualização 13.04", "Rotation marked for Patch 13.04", "Rotación marcada según la versión 13.04")}
         </div>
       </header>
 
       <div className="flex flex-col gap-3 border-y border-border py-4 sm:flex-row sm:items-center sm:justify-between">
-        <label className="flex max-w-md flex-1 items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 focus-within:border-tactical/60">
+        <label className="flex max-w-md flex-1 items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 focus-within:border-gold/60">
           <Search className="size-4 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} className="h-auto border-0 p-0 shadow-none" placeholder={copy("Buscar mapa", "Search map", "Buscar mapa")} />
         </label>
         <div className="flex gap-2">
@@ -85,7 +85,7 @@ export function ValorantMaps({ locale }: { locale: Locale }) {
       </div>
 
       {selected ? (
-        <article ref={detailRef} className="scroll-mt-24 overflow-hidden rounded-2xl border border-tactical/25 bg-surface">
+        <article ref={detailRef} className="scroll-mt-24 overflow-hidden rounded-2xl border border-gold/25 bg-surface">
           <div className="relative min-h-[22rem] overflow-hidden">
             {selected.splash ? <img src={selected.splash} alt={selected.name} className="absolute inset-0 h-full w-full object-cover" /> : null}
             <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/55 to-black/20" />
@@ -107,7 +107,7 @@ export function ValorantMaps({ locale }: { locale: Locale }) {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((map) => (
-          <button key={map.uuid} type="button" onClick={() => selectMap(map)} className={cn("group overflow-hidden rounded-xl border bg-surface text-left transition-all hover:-translate-y-1 hover:border-tactical/40", selected?.uuid === map.uuid ? "border-tactical/55 ring-1 ring-tactical/20" : "border-border")}>
+          <button key={map.uuid} type="button" onClick={() => selectMap(map)} className={cn("group overflow-hidden rounded-xl border bg-surface text-left transition-all hover:-translate-y-1 hover:border-gold/40", selected?.uuid === map.uuid ? "border-gold/55 ring-1 ring-gold/20" : "border-border")}>
             <div className="relative aspect-video overflow-hidden bg-muted/30">
               {map.splash ? <img src={map.splash} alt={map.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /> : null}
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
@@ -123,7 +123,7 @@ export function ValorantMaps({ locale }: { locale: Locale }) {
 }
 
 function filterClass(active: boolean) {
-  return cn("rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors", active ? "border-tactical/50 bg-tactical/10 text-foreground" : "border-border text-muted-foreground hover:border-tactical/30 hover:text-foreground");
+  return cn("rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors", active ? "border-gold/50 bg-gold/10 text-foreground" : "border-border text-muted-foreground hover:border-gold/30 hover:text-foreground");
 }
 
 function StateCard({ text }: { text: string }) {
