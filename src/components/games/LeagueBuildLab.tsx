@@ -710,6 +710,27 @@ function NexusBuildGuide({
   const shared = selectedCore.filter((id) => primaryIds.includes(id));
   const tips: Array<{ icon: typeof Sparkles; title: string; text: string }> = [];
 
+  const confirmedChecks = buildData?.crossChecks?.filter((check) => check.status === "confirmed") ?? [];
+  const opggCheck = buildData?.crossChecks?.find((check) => check.id === "opgg");
+  if (confirmedChecks.length) {
+    tips.push({
+      icon: ShieldCheck,
+      title: copy("Referência cruzada", "Cross-checked reference", "Referencia cruzada"),
+      text:
+        opggCheck?.matchedPrimaryItems != null && opggCheck.primaryItemsChecked
+          ? copy(
+              `A build atual foi checada em ${confirmedChecks.length} fonte(s) adicional(is). O OP.GG coincidiu em ${opggCheck.matchedPrimaryItems}/${opggCheck.primaryItemsChecked} itens do core principal nesta verificação.`,
+              `The current build was checked against ${confirmedChecks.length} additional source(s). OP.GG matched ${opggCheck.matchedPrimaryItems}/${opggCheck.primaryItemsChecked} primary-core items in this check.`,
+              `La build actual fue contrastada con ${confirmedChecks.length} fuente(s) adicional(es). OP.GG coincidió en ${opggCheck.matchedPrimaryItems}/${opggCheck.primaryItemsChecked} objetos del core principal en esta verificación.`,
+            )
+          : copy(
+              `A referência atual respondeu em ${confirmedChecks.length} fonte(s) adicional(is). Fontes bloqueadas ou indisponíveis não entram na contagem de confirmação.`,
+              `The current reference responded across ${confirmedChecks.length} additional source(s). Blocked or unavailable sources are not counted as confirmation.`,
+              `La referencia actual respondió en ${confirmedChecks.length} fuente(s) adicional(es). Las fuentes bloqueadas o no disponibles no cuentan como confirmación.`,
+            ),
+    });
+  }
+
   if (!customItems.length) {
     tips.push({
       icon: CircleHelp,
