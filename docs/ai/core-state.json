@@ -27,7 +27,8 @@
         "Removed the internal NEXUS/Os Sete council from public navigation and turned /nexus into a noindex redirect so public visitors only interact with the NEXUS gamer chat surface.",
         "Hardened NEXUS inference against transient provider failures: provider requests now use abortable 25s timeouts, one retry for transient 429/5xx/network failures, low-latency reasoning in gamer mode, and explicit 503 handling for NEXUS_ALL_PROVIDERS_FAILED.",
         "Added a transparent independent-project support area that explains the founder story, AI-assisted/human-led development model, current low-budget stage, non-financial ways to help and voluntary financial support boundaries.",
-        "Prepared Google as the first social sign-in path across login, registration and the logged-out header while keeping email/password authentication available."
+        "Prepared Google as the first social sign-in path across login, registration and the logged-out header while keeping email/password authentication available.",
+        "Completed the first League of Legends product pass across items, champions, skins, modes and competitive surfaces, keeping each module focused instead of mixing collections."
       ],
       "inProgress": [
         "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady.",
@@ -112,7 +113,8 @@
         "Support payments remain disabled until a public-safe method is configured; the recommended Pix setup uses a random project key instead of exposing CPF, phone number or personal email.",
         "Replaced the League of Legends card/hero logo hotlink with the user-provided repository PNG, preserving repository provenance and eliminating the external image dependency.",
         "Added a local scalable VALORANT card/navigation mark with a dark rounded badge treatment, preserving the separate hub-background provenance and avoiding a new remote logo dependency.",
-        "Replaced the provisional VALORANT SVG card treatment with the user-uploaded transparent PNG after visual comparison, copying the exact blob into public assets without recompression."
+        "Replaced the provisional VALORANT SVG card treatment with the user-uploaded transparent PNG after visual comparison, copying the exact blob into public assets without recompression.",
+        "Standardized the League pass on Riot Data Dragon for item/champion/map icons and splash art, kept ability-video requests lazy, and withheld team/player photos or logos where reusable provenance was not established."
       ],
       "inProgress": [],
       "next": [
@@ -143,7 +145,8 @@
         "Expanded the manually reviewed current-roster VALORANT crosshair set with eighteen additional individual ProSettings records while retaining per-source provenance and never estimating missing values.",
         "Attempted every one of the 115 unique VALORANT handles that lacked sourced settings at the start of the 2026-09-18 completion pass. Five identity-safe records were added (Jerrwin, Eggsterr/Eggster, P0PPIN/Poppin, Boni and alvinboy/Alvin); ambiguous or source-poor matches were rejected instead of inferred.",
         "Current VALORANT directory coverage after the exhaustive pass: 350 roster entries, 239 sourced settings records, 319 verified/observed role labels and at least 55 verified crosshair codes.",
-        "Refreshed the static official VALORANT feed with current Brazil-facing Riot/VALORANT Esports/VALORANT Brasil YouTube items reviewed on 2026-09-18."
+        "Refreshed the static official VALORANT feed with current Brazil-facing Riot/VALORANT Esports/VALORANT Brasil YouTube items reviewed on 2026-09-18.",
+        "Added a dated 2026-09-18 League esports snapshot with starter LCK/LEC/LCS/CBLOL rosters and an official LoL Esports upcoming-match snapshot, keeping TBD bracket slots explicit rather than inferred."
       ],
       "inProgress": [
         "Continue individual ProSettings verification for players whose settings remain hidden.",
@@ -224,7 +227,8 @@
         "Added a responsive Profile Customization Studio scaffold in profile settings with selectable future slots and original identity-pack previews, while only existing background presets are currently equipable.",
         "NEXUS chat now restores a failed message to the composer instead of making the user retype it, and shows a friendly transient-provider error for NEXUS_ALL_PROVIDERS_FAILED.",
         "Matched VALORANT card/home artwork behavior to the clean League logo treatment using a lightweight SVG and contain-based responsive framing.",
-        "Tightened VALORANT card/hero contain framing for the uploaded 500x281 transparent artwork so the badge reads larger and cleaner in the existing card aspect ratios."
+        "Tightened VALORANT card/hero contain framing for the uploaded 500x281 transparent artwork so the badge reads larger and cleaner in the existing card aspect ratios.",
+        "Redesigned League items into an icon/price-first shop with separated stat rows and a clickable recipe tree; split champions from skins, added class filters and large champion sheets, lazy hover ability previews, full-screen skin splash viewing, and fixed/rotating/TFT mode sections."
       ],
       "inProgress": [
         "Run page-by-page rendered art-direction QA after Visual System v2 is visible in Lovable, focusing on home, game catalog, communities, profiles, NEXUS and game hubs at mobile and desktop widths."
