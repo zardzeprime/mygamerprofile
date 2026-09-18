@@ -22,6 +22,55 @@ function p(url: string, settings: ProPlayerSettings, note?: string): RecordEntry
  * long-standing hand-verified settings.ts records still remain the final layer.
  */
 export const INDIVIDUAL_EXTRA_SETTINGS: Record<string, RecordEntry> = {
+  asuna: p("https://prosettings.net/players/asuna/", {
+    ...EXTRA_VERIFIED_SETTINGS["asuna"]?.settings,
+    crosshairCode: "0;P;o;1;m;1;0t;1;0l;2;0o;2;0a;1;0f;0;1t;1;1o;3;1a;1;1m;0;1f;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
+  bang: p("https://prosettings.net/players/bang/", {
+    ...EXTRA_VERIFIED_SETTINGS["bang"]?.settings,
+    crosshairCode: "0;s;1;P;o;1;d;1;f;0;0b;0;1b;0;S;o;1",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
+  zellsis: p("https://prosettings.net/players/zellsis/", {
+    ...EXTRA_VERIFIED_SETTINGS["zellsis"]?.settings,
+    crosshairCode: "0;P;c;5;h;0;0t;5;0l;1;0o;2;0a;1;0f;0;1b;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
+  oxy: p("https://prosettings.net/players/oxy/", {
+    ...EXTRA_VERIFIED_SETTINGS["oxy"]?.settings,
+    crosshairCode: "0;s;1;P;c;5;o;1;d;1;0b;0;1b;0;S;o;1",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
+  supamen: p("https://prosettings.net/players/supamen/", {
+    ...EXTRA_VERIFIED_SETTINGS["supamen"]?.settings,
+    crosshairCode: "0;P;c;7;o;1;d;1;a;0.943;0t;0;0l;1;0o;0;0a;0;0f;0;1b;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
+  dgzin: p("https://prosettings.net/players/dgzin/", {
+    ...EXTRA_VERIFIED_SETTINGS["dgzin"]?.settings,
+    crosshairCode: "0;p;0;s;1;P;c;4;o;0.05;f;0;0l;3;0v;3;0g;1;0o;1;0a;1;0f;0;1b;0;A;o;1;d;1;0b;0;1b;0;S;s;1.81;o;1",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
+  shyy: p("https://prosettings.net/players/shyy/", {
+    ...EXTRA_VERIFIED_SETTINGS["shyy"]?.settings,
+    crosshairCode: "0;P;c;8;u;000000FF;h;0;b;1;0l;4;0o;0;0a;1;0f;0;1b;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
+  koalanoob: p("https://prosettings.net/players/koalanoob/", {
+    ...EXTRA_VERIFIED_SETTINGS["koalanoob"]?.settings,
+    crosshairCode: "0;s;1;P;c;8;u;AD3150FF;h;0;b;1;0l;5;0o;1;0a;1;0f;0;1b;0;S;c;1",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
+  mwzera: p("https://prosettings.net/players/mwzera/", {
+    ...EXTRA_VERIFIED_SETTINGS["mwzera"]?.settings,
+    crosshairCode: "0;P;c;4;h;0;f;0;0l;2;0o;2;0a;1;0f;0;1b;0",
+    displayMode: "Fullscreen",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
+  heat: p("https://prosettings.net/players/heat/", {
+    ...EXTRA_VERIFIED_SETTINGS["heat"]?.settings,
+    crosshairCode: "0;s;1;P;o;1;d;1;f;0;0b;0;1b;0;S;s;1.4;o;1",
+  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
   kingg: p("https://prosettings.net/players/kingg/", {
     ...EXTRA_VERIFIED_SETTINGS["kingg"]?.settings,
     crosshairCode: "0;P;c;8;o;1;d;1;b;1;z;1;0t;1;0l;1;0o;0;0a;1;0f;0;1b;0",
