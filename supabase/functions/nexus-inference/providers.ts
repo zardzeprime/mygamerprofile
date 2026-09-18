@@ -24,7 +24,7 @@ const PROVIDERS: ProviderId[] = ["openai", "gemini", "groq", "openrouter", "anth
 // because free-router latency/availability can vary substantially.
 const DEFAULT_ORDER: ProviderId[] = ["gemini", "groq", "openai", "anthropic", "openrouter"];
 const PROVIDER_TIMEOUT_MS: Record<ProviderId, number> = {
-  gemini: 12_000,
+  gemini: 15_000,
   groq: 10_000,
   openai: 18_000,
   anthropic: 18_000,
@@ -155,41 +155,90 @@ async function openai(request: CompletionRequest) {
 async function gemini(request: CompletionRequest) {
   const key = env("GEMINI_API_KEY") ?? env("GOOGLE_API_KEY");
   if (!key) throw new Error("Gemini is not configured");
-  const model = env("NEXUS_GEMINI_MODEL") ?? "gemini-3.8-flash";
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: request.system }] },
-        contents: request.messages.map((message) => ({
-          role: message.role === "assistant" ? "model" : "user",
-          parts: [{ text: message.content }],
-        })),
-        generationConfig: {
-          maxOutputTokens: request.maxOutputTokens ?? 1200,
-          thinkingConfig: {
-            thinkingLevel: request.effort === "high" ? "high" : "low",
-          },
+
+  const primaryModel = env("NEXUS_GEMINI_MODEL") ?? "gemini-3.8-flash";
+  const models = [
+    primaryModel,
+    "gemini-3.7-flash",
+    "gemini-3.6-flash",
+  ].filter((model, index, all) => all.indexOf(model) === index);
+
+  const providerBudgetMs = request.timeoutMs ?? PROVIDER_TIMEOUT_MS.gemini;
+  const deadlineAt = Date.now() + providerBudgetMs;
+  const failures: string[] = [];
+
+  for (const model of models) {
+    const remainingBudget = deadlineAt - Date.now();
+    if (remainingBudget <= 1_000) break;
+
+    const perModelTimeoutMs = Math.min(
+      model === primaryModel ? 7_000 : 5_000,
+      remainingBudget,
+    );
+
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": key },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: request.system }] },
+            contents: request.messages.map((message) => ({
+              role: message.role === "assistant" ? "model" : "user",
+              parts: [{ text: message.content }],
+            })),
+            generationConfig: {
+              maxOutputTokens: request.maxOutputTokens ?? 1200,
+              thinkingConfig: {
+                thinkingLevel: request.effort === "high" ? "high" : "low",
+              },
+            },
+          }),
+          signal: requestSignal(perModelTimeoutMs),
         },
-      }),
-      signal: requestSignal(request.timeoutMs ?? PROVIDER_TIMEOUT_MS.gemini),
-    },
-  );
-  if (!response.ok) throw new Error(`Gemini ${response.status}: ${(await response.text()).slice(0, 220)}`);
-  const data = await response.json() as {
-    candidates?: Array<{
-      finishReason?: string;
-      content?: { parts?: Array<{ text?: string }> };
-    }>;
-  };
-  const text = data.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("").trim();
-  if (!text) {
-    const finishReason = data.candidates?.[0]?.finishReason;
-    throw new Error(`Gemini returned no text${finishReason ? ` (${finishReason})` : ""}`);
+      );
+
+      if (!response.ok) {
+        const body = (await response.text()).slice(0, 220);
+        failures.push(`${model} ${response.status}: ${body}`);
+
+        // Invalid auth/permission errors apply to the shared API key, so trying
+        // sibling models would only add latency. Capacity/quota/server/model
+        // errors may be model-specific and are eligible for fallback.
+        if (response.status === 401 || response.status === 403) {
+          throw new Error(`Gemini ${response.status}: ${body}`);
+        }
+        continue;
+      }
+
+      const data = await response.json() as {
+        candidates?: Array<{
+          finishReason?: string;
+          content?: { parts?: Array<{ text?: string }> };
+        }>;
+      };
+      const text = data.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("").trim();
+      if (!text) {
+        const finishReason = data.candidates?.[0]?.finishReason;
+        failures.push(`${model}: no text${finishReason ? ` (${finishReason})` : ""}`);
+        continue;
+      }
+
+      return { text, provider: "gemini" as const, model };
+    } catch (error) {
+      const message = errorText(error);
+      failures.push(`${model}: ${message}`);
+      if (
+        message.includes("Gemini 401:") ||
+        message.includes("Gemini 403:")
+      ) {
+        throw error;
+      }
+    }
   }
-  return { text, provider: "gemini" as const, model };
+
+  throw new Error(`Gemini model chain failed: ${failures.join(" | ").slice(0, 900)}`);
 }
 
 async function compatible(request: CompletionRequest, provider: "groq" | "openrouter") {
