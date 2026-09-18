@@ -17,6 +17,7 @@ import {
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { AudioControl } from "@/components/common/AudioControl";
 import { supabase } from "@/integrations/supabase/client";
+import { signInWithGoogle } from "@/lib/googleAuth";
 
 const NAV: { to: string; key: TranslationKey }[] = [
   { to: "/", key: "navigation.home" },
@@ -52,6 +53,7 @@ export function AppHeader() {
     return () => { document.removeEventListener("keydown", close); document.removeEventListener("pointerdown", outside); };
   }, [open]);
   const [profileUsername, setProfileUsername] = useState<string | null>(null);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [profileLoading, setProfileLoading] = useState(false);
 
   useEffect(() => {
@@ -87,6 +89,18 @@ export function AppHeader() {
     };
   }, [userId]);
 
+  const handleGoogleSignIn = async () => {
+    if (googleLoading) return;
+    setGoogleLoading(true);
+    try {
+      await signInWithGoogle("/onboarding");
+    } catch (error) {
+      console.error("[MGP] Google sign-in:", error);
+      setGoogleLoading(false);
+      window.location.assign("/login");
+    }
+  };
+
   const profileLabel = locale === "pt-BR" ? "Ver meu perfil" : locale === "es" ? "Ver mi perfil" : "View my profile";
   const profileUnavailableLabel = locale === "pt-BR" ? "Perfil indisponível" : locale === "es" ? "Perfil no disponible" : "Profile unavailable";
 
@@ -94,7 +108,19 @@ export function AppHeader() {
     if (loading) return null;
     if (!user) {
       return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => void handleGoogleSignIn()}
+            disabled={googleLoading}
+            aria-label={locale === "pt-BR" ? "Entrar com Google" : locale === "es" ? "Entrar con Google" : "Sign in with Google"}
+            title={locale === "pt-BR" ? "Entrar com Google" : locale === "es" ? "Entrar con Google" : "Sign in with Google"}
+          >
+            <span className="grid size-4 place-items-center rounded-full text-[11px] font-black">G</span>
+            <span className="hidden 2xl:inline">Google</span>
+          </Button>
           <Button variant="ghost" size="sm" asChild>
             <Link to="/login">{t("auth.login")}</Link>
           </Button>
@@ -215,6 +241,21 @@ export function AppHeader() {
             </div>
             {!loading && !user ? (
               <div className="flex flex-col gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => void handleGoogleSignIn()}
+                  disabled={googleLoading}
+                >
+                  <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-black">G</span>
+                  {googleLoading
+                    ? t("common.loading")
+                    : locale === "pt-BR"
+                      ? "Continuar com Google"
+                      : locale === "es"
+                        ? "Continuar con Google"
+                        : "Continue with Google"}
+                </Button>
                 <Button asChild><Link to="/register" onClick={() => setOpen(false)}>{t("auth.register")}</Link></Button>
                 <Button variant="outline" asChild><Link to="/login" onClick={() => setOpen(false)}>{t("auth.login")}</Link></Button>
               </div>
