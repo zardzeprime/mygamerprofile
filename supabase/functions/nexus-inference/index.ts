@@ -5,6 +5,7 @@ import {
   handleDeleteThread,
   handleGuestSend,
   handleGuestStatus,
+  handleMemberBootstrap,
   handleMemberMessages,
   handleMemberSend,
   handleMemberStatus,
@@ -121,6 +122,7 @@ Deno.serve(async (req: Request) => {
 
     if (action === "guest.status") return reply(await handleGuestStatus(raw));
     if (action === "guest.send") return reply(await handleGuestSend(raw));
+    if (action === "member.bootstrap") return reply(await handleMemberBootstrap(req));
     if (action === "member.status") return reply(await handleMemberStatus(req));
     if (action === "member.threads") return reply(await handleMemberThreads(req));
     if (action === "member.messages") return reply(await handleMemberMessages(req, raw));
