@@ -306,7 +306,8 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
         if (controller.signal.aborted) return;
         console.error("[League] Item collection failed.", loadError);
         setError(
-          copy(
+          localeCopy(
+            locale,
             "Não foi possível carregar os itens oficiais agora.",
             "Official items could not be loaded right now.",
             "No se pudieron cargar los objetos oficiales en este momento.",
@@ -631,7 +632,7 @@ function ItemDetail({
         ) : statLines.length ? (
           <div className="divide-y divide-border">
             {statLines.map((line, index) => {
-              const match = line.match(/^([+\-]?\d+(?:\.\d+)?%?)\s*(.*)$/);
+              const match = line.match(/^([+-]?\d+(?:\.\d+)?%?)\s*(.*)$/);
               return (
                 <div key={`${line}-${index}`} className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 px-4 py-3">
                   <span className="min-w-16 font-mono text-sm font-black text-gold-strong">
