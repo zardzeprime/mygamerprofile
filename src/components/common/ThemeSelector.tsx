@@ -1,7 +1,7 @@
 import { Monitor, Moon, Palette, RotateCcw, Sun } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
-import { useTheme, type ThemePreference } from "@/lib/theme";
+import { DEFAULT_ACCENT_COLOR, useTheme, type ThemePreference } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const OPTIONS: { value: ThemePreference; icon: typeof Sun; labelKey: "theme.light" | "theme.dark" | "theme.system" }[] = [
@@ -66,11 +66,11 @@ export function ThemeSelector({ showLabels = false }: { showLabels?: boolean }) 
           <span
             aria-hidden="true"
             className="size-2.5 shrink-0 rounded-full border border-black/10 shadow-sm"
-            style={{ backgroundColor: accentColor ?? "#d4a72c" }}
+            style={{ backgroundColor: accentColor ?? DEFAULT_ACCENT_COLOR }}
           />
           <input
             type="color"
-            value={accentColor ?? "#d4a72c"}
+            value={accentColor ?? DEFAULT_ACCENT_COLOR}
             onChange={(event) => setAccentColor(event.target.value)}
             aria-label={pickerLabel}
             className="absolute inset-0 cursor-pointer opacity-0"
