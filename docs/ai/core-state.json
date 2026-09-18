@@ -25,7 +25,9 @@
         "Expanded the MG Profile identity/loadout foundation so profile customization has explicit slots for backgrounds, banners, avatar frames, cursors, profile effects, chibis and badges while keeping game-inspired assets rights-gated.",
         "Aligned this VALORANT completion pass with MG Profile’s product purpose: gamer identity, social discovery, forums/community content, guides/builds/tutorials and LFG rather than a standalone esports database.",
         "Removed the internal NEXUS/Os Sete council from public navigation and turned /nexus into a noindex redirect so public visitors only interact with the NEXUS gamer chat surface.",
-        "Hardened NEXUS inference against transient provider failures: provider requests now use abortable 25s timeouts, one retry for transient 429/5xx/network failures, low-latency reasoning in gamer mode, and explicit 503 handling for NEXUS_ALL_PROVIDERS_FAILED."
+        "Hardened NEXUS inference against transient provider failures: provider requests now use abortable 25s timeouts, one retry for transient 429/5xx/network failures, low-latency reasoning in gamer mode, and explicit 503 handling for NEXUS_ALL_PROVIDERS_FAILED.",
+        "Added a transparent independent-project support area that explains the founder story, AI-assisted/human-led development model, current low-budget stage, non-financial ways to help and voluntary financial support boundaries.",
+        "Prepared Google as the first social sign-in path across login, registration and the logged-out header while keeping email/password authentication available."
       ],
       "inProgress": [
         "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady.",
@@ -76,7 +78,8 @@
         "Set anonymous trial records to expire after 30 days and added automated daily deletion of expired guest sessions/messages.",
         "Added UI disclosure that guest messages may be processed by MGP's configured official AI providers.",
         "Added user-facing export and confirmed deletion controls for authenticated NEXUS conversations without exposing another user's history.",
-        "Made appearance preferences local-first for fast first paint while synchronizing theme and optional accent_color to the authenticated user profile, with no cross-user preference reads."
+        "Made appearance preferences local-first for fast first paint while synchronizing theme and optional accent_color to the authenticated user profile, with no cross-user preference reads.",
+        "Google OAuth requests only minimal OpenID/email/profile scopes, and new OAuth users must accept the current Terms of Use and Privacy Policy during onboarding before a public profile is created."
       ],
       "inProgress": [],
       "next": [
@@ -104,7 +107,8 @@
         "Audited an initial cross-region batch of individual ProSettings/VLR player records for roles, crosshairs, settings and complete peripherals while withholding unlicensed player photos.",
         "Kept crosshair previews code-native and player peripheral icons local, avoiding new external media reuse.",
         "Kept the VALORANT pro-player reader on initials fallbacks when player-photo reuse rights were not explicitly verified; public accessibility alone is not treated as image permission.",
-        "Prepared original CSS-only identity-pack concepts for MGP Core, Souls-inspired embers, tactical signal and Rift-inspired magic-tech without reusing third-party game artwork."
+        "Prepared original CSS-only identity-pack concepts for MGP Core, Souls-inspired embers, tactical signal and Rift-inspired magic-tech without reusing third-party game artwork.",
+        "Support payments remain disabled until a public-safe method is configured; the recommended Pix setup uses a random project key instead of exposing CPF, phone number or personal email."
       ],
       "inProgress": [],
       "next": [
@@ -170,7 +174,8 @@
         "Added an additive profiles.accent_color migration with six-digit hex validation and mirrored the deployed schema change in repository migrations/types.",
         "Added a daily official-source VALORANT Brasil news discovery workflow that checks Riot News PT-BR, VALORANT Esports PT-BR and the official VALORANT // Brasil YouTube feed, writes candidates to a review queue and opens/updates a pull request without auto-merging.",
         "Registered official VALORANT Brasil Instagram and TikTok as future social sources but marked them API-required rather than bypassing platform access controls with fragile scraping.",
-        "Aligned provider fallback priority toward low-latency configured providers while preserving environment-configured provider order overrides."
+        "Aligned provider fallback priority toward low-latency configured providers while preserving environment-configured provider order overrides.",
+        "Created configuration-driven support methods and documented the external Google OAuth setup so credentials remain outside client code and GitHub."
       ],
       "inProgress": [],
       "next": [
@@ -180,7 +185,9 @@
         "Enable official Instagram/TikTok ingestion only when an approved API or connector is available; keep the same candidate-review pipeline and never auto-publish social items."
       ],
       "blocked": [
-        "No dedicated multi-agent/background-worker runtime exists yet for independent specialist agents."
+        "No dedicated multi-agent/background-worker runtime exists yet for independent specialist agents.",
+        "Google sign-in code is ready, but production authentication remains blocked until a Google Web OAuth Client ID/Secret is created and configured in Supabase Auth, with the production/preview redirect URLs allowlisted.",
+        "Financial support buttons remain intentionally non-transactional until the project has a public random Pix key and/or a public APOIA.se campaign URL."
       ],
       "legacyName": "GEAR",
       "epithet": "O Artífice",

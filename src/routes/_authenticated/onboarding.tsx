@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { Check, Gamepad2, ShieldCheck } from "lucide-react";
 import { useI18n, LOCALES, LOCALE_LABELS, type Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
@@ -19,6 +19,7 @@ import { GameArtwork } from "@/components/games/GameArtwork";
 import { GAMES } from "@/config/games";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { LEGAL_ACCEPTANCE_VERSION } from "@/config/legal";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   component: OnboardingPage,
@@ -86,6 +87,7 @@ function OnboardingPage() {
   const [language, setLanguage] = useState<Locale>(locale);
   const [favoriteGameSlugs, setFavoriteGameSlugs] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [error, setError] = useState("");
 
   const age = birthDate ? ageFromBirthDate(birthDate) : null;
@@ -102,6 +104,17 @@ function OnboardingPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (!acceptedLegal) {
+      setError(
+        copy(
+          "Você precisa aceitar os Termos de Uso e a Política de Privacidade para concluir seu perfil.",
+          "You need to accept the Terms of Use and Privacy Policy to finish your profile.",
+          "Debes aceptar los Términos de Uso y la Política de Privacidad para completar tu perfil.",
+        ),
+      );
+      return;
+    }
 
     const normalized = username.trim().toLowerCase();
     if (!/^[a-z0-9_]{3,20}$/.test(normalized)) {
@@ -141,6 +154,15 @@ function OnboardingPage() {
       if (userError || !user) {
         throw new Error(copy("Sua sessão expirou. Entre novamente.", "Your session expired. Sign in again.", "Tu sesión expiró. Inicia sesión de nuevo."));
       }
+
+      const acceptedAt = new Date().toISOString();
+      const { error: legalMetadataError } = await supabase.auth.updateUser({
+        data: {
+          legal_terms_version: LEGAL_ACCEPTANCE_VERSION,
+          legal_accepted_at: acceptedAt,
+        },
+      });
+      if (legalMetadataError) throw legalMetadataError;
 
       const { data: usernameRows, error: usernameError } = await supabase
         .from("profiles")
@@ -455,6 +477,39 @@ function OnboardingPage() {
             </div>
 
             <div className="lg:col-span-2">
+              <div className="mb-4 flex items-start gap-3 rounded-xl border border-border bg-muted/15 p-3">
+                <input
+                  id="onboarding-legal-acceptance"
+                  type="checkbox"
+                  checked={acceptedLegal}
+                  onChange={(event) => setAcceptedLegal(event.target.checked)}
+                  required
+                  className="mt-1 size-4 shrink-0 accent-[var(--color-gold)]"
+                />
+                <Label
+                  htmlFor="onboarding-legal-acceptance"
+                  className="text-xs font-normal leading-5 text-muted-foreground"
+                >
+                  {copy("Li e aceito os", "I have read and accept the", "He leído y acepto los")}{" "}
+                  <Link
+                    to="/terms"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold text-gold-strong underline-offset-4 hover:underline"
+                  >
+                    {copy("Termos de Uso", "Terms of Use", "Términos de Uso")}
+                  </Link>{" "}
+                  {copy("e a", "and the", "y la")}{" "}
+                  <Link
+                    to="/privacy"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold text-gold-strong underline-offset-4 hover:underline"
+                  >
+                    {copy("Política de Privacidade", "Privacy Policy", "Política de Privacidad")}
+                  </Link>.
+                </Label>
+              </div>
               {error && <p className="mb-4 text-sm text-destructive">{error}</p>}
               <Button type="submit" className="w-full sm:w-auto sm:min-w-52" disabled={loading}>
                 {loading ? t("common.loading") : t("auth.onboarding.finish")}

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Gamepad2, MessagesSquare, Compass, UsersRound } from "lucide-react";
+import { ArrowRight, Gamepad2, MessagesSquare, Compass, UsersRound, HeartHandshake } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { GameCard } from "@/components/games/GameCard";
 import { GameArtwork } from "@/components/games/GameArtwork";
@@ -106,6 +106,30 @@ function Home() {
           <div className="mt-5 grid gap-4 md:grid-cols-3">{destinations.map(({ to, icon: Icon, title, body }, i) => <Link key={to} to={to} className="surface-panel group p-6 transition-colors hover:border-gold/50"><div className="flex items-center justify-between"><Icon className="size-6 text-gold-strong" aria-hidden="true" /><span className="font-mono text-xs text-muted-foreground">0{i + 1}</span></div><h3 className="mt-5 font-display text-lg font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p><ArrowRight className="mt-5 size-5 text-gold-strong motion-safe:transition-transform motion-safe:group-hover:translate-x-1" aria-hidden="true" /></Link>)}</div>
         </TabsContent>
       </Tabs>
+
+      <section className="mx-auto mt-10 w-full max-w-7xl px-4 sm:px-6">
+        <div className="flex flex-col gap-4 rounded-[1.15rem_1.15rem_0.5rem_1.15rem] border border-border bg-muted/15 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-2 text-gold-strong">
+              <HeartHandshake className="size-4" aria-hidden="true" />
+              <p className="text-xs font-bold uppercase tracking-[0.12em]">
+                {copy("Projeto independente", "Independent project", "Proyecto independiente")}
+              </p>
+            </div>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              {copy(
+                "O MGP está sendo construído por uma pessoa, com orçamento enxuto. Se a ideia fizer sentido pra você, dá para conhecer a história do projeto e ajudar no desenvolvimento.",
+                "MGP is being built by one person on a small budget. If the idea resonates with you, you can read the project's story and help its development.",
+                "MGP está siendo construido por una sola persona con un presupuesto pequeño. Si la idea te interesa, puedes conocer la historia y ayudar al desarrollo.",
+              )}
+            </p>
+          </div>
+          <Link to="/support" className="brand-button-secondary min-h-11 shrink-0 gap-2">
+            {copy("Apoie o MGP", "Support MGP", "Apoya MGP")}
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
