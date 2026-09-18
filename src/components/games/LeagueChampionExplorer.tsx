@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 
 const DDRAGON = "https://ddragon.leagueoflegends.com";
 const ABILITY_MEDIA = "https://d28xe8vt774jo5.cloudfront.net/champion-abilities";
-const FALLBACK_VERSION = "16.17.1";
+const FALLBACK_VERSION = "16.18.1";
 
 const DATA_DRAGON_LOCALE: Record<Locale, string> = {
   "pt-BR": "pt_BR",
