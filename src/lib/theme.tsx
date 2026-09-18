@@ -62,58 +62,55 @@ function applyCursorAppearance() {
       ? inlineAccent
       : DEFAULT_ACCENT_COLOR;
 
-  // Cursor body intentionally contrasts with the page theme.
-  const bodyStart = dark ? "#ffffff" : "#30343b";
-  const bodyMid = dark ? "#f2eee5" : "#171a20";
-  const bodyEnd = dark ? "#d7d0c4" : "#090b0e";
-  const lensStart = dark ? "#ffffff" : "#343a44";
-  const lensEnd = dark ? "#ddd5c7" : "#0b0d11";
-  const highlight = dark ? "#ffffff" : "#eef1f5";
-  const shadow = dark ? "#0b0d11" : "#000000";
+  // Match the cursor body to the active theme. Contrast comes from a slim
+  // neutral outer keyline instead of inverting the entire cursor.
+  const bodyTop = dark ? "#252a32" : "#ffffff";
+  const bodyBottom = dark ? "#101318" : "#e9e3d8";
+  const neutralOutline = dark ? "#f2eee5" : "#24272d";
+  const highlight = dark ? "#59616d" : "#ffffff";
+  const shadow = dark ? "#000000" : "#202329";
+
+  const arrowPath =
+    "M6.2 4.6 27.1 17.1 18.3 19.2 14.2 29.3 10.4 27.5 13.9 18.5 6.2 15.9Z";
 
   const arrow = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
       <defs>
-        <linearGradient id="body" x1="5" y1="4" x2="19" y2="24" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stop-color="${bodyStart}"/>
-          <stop offset="0.55" stop-color="${bodyMid}"/>
-          <stop offset="1" stop-color="${bodyEnd}"/>
+        <linearGradient id="body" x1="7" y1="5" x2="18" y2="29" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="${bodyTop}"/>
+          <stop offset="1" stop-color="${bodyBottom}"/>
         </linearGradient>
       </defs>
-      <path d="M5.2 4.8 23.25 15.15 15.3 17.45 11.05 26.05Z" fill="${shadow}" opacity="0.28" transform="translate(.9 .9)"/>
-      <path d="M4.35 3.65 22.95 14.75 14.65 17.18 10.45 25.92Z" fill="url(#body)" stroke="${accent}" stroke-width="1.7" stroke-linejoin="round"/>
-      <path d="M6.2 6.05 18.85 13.55" fill="none" stroke="${highlight}" stroke-width="1.05" stroke-linecap="round" opacity="0.34"/>
-      <circle cx="24.2" cy="7.2" r="4.1" fill="${bodyMid}" fill-opacity="0.96" stroke="${accent}" stroke-width="1.2"/>
-      <circle cx="24.2" cy="7.2" r="1.15" fill="${accent}"/>
-      <g fill="none" stroke="${accent}" stroke-width="1.35" stroke-linecap="round">
-        <path d="M24.2 2.25v2.25M24.2 9.9v2.25"/>
-        <path d="M19.25 7.2h2.25M26.9 7.2h2.25"/>
-      </g>
+      <path d="${arrowPath}" fill="${shadow}" opacity="0.18" transform="translate(1.15 1.15)"/>
+      <path d="${arrowPath}" fill="url(#body)" stroke="${neutralOutline}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="${arrowPath}" fill="none" stroke="${accent}" stroke-width="1.45" stroke-linejoin="round"/>
+      <path d="M8.4 8.1 21.5 15.9" fill="none" stroke="${highlight}" stroke-width="1.3" stroke-linecap="round" opacity="0.48"/>
+      <path d="M12.3 25.8 15.6 18.2" fill="none" stroke="${accent}" stroke-width="1.15" stroke-linecap="round" opacity="0.82"/>
     </svg>
   `;
 
   const pointer = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
       <defs>
-        <radialGradient id="lens" cx="35%" cy="30%" r="72%">
-          <stop offset="0" stop-color="${lensStart}"/>
-          <stop offset="1" stop-color="${lensEnd}"/>
+        <radialGradient id="body" cx="38%" cy="32%" r="72%">
+          <stop offset="0" stop-color="${bodyTop}"/>
+          <stop offset="1" stop-color="${bodyBottom}"/>
         </radialGradient>
       </defs>
-      <circle cx="16.7" cy="16.8" r="10" fill="${shadow}" opacity="0.24"/>
-      <circle cx="16" cy="16" r="9.7" fill="url(#lens)" stroke="${accent}" stroke-width="1.75"/>
-      <circle cx="16" cy="16" r="6.4" fill="none" stroke="${accent}" stroke-width="0.95" opacity="0.42"/>
-      <circle cx="16" cy="16" r="1.55" fill="${accent}"/>
-      <circle cx="14.2" cy="13.8" r="2.25" fill="${highlight}" opacity="0.2"/>
-      <g fill="none" stroke="${accent}" stroke-width="1.5" stroke-linecap="round">
-        <path d="M16 3.5v5.2M16 23.3v5.2"/>
-        <path d="M3.5 16h5.2M23.3 16h5.2"/>
+      <circle cx="20.9" cy="20.9" r="10.4" fill="${shadow}" opacity="0.16"/>
+      <circle cx="20" cy="20" r="10" fill="url(#body)" stroke="${neutralOutline}" stroke-width="3"/>
+      <circle cx="20" cy="20" r="10" fill="none" stroke="${accent}" stroke-width="1.5"/>
+      <circle cx="20" cy="20" r="2" fill="${accent}"/>
+      <g fill="none" stroke="${accent}" stroke-width="1.8" stroke-linecap="round">
+        <path d="M20 5.2v5.1M20 29.7v5.1"/>
+        <path d="M5.2 20h5.1M29.7 20h5.1"/>
       </g>
+      <path d="M15.2 15.1a6.7 6.7 0 0 1 4.1-1.7" fill="none" stroke="${highlight}" stroke-width="1.2" stroke-linecap="round" opacity="0.42"/>
     </svg>
   `;
 
-  root.style.setProperty("--mgp-cursor-default", `${cursorDataUri(arrow)} 4 4`);
-  root.style.setProperty("--mgp-cursor-pointer", `${cursorDataUri(pointer)} 16 16`);
+  root.style.setProperty("--mgp-cursor-default", `${cursorDataUri(arrow)} 6 5`);
+  root.style.setProperty("--mgp-cursor-pointer", `${cursorDataUri(pointer)} 20 20`);
 }
 
 function applyAccentColor(value: string | null) {
