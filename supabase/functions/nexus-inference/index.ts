@@ -23,6 +23,7 @@ function corsHeaders() {
     "Access-Control-Allow-Headers": "apikey, authorization, content-type, x-client-info",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Cache-Control": "no-store",
+    "X-Nexus-Runtime": "edge-v3",
   };
 }
 
@@ -62,39 +63,56 @@ function clientIp(req: Request) {
   );
 }
 
-function withinRateLimit(req: Request) {
+function rateLimitForAction(action: string) {
+  if (action === "guest.send" || action === "member.send") return { bucket: "send", limit: 20 };
+  if (action === "health") return { bucket: "health", limit: 180 };
+  return { bucket: "read", limit: 120 };
+}
+
+function withinRateLimit(req: Request, action: string) {
   const now = Date.now();
-  const ip = clientIp(req);
-  const current = RATE_BUCKETS.get(ip);
+  const { bucket, limit } = rateLimitForAction(action);
+  const key = `${clientIp(req)}:${bucket}`;
+  const current = RATE_BUCKETS.get(key);
+
   if (!current || current.resetAt <= now) {
-    RATE_BUCKETS.set(ip, { count: 1, resetAt: now + 60_000 });
+    RATE_BUCKETS.set(key, { count: 1, resetAt: now + 60_000 });
     return true;
   }
-  if (current.count >= 40) return false;
+
+  if (current.count >= limit) return false;
   current.count += 1;
   return true;
 }
 
 Deno.serve(async (req: Request) => {
+  const startedAt = Date.now();
+
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders() });
   if (req.method !== "POST") return reply({ error: "NEXUS_METHOD_NOT_ALLOWED" }, 405);
   if (!hasValidProjectApiKey(req)) return reply({ error: "NEXUS_PROJECT_KEY_INVALID" }, 401);
-  if (!withinRateLimit(req)) return reply({ error: "NEXUS_RATE_LIMIT" }, 429);
   if (Number(req.headers.get("content-length") ?? 0) > 96_000) {
     return reply({ error: "NEXUS_PAYLOAD_TOO_LARGE" }, 413);
   }
 
   try {
     const raw = await req.json() as Record<string, unknown>;
-    const action = typeof raw.action === "string" ? raw.action : typeof raw.type === "string" ? raw.type : "";
+    const action =
+      typeof raw.action === "string"
+        ? raw.action
+        : typeof raw.type === "string"
+          ? raw.type
+          : "";
+
+    if (!withinRateLimit(req, action)) return reply({ error: "NEXUS_RATE_LIMIT" }, 429);
 
     if (action === "health") {
       const providers = providerStatuses();
       return reply({
         ready: aiReady(),
         aiReady: aiReady(),
-        transport: "supabase-edge-v2",
-        inferenceTransport: "supabase-edge-v2",
+        transport: "supabase-edge-v3",
+        inferenceTransport: "supabase-edge-v3",
         providers,
         orchestrator: "nexus",
         childCores: CHILD_CORES,
@@ -109,12 +127,12 @@ Deno.serve(async (req: Request) => {
     if (action === "member.delete-thread") return reply(await handleDeleteThread(req, raw));
     if (action === "member.send") return reply(await handleMemberSend(req, raw));
 
-    // The rebuilt public gateway never exposes raw model completion without quota/auth context.
     if (action === "completion") return reply({ error: "NEXUS_LEGACY_COMPLETION_DISABLED" }, 410);
     return reply({ error: "NEXUS_ACTION_NOT_FOUND" }, 404);
   } catch (error) {
     const code = cleanErrorCode(error);
-    console.error("[NEXUS]", code, errorText(error));
+    console.error("[NEXUS]", code, `duration=${Date.now() - startedAt}ms`, errorText(error));
+
     const status =
       code === "NEXUS_AUTH_REQUIRED" || code === "NEXUS_AUTH_INVALID" ? 401 :
       code === "NEXUS_ADMIN_REQUIRED" ? 403 :
@@ -122,6 +140,7 @@ Deno.serve(async (req: Request) => {
       code === "NEXUS_NO_PROVIDER" || code === "NEXUS_ALL_PROVIDERS_FAILED" ? 503 :
       code === "NEXUS_GUEST_LIMIT_REACHED" ? 402 :
       code === "NEXUS_INVALID_MESSAGE" || code === "NEXUS_THREAD_INVALID" ? 400 : 502;
+
     return reply(
       {
         error: code,
