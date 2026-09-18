@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "ownerCore": "pulse",
+  "ownerName": "Vassago",
+  "automationCore": "gear",
+  "automationName": "Marbas",
+  "reviewCore": "vector",
+  "reviewName": "Andrealphus",
+  "sourcePolicy": "official-first",
+  "lastSeen": {
+    "valorant": {
+      "patch": "13.05",
+      "patchUrl": "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-05/",
+      "competitiveMapPoolPatch": "13.04",
+      "competitiveMapPool": [
+        "Abyss",
+        "Ascent",
+        "Haven",
+        "Lotus",
+        "Split",
+        "Summit",
+        "Sunset"
+      ],
+      "esportsEvent": "Champions Shanghai",
+      "esportsStart": "2026-09-24"
+    },
+    "league": {
+      "patch": "26.18",
+      "patchUrl": "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-18-notes/",
+      "dataDragon": "16.18.1",
+      "specialModes": [
+        "Arena",
+        "ARAM: Desordem",
+        "League of Legends Classic"
+      ]
+    }
+  },
+  "candidates": []
+}
