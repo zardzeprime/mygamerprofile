@@ -33,19 +33,24 @@ const decodeHtml = (value = "") =>
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&#x2F;/g, "/")
-    .replace(/&#(d+);/g, (_, code) => String.fromCharCode(Number(code)))
+    .replace(/&#(\\d+);/g, (_, code) => String.fromCharCode(Number(code)))
     .replace(/\s+/g, " ")
     .trim();
 
 const meta = (html, key) => {
-  const escaped = key.replace(/[.*+?^$()|[\]{}\\]/g, "\\$&");
-  const patterns = [
-    new RegExp('<meta[^>]+(?:property|name)=["\\']' + escaped + '["\\'][^>]+content=["\\']([^"\\']*)["\\']', "i"),
-    new RegExp('<meta[^>]+content=["\\']([^"\\']*)["\\'][^>]+(?:property|name)=["\\']' + escaped + '["\\']', "i"),
-  ];
-  for (const pattern of patterns) {
-    const match = html.match(pattern);
-    if (match?.[1]) return decodeHtml(match[1]);
+  const tags = html.match(/<meta\b[^>]*>/gi) ?? [];
+  for (const tag of tags) {
+    const attributes = {};
+    for (const match of tag.matchAll(/([a-zA-Z:-]+)\s*=\s*["']([^"']*)["']/g)) {
+      attributes[match[1].toLowerCase()] = match[2];
+    }
+    if (
+      (attributes.property?.toLowerCase() === key.toLowerCase() ||
+        attributes.name?.toLowerCase() === key.toLowerCase()) &&
+      attributes.content
+    ) {
+      return decodeHtml(attributes.content);
+    }
   }
   return "";
 };
