@@ -12,6 +12,16 @@ type BuildVariant = {
   items: BuildItem[];
 };
 
+type SourceCrossCheck = {
+  id: "riot" | "opgg" | "mobalytics" | "leagueofgraphs";
+  label: string;
+  url: string;
+  status: "confirmed" | "reachable" | "blocked" | "unavailable";
+  patch?: string | null;
+  matchedPrimaryItems?: number;
+  primaryItemsChecked?: number;
+};
+
 type BuildPayload = {
   champion: string;
   slug: string;
@@ -23,6 +33,7 @@ type BuildPayload = {
     verifiedAt: string;
   };
   builds: BuildVariant[];
+  crossChecks: SourceCrossCheck[];
 };
 
 const CACHE_TTL_MS = 30 * 60 * 1000;
@@ -84,7 +95,7 @@ function withinRateLimit(req: Request) {
 function decodeHtml(value: string) {
   return value
     .replace(/&quot;/g, '"')
-    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&#39;|&apos;|&#x27;/gi, "'")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
