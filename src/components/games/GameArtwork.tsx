@@ -18,6 +18,8 @@ export function GameArtwork({
   loading = "lazy",
 }: GameArtworkProps) {
   const isLeagueArtwork = game.slug === "league-of-legends";
+  const isValorantArtwork = game.slug === "valorant";
+  const isMinimalLogoArtwork = isLeagueArtwork || isValorantArtwork;
   const usesUpscaledRepositoryArtwork = ["dark-souls-iii", "elden-ring", "ea-sports-fc"].includes(
     game.slug,
   );
@@ -37,6 +39,8 @@ export function GameArtwork({
         "game-artwork relative h-full w-full overflow-hidden bg-muted",
         isLeagueArtwork &&
           "bg-[radial-gradient(circle_at_45%_38%,#153c57_0%,#081b2c_46%,#03101b_100%)]",
+        isValorantArtwork &&
+          "bg-[radial-gradient(circle_at_50%_42%,#251219_0%,#0c0d11_52%,#050609_100%)]",
         className,
       )}
     >
@@ -59,15 +63,19 @@ export function GameArtwork({
             ? variant === "hero"
               ? "object-contain p-[19%] opacity-90"
               : "object-contain p-[11%]"
-            : "object-cover",
+            : isValorantArtwork
+              ? variant === "hero"
+                ? "object-contain p-[12%] opacity-95"
+                : "object-contain p-[7%]"
+              : "object-cover",
           imageClassName,
         )}
       />
       <div
         className={cn(
           "pointer-events-none absolute inset-0 bg-gradient-to-t from-black/12 via-transparent to-white/[0.025]",
-          isLeagueArtwork &&
-            "bg-[linear-gradient(180deg,rgba(255,255,255,0.015),transparent_36%,rgba(0,0,0,0.16))]",
+          isMinimalLogoArtwork &&
+            "bg-[linear-gradient(180deg,rgba(255,255,255,0.018),transparent_36%,rgba(0,0,0,0.18))]",
         )}
         aria-hidden="true"
       />
