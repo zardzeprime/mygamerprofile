@@ -10,16 +10,24 @@ const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_JXVaM-rr7Yu59l3x7WyHEg_qlR-uDMX";
 const NEXUS_EDGE_URL = `${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/nexus-inference`;
 
-// Provider failover happens server-side. Keep the browser request alive long enough
-// for the Edge Function to try configured fallbacks instead of aborting the first
-// slow provider before failover can begin.
-const NEXUS_REQUEST_TIMEOUT_MS = 70_000;
+// Read/bootstrap calls should fail fast; inference calls get a larger budget so
+// the Edge runtime can perform bounded provider failover without the browser
+// killing a healthy fallback attempt.
+const NEXUS_READ_TIMEOUT_MS = 15_000;
+const NEXUS_SEND_TIMEOUT_MS = 52_000;
+
+function timeoutForBody(body: Record<string, unknown>) {
+  const action = typeof body["action"] === "string" ? body["action"] : "";
+  return action === "guest.send" || action === "member.send"
+    ? NEXUS_SEND_TIMEOUT_MS
+    : NEXUS_READ_TIMEOUT_MS;
+}
 
 async function invokeNexus(body: Record<string, unknown>, accessToken?: string): Promise<any> {
   const controller = new AbortController();
   const timeout =
     typeof window !== "undefined"
-      ? window.setTimeout(() => controller.abort(), NEXUS_REQUEST_TIMEOUT_MS)
+      ? window.setTimeout(() => controller.abort(), timeoutForBody(body))
       : undefined;
 
   try {
