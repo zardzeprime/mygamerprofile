@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { getAuthRedirectUrl } from "@/lib/siteUrl";
 
 export const GOOGLE_OAUTH_CALLBACK_URL =
   "https://gudvdgpjfapshzqyfcpj.supabase.co/auth/v1/callback";
@@ -9,7 +10,7 @@ export async function signInWithGoogle(nextPath = "/onboarding") {
   }
 
   const safeNext = nextPath.startsWith("/") ? nextPath : "/onboarding";
-  const redirectTo = `${window.location.origin}${safeNext}`;
+  const redirectTo = getAuthRedirectUrl(safeNext);
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
