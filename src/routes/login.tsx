@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
+import { signInWithGoogle } from "@/lib/googleAuth";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -33,12 +34,7 @@ function LoginPage() {
     setOauthLoading(true);
     setError("");
     try {
-      const redirectTo = `${window.location.origin}/onboarding`;
-      const { error: oauthError } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: { redirectTo },
-      });
-      if (oauthError) throw oauthError;
+      await signInWithGoogle("/onboarding");
     } catch {
       setOauthLoading(false);
       setError(
