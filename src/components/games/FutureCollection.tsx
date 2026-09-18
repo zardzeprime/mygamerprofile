@@ -7,6 +7,7 @@ import { localeCopy } from "@/i18n/locale-utils";
 import { CompetitiveCompendium } from "@/components/games/CompetitiveCompendium";
 import { DarkSoulsBossWiki } from "@/components/games/DarkSoulsBossWiki";
 import { DarkSoulsGuides } from "@/components/games/DarkSoulsGuides";
+import { DarkSoulsBuildLab } from "@/components/games/DarkSoulsBuildLab";
 import { ValorantAgents } from "@/components/games/ValorantAgents";
 import { ValorantMaps } from "@/components/games/ValorantMaps";
 import { ValorantNews } from "@/components/games/ValorantNews";
@@ -31,6 +32,7 @@ export function FutureCollection({
   gameSlug: string;
 }) {
   if (gameSlug === "dark-souls-remastered") {
+    if (moduleKey === "builds") return <DarkSoulsBuildLab locale={locale} />;
     if (moduleKey === "bosses") return <DarkSoulsBossWiki locale={locale} />;
     if (moduleKey === "guides") return <DarkSoulsGuides locale={locale} />;
   }
