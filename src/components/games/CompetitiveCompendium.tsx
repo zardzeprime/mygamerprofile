@@ -763,7 +763,6 @@ function PlayerPanel({
         )}
           </>
         )}
-        )}
       </div>
     </article>
   );
