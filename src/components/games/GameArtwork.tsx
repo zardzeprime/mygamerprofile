@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import type { GameConfig } from "@/config/games";
 import { cn } from "@/lib/utils";
 
-const LEAGUE_OFFICIAL_LOGO =
-  "https://www.riotgames.com/darkroom/original/9a50f5b3bdcfb815580ef103ec9b6ee2%3Ad49b78b12cf185e10127cdf81b144a00/lol-logo-rendered-hi-res.png";
-
 type GameArtworkProps = {
   game: GameConfig;
   variant?: "card" | "hero";
@@ -24,11 +21,8 @@ export function GameArtwork({
   const usesUpscaledRepositoryArtwork = ["dark-souls-iii", "elden-ring", "ea-sports-fc"].includes(
     game.slug,
   );
-  const configuredSource = isLeagueArtwork
-    ? LEAGUE_OFFICIAL_LOGO
-    : variant === "hero"
-      ? game.visual.heroImage
-      : game.visual.coverImage;
+  const configuredSource =
+    variant === "hero" ? game.visual.heroImage : game.visual.coverImage;
   const [source, setSource] = useState(configuredSource);
   const objectPosition =
     variant === "hero" ? game.visual.heroObjectPosition : game.visual.cardObjectPosition;
