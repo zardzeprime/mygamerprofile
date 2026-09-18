@@ -556,15 +556,19 @@ function SkinInfo({
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
-        <InfoBox icon={Coins} label="VP" value={skin.referenceVp != null ? `${skin.referenceVp.toLocaleString()} VP` : "—"} />
+        <InfoBox
+          icon={Coins}
+          label={copy("VP ref.", "VP ref.", "VP ref.")}
+          value={skin.referenceVp != null ? `~${skin.referenceVp.toLocaleString()} VP` : "—"}
+        />
         <InfoBox icon={Sparkles} label="RP" value={totalRp ? `~${totalRp} RP` : "0 RP"} />
       </div>
 
       <p className="mt-3 text-[0.68rem] leading-5 text-muted-foreground">
         {copy(
-          `VP é uma referência pela edição${weapon.isMelee ? " para melee" : ""}; coleções limitadas, Battle Pass e linhas especiais podem ter preço diferente ou não ter venda individual. RP usa o padrão comum de 10 por nível e 15 por variante; exceções existem.`,
-          `VP is an edition-based reference${weapon.isMelee ? " for melee" : ""}; limited collections, Battle Pass items and special lines can use a different price or have no individual sale. RP uses the common 10-per-level and 15-per-variant pattern; exceptions exist.`,
-          `VP es una referencia basada en la edición${weapon.isMelee ? " para melee" : ""}; colecciones limitadas, Pase de Batalla y líneas especiales pueden tener otro precio o no venderse por separado. RP usa el patrón común de 10 por nivel y 15 por variante; existen excepciones.`,
+          `VP aqui é somente uma estimativa de referência pela edição${weapon.isMelee ? " para melee" : ""}, não o preço oficial individual da skin. Coleções limitadas, Battle Pass e linhas especiais podem fugir dessa faixa ou não ter venda individual. RP também é estimado pelo padrão comum de upgrades/variantes.`,
+          `VP here is only an edition-based reference estimate${weapon.isMelee ? " for melee" : ""}, not the skin's official individual price. Limited collections, Battle Pass items and special lines can fall outside that range or have no individual sale. RP is also estimated from common upgrade/variant patterns.`,
+          `El VP aquí es solo una estimación de referencia basada en la edición${weapon.isMelee ? " para melee" : ""}, no el precio oficial individual de la skin. Colecciones limitadas, Pase de Batalla y líneas especiales pueden quedar fuera de esa referencia o no venderse individualmente. El RP también es estimado según patrones comunes.`,
         )}
       </p>
 
