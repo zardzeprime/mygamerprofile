@@ -24,7 +24,7 @@ const PROVIDERS: ProviderId[] = ["openai", "gemini", "groq", "openrouter", "anth
 // because free-router latency/availability can vary substantially.
 const DEFAULT_ORDER: ProviderId[] = ["gemini", "groq", "openai", "anthropic", "openrouter"];
 const PROVIDER_TIMEOUT_MS: Record<ProviderId, number> = {
-  gemini: 28_000,
+  gemini: 38_000,
   groq: 10_000,
   openai: 18_000,
   anthropic: 18_000,
@@ -159,8 +159,19 @@ async function gemini(request: CompletionRequest) {
   const primaryModel = env("NEXUS_GEMINI_MODEL") ?? "gemini-3.8-flash";
   const models = (
     request.effort === "low"
-      ? ["gemini-3.6-flash", "gemini-3.7-flash", primaryModel]
-      : [primaryModel, "gemini-3.7-flash", "gemini-3.6-flash"]
+      ? [
+          "gemini-3.5-flash-lite",
+          "gemini-3.6-flash",
+          "gemini-3.1-flash-lite",
+          "gemini-3.7-flash",
+          primaryModel,
+        ]
+      : [
+          primaryModel,
+          "gemini-3.7-flash",
+          "gemini-3.6-flash",
+          "gemini-3.5-flash-lite",
+        ]
   ).filter((model, index, all) => all.indexOf(model) === index);
 
   const providerBudgetMs = request.timeoutMs ?? PROVIDER_TIMEOUT_MS.gemini;
@@ -173,12 +184,16 @@ async function gemini(request: CompletionRequest) {
 
     const perModelTimeoutMs = Math.min(
       request.effort === "low"
-        ? model === "gemini-3.6-flash"
-          ? 12_000
-          : 7_000
+        ? model.includes("flash-lite")
+          ? 9_000
+          : model === "gemini-3.6-flash"
+            ? 11_000
+            : 7_000
         : model === primaryModel
           ? 16_000
-          : 8_000,
+          : model.includes("flash-lite")
+            ? 8_000
+            : 9_000,
       remainingBudget,
     );
 
