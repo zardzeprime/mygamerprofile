@@ -86,6 +86,10 @@ export async function getNexusStatus({ data }: Envelope<{ accessToken: string }>
   return invokeNexus({ action: "member.status" }, data.accessToken);
 }
 
+export async function getNexusMemberBootstrap({ data }: Envelope<{ accessToken: string }>) {
+  return invokeNexus({ action: "member.bootstrap" }, data.accessToken);
+}
+
 export async function listNexusThreads({ data }: Envelope<{ accessToken: string }>) {
   return invokeNexus({ action: "member.threads" }, data.accessToken);
 }
