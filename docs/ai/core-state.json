@@ -18,7 +18,9 @@
         "Grounded MGP content recommendations in the live active-games table plus the published content catalog so paused games are not advertised.",
         "Aligned browser and provider timeout budgets so server-side failover can finish before the client abandons a reply.",
         "Preserved the first guest prompt during session bootstrap instead of silently dropping an early Enter submission.",
-        "Verified the hosted Supabase nexus-inference Edge Function is active at version 8 and aligned with the repository runtime."
+        "Verified the hosted Supabase nexus-inference Edge Function is active at version 8 and aligned with the repository runtime.",
+        "Published the NEXUS / Os Sete council area in the product navigation with visible core names, sigil letters, specialist roles and distinct accent identities.",
+        "Separated transient NEXUS health failures from confirmed no-provider state so the UI no longer reports a disconnected AI engine merely because status loading failed."
       ],
       "inProgress": [
         "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady."
@@ -65,11 +67,11 @@
         "Separated Gamer mode from internal Development context to avoid exposing repository/admin details to normal users.",
         "Implemented anonymous Nexus sessions with an opaque HTTP-only cookie rather than email or device fingerprinting.",
         "Set anonymous trial records to expire after 30 days and added automated daily deletion of expired guest sessions/messages.",
-        "Added UI disclosure that guest messages may be processed by MGP's configured official AI providers."
+        "Added UI disclosure that guest messages may be processed by MGP's configured official AI providers.",
+        "Added user-facing export and confirmed deletion controls for authenticated NEXUS conversations without exposing another user's history."
       ],
       "inProgress": [],
       "next": [
-        "Define user-facing deletion/export controls for authenticated Nexus conversation history.",
         "Keep provider-data disclosure updated if optional multi-provider council features are introduced."
       ],
       "blocked": [],
@@ -92,16 +94,19 @@
         "Excluded sponsor data and avoided unverified staff photos while adding source-linked staff text records.",
         "Audited all 62 VALORANT competitive teams and attached the current VLR-linked owcdn logo reference to every team record.",
         "Audited an initial cross-region batch of individual ProSettings/VLR player records for roles, crosshairs, settings and complete peripherals while withholding unlicensed player photos.",
-        "Kept crosshair previews code-native and player peripheral icons local, avoiding new external media reuse."
+        "Kept crosshair previews code-native and player peripheral icons local, avoiding new external media reuse.",
+        "Kept the VALORANT pro-player reader on initials fallbacks when player-photo reuse rights were not explicitly verified; public accessibility alone is not treated as image permission."
       ],
       "inProgress": [],
       "next": [
         "Continue replacing weak fallback artwork when higher-quality, clearly sourced assets are found.",
         "Keep provenance metadata attached to every new external media source.",
-        "Keep any formal NEXUS trademark/copyright/business registrations in private legal records rather than the client repository."
+        "Keep any formal NEXUS trademark/copyright/business registrations in private legal records rather than the client repository.",
+        "Add player photos only when an official, licensed, permissioned or otherwise clearly reusable source can be documented for each asset."
       ],
       "blocked": [
-        "Some bosses still lack a sufficiently reliable boss-specific asset from currently reviewed sources."
+        "Some bosses still lack a sufficiently reliable boss-specific asset from currently reviewed sources.",
+        "Player photos remain intentionally unavailable where a sufficiently clear reuse right or official asset policy has not been verified."
       ],
       "legacyName": "ATLAS",
       "epithet": "O Guardião da Procedência",
@@ -116,7 +121,8 @@
         "Added dated, source-linked VALORANT staff snapshots for LOUD, LEVIATÁN, MIBR and Sentinels.",
         "Closed the competitive team-logo coverage gap from 16/62 to 62/62 records.",
         "Expanded individually sourced VALORANT settings coverage with a dated cross-region batch and explicit hybrid-role labels.",
-        "Checked the full VALORANT directory: 234/350 entries have sourced settings and 319/350 have role labels; observed roles derive from the most-used agent in dated VLR samples. Shared-handle identity conflicts remain excluded."
+        "Checked the full VALORANT directory: 234/350 entries have sourced settings and 319/350 have role labels; observed roles derive from the most-used agent in dated VLR samples. Shared-handle identity conflicts remain excluded.",
+        "Expanded the manually reviewed current-roster VALORANT crosshair set with ten additional individual ProSettings records while retaining per-source provenance and never estimating missing values."
       ],
       "inProgress": [
         "Continue individual ProSettings verification for players whose settings remain hidden.",
@@ -125,10 +131,11 @@
       "next": [
         "Track model IDs and provider API changes so Nexus defaults do not become stale.",
         "Track game/editorial data that can become stale and define refresh expectations before automating it.",
-        "Add owner/founder and institutional organization facts only when an official organization source confirms them."
+        "Add owner/founder and institutional organization facts only when an official organization source confirms them.",
+        "Continue individual source review for current-roster players that still lack verified settings or a verified crosshair; do not mass-scrape or infer absent values."
       ],
       "blocked": [
-        "116 roster entries still lack confirmed public settings; 31 lack verified role labels. Do not estimate these values."
+        "A substantial current-roster settings/crosshair queue remains because public records are incomplete or identity/source matching is ambiguous. Missing values must remain hidden until individually verified."
       ],
       "legacyName": "PULSE",
       "epithet": "O Investigador",
@@ -145,7 +152,8 @@
         "Standardized AVAPGV user-facing reports around the six fronts and documented temporary email-connector incident handling.",
         "Replaced six-front report branding with Os Sete; all seven named roles report directly, preserving stable IDs and historical records.",
         "Added check:valorant regression validation to CI for sparse merges, source retention, eDPI, coverage and ambiguous shared handles.",
-        "Registered a real responsive AVAPGV / Os Sete React Email template with status, owning core, concrete reference, impact and next-action cards, plus plain-text render support."
+        "Registered a real responsive AVAPGV / Os Sete React Email template with status, owning core, concrete reference, impact and next-action cards, plus plain-text render support.",
+        "Raised CI regression coverage for verified VALORANT crosshairs so a future data merge cannot silently drop the newly reviewed set."
       ],
       "inProgress": [],
       "next": [
@@ -178,7 +186,9 @@
         "Replaced the small-screen game-hub tab strip with a sticky compact navigator, constrained horizontal overflow and shortened the mobile hero.",
         "Added browser-rendered light/dark VALORANT crosshair previews and icon-led peripheral cards without external image assets.",
         "Merged settings per field and review date, retained contributing sources, removed team-country fallback for players and localized observed roles with compact agent chips.",
-        "Merged the validated responsive header, compact home and game-hub navigation, mobile media retry/error handling, personal appearance refinements and related accessibility improvements through PR #56."
+        "Merged the validated responsive header, compact home and game-hub navigation, mobile media retry/error handling, personal appearance refinements and related accessibility improvements through PR #56.",
+        "Normalized VALORANT hub accents across Agents, Maps, Weapons, Skins, News, Esports, live content and mobile navigation from the old tactical blue treatment to the MG Profile gold/graphite identity.",
+        "Added a dedicated responsive Os Sete page and navigation entry instead of leaving the AI-core architecture only in internal documentation."
       ],
       "inProgress": [],
       "next": [
