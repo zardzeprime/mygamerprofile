@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ChevronLeft, ChevronRight, Clock3, Droplets, Gauge, Search, ShieldCheck, Sparkles, Swords, WandSparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock3, Droplets, Gauge, Images, PackageOpen, Search, ShieldCheck, Sparkles, Swords, WandSparkles } from "lucide-react";
 import { DataSourceIndicator } from "@/components/common/DataSourceIndicator";
 import {
   Dialog,
@@ -55,12 +55,48 @@ type ChampionSpell = {
   effectBurn?: Array<string | null>;
 };
 
+type ChampionRecommendedItem = {
+  id: string;
+  count?: number;
+  hideCount?: boolean;
+};
+
+type ChampionRecommendedBlock = {
+  type?: string;
+  recMath?: boolean;
+  items?: ChampionRecommendedItem[];
+};
+
+type ChampionRecommendedSet = {
+  champion?: string;
+  title?: string;
+  map?: string;
+  mode?: string;
+  type?: string;
+  priority?: boolean;
+  sortrank?: number;
+  blocks?: ChampionRecommendedBlock[];
+};
+
+type LeagueItemSummary = {
+  name: string;
+  description?: string;
+  plaintext?: string;
+  image?: { full?: string };
+  gold?: { total?: number };
+};
+
+type LeagueItemPayload = {
+  data: Record<string, LeagueItemSummary>;
+};
+
 type ChampionDetail = ChampionSummary & {
   lore: string;
   blurb: string;
   skins: ChampionSkin[];
   passive: { name: string; description: string; image: { full: string } };
   spells: ChampionSpell[];
+  recommended?: ChampionRecommendedSet[];
 };
 
 type ChampionPayload<T> = { data: Record<string, T> };
@@ -109,6 +145,36 @@ function skinSplash(championId: string, skinNumber: number) {
 function baseSkinsOnly(skins: ChampionSkin[]) {
   return skins.filter((skin) => skin.parentSkin === undefined || skin.parentSkin === null);
 }
+
+function recommendedBuilds(detail: ChampionDetail) {
+  const seen = new Set<string>();
+
+  return (detail.recommended ?? [])
+    .filter((entry) => {
+      const map = (entry.map ?? "any").toUpperCase();
+      const mode = (entry.mode ?? "any").toUpperCase();
+      const summonersRift = map === "SR" || map === "ANY" || map.includes("SUMMONER");
+      const classic = mode === "CLASSIC" || mode === "ANY";
+      return summonersRift && classic && Boolean(entry.blocks?.some((block) => block.items?.length));
+    })
+    .sort((a, b) => {
+      if (Boolean(a.priority) !== Boolean(b.priority)) return a.priority ? -1 : 1;
+      return (b.sortrank ?? 0) - (a.sortrank ?? 0);
+    })
+    .filter((entry) => {
+      const key = `${entry.title ?? "recommended"}:${entry.map ?? "any"}:${entry.mode ?? "any"}`.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 2);
+}
+
+function itemIcon(version: string, itemId: string, item?: LeagueItemSummary) {
+  const file = item?.image?.full || `${itemId}.png`;
+  return `${DDRAGON}/cdn/${version}/img/item/${file}`;
+}
+
 
 function roleLabel(role: string, locale: Locale) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
