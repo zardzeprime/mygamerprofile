@@ -10,9 +10,19 @@ const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_JXVaM-rr7Yu59l3x7WyHEg_qlR-uDMX";
 const NEXUS_EDGE_URL = `${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/nexus-inference`;
 
+const NEXUS_READ_TIMEOUT_MS = 15_000;
+const NEXUS_SEND_TIMEOUT_MS = 52_000;
+
+function timeoutForBody(body: Record<string, unknown>) {
+  const action = typeof body["action"] === "string" ? body["action"] : "";
+  return action === "guest.send" || action === "member.send"
+    ? NEXUS_SEND_TIMEOUT_MS
+    : NEXUS_READ_TIMEOUT_MS;
+}
+
 async function invokeNexus<T>(body: Record<string, unknown>, accessToken?: string): Promise<T> {
   const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), 15_000);
+  const timeout = window.setTimeout(() => controller.abort(), timeoutForBody(body));
 
   try {
     const response = await fetch(NEXUS_EDGE_URL, {
