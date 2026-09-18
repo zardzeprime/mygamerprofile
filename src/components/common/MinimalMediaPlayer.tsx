@@ -253,6 +253,12 @@ export function MinimalYouTubePlayer({
       <div ref={mountRef} className="pointer-events-none absolute inset-0 h-full w-full [&>iframe]:h-full [&>iframe]:w-full" />
       <PlayerStatus buffering={buffering} error={error} locale={locale} onRetry={() => setAttempt((value) => value + 1)} />
       <PlayerControls
+        className={cn(
+          "transition-all duration-300",
+          controlsVisible
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none translate-y-2 opacity-0",
+        )}
         playing={playing}
         ready={ready && !error}
         currentTime={currentTime}
@@ -284,11 +290,13 @@ export function MinimalVideoPlayer({
   src,
   locale,
   autoPlay = true,
+  autoPlayOnTouch = false,
   className,
 }: {
   src: string;
   locale: Locale;
   autoPlay?: boolean;
+  autoPlayOnTouch?: boolean;
   className?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -301,6 +309,8 @@ export function MinimalVideoPlayer({
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(72);
   const [preload, setPreload] = useState<"none" | "metadata" | "auto">("none");
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const controlsTimerRef = useRef<number | null>(null);
   const lastAudibleVolumeRef = useRef(72);
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
 
@@ -308,11 +318,30 @@ export function MinimalVideoPlayer({
     setPlaying(false);
     setReady(false);
     setError(false);
+    setControlsVisible(true);
     lastProgressRef.current = 0;
     setBuffering(false);
     setCurrentTime(0);
     setDuration(0);
   }, [src]);
+
+  const clearControlsTimer = useCallback(() => {
+    if (controlsTimerRef.current != null) {
+      window.clearTimeout(controlsTimerRef.current);
+      controlsTimerRef.current = null;
+    }
+  }, []);
+
+  const revealControls = useCallback((linger = 2200) => {
+    setControlsVisible(true);
+    clearControlsTimer();
+    controlsTimerRef.current = window.setTimeout(() => {
+      setControlsVisible(false);
+      controlsTimerRef.current = null;
+    }, linger);
+  }, [clearControlsTimer]);
+
+  useEffect(() => () => clearControlsTimer(), [clearControlsTimer]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -326,10 +355,18 @@ export function MinimalVideoPlayer({
 
     setPreload(saveData || slowConnection || mobileOrTouch ? "none" : "metadata");
 
-    if (!autoPlay || mobileOrTouch || saveData || slowConnection || document.visibilityState === "hidden") return;
+    const touchAutoPlay = mobileOrTouch && autoPlayOnTouch;
+    if (!autoPlay || (mobileOrTouch && !touchAutoPlay) || saveData || slowConnection || document.visibilityState === "hidden") return;
+
+    if (touchAutoPlay) {
+      video.muted = true;
+      video.volume = 0;
+      setVolumeState(0);
+    }
+
     setBuffering(true);
     void video.play().catch(() => setBuffering(false));
-  }, [autoPlay, src]);
+  }, [autoPlay, autoPlayOnTouch, src]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -372,8 +409,29 @@ export function MinimalVideoPlayer({
     }
   };
 
+  useEffect(() => {
+    if (!ready) return;
+    revealControls(playing ? 1700 : 2600);
+  }, [playing, ready, revealControls]);
+
   return (
-    <div className={cn("relative isolate overflow-hidden bg-black", className)}>
+    <div
+      className={cn("group/player relative isolate overflow-hidden bg-black", className)}
+      onMouseMove={() => revealControls()}
+      onMouseEnter={() => revealControls()}
+      onMouseLeave={() => {
+        clearControlsTimer();
+        setControlsVisible(false);
+      }}
+      onPointerDown={() => revealControls(2600)}
+      onFocusCapture={() => {
+        clearControlsTimer();
+        setControlsVisible(true);
+      }}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) revealControls(900);
+      }}
+    >
       <video
         ref={videoRef}
         src={src}
@@ -415,7 +473,10 @@ export function MinimalVideoPlayer({
           setPlaying(false);
           setBuffering(false);
         }}
-        onClick={requestPlay}
+        onClick={() => {
+          revealControls();
+          requestPlay();
+        }}
       />
       <PlayerStatus buffering={buffering} error={error} locale={locale} onRetry={requestPlay} />
       {!playing && !buffering && !error && !ready ? (
@@ -471,6 +532,7 @@ function PlayerStatus({ buffering, error, locale, onRetry }: { buffering: boolea
 }
 
 function PlayerControls({
+  className,
   playing,
   ready,
   canPlay = ready,
@@ -487,6 +549,7 @@ function PlayerControls({
   progressLabel,
   muteLabel,
 }: {
+  className?: string;
   playing: boolean;
   ready: boolean;
   canPlay?: boolean;
@@ -507,7 +570,7 @@ function PlayerControls({
   const safeCurrent = safeDuration > 0 ? Math.min(currentTime, safeDuration) : 0;
 
   return (
-    <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/95 via-black/70 to-transparent px-3 pb-3 pt-10 sm:px-4">
+    <div className={cn("absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/95 via-black/70 to-transparent px-3 pb-3 pt-10 sm:px-4", className)}>
       <input
         type="range"
         min={0}
