@@ -121,7 +121,7 @@
         "Added dated, source-linked VALORANT staff snapshots for LOUD, LEVIATÁN, MIBR and Sentinels.",
         "Closed the competitive team-logo coverage gap from 16/62 to 62/62 records.",
         "Expanded individually sourced VALORANT settings coverage with a dated cross-region batch and explicit hybrid-role labels.",
-        "Checked the full VALORANT directory: 234/350 entries have sourced settings and 319/350 have role labels; observed roles derive from the most-used agent in dated VLR samples. Shared-handle identity conflicts remain excluded.",
+        "Checked the full VALORANT directory in CI: 350 players total, 234 have sourced settings, 319 have verified/observed role labels and 50 have a verified crosshair code. Missing values remain hidden instead of being estimated.",
         "Expanded the manually reviewed current-roster VALORANT crosshair set with eighteen additional individual ProSettings records while retaining per-source provenance and never estimating missing values."
       ],
       "inProgress": [
@@ -135,7 +135,7 @@
         "Continue individual source review for current-roster players that still lack verified settings or a verified crosshair; do not mass-scrape or infer absent values."
       ],
       "blocked": [
-        "A substantial current-roster settings/crosshair queue remains because public records are incomplete or identity/source matching is ambiguous. Missing values must remain hidden until individually verified."
+        "116 of 350 current directory entries still lack confirmed public settings, and 31 lack a verified/observed role label. Crosshair coverage is 50/350. Do not estimate or bulk-scrape missing values."
       ],
       "legacyName": "PULSE",
       "epithet": "O Investigador",
