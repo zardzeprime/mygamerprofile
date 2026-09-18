@@ -95,7 +95,7 @@ const DARK_SOULS_REMASTERED_COVER =
   "https://static.actugaming.net/media/2018/01/dark-souls-remastered-jaquette.jpg";
 const VALORANT_COVER =
   "https://images.stopgame.ru/games/logos/19592/c560x560/62PEyFi2MwDpL91qF8_FsA/valorant-square_1.jpg";
-const VALORANT_CARD_MARK = "/game-logos/valorant-mgp.svg";
+const VALORANT_CARD_MARK = "/game-logos/valorant-card.png";
 
 function makeMgpPlaceholder(label: string, subtitle: string, from: string, to: string) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient></defs><rect width="1600" height="900" fill="url(#g)"/><circle cx="1340" cy="130" r="390" fill="white" opacity=".035"/><circle cx="180" cy="820" r="480" fill="white" opacity=".025"/><text x="110" y="650" fill="white" font-family="Arial,sans-serif" font-size="86" font-weight="700">${label}</text><text x="114" y="716" fill="white" opacity=".62" font-family="Arial,sans-serif" font-size="30" letter-spacing="5">${subtitle}</text></svg>`;
@@ -544,8 +544,8 @@ export const GAMES: GameConfig[] = [
       heroObjectPosition: "center",
       trailerYoutubeId: "e_E9W2vsRbQ",
       trailerUrl: "https://www.youtube.com/watch?v=e_E9W2vsRbQ",
-      assetSource: "MGP local vector treatment for VALORANT card/navigation surfaces; hub background retains its separately tracked promotional reference",
-      assetLicense: "VALORANT brand mark belongs to Riot Games; MGP vector treatment is used as a presentation asset with provenance tracked in repository history",
+      assetSource: "User-provided VALORANT card artwork stored locally in the MGP repository; hub background retains its separately tracked promotional reference",
+      assetLicense: "User-provided project asset using the VALORANT brand mark; repository provenance retained",
     },
   },
   {
