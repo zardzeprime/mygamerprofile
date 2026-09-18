@@ -562,7 +562,7 @@ export const GAMES: GameConfig[] = [
     platforms: ["PC"],
     ageRating: "12+",
     themeKey: "competitive",
-    modules: ["overview", "news", "champions", "maps", "items", "skins", "competitive", "guides"],
+    modules: ["overview", "news", "champions", "builds", "maps", "items", "skins", "competitive", "guides"],
     profileFields: [
       {
         key: "favorite_champion",
