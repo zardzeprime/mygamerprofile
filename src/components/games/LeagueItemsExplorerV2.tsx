@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Coins, Hammer, Search, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowUp, Coins, Hammer, Search, ShieldCheck, Sparkles } from "lucide-react";
 import { DataSourceIndicator } from "@/components/common/DataSourceIndicator";
 import {
   Dialog,
@@ -43,6 +43,8 @@ type LeagueItem = {
 type ItemPayload = { data: Record<string, LeagueItem> };
 type ItemEntry = [string, LeagueItem];
 type CatalogVariant = "base" | "masterwork";
+type ItemTier = "all" | "basic" | "epic" | "legendary" | "boots" | "consumable";
+
 type CatalogEntry = {
   key: string;
   id: string;
@@ -121,6 +123,7 @@ function dedupeCatalog(entries: ItemEntry[]) {
       byName.set(key, entry);
       continue;
     }
+
     const [existingId, existingItem] = existing;
     const score = (candidateId: string, candidate: LeagueItem) => {
       let value = 0;
@@ -132,8 +135,10 @@ function dedupeCatalog(entries: ItemEntry[]) {
       value -= Number(candidateId) / 1_000_000;
       return value;
     };
+
     if (score(id, item) > score(existingId, existingItem)) byName.set(key, entry);
   }
+
   return Array.from(byName.values()).sort(([, a], [, b]) => a.name.localeCompare(b.name));
 }
 
@@ -146,11 +151,18 @@ function hasSummonersRiftUpgrade(item: LeagueItem, allItems: Map<string, LeagueI
   );
 }
 
+function getItemTier(item: LeagueItem, allItems: Map<string, LeagueItem>): Exclude<ItemTier, "all"> {
+  if (item.tags?.includes("Consumable") || item.tags?.includes("Trinket")) return "consumable";
+  if (item.tags?.includes("Boots")) return "boots";
+  if (!item.from?.length) return "basic";
+  if (hasSummonersRiftUpgrade(item, allItems)) return "epic";
+  return "legendary";
+}
+
 function isOrnnMasterworkCandidate(item: LeagueItem, allItems: Map<string, LeagueItem>) {
   if (!isVisibleStoreItem(item)) return false;
-  if ((item.depth ?? 0) < 3) return false;
+  if (getItemTier(item, allItems) !== "legendary") return false;
   if ((item.gold?.total ?? 0) < 1800) return false;
-  if (hasSummonersRiftUpgrade(item, allItems)) return false;
   const name = item.name.toLowerCase();
   if (name.includes("mejai")) return false;
   const excludedTags = new Set(["Boots", "Consumable", "Trinket", "GoldPer"]);
@@ -218,6 +230,23 @@ function formatStat(key: UpgradeStatKey, value: number) {
   return key === "attackSpeed" ? `${rounded}%` : `${rounded}`;
 }
 
+function tierLabel(tier: ItemTier, locale: Locale) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const labels: Record<ItemTier, string> = {
+    all: copy("Todos", "All", "Todos"),
+    basic: copy("Básicos", "Basic", "Básicos"),
+    epic: copy("Épicos", "Epic", "Épicos"),
+    legendary: copy("Lendários", "Legendary", "Legendarios"),
+    boots: copy("Botas", "Boots", "Botas"),
+    consumable: copy("Consumíveis", "Consumables", "Consumibles"),
+  };
+  return labels[tier];
+}
+
+function itemIcon(version: string, item: LeagueItem) {
+  return `${DDRAGON}/cdn/${version}/img/item/${item.image.full}`;
+}
+
 export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [version, setVersion] = useState(FALLBACK_VERSION);
@@ -225,6 +254,7 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
   const [allItemEntries, setAllItemEntries] = useState<ItemEntry[]>([]);
   const [englishEntries, setEnglishEntries] = useState<ItemEntry[]>([]);
   const [query, setQuery] = useState("");
+  const [tier, setTier] = useState<ItemTier>("all");
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [history, setHistory] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -232,6 +262,7 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     const controller = new AbortController();
+
     async function load() {
       setLoading(true);
       setError("");
@@ -246,34 +277,31 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
             current = versions[0] || FALLBACK_VERSION;
           }
         } catch (versionError) {
-          if (!controller.signal.aborted)
+          if (!controller.signal.aborted) {
             console.warn("[League] Using fallback Data Dragon version.", versionError);
+          }
         }
 
         const localUrl = `${DDRAGON}/cdn/${current}/data/${DATA_DRAGON_LOCALE[locale]}/item.json`;
         const englishUrl = `${DDRAGON}/cdn/${current}/data/en_US/item.json`;
         const [localResponse, englishResponse] = await Promise.all([
           fetch(localUrl, { signal: controller.signal }),
-          locale === "en"
-            ? Promise.resolve(null)
-            : fetch(englishUrl, { signal: controller.signal }),
+          locale === "en" ? Promise.resolve(null) : fetch(englishUrl, { signal: controller.signal }),
         ]);
+
         if (!localResponse.ok) throw new Error(`Data Dragon returned ${localResponse.status}`);
-        if (englishResponse && !englishResponse.ok)
+        if (englishResponse && !englishResponse.ok) {
           throw new Error(`Data Dragon EN returned ${englishResponse.status}`);
+        }
+
         const payload = (await localResponse.json()) as ItemPayload;
-        const englishPayload = englishResponse
-          ? ((await englishResponse.json()) as ItemPayload)
-          : payload;
+        const englishPayload = englishResponse ? ((await englishResponse.json()) as ItemPayload) : payload;
         const everyItem = Object.entries(payload.data);
-        const summonersRiftItems = dedupeCatalog(
-          everyItem.filter(([, item]) => isVisibleStoreItem(item)),
-        );
 
         setVersion(current);
         setAllItemEntries(everyItem);
         setEnglishEntries(Object.entries(englishPayload.data));
-        setItems(summonersRiftItems);
+        setItems(dedupeCatalog(everyItem.filter(([, item]) => isVisibleStoreItem(item))));
       } catch (loadError) {
         if (controller.signal.aborted) return;
         console.error("[League] Item collection failed.", loadError);
@@ -288,6 +316,7 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
         if (!controller.signal.aborted) setLoading(false);
       }
     }
+
     void load();
     return () => controller.abort();
   }, [locale]);
@@ -310,6 +339,8 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     return catalog.filter((entry) => {
+      const tierMatch = tier === "all" || getItemTier(entry.item, allItems) === tier;
+      if (!tierMatch) return false;
       if (!normalized) return true;
       return (
         entry.item.name.toLowerCase().includes(normalized) ||
@@ -320,7 +351,7 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
             normalized.includes("masterwork")))
       );
     });
-  }, [catalog, query]);
+  }, [allItems, catalog, query, tier]);
 
   const entryByKey = useMemo(() => new Map(catalog.map((entry) => [entry.key, entry])), [catalog]);
 
@@ -329,10 +360,12 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
     if (fromKey && fromKey !== key) setHistory((current) => [...current, fromKey].slice(-30));
     setSelectedKey(key);
   };
+
   const closeItem = () => {
     setSelectedKey(null);
     setHistory([]);
   };
+
   const goBack = () => {
     setHistory((current) => {
       if (!current.length) return current;
@@ -344,6 +377,7 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
   };
 
   const selected = selectedKey ? entryByKey.get(selectedKey) : undefined;
+  const tiers: ItemTier[] = ["all", "basic", "epic", "legendary", "boots", "consumable"];
 
   return (
     <section className="space-y-6">
@@ -357,39 +391,50 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
               </span>
             </div>
             <h2 className="mt-4 font-display text-2xl font-semibold text-foreground sm:text-3xl">
-              {copy(
-                "Itens de Summoner's Rift",
-                "Summoner's Rift items",
-                "Objetos de la Grieta del Invocador",
-              )}
+              {copy("Loja de itens", "Item shop", "Tienda de objetos")}
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
               {copy(
-                "Atributos oficiais, receitas clicáveis e uma versão Magistral separada para cada Lendário elegível ao Ornn.",
-                "Official stats, clickable recipes, and a separate Masterwork version for every Ornn-eligible Legendary.",
-                "Estadísticas oficiales, recetas interactivas y una versión Magistral separada para cada Legendario elegible de Ornn.",
+                "A grade mostra só o essencial: ícone e preço. Abra qualquer item para ver atributos em linhas separadas, descrição e árvore completa de receita.",
+                "The grid shows only the essentials: icon and price. Open any item to see separated stat rows, description and the full recipe tree.",
+                "La cuadrícula muestra solo lo esencial: icono y precio. Abre cualquier objeto para ver atributos separados, descripción y el árbol completo de receta.",
               )}
             </p>
           </div>
           <span className="text-xs font-semibold text-muted-foreground">
-            {loading
-              ? copy("Sincronizando…", "Syncing…", "Sincronizando…")
-              : `${filtered.length} ${copy("entradas", "entries", "entradas")}`}
+            {loading ? copy("Sincronizando…", "Syncing…", "Sincronizando…") : `${filtered.length} / ${catalog.length}`}
           </span>
         </div>
-        <label className="mt-5 flex max-w-xl items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 focus-within:border-gold/50">
-          <Search className="size-4 text-muted-foreground" />
-          <Input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0"
-            placeholder={copy(
-              "Buscar item ou Ornn…",
-              "Search item or Ornn…",
-              "Buscar objeto u Ornn…",
-            )}
-          />
-        </label>
+
+        <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+          <label className="flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 focus-within:border-gold/50">
+            <Search className="size-4 text-muted-foreground" />
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0"
+              placeholder={copy("Buscar qualquer item…", "Search any item…", "Buscar cualquier objeto…")}
+            />
+          </label>
+          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {tiers.map((entry) => (
+              <button
+                key={entry}
+                type="button"
+                aria-pressed={tier === entry}
+                onClick={() => setTier(entry)}
+                className={cn(
+                  "min-h-10 shrink-0 rounded-full border px-3 text-xs font-semibold transition-all",
+                  tier === entry
+                    ? "border-gold/45 bg-gold/10 text-gold-strong"
+                    : "border-border bg-background/55 text-muted-foreground hover:border-gold/25 hover:text-foreground",
+                )}
+              >
+                {tierLabel(entry, locale)}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {error ? (
@@ -399,102 +444,48 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
       ) : null}
 
       {loading ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {Array.from({ length: 16 }).map((_, index) => (
-            <div
-              key={index}
-              className="h-32 animate-pulse rounded-xl border border-border bg-muted/40"
-            />
+        <div className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12">
+          {Array.from({ length: 36 }).map((_, index) => (
+            <div key={index} className="aspect-[0.82] animate-pulse rounded-xl border border-border bg-muted/40" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filtered.map((entry) => {
-            const statLines = extractStatLines(entry.item.description).slice(0, 3);
-            const upgrades =
-              entry.variant === "masterwork" ? masterworkStats(entry.item, entry.englishItem) : [];
-            return (
-              <button
-                key={entry.key}
-                type="button"
-                onClick={() => openEntry(entry.key)}
-                title={entry.item.name}
-                className={cn(
-                  "group flex min-h-32 items-start gap-3 overflow-hidden rounded-xl border bg-surface p-3 text-left transition-all hover:-translate-y-0.5 hover:shadow-lift",
-                  entry.variant === "masterwork"
-                    ? "border-orange-400/55 bg-[linear-gradient(180deg,rgba(249,115,22,0.08),transparent_38%)] hover:border-orange-300"
-                    : "border-border hover:border-gold/45",
-                )}
-              >
-                <div className="relative grid size-16 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-muted/60 p-1.5">
-                  <img
-                    src={`${DDRAGON}/cdn/${version}/img/item/${entry.item.image.full}`}
-                    alt=""
-                    loading="lazy"
-                    width={56}
-                    height={56}
-                    className="size-14 object-contain"
-                  />
-                  {entry.variant === "masterwork" ? (
-                    <span className="absolute bottom-0.5 right-0.5 inline-flex items-center gap-0.5 rounded-full border border-orange-300/70 bg-popover px-1.5 py-0.5 text-[0.5rem] font-black uppercase text-orange-500 shadow-lg">
-                      <Hammer className="size-2.5" />
-                      ORNN
-                    </span>
-                  ) : null}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex min-w-0 items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold text-foreground">
-                        {entry.item.name}
-                      </p>
-                      <p
-                        className={cn(
-                          "mt-0.5 text-[0.6rem] font-bold uppercase tracking-[0.08em]",
-                          entry.variant === "masterwork"
-                            ? "text-orange-500"
-                            : "text-muted-foreground",
-                        )}
-                      >
-                        {entry.variant === "masterwork"
-                          ? copy("Magistral", "Masterwork", "Magistral")
-                          : copy("Item normal", "Base item", "Objeto normal")}
-                      </p>
-                    </div>
-                    {entry.item.gold?.total ? (
-                      <p className="flex shrink-0 items-center gap-1 text-[0.68rem] font-semibold text-gold-strong">
-                        <Coins className="size-3" />
-                        {entry.item.gold.total}
-                      </p>
-                    ) : null}
-                  </div>
-                  <div className="mt-2 flex min-h-12 flex-wrap content-start gap-1 text-[0.62rem] leading-4 text-muted-foreground">
-                    {entry.variant === "masterwork"
-                      ? upgrades.slice(0, 3).map((stat) => (
-                          <span
-                            key={stat.key}
-                            className="max-w-full truncate rounded-md border border-orange-400/20 bg-background/65 px-1.5 py-0.5"
-                          >
-                            <span className="text-foreground">{statLabel(stat.key, locale)}:</span>{" "}
-                            {formatStat(stat.key, stat.base)} →{" "}
-                            <span className="font-bold text-orange-500">
-                              {formatStat(stat.key, stat.base + stat.bonus)}
-                            </span>
-                          </span>
-                        ))
-                      : statLines.map((line) => (
-                          <span
-                            key={line}
-                            className="max-w-full truncate rounded-md border border-border bg-muted/30 px-1.5 py-0.5"
-                          >
-                            {line}
-                          </span>
-                        ))}
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+        <div className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12">
+          {filtered.map((entry) => (
+            <button
+              key={entry.key}
+              type="button"
+              onClick={() => openEntry(entry.key)}
+              title={entry.item.name}
+              aria-label={`${entry.item.name} · ${entry.item.gold?.total ?? 0} gold`}
+              className={cn(
+                "group relative overflow-hidden rounded-xl border bg-surface p-2 transition-all duration-200 hover:-translate-y-1 hover:shadow-lift focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45",
+                entry.variant === "masterwork"
+                  ? "border-orange-400/50 hover:border-orange-300"
+                  : "border-border hover:border-gold/40",
+              )}
+            >
+              <div className="relative aspect-square overflow-hidden rounded-lg bg-[radial-gradient(circle_at_top,hsl(var(--muted)/0.8),hsl(var(--background)))]">
+                <img
+                  src={itemIcon(version, entry.item)}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-110"
+                />
+                {entry.variant === "masterwork" ? (
+                  <span className="absolute right-1 top-1 grid size-5 place-items-center rounded-full border border-orange-300/70 bg-background/90 text-orange-500 shadow-lg">
+                    <Hammer className="size-3" />
+                  </span>
+                ) : null}
+              </div>
+              <div className="mt-2 flex items-center justify-center gap-1 text-[0.66rem] font-bold text-gold-strong">
+                <Coins className="size-3" />
+                <span>{entry.item.gold?.total ?? 0}</span>
+              </div>
+              <span className="sr-only">{entry.item.name}</span>
+            </button>
+          ))}
         </div>
       )}
 
@@ -502,15 +493,15 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-gold-strong" />
         <p>
           {copy(
-            "Dados e imagens vêm do Riot Data Dragon. As versões Magistrais são visualizações calculadas do sistema atual do Ornn: os atributos elegíveis recebem, juntos, aproximadamente 1.000 de ouro em valor adicional; passivas e efeitos do item não mudam.",
-            "Data and images come from Riot Data Dragon. Masterwork versions are calculated views of Ornn's current system: eligible stats together receive roughly 1,000 gold of additional stat value; item passives and effects remain unchanged.",
-            "Los datos e imágenes provienen de Riot Data Dragon. Las versiones Magistrales son vistas calculadas del sistema actual de Ornn: los atributos elegibles reciben en conjunto aproximadamente 1.000 de oro de valor adicional; las pasivas y efectos no cambian.",
+            "Dados, preços, receitas, atributos e ícones vêm do Riot Data Dragon. As categorias do MGP são de navegação: Básico, Épico e Lendário são derivados da posição do item na árvore atual; o antigo sistema de itens Míticos não é usado como filtro atual.",
+            "Data, prices, recipes, stats and icons come from Riot Data Dragon. MGP categories are navigation helpers: Basic, Epic and Legendary are derived from the item's current recipe position; the former Mythic item system is not used as a current filter.",
+            "Datos, precios, recetas, atributos e iconos provienen de Riot Data Dragon. Las categorías de MGP son ayudas de navegación: Básico, Épico y Legendario se derivan de la posición actual del objeto en la receta; el antiguo sistema Mítico no se usa como filtro actual.",
           )}
         </p>
       </div>
 
       <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && closeItem()}>
-        <DialogContent className="max-h-[92vh] max-w-3xl overflow-y-auto">
+        <DialogContent className="max-h-[92vh] max-w-4xl overflow-y-auto data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95">
           {selected ? (
             <ItemDetail
               entry={selected}
@@ -563,9 +554,11 @@ function ItemDetail({
       ) ?? [];
   const statLines = extractStatLines(item.description);
   const masterwork = variant === "masterwork" ? masterworkStats(item, englishItem) : [];
+  const description = stripMarkup(item.description);
+  const cleanDescription = statLines.reduce((value, stat) => value.replace(stat, ""), description).trim();
 
   return (
-    <div>
+    <div className="min-w-0">
       {canGoBack ? (
         <button
           type="button"
@@ -581,207 +574,252 @@ function ItemDetail({
         <div className="flex gap-4 pr-8">
           <div
             className={cn(
-              "grid size-20 shrink-0 place-items-center rounded-2xl p-1.5",
+              "grid size-24 shrink-0 place-items-center rounded-[1.35rem] p-2 shadow-lift",
               variant === "masterwork"
                 ? "bg-gradient-to-br from-orange-400 via-amber-200 to-orange-800"
-                : "bg-muted",
+                : "border border-border bg-muted/40",
             )}
           >
             <img
-              src={`${DDRAGON}/cdn/${version}/img/item/${item.image.full}`}
+              src={itemIcon(version, item)}
               alt=""
-              width={68}
-              height={68}
-              className="size-[68px] rounded-xl bg-background object-contain p-1"
+              width={80}
+              height={80}
+              className="size-20 rounded-2xl bg-background object-contain"
             />
           </div>
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <DialogTitle className="font-display text-2xl">{item.name}</DialogTitle>
-              {variant === "masterwork" ? (
-                <span className="inline-flex items-center gap-1 rounded-full border border-orange-400/45 bg-orange-500/10 px-2 py-0.5 text-[0.65rem] font-black uppercase tracking-[0.1em] text-orange-500">
-                  <Hammer className="size-3" />
-                  {copy("Magistral · Ornn", "Masterwork · Ornn", "Magistral · Ornn")}
+            <DialogTitle className="font-display text-2xl sm:text-3xl">{item.name}</DialogTitle>
+            <DialogDescription className="mt-1">
+              {tierLabel(getItemTier(item, allItems), locale)}
+              {variant === "masterwork" ? ` · ${copy("Magistral do Ornn", "Ornn Masterwork", "Magistral de Ornn")}` : ""}
+            </DialogDescription>
+            <p className="mt-3 flex items-center gap-1.5 text-base font-bold text-gold-strong">
+              <Coins className="size-4" />
+              {item.gold?.total ?? 0}
+              {item.gold?.sell ? (
+                <span className="ml-2 text-xs font-medium text-muted-foreground">
+                  {copy("venda", "sell", "venta")} {item.gold.sell}
                 </span>
               ) : null}
-            </div>
-            <DialogDescription className="mt-1">
-              #{id} {item.tags?.length ? `· ${item.tags.join(" · ")}` : ""}
-            </DialogDescription>
-            {item.gold?.total ? (
-              <p className="mt-2 flex items-center gap-1.5 text-sm font-bold text-gold-strong">
-                <Coins className="size-4" />
-                {item.gold.total}
-              </p>
-            ) : null}
+            </p>
           </div>
         </div>
       </DialogHeader>
 
-      {variant === "masterwork" ? (
-        <section className="mt-5 rounded-2xl border border-orange-400/35 bg-orange-500/[0.06] p-4">
-          <div className="flex items-center gap-2 text-orange-500">
-            <Hammer className="size-4" />
-            <h3 className="text-xs font-black uppercase tracking-[0.12em]">
-              {copy("Stats Magistral", "Masterwork stats", "Stats Magistrales")}
-            </h3>
-          </div>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+      <section className="mt-6 overflow-hidden rounded-2xl border border-border bg-muted/10">
+        <div className="flex items-center gap-2 border-b border-border px-4 py-3">
+          <Sparkles className="size-4 text-gold-strong" />
+          <h3 className="text-xs font-black uppercase tracking-[0.13em] text-muted-foreground">
+            {copy("Atributos", "Stats", "Atributos")}
+          </h3>
+        </div>
+
+        {variant === "masterwork" && masterwork.length ? (
+          <div className="divide-y divide-border">
             {masterwork.map((stat) => (
-              <div
-                key={stat.key}
-                className="rounded-xl border border-orange-400/20 bg-background/70 p-3"
-              >
-                <p className="text-[0.65rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
-                  {statLabel(stat.key, locale)}
-                </p>
-                <p className="mt-1 font-display text-lg font-bold text-foreground">
-                  {formatStat(stat.key, stat.base)}{" "}
-                  <span className="mx-1 text-muted-foreground">→</span>{" "}
-                  <span className="text-orange-500">
-                    {formatStat(stat.key, stat.base + stat.bonus)}
-                  </span>
-                </p>
-                <p className="mt-1 text-[0.65rem] font-semibold text-orange-500">
-                  +{formatStat(stat.key, stat.bonus)}
-                </p>
+              <div key={stat.key} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3">
+                <span className="text-sm font-semibold text-foreground">{statLabel(stat.key, locale)}</span>
+                <span className="text-right font-mono text-sm font-bold text-foreground">
+                  {formatStat(stat.key, stat.base)}
+                  <span className="mx-2 text-muted-foreground">→</span>
+                  <span className="text-orange-500">{formatStat(stat.key, stat.base + stat.bonus)}</span>
+                </span>
               </div>
             ))}
           </div>
-          <p className="mt-3 text-[0.7rem] leading-5 text-muted-foreground">
+        ) : statLines.length ? (
+          <div className="divide-y divide-border">
+            {statLines.map((line, index) => {
+              const match = line.match(/^([+\-]?\d+(?:\.\d+)?%?)\s*(.*)$/);
+              return (
+                <div key={`${line}-${index}`} className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 px-4 py-3">
+                  <span className="min-w-16 font-mono text-sm font-black text-gold-strong">
+                    {match?.[1] ?? "•"}
+                  </span>
+                  <span className="text-sm font-semibold text-foreground">{match?.[2] || line}</span>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="px-4 py-4 text-sm text-muted-foreground">
             {copy(
-              "O aprimoramento distribui cerca de 1.000 de ouro em valor entre os atributos elegíveis que o item já possui. Passivas, ativos e efeitos permanecem os mesmos do item normal.",
-              "The upgrade distributes about 1,000 gold of value across eligible stats the item already has. Passives, actives and effects remain the same as the base item.",
-              "La mejora distribuye cerca de 1.000 de oro de valor entre los atributos elegibles que el objeto ya posee. Pasivas, activos y efectos permanecen iguales al objeto normal.",
+              "Sem atributos diretos expostos nesta versão do Data Dragon.",
+              "No direct stats exposed in this Data Dragon version.",
+              "Sin atributos directos expuestos en esta versión de Data Dragon.",
             )}
           </p>
-        </section>
-      ) : (
-        <section className="mt-5 rounded-2xl border border-border bg-muted/15 p-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="size-4 text-gold-strong" />
-            <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
-              {copy("Atributos", "Stats", "Atributos")}
-            </h3>
-          </div>
-          {statLines.length ? (
-            <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              {statLines.map((line) => (
-                <div
-                  key={line}
-                  className="rounded-xl border border-border bg-background/65 px-3 py-2 text-sm font-semibold text-foreground"
-                >
-                  {line}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="mt-3 text-xs text-muted-foreground">
-              {copy(
-                "Sem atributos diretos expostos nesta versão do Data Dragon.",
-                "No direct stats exposed in this Data Dragon version.",
-                "Sin atributos directos expuestos en esta versión de Data Dragon.",
-              )}
-            </p>
-          )}
-        </section>
-      )}
+        )}
+      </section>
 
-      <p className="mt-5 text-sm leading-7 text-muted-foreground">
-        {stripMarkup(item.description).replace(statLines.join(" "), "") || item.plaintext}
-      </p>
+      {cleanDescription || item.plaintext ? (
+        <p className="mt-5 whitespace-pre-line text-sm leading-7 text-muted-foreground">
+          {cleanDescription || item.plaintext}
+        </p>
+      ) : null}
+
+      <RecipeTree
+        currentId={id}
+        currentItem={item}
+        components={components}
+        upgrades={upgrades}
+        version={version}
+        locale={locale}
+        onSelect={onSelect}
+      />
 
       {variant === "base" &&
       isOrnnMasterworkCandidate(item, allItems) &&
       masterworkStats(item, englishItems.get(id) ?? englishItem).length ? (
-        <button
-          type="button"
-          onClick={() => {}}
-          disabled
-          className="mt-5 flex w-full items-center gap-3 rounded-xl border border-orange-400/25 bg-orange-500/[0.04] p-3 text-left opacity-90"
-        >
-          <span className="grid size-9 place-items-center rounded-xl bg-orange-500/10 text-orange-500">
+        <div className="mt-6 flex items-start gap-3 rounded-2xl border border-orange-400/25 bg-orange-500/[0.05] p-4">
+          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-orange-500/10 text-orange-500">
             <Hammer className="size-4" />
           </span>
-          <span>
-            <span className="block text-xs font-black uppercase tracking-[0.1em] text-orange-500">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.1em] text-orange-500">
+              {copy("Elegível ao Magistral do Ornn", "Eligible for Ornn Masterwork", "Elegible para Magistral de Ornn")}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
               {copy(
-                "Também existe como Magistral",
-                "Also available as Masterwork",
-                "También existe como Magistral",
+                "A versão aprimorada aparece como uma entrada separada no catálogo para não misturar os atributos normais com os bônus do Ornn.",
+                "The upgraded version appears as a separate catalog entry so normal stats are never mixed with Ornn bonuses.",
+                "La versión mejorada aparece como una entrada separada para no mezclar atributos normales con los bonos de Ornn.",
               )}
-            </span>
-            <span className="mt-1 block text-xs text-muted-foreground">
-              {copy(
-                "Volte ao catálogo para abrir a cópia aprimorada do Ornn.",
-                "Return to the catalog to open the Ornn-upgraded copy.",
-                "Vuelve al catálogo para abrir la copia mejorada por Ornn.",
-              )}
-            </span>
-          </span>
-        </button>
-      ) : null}
-
-      {components.length ? (
-        <ItemLinks
-          title={copy("Componentes", "Components", "Componentes")}
-          entries={components}
-          version={version}
-          onSelect={onSelect}
-        />
-      ) : null}
-      {upgrades.length ? (
-        <ItemLinks
-          title={copy("Pode construir", "Builds into", "Puede construir")}
-          entries={upgrades}
-          version={version}
-          onSelect={onSelect}
-        />
+            </p>
+          </div>
+        </div>
       ) : null}
     </div>
   );
 }
 
-function ItemLinks({
-  title,
-  entries,
+function RecipeTree({
+  currentId,
+  currentItem,
+  components,
+  upgrades,
+  version,
+  locale,
+  onSelect,
+}: {
+  currentId: string;
+  currentItem: LeagueItem;
+  components: Array<readonly [string, LeagueItem]>;
+  upgrades: Array<readonly [string, LeagueItem]>;
+  version: string;
+  locale: Locale;
+  onSelect: (id: string) => void;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+
+  return (
+    <section className="mt-7">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h3 className="font-display text-lg font-semibold text-foreground">
+            {copy("Árvore de construção", "Build tree", "Árbol de construcción")}
+          </h3>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {copy(
+              "Clique em qualquer nó para navegar pela receita.",
+              "Select any node to navigate the recipe.",
+              "Selecciona cualquier nodo para navegar por la receta.",
+            )}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-5 rounded-2xl border border-border bg-[radial-gradient(circle_at_center,hsl(var(--gold)/0.06),transparent_65%),hsl(var(--muted)/0.08)] p-4 sm:p-5">
+        {components.length ? (
+          <>
+            <div className="mb-3 flex items-center justify-center gap-2 text-[0.65rem] font-black uppercase tracking-[0.12em] text-muted-foreground">
+              <ArrowDown className="size-3.5 text-gold-strong" />
+              {copy("Componentes necessários", "Required components", "Componentes necesarios")}
+            </div>
+            <div className="flex flex-wrap justify-center gap-3">
+              {components.map(([id, item]) => (
+                <RecipeNode key={id} id={id} item={item} version={version} onSelect={onSelect} />
+              ))}
+            </div>
+            <div className="mx-auto my-3 h-7 w-px bg-gradient-to-b from-gold/60 to-border" />
+          </>
+        ) : null}
+
+        <div className="mx-auto max-w-xs">
+          <div className="rounded-2xl border border-gold/45 bg-background/90 p-3 shadow-lift">
+            <div className="flex items-center gap-3">
+              <img src={itemIcon(version, currentItem)} alt="" className="size-14 rounded-xl object-contain" />
+              <div className="min-w-0">
+                <p className="truncate text-sm font-bold text-foreground">{currentItem.name}</p>
+                <p className="mt-1 flex items-center gap-1 text-xs font-bold text-gold-strong">
+                  <Coins className="size-3" />
+                  {currentItem.gold?.total ?? 0}
+                </p>
+                <span className="sr-only">#{currentId}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {upgrades.length ? (
+          <>
+            <div className="mx-auto my-3 h-7 w-px bg-gradient-to-b from-border to-gold/60" />
+            <div className="mb-3 flex items-center justify-center gap-2 text-[0.65rem] font-black uppercase tracking-[0.12em] text-muted-foreground">
+              <ArrowUp className="size-3.5 text-gold-strong" />
+              {copy("Pode evoluir para", "Builds into", "Puede evolucionar a")}
+            </div>
+            <div className="flex flex-wrap justify-center gap-3">
+              {upgrades.map(([id, item]) => (
+                <RecipeNode key={id} id={id} item={item} version={version} onSelect={onSelect} />
+              ))}
+            </div>
+          </>
+        ) : null}
+
+        {!components.length && !upgrades.length ? (
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            {copy(
+              "Este item não possui relações de receita expostas no Data Dragon atual.",
+              "This item exposes no recipe relations in the current Data Dragon data.",
+              "Este objeto no expone relaciones de receta en los datos actuales de Data Dragon.",
+            )}
+          </p>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+function RecipeNode({
+  id,
+  item,
   version,
   onSelect,
 }: {
-  title: string;
-  entries: Array<readonly [string, LeagueItem]>;
+  id: string;
+  item: LeagueItem;
   version: string;
   onSelect: (id: string) => void;
 }) {
   return (
-    <section className="mt-6">
-      <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
-        {title}
-      </h3>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {entries.map(([id, item]) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => onSelect(id)}
-            className="group flex items-center gap-2 rounded-xl border border-border bg-muted/15 p-2 pr-3 text-left transition-all hover:-translate-y-0.5 hover:border-gold/45 hover:bg-muted/25"
-          >
-            <span className="grid size-10 shrink-0 place-items-center rounded-lg border border-border bg-muted/60 p-1">
-              <img
-                src={`${DDRAGON}/cdn/${version}/img/item/${item.image.full}`}
-                alt=""
-                loading="lazy"
-                width={32}
-                height={32}
-                className="size-8 object-contain"
-              />
-            </span>
-            <span className="max-w-44 text-xs font-semibold text-foreground group-hover:text-gold-strong">
-              {item.name}
-            </span>
-          </button>
-        ))}
-      </div>
-    </section>
+    <button
+      type="button"
+      onClick={() => onSelect(id)}
+      className="group w-28 rounded-xl border border-border bg-background/80 p-2 text-center transition-all hover:-translate-y-1 hover:border-gold/45 hover:shadow-lift"
+    >
+      <img
+        src={itemIcon(version, item)}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        className="mx-auto size-12 rounded-lg object-contain transition-transform group-hover:scale-105"
+      />
+      <p className="mt-2 truncate text-[0.68rem] font-semibold text-foreground">{item.name}</p>
+      <p className="mt-1 flex items-center justify-center gap-1 text-[0.62rem] font-bold text-gold-strong">
+        <Coins className="size-3" />
+        {item.gold?.total ?? 0}
+      </p>
+    </button>
   );
 }
