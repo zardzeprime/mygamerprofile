@@ -14,7 +14,7 @@ import {
   UserRound,
   WalletCards,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 import { SUPPORT_METHODS } from "@/config/support";
 import { useI18n } from "@/i18n";
@@ -280,7 +280,7 @@ function SupportCard({
   badge: string;
   description: string;
   active: boolean;
-  action: React.ReactNode;
+  action: ReactNode;
 }) {
   return (
     <article
