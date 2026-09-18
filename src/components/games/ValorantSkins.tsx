@@ -27,6 +27,8 @@ type PreviewClip = {
   id: string;
   label: string;
   url: string;
+  kind: "level" | "variant";
+  ordinal: number;
 };
 
 export function ValorantSkins({ locale }: { locale: Locale }) {
@@ -438,16 +440,87 @@ function SkinPreviewModal({
           <div className="min-w-0"><p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-gold-strong">{copy("PREVIEW DE SKIN", "SKIN PREVIEW", "PREVIEW DE SKIN")}</p><h3 className="mt-1 truncate font-display text-lg font-semibold sm:text-xl">{skin.name}</h3></div>
           <button type="button" onClick={onClose} className="grid size-11 shrink-0 place-items-center rounded-full border border-border transition-all hover:rotate-90 hover:border-gold/45 hover:text-gold-strong" aria-label={copy("Fechar preview", "Close preview", "Cerrar preview")}><X className="size-4" /></button>
         </div>
-        <MinimalVideoPlayer key={active.url} src={active.url} locale={locale} autoPlay className="aspect-video w-full" />
-        <div className="flex flex-col gap-3 border-t border-border p-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="truncate text-sm font-semibold text-foreground">{active.label}</p>
-          <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
-            {clips.map((clip, index) => (
-              <button key={clip.id} type="button" onClick={() => onIndex(index)} aria-pressed={index === activeIndex} className={cn("min-h-11 shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all", index === activeIndex ? "border-gold/55 bg-gold/10 text-foreground" : "border-border text-muted-foreground hover:border-gold/30 hover:text-foreground")}>{index + 1}. {clip.label}</button>
-            ))}
+        <MinimalVideoPlayer
+          key={active.url}
+          src={active.url}
+          locale={locale}
+          autoPlay
+          autoPlayOnTouch
+          className="aspect-video w-full"
+        />
+        <div className="border-t border-border p-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="min-w-0 truncate text-sm font-semibold text-foreground">{active.label}</p>
+            <span className="shrink-0 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+              {copy("Role para navegar", "Scroll to browse", "Desplaza para navegar")}
+            </span>
           </div>
+          <PreviewClipRail
+            clips={clips}
+            activeIndex={activeIndex}
+            onIndex={onIndex}
+            locale={locale}
+          />
         </div>
       </div>
+    </div>
+  );
+}
+
+function PreviewClipRail({
+  clips,
+  activeIndex,
+  onIndex,
+  locale,
+}: {
+  clips: PreviewClip[];
+  activeIndex: number;
+  onIndex: (index: number) => void;
+  locale: Locale;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const railRef = useRef<HTMLDivElement>(null);
+
+  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    const rail = railRef.current;
+    if (!rail || rail.scrollWidth <= rail.clientWidth) return;
+
+    const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+    if (!delta) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    rail.scrollLeft += delta;
+  };
+
+  return (
+    <div
+      ref={railRef}
+      onWheel={handleWheel}
+      className="mgp-media-rail mt-3 flex max-w-full gap-2 overflow-x-auto overscroll-x-contain pb-2"
+      style={{ overscrollBehavior: "contain" }}
+    >
+      {clips.map((clip, index) => (
+        <button
+          key={clip.id}
+          type="button"
+          onClick={() => onIndex(index)}
+          aria-pressed={index === activeIndex}
+          className={cn(
+            "min-h-12 min-w-36 shrink-0 rounded-xl border px-3 py-2 text-left transition-all",
+            index === activeIndex
+              ? "border-gold/55 bg-gold/10 text-foreground shadow-sm"
+              : "border-border bg-background/45 text-muted-foreground hover:border-gold/30 hover:text-foreground",
+          )}
+        >
+          <span className="block text-[0.58rem] font-black uppercase tracking-[0.1em] text-gold-strong">
+            {clip.kind === "level"
+              ? copy(`Nível ${clip.ordinal}`, `Level ${clip.ordinal}`, `Nivel ${clip.ordinal}`)
+              : copy(`Variante ${clip.ordinal}`, `Variant ${clip.ordinal}`, `Variante ${clip.ordinal}`)}
+          </span>
+          <span className="mt-1 block max-w-48 truncate text-xs font-semibold">{clip.label}</span>
+        </button>
+      ))}
     </div>
   );
 }
@@ -515,12 +588,24 @@ function getSkinPreviewClips(skin: ValorantSkin): PreviewClip[] {
   skin.levels.forEach((level, index) => {
     if (!level.streamedVideo || seen.has(level.streamedVideo)) return;
     seen.add(level.streamedVideo);
-    clips.push({ id: `level-${level.uuid}`, label: level.item ?? `Level ${index + 1}`, url: level.streamedVideo });
+    clips.push({
+      id: `level-${level.uuid}`,
+      label: level.item ?? `Level ${index + 1}`,
+      url: level.streamedVideo,
+      kind: "level",
+      ordinal: index + 1,
+    });
   });
   skin.chromas.forEach((chroma, index) => {
     if (!chroma.streamedVideo || seen.has(chroma.streamedVideo)) return;
     seen.add(chroma.streamedVideo);
-    clips.push({ id: `chroma-${chroma.uuid}`, label: chroma.name || `Variant ${index + 1}`, url: chroma.streamedVideo });
+    clips.push({
+      id: `chroma-${chroma.uuid}`,
+      label: chroma.name || `Variant ${index + 1}`,
+      url: chroma.streamedVideo,
+      kind: "variant",
+      ordinal: index + 1,
+    });
   });
   return clips;
 }
