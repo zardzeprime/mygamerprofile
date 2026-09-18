@@ -153,7 +153,8 @@ function RootComponent() {
 
       const hostname = parsed.hostname.toLowerCase();
       const isFandom = hostname.endsWith("fandom.com") || hostname.endsWith("wikia.nocookie.net");
-      const isCreativeUncut = hostname === "creativeuncut.com" || hostname === "www.creativeuncut.com";
+      const isCreativeUncut =
+        hostname === "creativeuncut.com" || hostname === "www.creativeuncut.com";
       if (!isFandom && !isCreativeUncut) return;
 
       image.removeAttribute("srcset");
@@ -161,8 +162,8 @@ function RootComponent() {
       // Some external media hosts reject no-referrer hotlinks or unstable redirect URLs.
       // Retry once with the browser's normal cross-origin referrer policy and a stable
       // MediaWiki file-path alias before falling back to a same-origin MGP asset.
-      if (image.dataset.mgpExternalRetry !== "1") {
-        image.dataset.mgpExternalRetry = "1";
+      if (image.dataset["mgpExternalRetry"] !== "1") {
+        image.dataset["mgpExternalRetry"] = "1";
         image.referrerPolicy = "strict-origin-when-cross-origin";
 
         if (isFandom && source.includes("/Special:Redirect/file/")) {
@@ -176,11 +177,12 @@ function RootComponent() {
         return;
       }
 
-      if (image.dataset.mgpFallbackApplied === "1") return;
-      image.dataset.mgpFallbackApplied = "1";
+      if (image.dataset["mgpFallbackApplied"] === "1") return;
+      image.dataset["mgpFallbackApplied"] = "1";
 
       const isDarkSoulsThree =
-        window.location.pathname.includes("dark-souls-iii") || parsed.pathname.includes("/gallery-30/");
+        window.location.pathname.includes("dark-souls-iii") ||
+        parsed.pathname.includes("/gallery-30/");
       image.src = isDarkSoulsThree ? "/game-covers/ds3.webp" : darkSoulsAtmosphere;
     };
 

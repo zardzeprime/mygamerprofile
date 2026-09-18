@@ -96,8 +96,9 @@ export function NexusChat() {
 
     const load = async () => {
       if (!user) {
+        const storedGuestId = readStoredGuestId();
         const nextGuest = (await getNexusGuestStatus({
-          data: { guestId: readStoredGuestId() },
+          data: storedGuestId ? { guestId: storedGuestId } : {},
         })) as NexusGuestStatus;
         if (!active) return;
         persistGuestId(nextGuest.guestId);
@@ -130,7 +131,9 @@ export function NexusChat() {
       })) as NexusMessage[];
       if (!active) return;
       setThreadId(preferred.id);
-      setMessages(history.filter((message) => message.role === "user" || message.role === "assistant"));
+      setMessages(
+        history.filter((message) => message.role === "user" || message.role === "assistant"),
+      );
     };
 
     const LOAD_TIMEOUT_MS = 12_000;
@@ -193,8 +196,9 @@ export function NexusChat() {
         // Resolve the session here instead of silently discarding the user's first message.
         let activeGuest = guestStatus;
         if (!activeGuest) {
+          const storedGuestId = readStoredGuestId();
           activeGuest = (await getNexusGuestStatus({
-            data: { guestId: readStoredGuestId() },
+            data: storedGuestId ? { guestId: storedGuestId } : {},
           })) as NexusGuestStatus;
           persistGuestId(activeGuest.guestId);
           setGuestStatus(activeGuest);
@@ -226,7 +230,7 @@ export function NexusChat() {
       const accessToken = sessionData.session?.access_token;
       if (!accessToken) throw new Error("NEXUS_AUTH_SESSION_MISSING");
       const response = await sendNexusMessage({
-        data: { threadId, mode, message, locale, accessToken },
+        data: { ...(threadId ? { threadId } : {}), mode, message, locale, accessToken },
       });
       setThreadId(response.threadId);
       setMessages((current) => [
@@ -278,9 +282,7 @@ export function NexusChat() {
   const guestLocked = !user && Boolean(guestStatus?.locked);
   const aiReady = user ? configuredProviders.length > 0 : Boolean(guestStatus?.aiReady);
   const canSend = Boolean(
-    !loadingChat &&
-      aiReady &&
-      (user || (guestStatus && !guestStatus.locked)),
+    !loadingChat && aiReady && (user || (guestStatus && !guestStatus.locked)),
   );
 
   return (
@@ -317,20 +319,34 @@ export function NexusChat() {
                             `${guestStatus.remaining} of ${guestStatus.maxResponses} free replies left`,
                             `${guestStatus.remaining} de ${guestStatus.maxResponses} respuestas gratis`,
                           )
-                        : copy("Conectando sessão guest...", "Connecting guest session...", "Conectando sesión invitada...")
+                        : copy(
+                            "Conectando sessão guest...",
+                            "Connecting guest session...",
+                            "Conectando sesión invitada...",
+                          )
                       : configuredProviders.length
                         ? copy(
                             `${configuredProviders.length} provedor(es) disponível(is)`,
                             `${configuredProviders.length} provider(s) available`,
                             `${configuredProviders.length} proveedor(es) disponible(s)`,
                           )
-                        : copy("NEXUS sem provedor conectado", "NEXUS has no provider connected", "NEXUS sin proveedor conectado")}
+                        : copy(
+                            "NEXUS sem provedor conectado",
+                            "NEXUS has no provider connected",
+                            "NEXUS sin proveedor conectado",
+                          )}
                   </p>
                 </div>
               </div>
 
               {user ? (
-                <Button type="button" variant="ghost" size="icon" onClick={() => startNewChat()} title={copy("Nova conversa", "New chat", "Nueva conversación")}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => startNewChat()}
+                  title={copy("Nova conversa", "New chat", "Nueva conversación")}
+                >
                   <Plus className="size-4" />
                 </Button>
               ) : (
@@ -350,7 +366,9 @@ export function NexusChat() {
                   onClick={() => changeMode("gaming")}
                   className={cn(
                     "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-colors",
-                    mode === "gaming" ? "bg-background text-foreground shadow-soft" : "text-muted-foreground",
+                    mode === "gaming"
+                      ? "bg-background text-foreground shadow-soft"
+                      : "text-muted-foreground",
                   )}
                 >
                   <Gamepad2 className="size-3.5" />
@@ -362,7 +380,9 @@ export function NexusChat() {
                   onClick={() => changeMode("development")}
                   className={cn(
                     "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-colors",
-                    mode === "development" ? "bg-background text-foreground shadow-soft" : "text-muted-foreground",
+                    mode === "development"
+                      ? "bg-background text-foreground shadow-soft"
+                      : "text-muted-foreground",
                     !status.isAdmin && "cursor-not-allowed opacity-40",
                   )}
                   title={!status.isAdmin ? "Admin only" : undefined}
@@ -490,14 +510,27 @@ export function NexusChat() {
                 maxLength={user ? 6000 : 2500}
                 placeholder={
                   !aiReady
-                    ? copy("Motor de IA ainda não conectado", "AI engine not connected yet", "Motor de IA aún no conectado")
+                    ? copy(
+                        "Motor de IA ainda não conectado",
+                        "AI engine not connected yet",
+                        "Motor de IA aún no conectado",
+                      )
                     : guestLocked
-                      ? copy("Entre para continuar com a NEXUS", "Sign in to keep chatting", "Inicia sesión para continuar")
+                      ? copy(
+                          "Entre para continuar com a NEXUS",
+                          "Sign in to keep chatting",
+                          "Inicia sesión para continuar",
+                        )
                       : copy("Fale com a NEXUS...", "Talk to NEXUS...", "Habla con NEXUS...")
                 }
                 className="max-h-32 min-h-11 flex-1 resize-none rounded-2xl border border-input bg-background px-3.5 py-3 text-sm text-foreground outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-gold/30 disabled:opacity-50"
               />
-              <Button type="submit" size="icon" disabled={!canSend || sending || !input.trim()} className="size-11 rounded-2xl">
+              <Button
+                type="submit"
+                size="icon"
+                disabled={!canSend || sending || !input.trim()}
+                className="size-11 rounded-2xl"
+              >
                 <Send className="size-4" />
               </Button>
             </form>
@@ -516,7 +549,9 @@ export function NexusChat() {
                     )}
               </p>
               {!user && guestStatus ? (
-                <span className="shrink-0 font-semibold text-gold-strong">{guestStatus.remaining}/10</span>
+                <span className="shrink-0 font-semibold text-gold-strong">
+                  {guestStatus.remaining}/10
+                </span>
               ) : null}
             </div>
           </footer>

@@ -38,7 +38,7 @@ function applyAccentColor(value: string | null) {
     root.style.removeProperty("--mgp-user-accent-strong");
     root.style.removeProperty("--accent");
     root.style.removeProperty("--accent-foreground");
-    delete root.dataset.accent;
+    delete root.dataset["accent"];
     return;
   }
 
@@ -59,7 +59,7 @@ function applyAccentColor(value: string | null) {
     "--accent-foreground",
     "color-mix(in oklab, var(--mgp-user-accent) 70%, var(--foreground))",
   );
-  root.dataset.accent = "custom";
+  root.dataset["accent"] = "custom";
 }
 
 /**
