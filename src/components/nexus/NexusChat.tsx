@@ -31,6 +31,7 @@ type NexusMessage = {
 
 type NexusStatus = {
   isAdmin: boolean;
+  aiReady: boolean;
   providers: Array<{ id: string; configured: boolean; model: string }>;
   tools: Array<{ id: string; name: string; status: string }>;
 };
@@ -71,6 +72,7 @@ export function NexusChat() {
   const [sending, setSending] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
   const [error, setError] = useState("");
+  const [reloadNonce, setReloadNonce] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const configuredProviders = useMemo(
@@ -156,7 +158,7 @@ export function NexusChat() {
     return () => {
       active = false;
     };
-  }, [open, authLoading, user?.id]);
+  }, [open, authLoading, user?.id, reloadNonce]);
 
   useEffect(() => {
     if (!open) return;
@@ -183,7 +185,7 @@ export function NexusChat() {
     const message = input.trim();
     if (!message || sending || authLoading) return;
     if (!user && guestStatus?.locked) return;
-    if (user && configuredProviders.length === 0) return;
+    if (user && status?.aiReady === false) return;
 
     setInput("");
     setError("");
@@ -280,9 +282,13 @@ export function NexusChat() {
 
   const visibleMessages = [greeting, ...messages];
   const guestLocked = !user && Boolean(guestStatus?.locked);
-  const aiReady = user ? configuredProviders.length > 0 : Boolean(guestStatus?.aiReady);
+  const providerStatusKnown = user ? status !== null : guestStatus !== null;
+  const aiReady = user ? status?.aiReady === true : guestStatus?.aiReady === true;
   const canSend = Boolean(
-    !loadingChat && aiReady && (user || (guestStatus && !guestStatus.locked)),
+    !loadingChat &&
+      providerStatusKnown &&
+      aiReady &&
+      (user || (guestStatus && !guestStatus.locked)),
   );
 
   return (
@@ -324,17 +330,23 @@ export function NexusChat() {
                             "Connecting guest session...",
                             "Conectando sesión invitada...",
                           )
-                      : configuredProviders.length
+                      : !status
                         ? copy(
-                            `${configuredProviders.length} provedor(es) disponível(is)`,
-                            `${configuredProviders.length} provider(s) available`,
-                            `${configuredProviders.length} proveedor(es) disponible(s)`,
+                            "Verificando motor da NEXUS...",
+                            "Checking NEXUS engine...",
+                            "Verificando motor de NEXUS...",
                           )
-                        : copy(
-                            "NEXUS sem provedor conectado",
-                            "NEXUS has no provider connected",
-                            "NEXUS sin proveedor conectado",
-                          )}
+                        : configuredProviders.length
+                          ? copy(
+                              `${configuredProviders.length} provedor(es) disponível(is)`,
+                              `${configuredProviders.length} provider(s) available`,
+                              `${configuredProviders.length} proveedor(es) disponible(s)`,
+                            )
+                          : copy(
+                              "NEXUS sem provedor conectado",
+                              "NEXUS has no provider connected",
+                              "NEXUS sin proveedor conectado",
+                            )}
                   </p>
                 </div>
               </div>
@@ -434,7 +446,7 @@ export function NexusChat() {
                   </div>
                 ) : null}
 
-                {!aiReady ? (
+                {providerStatusKnown && !aiReady ? (
                   <div className="mt-4 rounded-2xl border border-border bg-muted/40 p-4 text-center">
                     <NexusMark className="mx-auto mb-2 size-8 text-gold-strong" />
                     <p className="font-semibold text-foreground">
@@ -494,7 +506,20 @@ export function NexusChat() {
           </div>
 
           <footer className="border-t border-border bg-surface p-3">
-            {error ? <p className="mb-2 text-xs text-destructive">{error}</p> : null}
+            {error ? (
+              <div className="mb-2 flex items-center justify-between gap-3 rounded-xl border border-destructive/20 bg-destructive/5 px-3 py-2">
+                <p className="text-xs text-destructive">{error}</p>
+                {!providerStatusKnown ? (
+                  <button
+                    type="button"
+                    onClick={() => setReloadNonce((value) => value + 1)}
+                    className="shrink-0 rounded-lg border border-border bg-background px-2.5 py-1.5 text-[11px] font-semibold text-foreground transition-colors hover:bg-muted"
+                  >
+                    {copy("Tentar novamente", "Retry", "Reintentar")}
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
             <form onSubmit={submit} className="flex items-end gap-2">
               <textarea
                 value={input}
@@ -509,12 +534,18 @@ export function NexusChat() {
                 rows={1}
                 maxLength={user ? 6000 : 2500}
                 placeholder={
-                  !aiReady
+                  !providerStatusKnown
                     ? copy(
-                        "Motor de IA ainda não conectado",
-                        "AI engine not connected yet",
-                        "Motor de IA aún no conectado",
+                        "Verificando conexão com a NEXUS...",
+                        "Checking NEXUS connection...",
+                        "Verificando conexión con NEXUS...",
                       )
+                    : !aiReady
+                      ? copy(
+                          "Motor de IA ainda não conectado",
+                          "AI engine not connected yet",
+                          "Motor de IA aún no conectado",
+                        )
                     : guestLocked
                       ? copy(
                           "Entre para continuar com a NEXUS",
@@ -585,6 +616,27 @@ function formatNexusError(
       "A NEXUS está instalada, mas ainda falta conectar um provedor de IA no servidor.",
       "NEXUS is installed, but an AI provider still needs to be connected on the server.",
       "NEXUS está instalada, pero todavía falta conectar un proveedor de IA en el servidor.",
+    );
+  }
+
+
+  if (
+    raw.includes("NEXUS_LOAD_TIMEOUT") ||
+    raw.includes("NEXUS_EDGE_") ||
+    raw.includes("NEXUS_RUNTIME_ERROR")
+  ) {
+    return copy(
+      "Não consegui verificar a NEXUS agora. Tente novamente — isso não significa que o motor de IA esteja desconectado.",
+      "I couldn't verify NEXUS right now. Try again — this does not mean the AI engine is disconnected.",
+      "No pude verificar NEXUS ahora. Inténtalo de nuevo; esto no significa que el motor de IA esté desconectado.",
+    );
+  }
+
+  if (raw.includes("NEXUS_AUTH_SESSION_MISSING") || raw.includes("NEXUS_AUTH_INVALID")) {
+    return copy(
+      "Sua sessão precisa ser renovada para abrir a NEXUS. Entre novamente se o problema continuar.",
+      "Your session needs to be refreshed to open NEXUS. Sign in again if the problem continues.",
+      "Tu sesión necesita renovarse para abrir NEXUS. Inicia sesión de nuevo si el problema continúa.",
     );
   }
 
