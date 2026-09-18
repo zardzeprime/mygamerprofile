@@ -107,12 +107,7 @@ const NIGHTREIGN_PLACEHOLDER = makeMgpPlaceholder(
   "#080f18",
   "#244e73",
 );
-const LOL_PLACEHOLDER = makeMgpPlaceholder(
-  "LEAGUE OF LEGENDS",
-  "MGP · COMPETITIVE HUB",
-  "#06151d",
-  "#0d6671",
-);
+const LOL_COVER = "/LoL-Symbol-500x281.png";
 const DS3_COVER = "/game-covers/ds3.webp";
 const ELDEN_RING_COVER = "/game-covers/elden-ring.webp";
 const FC26_COVER = "/game-covers/fc26.webp";
@@ -622,13 +617,12 @@ export const GAMES: GameConfig[] = [
       },
     ],
     visual: {
-      coverImage: LOL_PLACEHOLDER,
-      heroImage: LOL_PLACEHOLDER,
-      backgroundImage: LOL_PLACEHOLDER,
+      coverImage: LOL_COVER,
+      heroImage: LOL_COVER,
+      backgroundImage: LOL_COVER,
       fallbackImage: valorantAtmosphere,
-      assetSource:
-        "MGP-generated placeholder; Riot-approved/public assets pending production asset review",
-      assetLicense: "MGP original placeholder; no third-party game artwork embedded",
+      assetSource: "User-provided League of Legends logo stored in the MGP repository",
+      assetLicense: "User-provided project asset; provenance retained in repository history",
     },
   },
   {
