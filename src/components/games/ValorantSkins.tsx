@@ -481,22 +481,27 @@ function PreviewClipRail({
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const railRef = useRef<HTMLDivElement>(null);
 
-  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+  useEffect(() => {
     const rail = railRef.current;
-    if (!rail || rail.scrollWidth <= rail.clientWidth) return;
+    if (!rail) return;
 
-    const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
-    if (!delta) return;
+    const handleWheel = (event: WheelEvent) => {
+      if (rail.scrollWidth <= rail.clientWidth) return;
+      const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+      if (!delta) return;
 
-    event.preventDefault();
-    event.stopPropagation();
-    rail.scrollLeft += delta;
-  };
+      event.preventDefault();
+      event.stopPropagation();
+      rail.scrollLeft += delta;
+    };
+
+    rail.addEventListener("wheel", handleWheel, { passive: false });
+    return () => rail.removeEventListener("wheel", handleWheel);
+  }, []);
 
   return (
     <div
       ref={railRef}
-      onWheel={handleWheel}
       className="mgp-media-rail mt-3 flex max-w-full gap-2 overflow-x-auto overscroll-x-contain pb-2"
       style={{ overscrollBehavior: "contain" }}
     >
