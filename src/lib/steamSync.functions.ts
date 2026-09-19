@@ -90,6 +90,43 @@ type UserStat = {
   value?: number;
 };
 
+export type PublicSteamShowcase = {
+  connected: boolean;
+  personaName: string | null;
+  profileUrl: string | null;
+  avatarUrl: string | null;
+  countryCode: string | null;
+  steamLevel: number | null;
+  libraryVisible: boolean;
+  inventoryVisible: boolean;
+  lastSyncedAt: string | null;
+  games: Array<{
+    appId: number;
+    name: string;
+    iconUrl: string | null;
+    playtimeMinutes: number | null;
+    achievementsUnlocked: number | null;
+    achievementsTotal: number | null;
+    achievementPercent: number | null;
+  }>;
+  recentGames: Array<{
+    appId: number;
+    name: string;
+    iconUrl: string | null;
+    recentMinutes: number;
+    playtimeMinutes: number;
+    lastPlayedAt: string | null;
+  }>;
+  achievementSummary: {
+    unlocked: number;
+    total: number;
+    gamesTracked: number;
+  } | null;
+  badgeCount: number | null;
+  xp: number | null;
+  inventoryItemCount: number | null;
+};
+
 function getSteamKey() {
   const key = process.env["STEAM_WEB_API_KEY"]?.trim();
   if (!key) throw new Error("STEAM_API_NOT_CONFIGURED");
@@ -829,40 +866,5 @@ export const getPublicSteamShowcase = createServerFn({ method: "GET" })
       return null;
     }
 
-    return (await response.json()) as {
-      connected: boolean;
-      personaName: string | null;
-      profileUrl: string | null;
-      avatarUrl: string | null;
-      countryCode: string | null;
-      steamLevel: number | null;
-      libraryVisible: boolean;
-      inventoryVisible: boolean;
-      lastSyncedAt: string | null;
-      games: Array<{
-        appId: number;
-        name: string;
-        iconUrl: string | null;
-        playtimeMinutes: number | null;
-        achievementsUnlocked: number | null;
-        achievementsTotal: number | null;
-        achievementPercent: number | null;
-      }>;
-      recentGames: Array<{
-        appId: number;
-        name: string;
-        iconUrl: string | null;
-        recentMinutes: number;
-        playtimeMinutes: number;
-        lastPlayedAt: string | null;
-      }>;
-      achievementSummary: {
-        unlocked: number;
-        total: number;
-        gamesTracked: number;
-      } | null;
-      badgeCount: number | null;
-      xp: number | null;
-      inventoryItemCount: number | null;
-    } | null;
+    return (await response.json()) as PublicSteamShowcase | null;
   });
