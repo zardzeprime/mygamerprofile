@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import {
   BadgeCheck,
@@ -20,11 +19,7 @@ import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { supabase } from "@/integrations/supabase/client";
 import { getRiotApiReadiness } from "@/lib/riot.functions";
-import {
-  beginSteamConnection,
-  disconnectSteamAccount,
-  getSteamApiReadiness,
-} from "@/lib/steam.functions";
+import { getSteamApiReadiness } from "@/lib/steam.functions";
 
 export const Route = createFileRoute("/_authenticated/settings/connections")({
   head: () => ({
@@ -136,8 +131,6 @@ function SettingsConnectionsPage() {
   const [loading, setLoading] = useState(true);
   const [steamBusy, setSteamBusy] = useState(false);
   const [connectionError, setConnectionError] = useState("");
-  const startSteamConnection = useServerFn(beginSteamConnection);
-  const stopSteamConnection = useServerFn(disconnectSteamAccount);
 
   useEffect(() => {
     if (!user?.id) {
@@ -187,17 +180,31 @@ function SettingsConnectionsPage() {
     if (steamBusy) return;
     setSteamBusy(true);
     setConnectionError("");
+
     try {
-      const result = await startSteamConnection();
-      window.location.assign(result.url);
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (sessionError || !accessToken) throw new Error("STEAM_AUTH_SESSION_MISSING");
+
+      const { data, error } = await supabase.functions.invoke("steam-openid", {
+        body: { action: "begin" },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      if (error) throw error;
+      if (!data?.url || typeof data.url !== "string") {
+        throw new Error(data?.error || "STEAM_OPENID_BEGIN_FAILED");
+      }
+
+      window.location.assign(data.url);
     } catch (error) {
       console.error("[MGP Steam] Could not start OpenID link", error);
       setSteamBusy(false);
       setConnectionError(
         copy(
-          "Não foi possível abrir o login oficial da Steam. Tente novamente.",
-          "Could not open the official Steam sign-in. Try again.",
-          "No se pudo abrir el acceso oficial de Steam. Inténtalo de nuevo.",
+          "Não foi possível abrir o login oficial da Steam. A conexão segura foi reiniciada no backend do MGP; tente novamente em alguns segundos.",
+          "Could not open the official Steam sign-in. The secure connection now runs through MGP's backend; try again in a few seconds.",
+          "No se pudo abrir el acceso oficial de Steam. La conexión segura ahora se ejecuta en el backend de MGP; inténtalo de nuevo en unos segundos.",
         ),
       );
     }
@@ -217,7 +224,17 @@ function SettingsConnectionsPage() {
     setSteamBusy(true);
     setConnectionError("");
     try {
-      await stopSteamConnection();
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (sessionError || !accessToken) throw new Error("STEAM_AUTH_SESSION_MISSING");
+
+      const { data, error } = await supabase.functions.invoke("steam-openid", {
+        body: { action: "disconnect" },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+
       setAccounts((current) => current.filter((account) => account.provider !== "steam"));
     } catch (error) {
       console.error("[MGP Steam] Could not disconnect account", error);
