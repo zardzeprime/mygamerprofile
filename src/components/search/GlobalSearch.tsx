@@ -16,7 +16,13 @@ import { searchGamesAndCommunities } from "@/lib/globalSearch";
 import { searchPublicProfiles } from "@/lib/profiles.functions";
 import { cn } from "@/lib/utils";
 
-type PublicProfileResult = Awaited<ReturnType<ReturnType<typeof useServerFn<typeof searchPublicProfiles>>>>[number];
+type PublicProfileResult = {
+  id: string;
+  username: string;
+  display_name: string;
+  avatar_url: string | null;
+  bio: string | null;
+};
 
 export function GlobalSearch({
   mobile = false,
