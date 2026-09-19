@@ -67,6 +67,8 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
   const [savingKey, setSavingKey] = useState("");
   const [error, setError] = useState("");
   const [activeKind, setActiveKind] = useState<SupportedKind>("background");
+  const [showLockedTitles, setShowLockedTitles] = useState(false);
+  const [showLockedCosmetics, setShowLockedCosmetics] = useState(false);
 
   const refresh = async () => {
     const { data: sessionData } = await supabase.auth.getSession();
@@ -131,10 +133,45 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
     }
   };
 
+  const titles = useMemo(
+    () =>
+      [...(data?.titles ?? [])].sort(
+        (a, b) =>
+          Number(b.unlocked) - Number(a.unlocked) ||
+          Number(b.is_new) - Number(a.is_new) ||
+          a.name?.["pt-BR"]?.localeCompare(b.name?.["pt-BR"] ?? "") ||
+          0,
+      ),
+    [data?.titles],
+  );
+
   const cosmetics = useMemo(
-    () => (data?.cosmetics ?? []).filter((item) => item.kind === activeKind),
+    () =>
+      (data?.cosmetics ?? [])
+        .filter((item) => item.kind === activeKind)
+        .sort(
+          (a, b) =>
+            Number(b.unlocked) - Number(a.unlocked) ||
+            Number(b.is_new) - Number(a.is_new) ||
+            a.name?.["pt-BR"]?.localeCompare(b.name?.["pt-BR"] ?? "") ||
+            0,
+        ),
     [activeKind, data?.cosmetics],
   );
+
+  const visibleTitles = useMemo(() => {
+    if (showLockedTitles) return titles;
+    const unlocked = titles.filter((title) => title.unlocked);
+    const nextGoals = titles.filter((title) => !title.unlocked).slice(0, 3);
+    return [...unlocked, ...nextGoals];
+  }, [showLockedTitles, titles]);
+
+  const visibleCosmetics = useMemo(() => {
+    if (showLockedCosmetics) return cosmetics;
+    const unlocked = cosmetics.filter((item) => item.unlocked);
+    const nextGoals = cosmetics.filter((item) => !item.unlocked).slice(0, 3);
+    return [...unlocked, ...nextGoals];
+  }, [cosmetics, showLockedCosmetics]);
 
   if (loading) {
     return (
@@ -160,14 +197,14 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
             <div className="flex items-center gap-2">
               <Crown className="size-4 text-gold-strong" />
               <h2 className="font-display text-lg font-semibold">
-                {copy("Identidade desbloqueável", "Unlockable identity", "Identidad desbloqueable")}
+                {copy("Aparência & títulos", "Appearance & titles", "Apariencia y títulos")}
               </h2>
             </div>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {copy(
-                "Sua Steam e sua atividade no MGP agora geram títulos e cosméticos. Tudo aqui é visual original do MG Profile e pode crescer depois com Riot, jogos e eventos.",
-                "Your Steam data and MGP activity now unlock titles and cosmetics. Everything here uses original MG Profile visuals and can later expand with Riot, games and events.",
-                "Tus datos de Steam y tu actividad en MGP ahora desbloquean títulos y cosméticos. Todo usa visuales originales de MG Profile y podrá crecer con Riot, juegos y eventos.",
+                "Este é o único lugar para equipar títulos, fundos, molduras, efeitos, banners e cursores. Itens desbloqueados aparecem primeiro; objetivos bloqueados ficam compactos para não poluir a página.",
+                "This is the single place to equip titles, backgrounds, frames, effects, banners and cursors. Unlocked items come first, while locked goals stay compact to keep the page clean.",
+                "Este es el único lugar para equipar títulos, fondos, marcos, efectos, banners y cursores. Los objetos desbloqueados aparecen primero y los objetivos bloqueados quedan compactos para mantener la página limpia.",
               )}
             </p>
           </div>
@@ -198,8 +235,23 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
           )}
         </p>
 
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+          <span className="text-[0.68rem] font-medium text-muted-foreground">
+            {unlockedTitles}/{data.titles.length} {copy("desbloqueados", "unlocked", "desbloqueados")}
+          </span>
+          <button
+            type="button"
+            onClick={() => setShowLockedTitles((value) => !value)}
+            className="rounded-lg border border-border bg-muted/15 px-2.5 py-1.5 text-[0.68rem] font-semibold text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {showLockedTitles
+              ? copy("Ocultar bloqueados", "Hide locked", "Ocultar bloqueados")
+              : copy("Ver todos os títulos", "View all titles", "Ver todos los títulos")}
+          </button>
+        </div>
+
         <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
-          {data.titles.map((title) => {
+          {visibleTitles.map((title) => {
             const equipped = data.loadout.title_slug === title.slug;
             return (
               <button
@@ -230,7 +282,30 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
           })}
         </div>
 
-        <div className="mt-7 flex flex-wrap gap-2">
+        <div className="mt-7 border-t border-border pt-6">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h3 className="font-display text-base font-semibold">{copy("Cosméticos", "Cosmetics", "Cosméticos")}</h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {copy(
+                  "Escolha uma categoria por vez. O que você já pode usar aparece primeiro.",
+                  "Choose one category at a time. Items you can already use appear first.",
+                  "Elige una categoría a la vez. Los objetos que ya puedes usar aparecen primero.",
+                )}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowLockedCosmetics((value) => !value)}
+              className="rounded-lg border border-border bg-muted/15 px-2.5 py-1.5 text-[0.68rem] font-semibold text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {showLockedCosmetics
+                ? copy("Ocultar bloqueados", "Hide locked", "Ocultar bloqueados")
+                : copy("Ver todos", "View all", "Ver todos")}
+            </button>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
           {(Object.keys(KIND_META) as SupportedKind[]).map((kind) => {
             const meta = KIND_META[kind];
             const Icon = meta.icon;
@@ -251,10 +326,11 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
               </button>
             );
           })}
+          </div>
         </div>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {cosmetics.map((item) => (
+          {visibleCosmetics.map((item) => (
             <CosmeticCard
               key={item.slug}
               item={item}
