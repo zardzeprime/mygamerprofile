@@ -34,14 +34,15 @@
         "Diagnosed the intermittent NEXUS Gamer provider failure as real Gemini capacity pressure, not a frontend/auth bug: live tests showed 3.6/3.7 timeouts and Gemini 3.8 returning 503 high-demand errors while the API key remained valid.",
         "Added a non-chat NEXUS Build Guide beside the League build creator. It uses champion context, selected core items and the current verified statistical path to surface short decisions/questions without opening the NEXUS chat.",
         "League Build Guide now grounds contextual NEXUS cards in live source cross-check metadata: confirmed sources count, OP.GG core-item agreement when available, and blocked sources are explicitly excluded from verification.",
-        "Reset legacy MGP account/profile state for pre-public onboarding: non-admin test Auth users were removed; the sole admin Auth identity/role was preserved to avoid lockout while its public profile/onboarding data was reset."
+        "Reset legacy MGP account/profile state for pre-public onboarding: non-admin test Auth users were removed; the sole admin Auth identity/role was preserved to avoid lockout while its public profile/onboarding data was reset.",
+        "Verified NEXUS Edge v17 end to end against the hosted Supabase runtime: the health endpoint returns HTTP 200 with aiReady=true and Gemini configured for inference.",
+        "Removed NEXUS's hard dependency on one baked-in Supabase publishable key by resolving the hosted SUPABASE_PUBLISHABLE_KEYS set while retaining legacy compatibility for safe key rotation.",
+        "Made transient provider readiness recoverable in the NEXUS chat UI with an explicit re-check action instead of presenting every unavailable state as a permanently disconnected engine."
       ],
       "inProgress": [
-        "Verify at least one official inference provider credential is present in Supabase Edge Function deployment secrets; keys stored only in Lovable or GitHub do not make NEXUS aiReady.",
         "Continue page-by-page visual art-direction review on top of Visual System v2 after the foundation PR is merged and rendered in Lovable."
       ],
       "next": [
-        "Configure at least one official inference API credential in deployment secrets and test live model replies end to end.",
         "Add the GitHub App bridge as the first write-capable Nexus development tool using branch/review/merge by default.",
         "Add explicit human-approval gates before destructive or production-impacting tool actions.",
         "Consider an opt-in multi-model council mode only for difficult admin tasks after normal failover is stable.",
