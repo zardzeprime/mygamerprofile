@@ -1,20 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { Gamepad2, Loader2, Search, UserRound, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { searchGamesAndCommunities } from "@/lib/globalSearch";
-import { searchPublicProfiles } from "@/lib/profiles.functions";
-
-type PublicProfileSearchResult = {
-  id: string;
-  username: string;
-  display_name: string;
-  avatar_url: string | null;
-  bio: string | null;
-};
+import { searchPublicProfilesClient, type PublicProfileSearchResult } from "@/lib/publicProfiles.client";
 
 export const Route = createFileRoute("/search")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -37,7 +28,6 @@ function SearchPage() {
   const { locale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const { q } = Route.useSearch();
-  const searchProfiles = useServerFn(searchPublicProfiles);
   const [profiles, setProfiles] = useState<PublicProfileSearchResult[]>([]);
   const [loadingProfiles, setLoadingProfiles] = useState(false);
   const local = useMemo(() => searchGamesAndCommunities(q, 20), [q]);
@@ -50,7 +40,7 @@ function SearchPage() {
     }
     let cancelled = false;
     setLoadingProfiles(true);
-    void searchProfiles({ data: { query, limit: 12 } })
+    void searchPublicProfilesClient(query, 12)
       .then((result) => {
         if (!cancelled) setProfiles(result);
       })
@@ -64,7 +54,7 @@ function SearchPage() {
     return () => {
       cancelled = true;
     };
-  }, [query, searchProfiles]);
+  }, [query]);
 
   const total = local.games.length + local.communities.length + profiles.length;
 
