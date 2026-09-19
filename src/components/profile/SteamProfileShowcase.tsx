@@ -34,6 +34,17 @@ export function SteamProfileShowcase({
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const achievement = steam.achievementSummary;
+  const libraryShared =
+    steam.showLibrary ?? (steam.libraryGameCount !== null || steam.games.length > 0);
+  const playtimeShared =
+    steam.showPlaytime ??
+    (steam.games.some((game) => game.playtimeMinutes !== null) ||
+      steam.recentGames.length > 0);
+  const achievementsShared =
+    steam.showAchievements ?? steam.achievementSummary !== null;
+  const badgesShared =
+    steam.showBadges ?? (steam.steamLevel !== null || steam.badgeCount !== null);
+  const hiddenValue = copy("Oculto", "Hidden", "Oculto");
 
   return (
     <section className="surface-panel overflow-hidden">
@@ -87,23 +98,23 @@ export function SteamProfileShowcase({
         <Metric
           icon={Gamepad2}
           label={copy("Biblioteca", "Library", "Biblioteca")}
-          value={steam.libraryGameCount ?? steam.games.length}
+          value={libraryShared ? (steam.libraryGameCount ?? steam.games.length) : hiddenValue}
         />
         <Metric
           icon={Trophy}
           label={copy("Conquistas", "Achievements", "Logros")}
-          value={achievement ? achievement.unlocked : "—"}
-          helper={achievement ? `/${achievement.total}` : undefined}
+          value={achievementsShared ? (achievement ? achievement.unlocked : "—") : hiddenValue}
+          helper={achievementsShared && achievement ? `/${achievement.total}` : undefined}
         />
         <Metric
           icon={ShieldCheck}
           label={copy("Jogos 100%", "100% games", "Juegos 100%")}
-          value={steam.perfectGames ?? "—"}
+          value={achievementsShared ? (steam.perfectGames ?? "—") : hiddenValue}
         />
         <Metric
           icon={Package}
           label={copy("Insígnias", "Badges", "Insignias")}
-          value={steam.badgeCount ?? "—"}
+          value={badgesShared ? (steam.badgeCount ?? "—") : hiddenValue}
         />
       </div>
 
@@ -114,15 +125,23 @@ export function SteamProfileShowcase({
               <div className="flex items-center gap-2">
                 <Gamepad2 className="size-4 text-gold-strong" aria-hidden="true" />
                 <h3 className="font-display text-sm font-semibold">
-                  {copy("Mais jogados", "Most played", "Más jugados")}
+                  {playtimeShared
+                    ? copy("Mais jogados", "Most played", "Más jugados")
+                    : copy("Biblioteca", "Library", "Biblioteca")}
                 </h3>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                {copy(
-                  "Sua vitrine é ordenada pelo tempo total jogado.",
-                  "Your showcase is ordered by total playtime.",
-                  "Tu vitrina está ordenada por tiempo total jugado.",
-                )}
+                {playtimeShared
+                  ? copy(
+                      "Sua vitrine é ordenada pelo tempo total jogado.",
+                      "Your showcase is ordered by total playtime.",
+                      "Tu vitrina está ordenada por tiempo total jugado.",
+                    )
+                  : copy(
+                      "As horas estão ocultas; os jogos são exibidos em ordem alfabética.",
+                      "Playtime is hidden; games are shown alphabetically.",
+                      "Las horas están ocultas; los juegos se muestran en orden alfabético.",
+                    )}
               </p>
             </div>
           </div>
