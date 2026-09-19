@@ -319,6 +319,13 @@ function SteamIdentityCard({
   gameProfileCount: number;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const libraryShared =
+    steam?.showLibrary ??
+    Boolean(steam && (steam.libraryGameCount !== null || steam.games.length > 0));
+  const badgesShared =
+    steam?.showBadges ??
+    Boolean(steam && (steam.steamLevel !== null || steam.badgeCount !== null));
+  const hiddenValue = copy("Oculto", "Hidden", "Oculto");
 
   return (
     <div className="surface-panel p-4">
@@ -346,10 +353,10 @@ function SteamIdentityCard({
           </div>
 
           <div className="grid grid-cols-2 gap-2">
-            <MiniStat label={copy("Nível", "Level", "Nivel")} value={steam.steamLevel ?? "—"} />
-            <MiniStat label={copy("Jogos", "Games", "Juegos")} value={steam.libraryGameCount ?? steam.games.length} />
-            <MiniStat label={copy("Insígnias", "Badges", "Insignias")} value={steam.badgeCount ?? "—"} />
-            <MiniStat label="Game Profiles" value={gameProfileCount} />
+            <MiniStat label={copy("Nível", "Level", "Nivel")} value={badgesShared ? (steam.steamLevel ?? "—") : hiddenValue} />
+            <MiniStat label={copy("Jogos", "Games", "Juegos")} value={libraryShared ? (steam.libraryGameCount ?? steam.games.length) : hiddenValue} />
+            <MiniStat label={copy("Insígnias", "Badges", "Insignias")} value={badgesShared ? (steam.badgeCount ?? "—") : hiddenValue} />
+            <MiniStat label={copy("Perfis de jogo", "Game Profiles", "Perfiles de juego")} value={gameProfileCount} />
           </div>
         </div>
       ) : (
@@ -444,17 +451,23 @@ function SteamAchievementsCard({
         </div>
       ) : (
         <p className="mt-3 text-xs leading-5 text-muted-foreground">
-          {steam
+          {steam?.showAchievements === false
             ? copy(
-                "A Steam está conectada, mas as conquistas estão ocultas ou ainda não foram sincronizadas.",
-                "Steam is connected, but achievements are hidden or have not been synced yet.",
-                "Steam está conectada, pero los logros están ocultos o todavía no se han sincronizado.",
+                "Conquistas ocultas pela preferência de privacidade deste perfil.",
+                "Achievements are hidden by this profile's privacy preference.",
+                "Los logros están ocultos por la preferencia de privacidad de este perfil.",
               )
-            : copy(
-                "Vincule a Steam para exibir progresso real de conquistas por jogo.",
-                "Link Steam to show real achievement progress per game.",
-                "Vincula Steam para mostrar el progreso real de logros por juego.",
-              )}
+            : steam
+              ? copy(
+                  "A Steam está conectada, mas as conquistas ainda não foram sincronizadas ou estão indisponíveis.",
+                  "Steam is connected, but achievements have not been synced yet or are unavailable.",
+                  "Steam está conectada, pero los logros aún no se han sincronizado o no están disponibles.",
+                )
+              : copy(
+                  "Vincule a Steam para exibir progresso real de conquistas por jogo.",
+                  "Link Steam to show real achievement progress per game.",
+                  "Vincula Steam para mostrar el progreso real de logros por juego.",
+                )}
         </p>
       )}
     </div>
@@ -498,17 +511,23 @@ function SteamActivityCard({
         </div>
       ) : (
         <p className="mt-3 text-xs leading-5 text-muted-foreground">
-          {steam
+          {steam?.showPlaytime === false
             ? copy(
-                "Nenhum jogo recente público encontrado. A atividade social do MGP continua aparecendo normalmente.",
-                "No public recent games were found. MGP social activity still appears normally.",
-                "No se encontraron juegos recientes públicos. La actividad social de MGP sigue apareciendo normalmente.",
+                "A atividade recente da Steam está oculta pela preferência de privacidade deste perfil.",
+                "Recent Steam activity is hidden by this profile's privacy preference.",
+                "La actividad reciente de Steam está oculta por la preferencia de privacidad de este perfil.",
               )
-            : copy(
-                "Posts e perfis de jogo formam seu histórico. A Steam adiciona jogos recentes automaticamente.",
-                "Posts and game profiles form your history. Steam automatically adds recent games.",
-                "Posts y perfiles de juego forman tu historial. Steam añade juegos recientes automáticamente.",
-              )}
+            : steam
+              ? copy(
+                  "Nenhum jogo recente público encontrado. A atividade social do MGP continua aparecendo normalmente.",
+                  "No public recent games were found. MGP social activity still appears normally.",
+                  "No se encontraron juegos recientes públicos. La actividad social de MGP sigue apareciendo normalmente.",
+                )
+              : copy(
+                  "Posts e perfis de jogo formam seu histórico. A Steam adiciona jogos recentes automaticamente.",
+                  "Posts and game profiles form your history. Steam automatically adds recent games.",
+                  "Posts y perfiles de juego forman tu historial. Steam añade juegos recientes automáticamente.",
+                )}
         </p>
       )}
     </div>
