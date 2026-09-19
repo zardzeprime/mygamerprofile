@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { searchGamesAndCommunities } from "@/lib/globalSearch";
-import { searchPublicProfilesClient, type PublicProfileSearchResult } from "@/lib/publicProfiles.client";
+import { searchPublicProfilesClient, type PublicProfileSearchResult } from "@/lib/publicProfiles";
 
 export const Route = createFileRoute("/search")({
   validateSearch: (search: Record<string, unknown>) => ({
