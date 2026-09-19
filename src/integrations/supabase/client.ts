@@ -34,20 +34,13 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
   };
 }
 
-function getServerEnv(name: 'SUPABASE_URL' | 'SUPABASE_PUBLISHABLE_KEY'): string | undefined {
-  if (typeof process === 'undefined') return undefined;
-  return process.env?.[name];
-}
-
 function createSupabaseClient() {
-  // Prefer deployment-provided values when present. Browser builds must never
-  // dereference Node's `process` global when it is unavailable.
-  const SUPABASE_URL =
-    import.meta.env['VITE_SUPABASE_URL'] || getServerEnv('SUPABASE_URL') || PUBLIC_SUPABASE_URL;
-  const SUPABASE_PUBLISHABLE_KEY =
-    import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY'] ||
-    getServerEnv('SUPABASE_PUBLISHABLE_KEY') ||
-    PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  // MG Profile has one canonical Supabase project. Lovable production can inject
+  // coordinates for its workspace database, which is a different/empty project.
+  // Using those values splits auth/profile data across two backends, so the web
+  // client is intentionally pinned to the canonical MGP public coordinates.
+  const SUPABASE_URL = PUBLIC_SUPABASE_URL;
+  const SUPABASE_PUBLISHABLE_KEY = PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     global: {
