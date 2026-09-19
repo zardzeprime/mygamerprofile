@@ -35,13 +35,14 @@ import { GAMES } from "@/config/games";
 import { getProfileBackground } from "@/config/profileBackgrounds";
 import { cn } from "@/lib/utils";
 import { getPublicSteamShowcase } from "@/lib/steamSync.functions";
+import { getPublicProfileLoadout } from "@/lib/profileIdentity.functions";
 
 export const Route = createFileRoute("/u/$username")({
   loader: async ({ params }) => {
     const profile = await getProfileByUsername({ data: { username: params.username } });
     if (!profile) throw notFound();
 
-    const [posts, gameProfiles, steamShowcase] = await Promise.all([
+    const [posts, gameProfiles, steamShowcase, identityLoadout] = await Promise.all([
       listPosts({ data: { authorId: profile.id } }).catch((error) => {
         console.warn("[Profile] Could not load posts; rendering profile without activity.", error);
         return [];
@@ -54,9 +55,13 @@ export const Route = createFileRoute("/u/$username")({
         console.warn("[Profile] Could not load Steam showcase.", error);
         return null;
       }),
+      getPublicProfileLoadout({ data: { userId: profile.id } }).catch((error) => {
+        console.warn("[Profile] Could not load public identity loadout.", error);
+        return null;
+      }),
     ]);
 
-    return { profile, posts, gameProfiles, steamShowcase };
+    return { profile, posts, gameProfiles, steamShowcase, identityLoadout };
   },
   notFoundComponent: ProfileNotFound,
   head: ({ params }) => ({
@@ -88,7 +93,7 @@ function ProfileNotFound() {
 function ProfilePage() {
   const { locale, t } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const { profile, posts, gameProfiles, steamShowcase } = Route.useLoaderData();
+  const { profile, posts, gameProfiles, steamShowcase, identityLoadout } = Route.useLoaderData();
   const { user } = useAuth();
   const isOwn = user?.id === profile.id;
   const [following, setFollowing] = useState<boolean | null>(null);
@@ -141,8 +146,24 @@ function ProfilePage() {
 
   return (
     <main className="mx-auto w-full max-w-7xl overflow-x-clip px-3 py-4 sm:px-6 sm:py-8 lg:py-10">
-      <section className="overflow-hidden rounded-2xl border border-border bg-surface shadow-soft">
-        <div className={cn("profile-hero relative min-h-52 overflow-hidden sm:min-h-72 lg:min-h-80", background.className)}>
+      <section
+        className={cn(
+          "mgp-identity-surface relative overflow-hidden rounded-2xl border border-border bg-surface shadow-soft",
+          identityLoadout?.cursor?.cssClass,
+        )}
+      >
+        {identityLoadout?.effect?.cssClass ? (
+          <div className={cn("mgp-profile-effect-layer", identityLoadout.effect.cssClass)} />
+        ) : null}
+        <div
+          className={cn(
+            "profile-hero relative min-h-52 overflow-hidden sm:min-h-72 lg:min-h-80",
+            identityLoadout?.background?.cssClass || background.className,
+          )}
+        >
+          {identityLoadout?.banner?.cssClass ? (
+            <div className={identityLoadout.banner.cssClass} />
+          ) : null}
           <div className="absolute inset-0 profile-hero-scrim" />
           <div className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-white/75 backdrop-blur sm:left-6 sm:top-6">
             MG Profile
@@ -151,18 +172,34 @@ function ProfilePage() {
 
         <div className="relative px-4 pb-5 sm:px-7 sm:pb-7">
           <div className="-mt-12 flex flex-col gap-4 sm:-mt-16 sm:flex-row sm:items-end sm:gap-6">
-            <UserAvatar
-              src={profile.avatar_url}
-              name={profile.display_name}
-              size="lg"
-              className="shrink-0 border-4 border-surface shadow-lift"
-            />
+            <div className={cn("shrink-0", identityLoadout?.avatarFrame?.cssClass)}>
+              <UserAvatar
+                src={profile.avatar_url}
+                name={profile.display_name}
+                size="lg"
+                className="border-4 border-surface shadow-lift"
+              />
+            </div>
             <div className="min-w-0 flex-1 sm:pb-1">
               <div className="flex min-w-0 flex-wrap items-center gap-2">
                 <h1 className="min-w-0 truncate font-display text-2xl font-bold sm:text-3xl">{profile.display_name}</h1>
                 {isOwn ? <ShieldCheck className="size-5 shrink-0 text-gold-strong" aria-label={copy("Seu perfil", "Your profile", "Tu perfil")} /> : null}
               </div>
               <p className="mt-1 truncate text-sm text-muted-foreground">@{profile.username}</p>
+              {identityLoadout?.title ? (
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <span
+                    className={cn(
+                      "mgp-rarity-chip inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.08em]",
+                      `mgp-rarity-${identityLoadout.title.rarity}`,
+                    )}
+                    title={identityLoadout.title.description?.[locale] ?? identityLoadout.title.description?.["pt-BR"] ?? ""}
+                  >
+                    <Award className="size-3.5" aria-hidden="true" />
+                    {identityLoadout.title.name?.[locale] ?? identityLoadout.title.name?.["pt-BR"] ?? identityLoadout.title.slug}
+                  </span>
+                </div>
+              ) : null}
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5"><CalendarDays className="size-3.5" />{copy("Entrou em", "Joined", "Se unió en")} {joinedAt}</span>
                 <span>{followerCount} {t("profile.followers")}</span>
