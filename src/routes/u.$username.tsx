@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -33,11 +33,24 @@ import { PublicProfileIdentity } from "@/components/profile/PublicProfileIdentit
 import { GAMES } from "@/config/games";
 import { getProfileBackground } from "@/config/profileBackgrounds";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/u/$username")({
   loader: async ({ params }) => {
-    const profile = await getProfileByUsername({ data: { username: params.username } });
-    if (!profile) throw notFound();
+    let profile = null;
+
+    try {
+      profile = await getProfileByUsername({ data: { username: params.username } });
+    } catch (error) {
+      // Production SSR and preview do not always share the same server runtime.
+      // Do not turn a transient server-side lookup failure into a permanent 404;
+      // the browser will retry through the public Supabase client after hydration.
+      console.warn("[Profile] SSR public lookup failed; browser fallback will retry.", error);
+    }
+
+    if (!profile) {
+      return { profile: null, posts: [], gameProfiles: [] };
+    }
 
     const [posts, gameProfiles] = await Promise.all([
       listPosts({ data: { authorId: profile.id } }).catch((error) => {
@@ -52,7 +65,6 @@ export const Route = createFileRoute("/u/$username")({
 
     return { profile, posts, gameProfiles };
   },
-  notFoundComponent: ProfileNotFound,
   head: ({ params }) => ({
     meta: [
       { title: `@${params.username} — MG Profile` },
@@ -62,18 +74,35 @@ export const Route = createFileRoute("/u/$username")({
   component: ProfilePage,
 });
 
-function ProfileNotFound() {
+function ProfileUnavailable({
+  loading,
+}: {
+  loading: boolean;
+}) {
   const { locale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-16 text-center sm:px-6">
       <EmptyState
-        title={copy("Perfil não encontrado", "Profile not found", "Perfil no encontrado")}
-        description={copy(
-          "Esse username não existe ou o perfil não está público.",
-          "This username does not exist or the profile is not public.",
-          "Este nombre de usuario no existe o el perfil no es público.",
-        )}
+        title={
+          loading
+            ? copy("Carregando perfil…", "Loading profile…", "Cargando perfil…")
+            : copy("Perfil não encontrado", "Profile not found", "Perfil no encontrado")
+        }
+        description={
+          loading
+            ? copy(
+                "Confirmando o perfil público diretamente no servidor.",
+                "Confirming the public profile directly with the server.",
+                "Confirmando el perfil público directamente con el servidor.",
+              )
+            : copy(
+                "Esse username não existe ou o perfil não está público.",
+                "This username does not exist or the profile is not public.",
+                "Este nombre de usuario no existe o el perfil no es público.",
+              )
+        }
       />
     </div>
   );
@@ -82,17 +111,98 @@ function ProfileNotFound() {
 function ProfilePage() {
   const { locale, t } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const { profile, posts, gameProfiles } = Route.useLoaderData();
+  const loaderData = Route.useLoaderData();
+  const { username } = Route.useParams();
   const { user } = useAuth();
-  const isOwn = user?.id === profile.id;
+
+  const [profile, setProfile] = useState(loaderData.profile);
+  const [posts, setPosts] = useState(loaderData.posts);
+  const [gameProfiles, setGameProfiles] = useState(loaderData.gameProfiles);
+  const [profileLoading, setProfileLoading] = useState(!loaderData.profile);
   const [following, setFollowing] = useState<boolean | null>(null);
-  const [followerCount, setFollowerCount] = useState<number>(profile.followers ?? 0);
+  const [followerCount, setFollowerCount] = useState<number>(
+    loaderData.profile?.followers ?? 0,
+  );
   const [followBusy, setFollowBusy] = useState(false);
 
   const checkFollow = useServerFn(isFollowing);
   const doFollow = useServerFn(followUser);
   const doUnfollow = useServerFn(unfollowUser);
-  const background = getProfileBackground(profile.profile_background);
+
+  useEffect(() => {
+    if (loaderData.profile) {
+      setProfile(loaderData.profile);
+      setPosts(loaderData.posts);
+      setGameProfiles(loaderData.gameProfiles);
+      setFollowerCount(loaderData.profile.followers ?? 0);
+      setProfileLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    const loadInBrowser = async () => {
+      setProfileLoading(true);
+      const normalizedUsername = username.trim().toLowerCase();
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("visibility", "public")
+        .ilike("username", normalizedUsername)
+        .maybeSingle();
+
+      if (cancelled) return;
+
+      if (error) {
+        console.error("[Profile] Browser public lookup failed", error);
+        setProfile(null);
+        setProfileLoading(false);
+        return;
+      }
+
+      if (!data) {
+        setProfile(null);
+        setProfileLoading(false);
+        return;
+      }
+
+      const browserProfile = {
+        ...data,
+        followers: Number(data.followers_count ?? 0),
+        following: Number(data.following_count ?? 0),
+      };
+
+      setProfile(browserProfile);
+      setFollowerCount(browserProfile.followers);
+      setProfileLoading(false);
+
+      const [nextPosts, nextGameProfiles] = await Promise.all([
+        listPosts({ data: { authorId: browserProfile.id } }).catch((lookupError) => {
+          console.warn("[Profile] Browser fallback could not load posts.", lookupError);
+          return [];
+        }),
+        getPublicGameProfilesByUserId({ data: { userId: browserProfile.id } }).catch(
+          (lookupError) => {
+            console.warn("[Profile] Browser fallback could not load game profiles.", lookupError);
+            return [];
+          },
+        ),
+      ]);
+
+      if (!cancelled) {
+        setPosts(nextPosts);
+        setGameProfiles(nextGameProfiles);
+      }
+    };
+
+    void loadInBrowser();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [loaderData.gameProfiles, loaderData.posts, loaderData.profile, username]);
+
+  const isOwn = Boolean(profile && user?.id === profile.id);
 
   const favoriteGames = useMemo(
     () =>
@@ -104,14 +214,14 @@ function ProfilePage() {
   );
 
   useEffect(() => {
-    if (!user || isOwn) return;
+    if (!profile || !user || isOwn) return;
     checkFollow({ data: { following_id: profile.id } })
       .then((result) => setFollowing(result.following))
       .catch(() => setFollowing(false));
-  }, [checkFollow, isOwn, profile.id, user]);
+  }, [checkFollow, isOwn, profile, user]);
 
   const handleFollow = async () => {
-    if (!user || isOwn || followBusy) return;
+    if (!profile || !user || isOwn || followBusy) return;
     setFollowBusy(true);
     try {
       if (following) {
@@ -128,6 +238,11 @@ function ProfilePage() {
     }
   };
 
+  if (!profile) {
+    return <ProfileUnavailable loading={profileLoading} />;
+  }
+
+  const background = getProfileBackground(profile.profile_background);
   const joinedAt = new Intl.DateTimeFormat(
     locale === "pt-BR" ? "pt-BR" : locale === "es" ? "es-ES" : "en-US",
     { month: "long", year: "numeric" },
