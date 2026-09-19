@@ -207,7 +207,17 @@ function OnboardingPage() {
       }
 
       setLocale(language);
-      await router.navigate({ to: "/u/$username", params: { username: profile.username } });
+
+      // The shell may have queried the profile before onboarding created it.
+      // Invalidate cached route data and tell persistent UI (header) to re-fetch
+      // before navigating to the newly-created public profile.
+      window.dispatchEvent(new Event("mgp:profile-updated"));
+      await router.invalidate();
+      await router.navigate({
+        to: "/u/$username",
+        params: { username: profile.username },
+        replace: true,
+      });
     } catch (err) {
       console.error("[MGP onboarding] profile creation:", err);
       setError(
