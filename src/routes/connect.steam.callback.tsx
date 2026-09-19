@@ -1,12 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { CheckCircle2, Loader2, TriangleAlert } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
-import { completeSteamConnection } from "@/lib/steam.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/connect/steam/callback")({
   component: SteamCallbackPage,
@@ -24,7 +23,6 @@ function SteamCallbackPage() {
   const { locale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const navigate = useNavigate();
-  const finishSteam = useServerFn(completeSteamConnection);
   const started = useRef(false);
   const [status, setStatus] = useState<Status>("working");
   const [detail, setDetail] = useState("");
@@ -54,10 +52,21 @@ function SteamCallbackPage() {
       }
 
       try {
-        const result = await finishSteam({ data: { state, params } });
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        const accessToken = sessionData.session?.access_token;
+        if (sessionError || !accessToken) throw new Error("STEAM_AUTH_SESSION_MISSING");
+
+        const { data: result, error } = await supabase.functions.invoke("steam-openid", {
+          body: { action: "complete", state, params },
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        if (error) throw error;
+        if (result?.error) throw new Error(result.error);
+
         setStatus("success");
         setDetail(
-          result.displayName
+          result?.displayName
             ? copy(
                 `Steam conectada como ${result.displayName}.`,
                 `Steam connected as ${result.displayName}.`,
@@ -81,7 +90,7 @@ function SteamCallbackPage() {
     };
 
     void run();
-  }, [copy, finishSteam, navigate]);
+  }, [copy, navigate]);
 
   return (
     <main className="mx-auto grid min-h-[calc(100vh-8rem)] w-full max-w-xl place-items-center px-4 py-12">

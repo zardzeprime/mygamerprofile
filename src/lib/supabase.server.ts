@@ -38,37 +38,16 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 }
 
 export function getSupabasePublicConfig() {
-  const url =
-    import.meta.env["VITE_SUPABASE_URL"] ||
-    process.env["VITE_SUPABASE_URL"] ||
-    process.env["SUPABASE_URL"] ||
-    PUBLIC_SUPABASE_URL;
-  const publishableKey =
-    import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
-    process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
-    process.env["SUPABASE_PUBLISHABLE_KEY"] ||
-    PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-
-  return { url, publishableKey };
-}
-
-export function getSupabasePublicConfigs() {
-  const configured = getSupabasePublicConfig();
-  const canonical = {
+  // Keep SSR/server public reads on the same canonical project as the browser.
+  // The hosting workspace currently injects a separate empty Supabase project.
+  return {
     url: PUBLIC_SUPABASE_URL,
     publishableKey: PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   };
+}
 
-  // Published SSR can receive deployment-level public coordinates that differ
-  // from the browser build. Public reads try those first, then the canonical
-  // browser project. Both paths remain anonymous and are still constrained by
-  // RLS; this is not a privileged failover.
-  return [configured, canonical].filter(
-    (candidate, index, candidates) =>
-      candidates.findIndex(
-        (other) => other.url === candidate.url && other.publishableKey === candidate.publishableKey,
-      ) === index,
-  );
+export function getSupabasePublicConfigs() {
+  return [getSupabasePublicConfig()];
 }
 
 export function getSupabasePublic() {
