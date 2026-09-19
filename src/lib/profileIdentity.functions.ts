@@ -9,7 +9,7 @@ const authSchema = z.object({
 });
 
 const equipSchema = authSchema.extend({
-  slot: z.enum(["title", "background", "avatar_frame", "profile_effect", "banner", "cursor"]),
+  slot: z.enum(["title", "background", "avatar_frame", "profile_effect", "banner", "cursor", "nameplate"]),
   slug: z.string().trim().min(2).max(80).nullable(),
 });
 
@@ -46,7 +46,7 @@ export type ProfileTitleCatalogItem = {
 
 export type ProfileCosmeticCatalogItem = {
   slug: string;
-  kind: "background" | "banner" | "avatar_frame" | "cursor" | "profile_effect" | "badge" | "chibi";
+  kind: "background" | "banner" | "avatar_frame" | "cursor" | "profile_effect" | "badge" | "chibi" | "nameplate";
   name: LocalizedText;
   description: LocalizedText;
   css_class: string | null;
@@ -65,6 +65,7 @@ export type ProfileIdentityLoadout = {
   effect_slug: string | null;
   banner_slug: string | null;
   cursor_slug: string | null;
+  nameplate_slug: string | null;
 };
 
 export type PublicProfileLoadout = {
@@ -104,6 +105,13 @@ export type PublicProfileLoadout = {
     animated: boolean;
   } | null;
   cursor: {
+    slug: string;
+    name: LocalizedText;
+    rarity: ProfileIdentityRarity;
+    cssClass: string | null;
+    animated: boolean;
+  } | null;
+  nameplate: {
     slug: string;
     name: LocalizedText;
     rarity: ProfileIdentityRarity;
@@ -159,7 +167,7 @@ export const getProfileIdentityStudio = createServerFn({ method: "POST" })
           .from("profile_cosmetics")
           .select("slug,kind,name,description,css_class,rarity,animated,acquisition_method")
           .eq("active", true)
-          .in("kind", ["background", "avatar_frame", "profile_effect", "banner", "cursor"])
+          .in("kind", ["background", "avatar_frame", "profile_effect", "banner", "cursor", "nameplate"])
           .order("kind")
           .order("created_at"),
         db
@@ -168,7 +176,7 @@ export const getProfileIdentityStudio = createServerFn({ method: "POST" })
           .eq("user_id", userId),
         db
           .from("profile_loadouts")
-          .select("title_slug,background_slug,avatar_frame_slug,effect_slug,banner_slug,cursor_slug")
+          .select("title_slug,background_slug,avatar_frame_slug,effect_slug,banner_slug,cursor_slug,nameplate_slug")
           .eq("user_id", userId)
           .maybeSingle(),
       ]);
@@ -220,6 +228,7 @@ export const getProfileIdentityStudio = createServerFn({ method: "POST" })
       effect_slug: null,
       banner_slug: null,
       cursor_slug: null,
+      nameplate_slug: null,
     };
 
     return { titles, cosmetics, loadout };
