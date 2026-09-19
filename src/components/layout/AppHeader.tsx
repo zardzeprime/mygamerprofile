@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, Search, X, Settings, LogOut, UserRound } from "lucide-react";
+import { Menu, X, Settings, LogOut, UserRound } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { AudioControl } from "@/components/common/AudioControl";
+import { GlobalSearch } from "@/components/search/GlobalSearch";
 import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/googleAuth";
 
@@ -198,10 +199,9 @@ export function AppHeader() {
         </nav>
 
         <div className="col-start-3 flex min-w-0 items-center justify-end gap-1 sm:gap-2">
-          <Link to="/games" className="mgp-header-action hidden min-h-11 items-center gap-2 px-3 text-sm text-muted-foreground sm:flex" aria-label={t("games.search")}>
-            <Search aria-hidden="true" className="size-4" />
-            <span className="hidden 2xl:inline">{t("games.search")}</span>
-          </Link>
+          <div className="hidden sm:block">
+            <GlobalSearch />
+          </div>
           <div className="hidden items-center gap-2 xl:flex">
             <LanguageSelector />
             <AppearanceQuickPanel />
@@ -241,6 +241,7 @@ export function AppHeader() {
             ))}
           </nav>
           <div className="mt-4 flex flex-col gap-3 border-t border-border pt-4">
+            <GlobalSearch mobile onNavigate={() => setOpen(false)} />
             <div className="flex flex-wrap items-center gap-3">
               <LanguageSelector />
               <AppearanceQuickPanel />

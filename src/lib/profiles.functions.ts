@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
-import { getSupabasePublic } from "./supabase.server";
+import { getSupabasePublic, getSupabasePublicConfig } from "./supabase.server";
 
 type PublicProfile = Database["public"]["Tables"]["profiles"]["Row"] & {
   profile_background?: string;
@@ -24,6 +24,7 @@ const avatarUrlSchema = z
   .refine((value) => value.startsWith(AVATAR_PUBLIC_PREFIX), "invalid_avatar_url");
 
 const usernameSchema = z.object({ username: z.string().trim().min(3).max(20) });
+const profileSearchSchema = z.object({ query: z.string().trim().min(1).max(80), limit: z.number().int().min(1).max(12).default(6) });
 const usernameCheckSchema = z.object({
   username: z.string().trim().min(3).max(20),
   excludeUserId: z.string().uuid().optional(),
@@ -47,24 +48,105 @@ const updateProfileSchema = z.object({
 });
 const followSchema = z.object({ following_id: z.string().uuid() });
 
+async function fetchPublicProfilesRest(
+  filters: Record<string, string>,
+  select: string,
+  limit: number,
+) {
+  const { url, publishableKey } = getSupabasePublicConfig();
+  const endpoint = new URL("/rest/v1/profiles", url);
+  endpoint.searchParams.set("select", select);
+  endpoint.searchParams.set("visibility", "eq.public");
+  endpoint.searchParams.set("limit", String(limit));
+  Object.entries(filters).forEach(([key, value]) => endpoint.searchParams.set(key, value));
+
+  const response = await fetch(endpoint, {
+    headers: {
+      apikey: publishableKey,
+      Accept: "application/json",
+    },
+    signal: AbortSignal.timeout(8_000),
+  });
+
+  if (!response.ok) {
+    console.error("[MGP] Public profiles REST lookup failed", response.status);
+    throw new Error("public_profile_lookup_failed");
+  }
+
+  return (await response.json()) as Array<Record<string, unknown>>;
+}
+
 export const getProfileByUsername = createServerFn({ method: "GET" })
   .validator((data) => usernameSchema.parse(data))
   .handler(async ({ data }) => {
-    const supabase = getSupabasePublic();
-    const { data: profile, error } = await supabase
-      .from("profiles")
-      .select("*")
-      .ilike("username", data.username)
-      .maybeSingle();
-    if (error) throw new Error(error.message);
+    // Public profile pages deliberately use the anonymous PostgREST path with
+    // only the publishable key. This mirrors what a logged-out visitor can read
+    // under RLS and avoids coupling the public route to browser auth state.
+    const normalizedUsername = data.username.trim().toLowerCase();
+    const rows = await fetchPublicProfilesRest(
+      { username: `ilike.${normalizedUsername}` },
+      "*",
+      1,
+    );
+    const profile = rows[0] as PublicProfile | undefined;
     if (!profile) return null;
 
-    const publicProfile = profile as PublicProfile;
     return {
-      ...publicProfile,
-      followers: Number(publicProfile.followers_count ?? 0),
-      following: Number(publicProfile.following_count ?? 0),
+      ...profile,
+      followers: Number(profile.followers_count ?? 0),
+      following: Number(profile.following_count ?? 0),
     };
+  });
+
+export const searchPublicProfiles = createServerFn({ method: "GET" })
+  .validator((data) => profileSearchSchema.parse(data))
+  .handler(async ({ data }) => {
+    const term = data.query
+      .trim()
+      .replace(/[%,()*]/g, "")
+      .slice(0, 80);
+    if (!term) return [];
+
+    const pattern = `ilike.*${term}*`;
+    const select = "id,username,display_name,avatar_url,bio";
+    const [usernameRows, displayNameRows] = await Promise.all([
+      fetchPublicProfilesRest({ username: pattern }, select, data.limit),
+      fetchPublicProfilesRest({ display_name: pattern }, select, data.limit),
+    ]);
+
+    const merged = [...usernameRows, ...displayNameRows] as Array<{
+      id: string;
+      username: string;
+      display_name: string;
+      avatar_url: string | null;
+      bio: string | null;
+    }>;
+    const unique = Array.from(new Map(merged.map((profile) => [profile.id, profile])).values());
+
+    return unique
+      .sort((first, second) => {
+        const q = term.toLowerCase();
+        const firstUsername = first.username.toLowerCase();
+        const secondUsername = second.username.toLowerCase();
+        const firstScore =
+          firstUsername === q
+            ? 0
+            : firstUsername.startsWith(q)
+              ? 1
+              : first.display_name.toLowerCase().startsWith(q)
+                ? 2
+                : 3;
+        const secondScore =
+          secondUsername === q
+            ? 0
+            : secondUsername.startsWith(q)
+              ? 1
+              : second.display_name.toLowerCase().startsWith(q)
+                ? 2
+                : 3;
+        return firstScore - secondScore || firstUsername.localeCompare(secondUsername);
+      })
+      .slice(0, data.limit);
   });
 
 export const getCurrentProfile = createServerFn({ method: "GET" })
