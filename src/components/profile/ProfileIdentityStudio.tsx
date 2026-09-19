@@ -147,6 +147,20 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
     [data?.titles],
   );
 
+  const availableKinds = useMemo(
+    () =>
+      (Object.keys(KIND_META) as SupportedKind[]).filter((kind) =>
+        (data?.cosmetics ?? []).some((item) => item.kind === kind),
+      ),
+    [data?.cosmetics],
+  );
+
+  useEffect(() => {
+    if (availableKinds.length > 0 && !availableKinds.includes(activeKind)) {
+      setActiveKind(availableKinds[0]);
+    }
+  }, [activeKind, availableKinds]);
+
   const cosmetics = useMemo(
     () =>
       (data?.cosmetics ?? [])
@@ -308,7 +322,7 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
-          {(Object.keys(KIND_META) as SupportedKind[]).map((kind) => {
+          {availableKinds.map((kind) => {
             const meta = KIND_META[kind];
             const Icon = meta.icon;
             return (
