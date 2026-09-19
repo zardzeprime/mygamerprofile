@@ -51,8 +51,7 @@ function readableForeground(value: string): "#111318" | "#ffffff" {
   const blue = Number.parseInt(value.slice(5, 7), 16) / 255;
   const linear = (channel: number) =>
     channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
-  const luminance =
-    0.2126 * linear(red) + 0.7152 * linear(green) + 0.0722 * linear(blue);
+  const luminance = 0.2126 * linear(red) + 0.7152 * linear(green) + 0.0722 * linear(blue);
   return luminance > 0.42 ? "#111318" : "#ffffff";
 }
 
@@ -79,8 +78,7 @@ function applyCursorAppearance() {
   const highlight = dark ? "#59616d" : "#ffffff";
   const shadow = dark ? "#000000" : "#202329";
 
-  const arrowPath =
-    "M6.2 4.6 27.1 17.1 18.3 19.2 14.2 29.3 10.4 27.5 13.9 18.5 6.2 15.9Z";
+  const arrowPath = "M6.2 4.6 27.1 17.1 18.3 19.2 14.2 29.3 10.4 27.5 13.9 18.5 6.2 15.9Z";
 
   const arrow = `
     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
@@ -156,9 +154,10 @@ function persist(key: string, value: string | null) {
   }
 }
 
-async function persistAccountPreference(
-  patch: { theme_preference?: ThemePreference; accent_color?: string | null },
-) {
+async function persistAccountPreference(patch: {
+  theme_preference?: ThemePreference;
+  accent_color?: string | null;
+}) {
   try {
     const {
       data: { user },
@@ -185,8 +184,7 @@ function systemPrefersDark(): boolean {
 }
 
 function applyTheme(preference: ThemePreference): "light" | "dark" {
-  const dark =
-    preference === "dark" || (preference === "system" && systemPrefersDark());
+  const dark = preference === "dark" || (preference === "system" && systemPrefersDark());
   if (typeof document !== "undefined") {
     document.documentElement.classList.toggle("dark", dark);
     document.documentElement.style.colorScheme = dark ? "dark" : "light";
@@ -259,13 +257,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       if (active && data.user) void hydrateAccount(data.user.id);
     });
 
-    const { data: authSubscription } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === "SIGNED_IN" && session?.user) {
-          void hydrateAccount(session.user.id);
-        }
-      },
-    );
+    const { data: authSubscription } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user) {
+        void hydrateAccount(session.user.id);
+      }
+    });
 
     return () => {
       active = false;

@@ -102,7 +102,11 @@ function SearchPage() {
                 params={{ slug: game.slug }}
                 className="flex min-w-0 items-center gap-3 rounded-xl border border-border bg-surface p-3 transition hover:-translate-y-0.5 hover:border-gold/30"
               >
-                <img src={game.visual.coverImage} alt="" className="size-12 rounded-lg border border-border object-cover" />
+                <img
+                  src={game.visual.coverImage}
+                  alt=""
+                  className="size-12 rounded-lg border border-border object-cover"
+                />
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-semibold">{game.name}</span>
                   <span className="block truncate text-xs text-muted-foreground">{game.genre}</span>
@@ -123,7 +127,11 @@ function SearchPage() {
                 params={{ slug: game.slug }}
                 className="flex min-w-0 items-center gap-3 rounded-xl border border-border bg-surface p-3 transition hover:-translate-y-0.5 hover:border-gold/30"
               >
-                <img src={game.visual.coverImage} alt="" className="size-12 rounded-lg border border-border object-cover" />
+                <img
+                  src={game.visual.coverImage}
+                  alt=""
+                  className="size-12 rounded-lg border border-border object-cover"
+                />
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-semibold">{game.name}</span>
                   <span className="block truncate text-xs text-muted-foreground">
@@ -155,8 +163,12 @@ function SearchPage() {
                   )}
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate text-sm font-semibold">{profile.display_name}</span>
-                  <span className="block truncate text-xs text-muted-foreground">@{profile.username}</span>
+                  <span className="block truncate text-sm font-semibold">
+                    {profile.display_name}
+                  </span>
+                  <span className="block truncate text-xs text-muted-foreground">
+                    @{profile.username}
+                  </span>
                 </span>
               </Link>
             ))}
@@ -167,7 +179,9 @@ function SearchPage() {
       {query && total === 0 && !loadingProfiles ? (
         <div className="mt-10 rounded-2xl border border-dashed border-border p-10 text-center">
           <Search className="mx-auto size-5 text-muted-foreground" />
-          <p className="mt-3 font-semibold">{copy("Nada encontrado", "Nothing found", "No se encontró nada")}</p>
+          <p className="mt-3 font-semibold">
+            {copy("Nada encontrado", "Nothing found", "No se encontró nada")}
+          </p>
           <p className="mt-1 text-sm text-muted-foreground">
             {copy(
               "Tente outro nome, username ou jogo.",
