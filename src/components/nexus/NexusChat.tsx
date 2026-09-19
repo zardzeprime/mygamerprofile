@@ -522,18 +522,27 @@ export function NexusChat() {
                     <NexusMark className="mx-auto mb-2 size-8 text-gold-strong" />
                     <p className="font-semibold text-foreground">
                       {copy(
-                        "A NEXUS está instalada, mas o motor de IA ainda não está conectado.",
-                        "NEXUS is installed, but its AI engine is not connected yet.",
-                        "NEXUS está instalada, pero su motor de IA aún no está conectado.",
+                        "A NEXUS respondeu, mas nenhum provedor de IA ficou disponível nesta verificação.",
+                        "NEXUS responded, but no AI provider was available in this check.",
+                        "NEXUS respondió, pero ningún proveedor de IA quedó disponible en esta verificación.",
                       )}
                     </p>
                     <p className="mt-1 text-xs leading-5 text-muted-foreground">
                       {copy(
-                        "Precisamos configurar pelo menos um provedor oficial no servidor para ela responder.",
-                        "At least one official provider must be configured on the server before she can reply.",
-                        "Hay que configurar al menos un proveedor oficial en el servidor para que pueda responder.",
+                        "Isso pode mudar após uma atualização de segredo ou uma indisponibilidade temporária do provedor.",
+                        "This can change after a secret update or a temporary provider outage.",
+                        "Esto puede cambiar tras actualizar un secreto o por una indisponibilidad temporal del proveedor.",
                       )}
                     </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setReloadNonce((value) => value + 1)}
+                      className="mt-3"
+                    >
+                      {copy("Verificar novamente", "Check again", "Verificar de nuevo")}
+                    </Button>
                   </div>
                 ) : null}
 
@@ -613,9 +622,9 @@ export function NexusChat() {
                       )
                     : !aiReady
                       ? copy(
-                          "Motor de IA ainda não conectado",
-                          "AI engine not connected yet",
-                          "Motor de IA aún no conectado",
+                          "Provedor indisponível — verifique novamente",
+                          "Provider unavailable — check again",
+                          "Proveedor no disponible — verifica de nuevo",
                         )
                     : guestLocked
                       ? copy(
