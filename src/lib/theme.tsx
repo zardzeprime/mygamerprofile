@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
 export type ThemePreference = "light" | "dark" | "system";
 
@@ -24,6 +25,14 @@ type ThemeContextValue = {
   setPreference: (value: ThemePreference) => void;
   setAccentColor: (value: string) => void;
   resetAccentColor: () => void;
+};
+
+type ProfileAppearanceRow = Pick<
+  Database["public"]["Tables"]["profiles"]["Row"],
+  "theme_preference"
+> & { accent_color?: string | null };
+type ProfileAppearanceUpdate = Database["public"]["Tables"]["profiles"]["Update"] & {
+  accent_color?: string | null;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -158,7 +167,7 @@ async function persistAccountPreference(
 
     const { error } = await supabase
       .from("profiles")
-      .update(patch)
+      .update(patch as ProfileAppearanceUpdate)
       .eq("id", user.id);
 
     if (error) console.warn("[MGP] Could not sync appearance preference", error.message);
@@ -209,11 +218,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     const hydrateAccount = async (userId: string) => {
       const revisionAtStart = userChangeRevision.current;
-      const { data: profile, error } = await supabase
+      const { data: rawProfile, error } = await supabase
         .from("profiles")
-        .select("theme_preference,accent_color")
+        .select("*")
         .eq("id", userId)
         .maybeSingle();
+      const profile = rawProfile as ProfileAppearanceRow | null;
 
       if (!active || error || !profile) return;
 
@@ -240,7 +250,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       } else if (initialAccent) {
         void supabase
           .from("profiles")
-          .update({ accent_color: initialAccent })
+          .update({ accent_color: initialAccent } as ProfileAppearanceUpdate)
           .eq("id", userId);
       }
     };

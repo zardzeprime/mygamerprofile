@@ -18,7 +18,7 @@ type PublicProfileSearchResult = {
 
 export const Route = createFileRoute("/search")({
   validateSearch: (search: Record<string, unknown>) => ({
-    q: typeof search.q === "string" ? search.q.slice(0, 80) : "",
+    q: typeof search["q"] === "string" ? search["q"].slice(0, 80) : "",
   }),
   head: () => ({
     meta: [
