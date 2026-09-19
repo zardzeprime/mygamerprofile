@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
-import { getSupabasePublic, getSupabasePublicConfig } from "./supabase.server";
+import { getSupabasePublic, getSupabasePublicConfigs } from "./supabase.server";
 
 type PublicProfile = Database["public"]["Tables"]["profiles"]["Row"] & {
   profile_background?: string;
@@ -53,27 +53,39 @@ async function fetchPublicProfilesRest(
   select: string,
   limit: number,
 ) {
-  const { url, publishableKey } = getSupabasePublicConfig();
-  const endpoint = new URL("/rest/v1/profiles", url);
-  endpoint.searchParams.set("select", select);
-  endpoint.searchParams.set("visibility", "eq.public");
-  endpoint.searchParams.set("limit", String(limit));
-  Object.entries(filters).forEach(([key, value]) => endpoint.searchParams.set(key, value));
+  let successfulLookup = false;
 
-  const response = await fetch(endpoint, {
-    headers: {
-      apikey: publishableKey,
-      Accept: "application/json",
-    },
-    signal: AbortSignal.timeout(8_000),
-  });
+  for (const [candidateIndex, { url, publishableKey }] of getSupabasePublicConfigs().entries()) {
+    const endpoint = new URL("/rest/v1/profiles", url);
+    endpoint.searchParams.set("select", select);
+    endpoint.searchParams.set("visibility", "eq.public");
+    endpoint.searchParams.set("limit", String(limit));
+    Object.entries(filters).forEach(([key, value]) => endpoint.searchParams.set(key, value));
 
-  if (!response.ok) {
-    console.error("[MGP] Public profiles REST lookup failed", response.status);
-    throw new Error("public_profile_lookup_failed");
+    try {
+      const response = await fetch(endpoint, {
+        headers: {
+          apikey: publishableKey,
+          Accept: "application/json",
+        },
+        signal: AbortSignal.timeout(8_000),
+      });
+
+      if (!response.ok) {
+        console.error("[MGP] Public profiles REST candidate failed", candidateIndex, response.status);
+        continue;
+      }
+
+      successfulLookup = true;
+      const rows = (await response.json()) as Array<Record<string, unknown>>;
+      if (rows.length > 0) return rows;
+    } catch (error) {
+      console.error("[MGP] Public profiles REST candidate unavailable", candidateIndex, error);
+    }
   }
 
-  return (await response.json()) as Array<Record<string, unknown>>;
+  if (!successfulLookup) throw new Error("public_profile_lookup_failed");
+  return [];
 }
 
 export const getProfileByUsername = createServerFn({ method: "GET" })

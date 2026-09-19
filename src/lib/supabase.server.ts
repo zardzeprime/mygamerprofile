@@ -49,6 +49,26 @@ export function getSupabasePublicConfig() {
   return { url, publishableKey };
 }
 
+export function getSupabasePublicConfigs() {
+  const configured = getSupabasePublicConfig();
+  const canonical = {
+    url: PUBLIC_SUPABASE_URL,
+    publishableKey: PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  };
+
+  // Published SSR can receive deployment-level public coordinates that differ
+  // from the browser build. Public reads try those first, then the canonical
+  // browser project. Both paths remain anonymous and are still constrained by
+  // RLS; this is not a privileged failover.
+  return [configured, canonical].filter(
+    (candidate, index, candidates) =>
+      candidates.findIndex(
+        (other) =>
+          other.url === candidate.url && other.publishableKey === candidate.publishableKey,
+      ) === index,
+  );
+}
+
 export function getSupabasePublic() {
   const { url, publishableKey } = getSupabasePublicConfig();
 
