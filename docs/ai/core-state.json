@@ -92,8 +92,8 @@
         "Added UI disclosure that guest messages may be processed by MGP's configured official AI providers.",
         "Added user-facing export and confirmed deletion controls for authenticated NEXUS conversations without exposing another user's history.",
         "Made appearance preferences local-first for fast first paint while synchronizing theme and optional accent_color to the authenticated user profile, with no cross-user preference reads.",
-        "Google OAuth requests only minimal OpenID/email/profile scopes, and new OAuth users must accept the current Terms of Use and Privacy Policy during onboarding before a public profile is created."
-        ,"Public-profile environment failover preserves privacy by applying visibility=public to every anonymous candidate lookup and never using privileged credentials."
+        "Google OAuth requests only minimal OpenID/email/profile scopes, and new OAuth users must accept the current Terms of Use and Privacy Policy during onboarding before a public profile is created.",
+        "Public-profile environment failover preserves privacy by applying visibility=public to every anonymous candidate lookup and never using privileged credentials."
       ],
       "inProgress": [],
       "next": [

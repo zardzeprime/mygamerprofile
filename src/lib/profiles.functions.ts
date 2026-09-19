@@ -24,7 +24,10 @@ const avatarUrlSchema = z
   .refine((value) => value.startsWith(AVATAR_PUBLIC_PREFIX), "invalid_avatar_url");
 
 const usernameSchema = z.object({ username: z.string().trim().min(3).max(20) });
-const profileSearchSchema = z.object({ query: z.string().trim().min(1).max(80), limit: z.number().int().min(1).max(12).default(6) });
+const profileSearchSchema = z.object({
+  query: z.string().trim().min(1).max(80),
+  limit: z.number().int().min(1).max(12).default(6),
+});
 const usernameCheckSchema = z.object({
   username: z.string().trim().min(3).max(20),
   excludeUserId: z.string().uuid().optional(),
@@ -72,7 +75,11 @@ async function fetchPublicProfilesRest(
       });
 
       if (!response.ok) {
-        console.error("[MGP] Public profiles REST candidate failed", candidateIndex, response.status);
+        console.error(
+          "[MGP] Public profiles REST candidate failed",
+          candidateIndex,
+          response.status,
+        );
         continue;
       }
 
@@ -95,11 +102,7 @@ export const getProfileByUsername = createServerFn({ method: "GET" })
     // only the publishable key. This mirrors what a logged-out visitor can read
     // under RLS and avoids coupling the public route to browser auth state.
     const normalizedUsername = data.username.trim().toLowerCase();
-    const rows = await fetchPublicProfilesRest(
-      { username: `ilike.${normalizedUsername}` },
-      "*",
-      1,
-    );
+    const rows = await fetchPublicProfilesRest({ username: `ilike.${normalizedUsername}` }, "*", 1);
     const profile = rows[0] as PublicProfile | undefined;
     if (!profile) return null;
 
@@ -181,10 +184,7 @@ export const checkUsernameAvailable = createServerFn({ method: "GET" })
     if (!USERNAME_REGEX.test(normalized)) return { available: false };
 
     const supabase = getSupabasePublic();
-    let query = supabase
-      .from("profiles")
-      .select("id")
-      .ilike("username", normalized);
+    let query = supabase.from("profiles").select("id").ilike("username", normalized);
     if (data.excludeUserId) query = query.neq("id", data.excludeUserId);
     const { data: rows, error } = await query.limit(1);
     if (error) throw new Error(error.message);
@@ -236,7 +236,10 @@ export const updateProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((data) => updateProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const updatePayload = { ...data, updated_at: new Date().toISOString() } as Database["public"]["Tables"]["profiles"]["Update"];
+    const updatePayload = {
+      ...data,
+      updated_at: new Date().toISOString(),
+    } as Database["public"]["Tables"]["profiles"]["Update"];
     const { data: profile, error } = await context.supabase
       .from("profiles")
       .update(updatePayload)

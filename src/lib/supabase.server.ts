@@ -25,7 +25,10 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
     // supabase-js may otherwise mirror the project key into Authorization on
     // server-side anonymous calls, which makes PostgREST/Auth reject it as an
     // invalid bearer token. Keep it only in `apikey`; preserve real user JWTs.
-    if (isNewSupabaseApiKey(supabaseKey) && headers.get("Authorization") === `Bearer ${supabaseKey}`) {
+    if (
+      isNewSupabaseApiKey(supabaseKey) &&
+      headers.get("Authorization") === `Bearer ${supabaseKey}`
+    ) {
       headers.delete("Authorization");
     }
 
@@ -63,8 +66,7 @@ export function getSupabasePublicConfigs() {
   return [configured, canonical].filter(
     (candidate, index, candidates) =>
       candidates.findIndex(
-        (other) =>
-          other.url === candidate.url && other.publishableKey === candidate.publishableKey,
+        (other) => other.url === candidate.url && other.publishableKey === candidate.publishableKey,
       ) === index,
   );
 }
