@@ -195,7 +195,71 @@ export function SteamProfileShowcase({
         </div>
       ) : null}
 
-      {(steam.inventoryItemCount ?? 0) > 0 ? (
+      {(steam.inventoryItems?.length ?? 0) > 0 ? (
+        <div className="border-t border-border p-4 sm:p-5">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <Package className="size-4 text-gold-strong" aria-hidden="true" />
+                <h3 className="font-display text-sm font-semibold">
+                  {copy("Inventário Steam", "Steam inventory", "Inventario de Steam")}
+                </h3>
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {copy(
+                  "Prévia dos itens que este perfil escolheu tornar públicos.",
+                  "Preview of items this profile chose to make public.",
+                  "Vista previa de los objetos que este perfil eligió hacer públicos.",
+                )}
+              </p>
+            </div>
+            <span className="text-xs font-semibold text-muted-foreground">
+              {steam.inventoryItemCount ?? steam.inventoryItems?.length ?? 0}{" "}
+              {copy("itens", "items", "objetos")}
+            </span>
+          </div>
+
+          <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+            {steam.inventoryItems?.map((item, index) => (
+              <div
+                key={`${item.appId}-${item.name ?? "item"}-${index}`}
+                className="flex min-w-0 items-center gap-3 rounded-xl border border-border bg-muted/10 p-3"
+              >
+                <span className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-black/20">
+                  {item.iconUrl ? (
+                    <img
+                      src={item.iconUrl}
+                      alt=""
+                      loading="lazy"
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  ) : (
+                    <Package className="size-4 text-muted-foreground" aria-hidden="true" />
+                  )}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-semibold">
+                    {item.name || copy("Item Steam", "Steam item", "Objeto de Steam")}
+                  </span>
+                  <span className="mt-0.5 block truncate text-[0.68rem] text-muted-foreground">
+                    {steamInventoryGame(item.appId)}
+                    {item.type ? ` · ${item.type}` : ""}
+                  </span>
+                  <span className="mt-1 flex flex-wrap gap-1.5 text-[0.62rem] font-semibold text-muted-foreground">
+                    {item.amount > 1 ? <span>×{item.amount}</span> : null}
+                    {item.tradable ? (
+                      <span>{copy("Negociável", "Tradable", "Intercambiable")}</span>
+                    ) : null}
+                    {item.marketable ? (
+                      <span>{copy("Mercado", "Marketable", "Comercializable")}</span>
+                    ) : null}
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (steam.inventoryItemCount ?? 0) > 0 ? (
         <div className="flex items-center gap-2 border-t border-border px-4 py-3 text-xs text-muted-foreground sm:px-5">
           <Package className="size-4 text-gold-strong" aria-hidden="true" />
           {copy(
@@ -278,6 +342,13 @@ function SteamGameCard({
       </div>
     </article>
   );
+}
+
+function steamInventoryGame(appId: number) {
+  if (appId === 730) return "Counter-Strike 2";
+  if (appId === 570) return "Dota 2";
+  if (appId === 440) return "Team Fortress 2";
+  return `Steam App ${appId}`;
 }
 
 function SteamBackdrop({ appId }: { appId: number }) {
