@@ -30,16 +30,18 @@ import { GameProfileCard } from "@/components/games/GameProfileCard";
 import { PostCard } from "@/components/posts/PostCard";
 import { ReportDialog } from "@/components/common/ReportDialog";
 import { PublicProfileIdentity } from "@/components/profile/PublicProfileIdentity";
+import { SteamProfileShowcase } from "@/components/profile/SteamProfileShowcase";
 import { GAMES } from "@/config/games";
 import { getProfileBackground } from "@/config/profileBackgrounds";
 import { cn } from "@/lib/utils";
+import { getPublicSteamShowcase } from "@/lib/steamSync.functions";
 
 export const Route = createFileRoute("/u/$username")({
   loader: async ({ params }) => {
     const profile = await getProfileByUsername({ data: { username: params.username } });
     if (!profile) throw notFound();
 
-    const [posts, gameProfiles] = await Promise.all([
+    const [posts, gameProfiles, steamShowcase] = await Promise.all([
       listPosts({ data: { authorId: profile.id } }).catch((error) => {
         console.warn("[Profile] Could not load posts; rendering profile without activity.", error);
         return [];
@@ -48,9 +50,13 @@ export const Route = createFileRoute("/u/$username")({
         console.warn("[Profile] Could not load game profiles; rendering profile without game cards.", error);
         return [];
       }),
+      getPublicSteamShowcase({ data: { userId: profile.id } }).catch((error) => {
+        console.warn("[Profile] Could not load Steam showcase.", error);
+        return null;
+      }),
     ]);
 
-    return { profile, posts, gameProfiles };
+    return { profile, posts, gameProfiles, steamShowcase };
   },
   notFoundComponent: ProfileNotFound,
   head: ({ params }) => ({
@@ -82,7 +88,7 @@ function ProfileNotFound() {
 function ProfilePage() {
   const { locale, t } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const { profile, posts, gameProfiles } = Route.useLoaderData();
+  const { profile, posts, gameProfiles, steamShowcase } = Route.useLoaderData();
   const { user } = useAuth();
   const isOwn = user?.id === profile.id;
   const [following, setFollowing] = useState<boolean | null>(null);
@@ -186,6 +192,12 @@ function ProfilePage() {
           <PublicProfileIdentity userId={profile.id} locale={locale} />
         </div>
       </section>
+
+      {steamShowcase ? (
+        <div className="mt-5">
+          <SteamProfileShowcase steam={steamShowcase} locale={locale} />
+        </div>
+      ) : null}
 
       <div className="mt-5 grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_19rem] lg:gap-6">
         <section className="min-w-0 space-y-5">
