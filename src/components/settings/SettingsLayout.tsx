@@ -4,7 +4,7 @@ import { localeCopy } from "@/i18n/locale-utils";
 
 const TABS: { to: string; key: TranslationKey | null; label?: [string, string, string] }[] = [
   { to: "/settings/profile", key: "settings.profile" },
-  { to: "/settings/identity", key: null, label: ["Identidade & cosméticos", "Identity & cosmetics", "Identidad y cosméticos"] },
+  { to: "/settings/identity", key: null, label: ["Dados & privacidade", "Data & privacy", "Datos y privacidad"] },
   { to: "/settings/account", key: "settings.account" },
   { to: "/settings/connections", key: null, label: ["Conexões", "Connections", "Conexiones"] },
   { to: "/settings/appearance", key: "settings.appearance" },
