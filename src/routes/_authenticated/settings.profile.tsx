@@ -261,7 +261,7 @@ function SettingsProfilePage() {
             <div>
               <p className="text-sm font-semibold">{copy("Prévia do perfil", "Profile preview", "Vista previa del perfil")}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {copy("Apenas o avatar é enviado por você. O plano de fundo usa presets do MGP.", "Only your avatar is uploaded. The background uses MGP presets.", "Solo subes tu avatar. El fondo usa presets de MGP.")}
+                {copy("Esta prévia cobre os dados básicos. Títulos, fundos, molduras e efeitos equipados aparecem no seu perfil público.", "This preview covers basic profile data. Equipped titles, backgrounds, frames and effects appear on your public profile.", "Esta vista cubre los datos básicos. Los títulos, fondos, marcos y efectos equipados aparecen en tu perfil público.")}
               </p>
             </div>
             <Button asChild variant="outline" size="sm">
