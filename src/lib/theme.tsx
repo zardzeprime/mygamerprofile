@@ -164,10 +164,12 @@ async function persistAccountPreference(patch: {
     } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { error } = await supabase
-      .from("profiles")
-      .update(patch as ProfileAppearanceUpdate)
-      .eq("id", user.id);
+    const appearanceProfiles = supabase.from("profiles") as unknown as {
+      update: (values: ProfileAppearanceUpdate) => {
+        eq: (column: "id", value: string) => Promise<{ error: { message: string } | null }>;
+      };
+    };
+    const { error } = await appearanceProfiles.update(patch).eq("id", user.id);
 
     if (error) console.warn("[MGP] Could not sync appearance preference", error.message);
   } catch (error) {
@@ -231,7 +233,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       const accountTheme = isThemePreference(profile.theme_preference)
         ? profile.theme_preference
         : null;
-      const accountAccent = isHexColor(profile.accent_color)
+      const accountAccent = isHexColor(profile.accent_color ?? null)
         ? profile.accent_color.toLowerCase()
         : null;
 
@@ -246,10 +248,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         persist(ACCENT_STORAGE_KEY, accountAccent);
         applyAccentColor(accountAccent);
       } else if (initialAccent) {
-        void supabase
-          .from("profiles")
-          .update({ accent_color: initialAccent } as ProfileAppearanceUpdate)
-          .eq("id", userId);
+        const appearanceProfiles = supabase.from("profiles") as unknown as {
+          update: (values: ProfileAppearanceUpdate) => {
+            eq: (column: "id", value: string) => Promise<unknown>;
+          };
+        };
+        void appearanceProfiles.update({ accent_color: initialAccent }).eq("id", userId);
       }
     };
 
