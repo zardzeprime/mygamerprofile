@@ -128,6 +128,15 @@ export type PublicSteamShowcase = {
   badgeCount: number | null;
   xp: number | null;
   inventoryItemCount: number | null;
+  inventoryItems?: Array<{
+    appId: number;
+    name: string | null;
+    type: string | null;
+    iconUrl: string | null;
+    amount: number;
+    tradable: boolean;
+    marketable: boolean;
+  }>;
 };
 
 function getSteamKey() {
