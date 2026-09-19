@@ -1,6 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ChevronLeft, ChevronRight, Clock3, Droplets, Gauge, Images, PackageOpen, Search, ShieldCheck, Sparkles, Swords, WandSparkles } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Clock3,
+  Droplets,
+  Gauge,
+  Images,
+  PackageOpen,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Swords,
+  WandSparkles,
+} from "lucide-react";
 import { DataSourceIndicator } from "@/components/common/DataSourceIndicator";
 import {
   Dialog,
@@ -135,9 +148,7 @@ function loadLeagueItems(version: string, locale: Locale) {
   const cached = LEAGUE_ITEM_CACHE.get(key);
   if (cached) return cached;
 
-  const request = fetch(
-    `${DDRAGON}/cdn/${version}/data/${DATA_DRAGON_LOCALE[locale]}/item.json`,
-  )
+  const request = fetch(`${DDRAGON}/cdn/${version}/data/${DATA_DRAGON_LOCALE[locale]}/item.json`)
     .then((response) => {
       if (!response.ok) throw new Error(`Data Dragon items returned ${response.status}`);
       return response.json() as Promise<LeagueItemPayload>;
@@ -151,7 +162,6 @@ function loadLeagueItems(version: string, locale: Locale) {
   LEAGUE_ITEM_CACHE.set(key, request);
   return request;
 }
-
 
 function roleLabel(role: string, locale: Locale) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
@@ -219,7 +229,10 @@ export function LeagueChampionExplorer({
           }
         } catch (versionError) {
           if (!controller.signal.aborted) {
-            console.warn("[League] Could not resolve latest Data Dragon version; using fallback.", versionError);
+            console.warn(
+              "[League] Could not resolve latest Data Dragon version; using fallback.",
+              versionError,
+            );
           }
         }
 
@@ -271,7 +284,8 @@ export function LeagueChampionExplorer({
         const payload = (await response.json()) as ChampionPayload<ChampionDetail>;
         setDetail(payload.data[championId] ?? Object.values(payload.data)[0] ?? null);
       } catch (loadError) {
-        if (!controller.signal.aborted) console.error("[League] Champion detail failed.", loadError);
+        if (!controller.signal.aborted)
+          console.error("[League] Champion detail failed.", loadError);
       } finally {
         if (!controller.signal.aborted) setDetailLoading(false);
       }
@@ -329,7 +343,9 @@ export function LeagueChampionExplorer({
             </p>
           </div>
           <div className="text-xs font-semibold text-muted-foreground">
-            {loading ? copy("Sincronizando…", "Syncing…", "Sincronizando…") : `${filtered.length} / ${champions.length}`}
+            {loading
+              ? copy("Sincronizando…", "Syncing…", "Sincronizando…")
+              : `${filtered.length} / ${champions.length}`}
           </div>
         </div>
 
@@ -340,7 +356,11 @@ export function LeagueChampionExplorer({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0"
-              placeholder={copy("Buscar campeão pelo nome…", "Search champion by name…", "Buscar campeón por nombre…")}
+              placeholder={copy(
+                "Buscar campeão pelo nome…",
+                "Search champion by name…",
+                "Buscar campeón por nombre…",
+              )}
             />
           </label>
           <div className="-mx-1 flex max-w-full gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -365,7 +385,10 @@ export function LeagueChampionExplorer({
       {loading ? (
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10">
           {Array.from({ length: 30 }).map((_, index) => (
-            <div key={index} className="aspect-[0.78] animate-pulse rounded-xl border border-border bg-muted/40" />
+            <div
+              key={index}
+              className="aspect-[0.78] animate-pulse rounded-xl border border-border bg-muted/40"
+            />
           ))}
         </div>
       ) : (
@@ -387,7 +410,9 @@ export function LeagueChampionExplorer({
                 />
               </div>
               <div className="min-w-0 p-2.5">
-                <p className="truncate text-xs font-bold text-foreground sm:text-sm">{champion.name}</p>
+                <p className="truncate text-xs font-bold text-foreground sm:text-sm">
+                  {champion.name}
+                </p>
                 <p className="mt-0.5 truncate text-[0.65rem] text-muted-foreground">
                   {champion.tags.map((tag) => roleLabel(tag, locale)).join(" · ")}
                 </p>
@@ -404,7 +429,11 @@ export function LeagueChampionExplorer({
           {detailLoading || !detail ? (
             <div className="grid min-h-[28rem] place-items-center p-8">
               <div className="text-sm font-semibold text-muted-foreground">
-                {copy("Carregando ficha oficial…", "Loading official profile…", "Cargando ficha oficial…")}
+                {copy(
+                  "Carregando ficha oficial…",
+                  "Loading official profile…",
+                  "Cargando ficha oficial…",
+                )}
               </div>
             </div>
           ) : mode === "skins" ? (
@@ -450,11 +479,11 @@ function ChampionDetailView({
       key: ["Q", "W", "E", "R"][index] ?? String(index + 1),
       name: spell.name,
       description: spell.description,
-      tooltip: spell.tooltip,
       image: spellIcon(version, spell.image.full),
-      cooldown: spell.cooldownBurn,
-      cost: spell.costBurn,
-      range: spell.rangeBurn,
+      ...(spell.tooltip ? { tooltip: spell.tooltip } : {}),
+      ...(spell.cooldownBurn ? { cooldown: spell.cooldownBurn } : {}),
+      ...(spell.costBurn ? { cost: spell.costBurn } : {}),
+      ...(spell.rangeBurn ? { range: spell.rangeBurn } : {}),
       values: cleanEffectValues(spell.effectBurn),
     })),
   ];
@@ -464,7 +493,10 @@ function ChampionDetailView({
   return (
     <>
       <div className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[42rem] overflow-hidden" aria-hidden="true">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-[42rem] overflow-hidden"
+          aria-hidden="true"
+        >
           <img
             src={splash}
             alt=""
@@ -517,7 +549,9 @@ function ChampionDetailView({
                 ))}
               </div>
               <DialogHeader className="mt-3 text-left">
-                <DialogTitle className="font-display text-4xl text-white sm:text-6xl">{detail.name}</DialogTitle>
+                <DialogTitle className="font-display text-4xl text-white sm:text-6xl">
+                  {detail.name}
+                </DialogTitle>
                 <DialogDescription className="text-sm font-semibold text-white/75 sm:text-base">
                   {detail.title}
                 </DialogDescription>
@@ -568,11 +602,7 @@ function ChampionDetailView({
 
       <Dialog open={buildsOpen} onOpenChange={setBuildsOpen}>
         <DialogContent className="max-h-[92vh] max-w-5xl overflow-y-auto p-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95">
-          <ChampionBuildsView
-            detail={detail}
-            version={version}
-            locale={locale}
-          />
+          <ChampionBuildsView detail={detail} version={version} locale={locale} />
         </DialogContent>
       </Dialog>
 
@@ -686,7 +716,11 @@ function ChampionBuildsView({
 
           <DialogHeader className="mt-4 text-left">
             <DialogTitle className="font-display text-3xl text-white sm:text-4xl">
-              {copy(`Builds de ${detail.name}`, `${detail.name} builds`, `Builds de ${detail.name}`)}
+              {copy(
+                `Builds de ${detail.name}`,
+                `${detail.name} builds`,
+                `Builds de ${detail.name}`,
+              )}
             </DialogTitle>
             <DialogDescription className="max-w-2xl text-sm leading-6 text-white/65">
               {copy(
@@ -703,7 +737,10 @@ function ChampionBuildsView({
         {loading ? (
           <div className="grid gap-4 sm:grid-cols-2">
             {Array.from({ length: 2 }).map((_, index) => (
-              <div key={index} className="h-72 animate-pulse rounded-[1.35rem] border border-border bg-muted/20" />
+              <div
+                key={index}
+                className="h-72 animate-pulse rounded-[1.35rem] border border-border bg-muted/20"
+              />
             ))}
           </div>
         ) : sourceError || !builds.length ? (
@@ -792,7 +829,11 @@ function ChampionBuildsView({
                 rel="noreferrer"
                 className="mt-2 inline-flex font-bold text-gold-strong hover:underline"
               >
-                {copy("Abrir fonte da build ↗", "Open build source ↗", "Abrir fuente de la build ↗")}
+                {copy(
+                  "Abrir fonte da build ↗",
+                  "Open build source ↗",
+                  "Abrir fuente de la build ↗",
+                )}
               </a>
             ) : null}
           </div>
@@ -819,7 +860,9 @@ function BuildItemSection({
 }) {
   return (
     <section className={cn("p-4", emphasis && "border-t border-border")}>
-      <h4 className="text-xs font-black uppercase tracking-[0.1em] text-muted-foreground">{title}</h4>
+      <h4 className="text-xs font-black uppercase tracking-[0.1em] text-muted-foreground">
+        {title}
+      </h4>
       <div className="mgp-media-rail mt-3 flex gap-3 overflow-x-auto pb-2">
         {rows.map((entry, index) => {
           const item = items[entry.id];
@@ -942,7 +985,9 @@ function AbilityRail({
                   </span>
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate font-display text-sm font-semibold text-foreground">{ability.name}</p>
+                  <p className="truncate font-display text-sm font-semibold text-foreground">
+                    {ability.name}
+                  </p>
                   <p className="mt-1 line-clamp-3 text-[0.68rem] leading-4 text-muted-foreground">
                     {description}
                   </p>
@@ -1000,11 +1045,7 @@ function AbilityPreviewPopover({
       aria-hidden="true"
     >
       <div className="relative aspect-video shrink-0 overflow-hidden bg-black">
-        <OptimizedAbilityVideo
-          base={base}
-          poster={ability.image}
-          label={ability.name}
-        />
+        <OptimizedAbilityVideo base={base} poster={ability.image} label={ability.name} />
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-4 pt-14 text-white">
           <div className="flex items-center gap-2">
             <span className="grid size-7 place-items-center rounded-lg border border-white/20 bg-black/45 text-[0.68rem] font-black">
@@ -1087,16 +1128,16 @@ function OptimizedAbilityVideo({
 
   useEffect(() => {
     const touch = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
-    const connection = (navigator as Navigator & {
-      connection?: { saveData?: boolean; effectiveType?: string };
-    }).connection;
+    const connection = (
+      navigator as Navigator & {
+        connection?: { saveData?: boolean; effectiveType?: string };
+      }
+    ).connection;
     setMobileOrTouch(touch);
     setSaveData(Boolean(connection?.saveData));
   }, []);
 
-  const sources = mobileOrTouch
-    ? [`${base}.mp4`, `${base}.webm`]
-    : [`${base}.webm`, `${base}.mp4`];
+  const sources = mobileOrTouch ? [`${base}.mp4`, `${base}.webm`] : [`${base}.webm`, `${base}.mp4`];
   const src = sources[sourceIndex];
 
   useEffect(() => {
@@ -1132,7 +1173,11 @@ function OptimizedAbilityVideo({
   if (failed || saveData) {
     return (
       <div className="grid h-full place-items-center bg-[radial-gradient(circle_at_center,hsl(var(--gold)/0.1),transparent_70%),black]">
-        <img src={poster} alt="" className="size-24 rounded-2xl border border-white/10 object-cover" />
+        <img
+          src={poster}
+          alt=""
+          className="size-24 rounded-2xl border border-white/10 object-cover"
+        />
       </div>
     );
   }
@@ -1206,14 +1251,21 @@ function SkinCollectionView({ detail, locale }: { detail: ChampionDetail; locale
   return (
     <div>
       <div className="relative min-h-64 overflow-hidden border-b border-border bg-black">
-        <img src={baseSplash} alt="" className="absolute inset-0 h-full w-full object-cover object-top opacity-65" />
+        <img
+          src={baseSplash}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-top opacity-65"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/10" />
         <div className="relative flex min-h-64 items-end p-6 sm:p-8">
           <div className="text-white">
             <DialogHeader className="text-left">
-              <DialogTitle className="font-display text-4xl text-white sm:text-5xl">{detail.name}</DialogTitle>
+              <DialogTitle className="font-display text-4xl text-white sm:text-5xl">
+                {detail.name}
+              </DialogTitle>
               <DialogDescription className="text-white/65">
-                {skins.length} {copy("splashes principais", "main splashes", "splashes principales")}
+                {skins.length}{" "}
+                {copy("splashes principais", "main splashes", "splashes principales")}
               </DialogDescription>
             </DialogHeader>
           </div>
@@ -1287,16 +1339,22 @@ function SkinSplashPreview({
   const viewerRef = useRef<HTMLDivElement>(null);
   const wheelAccumulatorRef = useRef(0);
   const lastWheelStepRef = useRef(0);
-  const currentIndex = Math.max(0, skins.findIndex((entry) => entry.num === skin.num));
+  const currentIndex = Math.max(
+    0,
+    skins.findIndex((entry) => entry.num === skin.num),
+  );
   const label = skin.name === "default" ? championName : skin.name;
   const image = skinSplash(championId, skin.num);
 
-  const move = useCallback((direction: -1 | 1) => {
-    if (skins.length <= 1) return;
-    const nextIndex = (currentIndex + direction + skins.length) % skins.length;
-    const nextSkin = skins[nextIndex];
-    if (nextSkin) onSkin(nextSkin);
-  }, [currentIndex, onSkin, skins]);
+  const move = useCallback(
+    (direction: -1 | 1) => {
+      if (skins.length <= 1) return;
+      const nextIndex = (currentIndex + direction + skins.length) % skins.length;
+      const nextSkin = skins[nextIndex];
+      if (nextSkin) onSkin(nextSkin);
+    },
+    [currentIndex, onSkin, skins],
+  );
 
   useEffect(() => {
     const viewer = viewerRef.current;
@@ -1308,7 +1366,8 @@ function SkinSplashPreview({
 
       wheelAccumulatorRef.current += event.deltaY || event.deltaX;
       const now = performance.now();
-      if (Math.abs(wheelAccumulatorRef.current) < 28 || now - lastWheelStepRef.current < 120) return;
+      if (Math.abs(wheelAccumulatorRef.current) < 28 || now - lastWheelStepRef.current < 120)
+        return;
 
       const direction: -1 | 1 = wheelAccumulatorRef.current > 0 ? 1 : -1;
       wheelAccumulatorRef.current = 0;
@@ -1368,8 +1427,12 @@ function SkinSplashPreview({
       <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/90 via-black/55 to-transparent p-6 pt-20">
         <div className="flex items-end justify-between gap-4">
           <div className="min-w-0">
-            <p className="truncate font-display text-xl font-semibold text-white sm:text-2xl">{label}</p>
-            <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-white/60">{championName}</p>
+            <p className="truncate font-display text-xl font-semibold text-white sm:text-2xl">
+              {label}
+            </p>
+            <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-white/60">
+              {championName}
+            </p>
           </div>
           <div className="shrink-0 text-right">
             <p className="text-xs font-bold tabular-nums text-white/85">
@@ -1385,7 +1448,15 @@ function SkinSplashPreview({
   );
 }
 
-function FilterButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function FilterButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"

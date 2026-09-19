@@ -25,7 +25,10 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
     // supabase-js may otherwise mirror the project key into Authorization on
     // server-side anonymous calls, which makes PostgREST/Auth reject it as an
     // invalid bearer token. Keep it only in `apikey`; preserve real user JWTs.
-    if (isNewSupabaseApiKey(supabaseKey) && headers.get("Authorization") === `Bearer ${supabaseKey}`) {
+    if (
+      isNewSupabaseApiKey(supabaseKey) &&
+      headers.get("Authorization") === `Bearer ${supabaseKey}`
+    ) {
       headers.delete("Authorization");
     }
 
@@ -47,6 +50,25 @@ export function getSupabasePublicConfig() {
     PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
   return { url, publishableKey };
+}
+
+export function getSupabasePublicConfigs() {
+  const configured = getSupabasePublicConfig();
+  const canonical = {
+    url: PUBLIC_SUPABASE_URL,
+    publishableKey: PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  };
+
+  // Published SSR can receive deployment-level public coordinates that differ
+  // from the browser build. Public reads try those first, then the canonical
+  // browser project. Both paths remain anonymous and are still constrained by
+  // RLS; this is not a privileged failover.
+  return [configured, canonical].filter(
+    (candidate, index, candidates) =>
+      candidates.findIndex(
+        (other) => other.url === candidate.url && other.publishableKey === candidate.publishableKey,
+      ) === index,
+  );
 }
 
 export function getSupabasePublic() {

@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
 export type ThemePreference = "light" | "dark" | "system";
 
@@ -24,6 +25,14 @@ type ThemeContextValue = {
   setPreference: (value: ThemePreference) => void;
   setAccentColor: (value: string) => void;
   resetAccentColor: () => void;
+};
+
+type ProfileAppearanceRow = Pick<
+  Database["public"]["Tables"]["profiles"]["Row"],
+  "theme_preference"
+> & { accent_color?: string | null };
+type ProfileAppearanceUpdate = Database["public"]["Tables"]["profiles"]["Update"] & {
+  accent_color?: string | null;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -42,8 +51,7 @@ function readableForeground(value: string): "#111318" | "#ffffff" {
   const blue = Number.parseInt(value.slice(5, 7), 16) / 255;
   const linear = (channel: number) =>
     channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
-  const luminance =
-    0.2126 * linear(red) + 0.7152 * linear(green) + 0.0722 * linear(blue);
+  const luminance = 0.2126 * linear(red) + 0.7152 * linear(green) + 0.0722 * linear(blue);
   return luminance > 0.42 ? "#111318" : "#ffffff";
 }
 
@@ -70,8 +78,7 @@ function applyCursorAppearance() {
   const highlight = dark ? "#59616d" : "#ffffff";
   const shadow = dark ? "#000000" : "#202329";
 
-  const arrowPath =
-    "M6.2 4.6 27.1 17.1 18.3 19.2 14.2 29.3 10.4 27.5 13.9 18.5 6.2 15.9Z";
+  const arrowPath = "M6.2 4.6 27.1 17.1 18.3 19.2 14.2 29.3 10.4 27.5 13.9 18.5 6.2 15.9Z";
 
   const arrow = `
     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
@@ -147,19 +154,22 @@ function persist(key: string, value: string | null) {
   }
 }
 
-async function persistAccountPreference(
-  patch: { theme_preference?: ThemePreference; accent_color?: string | null },
-) {
+async function persistAccountPreference(patch: {
+  theme_preference?: ThemePreference;
+  accent_color?: string | null;
+}) {
   try {
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { error } = await supabase
-      .from("profiles")
-      .update(patch)
-      .eq("id", user.id);
+    const appearanceProfiles = supabase.from("profiles") as unknown as {
+      update: (values: ProfileAppearanceUpdate) => {
+        eq: (column: "id", value: string) => Promise<{ error: { message: string } | null }>;
+      };
+    };
+    const { error } = await appearanceProfiles.update(patch).eq("id", user.id);
 
     if (error) console.warn("[MGP] Could not sync appearance preference", error.message);
   } catch (error) {
@@ -176,8 +186,7 @@ function systemPrefersDark(): boolean {
 }
 
 function applyTheme(preference: ThemePreference): "light" | "dark" {
-  const dark =
-    preference === "dark" || (preference === "system" && systemPrefersDark());
+  const dark = preference === "dark" || (preference === "system" && systemPrefersDark());
   if (typeof document !== "undefined") {
     document.documentElement.classList.toggle("dark", dark);
     document.documentElement.style.colorScheme = dark ? "dark" : "light";
@@ -209,11 +218,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     const hydrateAccount = async (userId: string) => {
       const revisionAtStart = userChangeRevision.current;
-      const { data: profile, error } = await supabase
+      const { data: rawProfile, error } = await supabase
         .from("profiles")
-        .select("theme_preference,accent_color")
+        .select("*")
         .eq("id", userId)
         .maybeSingle();
+      const profile = rawProfile as ProfileAppearanceRow | null;
 
       if (!active || error || !profile) return;
 
@@ -223,9 +233,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       const accountTheme = isThemePreference(profile.theme_preference)
         ? profile.theme_preference
         : null;
-      const accountAccent = isHexColor(profile.accent_color)
-        ? profile.accent_color.toLowerCase()
-        : null;
+      const rawAccountAccent = profile.accent_color ?? null;
+      const accountAccent = isHexColor(rawAccountAccent) ? rawAccountAccent.toLowerCase() : null;
 
       if (accountTheme) {
         setPreferenceState(accountTheme);
@@ -238,10 +247,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         persist(ACCENT_STORAGE_KEY, accountAccent);
         applyAccentColor(accountAccent);
       } else if (initialAccent) {
-        void supabase
-          .from("profiles")
-          .update({ accent_color: initialAccent })
-          .eq("id", userId);
+        const appearanceProfiles = supabase.from("profiles") as unknown as {
+          update: (values: ProfileAppearanceUpdate) => {
+            eq: (column: "id", value: string) => Promise<unknown>;
+          };
+        };
+        void appearanceProfiles.update({ accent_color: initialAccent }).eq("id", userId);
       }
     };
 
@@ -249,13 +260,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       if (active && data.user) void hydrateAccount(data.user.id);
     });
 
-    const { data: authSubscription } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === "SIGNED_IN" && session?.user) {
-          void hydrateAccount(session.user.id);
-        }
-      },
-    );
+    const { data: authSubscription } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user) {
+        void hydrateAccount(session.user.id);
+      }
+    });
 
     return () => {
       active = false;
