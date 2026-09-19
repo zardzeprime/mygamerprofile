@@ -24,6 +24,7 @@ const avatarUrlSchema = z
   .refine((value) => value.startsWith(AVATAR_PUBLIC_PREFIX), "invalid_avatar_url");
 
 const usernameSchema = z.object({ username: z.string().trim().min(3).max(20) });
+const profileSearchSchema = z.object({ query: z.string().trim().min(1).max(80), limit: z.number().int().min(1).max(12).default(6) });
 const usernameCheckSchema = z.object({
   username: z.string().trim().min(3).max(20),
   excludeUserId: z.string().uuid().optional(),
@@ -50,13 +51,24 @@ const followSchema = z.object({ following_id: z.string().uuid() });
 export const getProfileByUsername = createServerFn({ method: "GET" })
   .validator((data) => usernameSchema.parse(data))
   .handler(async ({ data }) => {
-    const supabase = getSupabasePublic();
-    const { data: profile, error } = await supabase
+    // Public profile pages must not depend on browser auth state or anonymous
+    // client header quirks. Read through the trusted server client, but keep the
+    // public-visibility filter explicit so private profiles are never exposed.
+    const { getSupabaseAdmin } = await import("@/lib/supabase-admin.server");
+    const admin = getSupabaseAdmin();
+    const normalizedUsername = data.username.trim().toLowerCase();
+
+    const { data: profile, error } = await admin
       .from("profiles")
       .select("*")
-      .ilike("username", data.username)
+      .eq("visibility", "public")
+      .ilike("username", normalizedUsername)
       .maybeSingle();
-    if (error) throw new Error(error.message);
+
+    if (error) {
+      console.error("[MGP] Public profile lookup failed", error);
+      throw new Error("public_profile_lookup_failed");
+    }
     if (!profile) return null;
 
     const publicProfile = profile as PublicProfile;
@@ -65,6 +77,53 @@ export const getProfileByUsername = createServerFn({ method: "GET" })
       followers: Number(publicProfile.followers_count ?? 0),
       following: Number(publicProfile.following_count ?? 0),
     };
+  });
+
+export const searchPublicProfiles = createServerFn({ method: "GET" })
+  .validator((data) => profileSearchSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { getSupabaseAdmin } = await import("@/lib/supabase-admin.server");
+    const admin = getSupabaseAdmin();
+    const term = data.query.trim().replace(/[%_]/g, "");
+    if (!term) return [];
+
+    const pattern = `%${term}%`;
+    const [usernameResult, displayNameResult] = await Promise.all([
+      admin
+        .from("profiles")
+        .select("id,username,display_name,avatar_url,bio")
+        .eq("visibility", "public")
+        .ilike("username", pattern)
+        .limit(data.limit),
+      admin
+        .from("profiles")
+        .select("id,username,display_name,avatar_url,bio")
+        .eq("visibility", "public")
+        .ilike("display_name", pattern)
+        .limit(data.limit),
+    ]);
+
+    if (usernameResult.error) throw new Error("profile_search_failed");
+    if (displayNameResult.error) throw new Error("profile_search_failed");
+
+    const merged = [
+      ...(usernameResult.data ?? []),
+      ...(displayNameResult.data ?? []),
+    ];
+    const unique = Array.from(new Map(merged.map((profile) => [profile.id, profile])).values());
+
+    return unique
+      .sort((first, second) => {
+        const q = term.toLowerCase();
+        const firstUsername = first.username.toLowerCase();
+        const secondUsername = second.username.toLowerCase();
+        const firstScore =
+          firstUsername === q ? 0 : firstUsername.startsWith(q) ? 1 : first.display_name.toLowerCase().startsWith(q) ? 2 : 3;
+        const secondScore =
+          secondUsername === q ? 0 : secondUsername.startsWith(q) ? 1 : second.display_name.toLowerCase().startsWith(q) ? 2 : 3;
+        return firstScore - secondScore || firstUsername.localeCompare(secondUsername);
+      })
+      .slice(0, data.limit);
   });
 
 export const getCurrentProfile = createServerFn({ method: "GET" })
