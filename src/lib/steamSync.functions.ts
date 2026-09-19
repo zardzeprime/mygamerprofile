@@ -821,12 +821,17 @@ export const updateSteamSharing = createServerFn({ method: "POST" })
   .validator((data) => sharingSchema.parse(data))
   .handler(async ({ data }) => {
     const { db, userId } = await authenticateSyncRequest(data.accessToken);
-    const {
-      accessToken: _accessToken,
-      ...sharing
-    } = data;
+    const sharing = {
+      show_library: data.show_library,
+      show_playtime: data.show_playtime,
+      show_achievements: data.show_achievements,
+      show_badges: data.show_badges,
+      show_inventory: data.show_inventory,
+    };
     const payload = {
-      ...sharing,
+      ...Object.fromEntries(
+        Object.entries(sharing).filter(([, value]) => value !== undefined),
+      ),
       updated_at: new Date().toISOString(),
     };
 
