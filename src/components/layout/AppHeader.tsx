@@ -59,33 +59,40 @@ export function AppHeader() {
   useEffect(() => {
     let cancelled = false;
 
-    if (!userId) {
-      setProfileUsername(null);
-      setProfileLoading(false);
-      return;
-    }
+    const loadProfileUsername = async () => {
+      if (!userId) {
+        setProfileUsername(null);
+        setProfileLoading(false);
+        return;
+      }
 
-    setProfileLoading(true);
-    void Promise.resolve(supabase
-      .from("profiles")
-      .select("username")
-      .eq("id", userId)
-      .maybeSingle())
-      .then(({ data, error }) => {
-        if (cancelled) return;
-        if (error) {
-          console.error("[MGP] Failed to load current profile username", error);
-          setProfileUsername(null);
-          return;
-        }
+      setProfileLoading(true);
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (cancelled) return;
+      if (error) {
+        console.error("[MGP] Failed to load current profile username", error);
+        setProfileUsername(null);
+      } else {
         setProfileUsername(data?.username ?? null);
-      })
-      .finally(() => {
-        if (!cancelled) setProfileLoading(false);
-      });
+      }
+      setProfileLoading(false);
+    };
+
+    void loadProfileUsername();
+
+    const refreshProfile = () => {
+      void loadProfileUsername();
+    };
+    window.addEventListener("mgp:profile-updated", refreshProfile);
 
     return () => {
       cancelled = true;
+      window.removeEventListener("mgp:profile-updated", refreshProfile);
     };
   }, [userId]);
 
