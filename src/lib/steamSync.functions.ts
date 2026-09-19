@@ -223,6 +223,14 @@ async function evaluateProfileUnlocks(
     console.warn("[MGP Identity] unlock evaluation failed", error);
     return null;
   }
+
+  const { error: defaultsError } = await db.rpc("ensure_profile_default_loadout", {
+    target_user_id: userId,
+  });
+  if (defaultsError) {
+    console.warn("[MGP Identity] default loadout failed", defaultsError);
+  }
+
   return data;
 }
 
