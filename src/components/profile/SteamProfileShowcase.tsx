@@ -93,7 +93,7 @@ export function SteamProfileShowcase({
         <Metric
           icon={Crown}
           label={copy("Nível Steam", "Steam level", "Nivel Steam")}
-          value={steam.steamLevel ?? "—"}
+          value={badgesShared ? (steam.steamLevel ?? "—") : hiddenValue}
         />
         <Metric
           icon={Gamepad2}
@@ -151,7 +151,7 @@ export function SteamProfileShowcase({
               <SteamGameCard
                 key={game.appId}
                 game={game}
-                rank={index + 1}
+                rank={playtimeShared ? index + 1 : undefined}
                 locale={locale}
               />
             ))}
@@ -216,7 +216,7 @@ function SteamGameCard({
   locale,
 }: {
   game: PublicSteamShowcase["games"][number];
-  rank: number;
+  rank?: number;
   locale: Locale;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
@@ -233,9 +233,13 @@ function SteamGameCard({
 
       <div className="relative flex min-h-40 flex-col justify-between p-3.5">
         <div className="flex items-start justify-between gap-3">
-          <span className="inline-flex items-center gap-1 rounded-full border border-white/12 bg-black/35 px-2 py-1 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-white/75 backdrop-blur">
-            {rank <= 3 ? `TOP ${rank}` : `#${rank}`}
-          </span>
+          {rank ? (
+            <span className="inline-flex items-center gap-1 rounded-full border border-white/12 bg-black/35 px-2 py-1 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-white/75 backdrop-blur">
+              {rank <= 3 ? `TOP ${rank}` : `#${rank}`}
+            </span>
+          ) : (
+            <span aria-hidden="true" />
+          )}
           {percent === 100 ? (
             <span className="inline-flex items-center gap-1 rounded-full border border-gold/30 bg-black/45 px-2 py-1 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-gold-strong backdrop-blur">
               <Trophy className="size-3" />
