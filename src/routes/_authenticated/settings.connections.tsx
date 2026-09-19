@@ -287,6 +287,7 @@ function SettingsConnectionsPage() {
       const core = await runSteamCore({ data: { accessToken } });
       let cursor = 0;
       let processedGames = 0;
+      let achievementFailures = 0;
       let guard = 0;
 
       if (core.achievementEligible > 0) {
@@ -304,6 +305,7 @@ function SettingsConnectionsPage() {
           data: { accessToken, afterAppId: cursor, batchSize: 6 },
         });
         processedGames += batch.processed;
+        achievementFailures += batch.failures?.length ?? 0;
         if (batch.nextCursor === null || batch.processed === 0) break;
         cursor = batch.nextCursor;
         guard += 1;
@@ -321,11 +323,17 @@ function SettingsConnectionsPage() {
 
       await refreshSteamSyncStatus(accessToken);
       setSteamSyncProgress(
-        copy(
-          "Steam sincronizada. Os dados disponíveis já podem aparecer no seu perfil.",
-          "Steam synced. Available data can now appear on your profile.",
-          "Steam sincronizada. Los datos disponibles ya pueden aparecer en tu perfil.",
-        ),
+        achievementFailures > 0
+          ? copy(
+              `Steam sincronizada parcialmente. ${achievementFailures} jogo(s) não responderam nas conquistas; os dados anteriores foram preservados e você pode tentar novamente depois.`,
+              `Steam partially synced. ${achievementFailures} game(s) did not respond for achievements; previous data was preserved and you can try again later.`,
+              `Steam se sincronizó parcialmente. ${achievementFailures} juego(s) no respondieron para los logros; se conservaron los datos anteriores y puedes intentarlo de nuevo más tarde.`,
+            )
+          : copy(
+              "Steam sincronizada. Os dados disponíveis já podem aparecer no seu perfil.",
+              "Steam synced. Available data can now appear on your profile.",
+              "Steam sincronizada. Los datos disponibles ya pueden aparecer en tu perfil.",
+            ),
       );
     } catch (error) {
       console.error("[MGP Steam] Full sync failed", error);
