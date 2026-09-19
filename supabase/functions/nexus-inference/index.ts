@@ -1,7 +1,7 @@
 import { CHILD_CORES } from "./core.ts";
 import { aiReady, providerStatuses } from "./providers.ts";
+import { isProjectPublishableKey } from "./supabase-keys.ts";
 import {
-  PROJECT_PUBLISHABLE_KEY,
   handleDeleteThread,
   handleGuestSend,
   handleGuestStatus,
@@ -13,10 +13,6 @@ import {
 } from "./runtime.ts";
 
 const RATE_BUCKETS = new Map<string, { count: number; resetAt: number }>();
-
-function env(name: string) {
-  return Deno.env.get(name)?.trim() || undefined;
-}
 
 function corsHeaders() {
   return {
@@ -48,11 +44,7 @@ function cleanErrorCode(error: unknown) {
 }
 
 function hasValidProjectApiKey(req: Request) {
-  const supplied = req.headers.get("apikey")?.trim();
-  if (!supplied) return false;
-  const anon = env("SUPABASE_ANON_KEY");
-  const publishable = env("SUPABASE_PUBLISHABLE_KEY");
-  return supplied === PROJECT_PUBLISHABLE_KEY || supplied === anon || supplied === publishable;
+  return isProjectPublishableKey(req.headers.get("apikey"));
 }
 
 function clientIp(req: Request) {
