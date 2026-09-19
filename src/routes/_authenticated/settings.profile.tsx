@@ -1,6 +1,6 @@
 import { createFileRoute, Link, redirect, useRouter } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Camera, Check, Eye, Gamepad2, LockKeyhole, Palette } from "lucide-react";
+import { Camera, Check, Eye, Gamepad2, LockKeyhole, Sparkles, UserRound } from "lucide-react";
 import { checkUsernameAvailable } from "@/lib/profiles.functions";
 import { uploadImage } from "@/lib/uploads";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,13 +20,8 @@ import {
 } from "@/components/ui/select";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { GameArtwork } from "@/components/games/GameArtwork";
-import { ProfileCustomizationStudio } from "@/components/profile/ProfileCustomizationStudio";
 import { ProfileIdentityStudio } from "@/components/profile/ProfileIdentityStudio";
-import {
-  PROFILE_BACKGROUNDS,
-  getProfileBackground,
-  type ProfileBackgroundKey,
-} from "@/config/profileBackgrounds";
+import { getProfileBackground } from "@/config/profileBackgrounds";
 import { ACTIVE_GAMES } from "@/config/gameAvailability";
 import type { Json } from "@/integrations/supabase/types";
 import type { Database } from "@/integrations/supabase/types";
@@ -96,9 +91,6 @@ function SettingsProfilePage() {
   const [bio, setBio] = useState(profile.bio ?? "");
   const [language, setLanguage] = useState<Locale>((profile.language as Locale) ?? locale);
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url ?? "");
-  const [background, setBackground] = useState<ProfileBackgroundKey>(
-    getProfileBackground(profile.profile_background).key,
-  );
   const [visibility, setVisibility] = useState<"public" | "private">(
     profile.visibility === "private" ? "private" : "public",
   );
@@ -159,7 +151,6 @@ function SettingsProfilePage() {
         avatar_url: avatarUrl || null,
         language,
         visibility,
-        profile_background: background,
         updated_at: new Date().toISOString(),
       } as Database["public"]["Tables"]["profiles"]["Update"];
       const { error: updateError } = await supabase
@@ -231,7 +222,7 @@ function SettingsProfilePage() {
     }
   };
 
-  const selectedBackground = getProfileBackground(background);
+  const selectedBackground = getProfileBackground(profile.profile_background);
 
   return (
     <SettingsLayout>
@@ -282,60 +273,39 @@ function SettingsProfilePage() {
           </div>
         </section>
 
-        <section className="surface-panel rounded-2xl p-4 sm:p-6">
-          <div className="flex items-center gap-2">
-            <Palette className="size-4 text-gold-strong" />
-            <h2 className="font-display text-lg font-semibold">{copy("Plano de fundo", "Background", "Fondo")}</h2>
-          </div>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            {copy(
-              "Escolha um visual oficial do MGP. Os novos presets animados são originais da plataforma e respeitam a preferência de movimento reduzido.",
-              "Choose an official MGP look. The new animated presets are original to the platform and respect reduced-motion preferences.",
-              "Elige un aspecto oficial de MGP. Los nuevos presets animados son originales de la plataforma y respetan la preferencia de movimiento reducido.",
-            )}
-          </p>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {PROFILE_BACKGROUNDS.map((preset) => {
-              const selected = background === preset.key;
-              return (
-                <button
-                  key={preset.key}
-                  type="button"
-                  onClick={() => setBackground(preset.key)}
-                  className={cn(
-                    "overflow-hidden rounded-xl border text-left transition-all hover:-translate-y-0.5",
-                    selected ? "border-gold/60 ring-2 ring-gold/15" : "border-border hover:border-gold/30",
-                  )}
-                >
-                  <div className={cn("relative h-24", preset.className)}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/75 to-transparent" />
-                    {preset.animated ? (
-                      <span className="absolute left-2 top-2 rounded-full border border-white/15 bg-black/30 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.1em] text-white/80 backdrop-blur">
-                        {copy("Animado", "Animated", "Animado")}
-                      </span>
-                    ) : null}
-                    {selected ? (
-                      <span className="absolute right-2 top-2 grid size-7 place-items-center rounded-full bg-gold text-gold-foreground">
-                        <Check className="size-4" />
-                      </span>
-                    ) : null}
-                  </div>
-                  <div className="bg-surface p-3">
-                    <p className="text-sm font-semibold">{preset.name[locale]}</p>
-                    <p className="mt-1 text-xs leading-5 text-muted-foreground">{preset.description[locale]}</p>
-                  </div>
-                </button>
-              );
-            })}
+
+        <section className="surface-panel rounded-2xl p-3 sm:p-4">
+          <div className="grid gap-2 sm:grid-cols-3">
+            <a href="#profile-appearance" className="rounded-xl border border-border bg-muted/15 px-3 py-3 transition-colors hover:border-gold/35 hover:bg-gold-soft/20">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Sparkles className="size-4 text-gold-strong" />
+                {copy("Aparência & títulos", "Appearance & titles", "Apariencia y títulos")}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{copy("Cosméticos e loadout visual.", "Cosmetics and visual loadout.", "Cosméticos y loadout visual.")}</p>
+            </a>
+            <a href="#profile-games" className="rounded-xl border border-border bg-muted/15 px-3 py-3 transition-colors hover:border-gold/35 hover:bg-gold-soft/20">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Gamepad2 className="size-4 text-gold-strong" />
+                {copy("Jogos favoritos", "Favorite games", "Juegos favoritos")}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{copy("Destaques do seu perfil gamer.", "Highlights for your gamer profile.", "Destacados de tu perfil gamer.")}</p>
+            </a>
+            <a href="#profile-info" className="rounded-xl border border-border bg-muted/15 px-3 py-3 transition-colors hover:border-gold/35 hover:bg-gold-soft/20">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <UserRound className="size-4 text-gold-strong" />
+                {copy("Informações", "Information", "Información")}
+              </div>
+              <p className="mt-1 text-xs text-muted-foreground">{copy("Nome, username, bio e visibilidade.", "Name, username, bio and visibility.", "Nombre, usuario, bio y visibilidad.")}</p>
+            </a>
           </div>
         </section>
 
-        <ProfileCustomizationStudio locale={locale} />
+        <div id="profile-appearance" className="scroll-mt-24">
+          <ProfileIdentityStudio locale={locale} />
+        </div>
 
-        <ProfileIdentityStudio locale={locale} />
-
-        <section className="surface-panel rounded-2xl p-4 sm:p-6">
+        <section id="profile-games" className="surface-panel scroll-mt-24 rounded-2xl p-4 sm:p-6">
           <div className="flex items-center gap-2">
             <Gamepad2 className="size-4 text-gold-strong" />
             <h2 className="font-display text-lg font-semibold">
@@ -386,8 +356,15 @@ function SettingsProfilePage() {
           </div>
         </section>
 
-        <section className="surface-panel rounded-2xl p-4 sm:p-6">
-          <h2 className="mb-5 font-display text-xl font-semibold">{t("settings.profile")}</h2>
+        <section id="profile-info" className="surface-panel scroll-mt-24 rounded-2xl p-4 sm:p-6">
+          <h2 className="font-display text-xl font-semibold">{copy("Informações do perfil", "Profile information", "Información del perfil")}</h2>
+          <p className="mb-5 mt-2 text-sm leading-6 text-muted-foreground">
+            {copy(
+              "Edite aqui apenas os dados básicos da conta. A parte visual fica concentrada em Aparência & títulos para evitar configurações repetidas.",
+              "Edit only your basic account details here. Visual choices are consolidated under Appearance & titles to avoid duplicate settings.",
+              "Edita aquí solo los datos básicos de la cuenta. Las opciones visuales están reunidas en Apariencia y títulos para evitar ajustes duplicados.",
+            )}
+          </p>
           <div className="grid gap-5 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="displayName">{t("auth.displayName")}</Label>
