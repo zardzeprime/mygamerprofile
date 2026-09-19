@@ -14,8 +14,11 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LfgRouteImport } from './routes/lfg'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as NexusRouteImport } from './routes/nexus'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as CommunitiesIndexRouteImport } from './routes/communities.index'
@@ -29,6 +32,7 @@ import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_a
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
 import { Route as AuthenticatedSettingsIdentityRouteImport } from './routes/_authenticated/settings.identity'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
+import { Route as ConnectSteamCallbackRouteImport } from './routes/connect.steam.callback'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as UUsernameGamesSlugRouteImport } from './routes/u.$username.games.$slug'
 
@@ -56,6 +60,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NexusRoute = NexusRouteImport.update({
+  id: '/nexus',
+  path: '/nexus',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -64,6 +73,16 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -137,6 +156,11 @@ const AuthenticatedSettingsProfileRoute =
     path: '/settings/profile',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ConnectSteamCallbackRoute = ConnectSteamCallbackRouteImport.update({
+  id: '/connect/steam/callback',
+  path: '/connect/steam/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailTransactionalPreviewRoute =
   LovableEmailTransactionalPreviewRouteImport.update({
     id: '/lovable/email/transactional/preview',
@@ -154,8 +178,11 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
+  '/nexus': typeof NexusRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
+  '/search': typeof SearchRoute
+  '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/communities/$slug': typeof CommunitiesSlugRoute
@@ -169,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/connect/steam/callback': typeof ConnectSteamCallbackRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -177,8 +205,11 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
+  '/nexus': typeof NexusRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
+  '/search': typeof SearchRoute
+  '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/communities/$slug': typeof CommunitiesSlugRoute
@@ -192,6 +223,7 @@ export interface FileRoutesByTo {
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/connect/steam/callback': typeof ConnectSteamCallbackRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -202,8 +234,11 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
+  '/nexus': typeof NexusRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
+  '/search': typeof SearchRoute
+  '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/communities/$slug': typeof CommunitiesSlugRoute
@@ -217,6 +252,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/connect/steam/callback': typeof ConnectSteamCallbackRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -227,8 +263,11 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/lfg'
     | '/login'
+    | '/nexus'
     | '/privacy'
     | '/register'
+    | '/search'
+    | '/support'
     | '/terms'
     | '/onboarding'
     | '/communities/$slug'
@@ -242,6 +281,7 @@ export interface FileRouteTypes {
     | '/settings/connections'
     | '/settings/identity'
     | '/settings/profile'
+    | '/connect/steam/callback'
     | '/lovable/email/transactional/preview'
     | '/u/$username/games/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -250,8 +290,11 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/lfg'
     | '/login'
+    | '/nexus'
     | '/privacy'
     | '/register'
+    | '/search'
+    | '/support'
     | '/terms'
     | '/onboarding'
     | '/communities/$slug'
@@ -265,6 +308,7 @@ export interface FileRouteTypes {
     | '/settings/connections'
     | '/settings/identity'
     | '/settings/profile'
+    | '/connect/steam/callback'
     | '/lovable/email/transactional/preview'
     | '/u/$username/games/$slug'
   id:
@@ -274,8 +318,11 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/lfg'
     | '/login'
+    | '/nexus'
     | '/privacy'
     | '/register'
+    | '/search'
+    | '/support'
     | '/terms'
     | '/_authenticated/onboarding'
     | '/communities/$slug'
@@ -289,6 +336,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/connections'
     | '/_authenticated/settings/identity'
     | '/_authenticated/settings/profile'
+    | '/connect/steam/callback'
     | '/lovable/email/transactional/preview'
     | '/u/$username/games/$slug'
   fileRoutesById: FileRoutesById
@@ -299,14 +347,18 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LfgRoute: typeof LfgRoute
   LoginRoute: typeof LoginRoute
+  NexusRoute: typeof NexusRoute
   PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
+  SearchRoute: typeof SearchRoute
+  SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
   CommunitiesSlugRoute: typeof CommunitiesSlugRoute
   GamesSlugRoute: typeof GamesSlugRoute
   UUsernameRoute: typeof UUsernameRouteWithChildren
   CommunitiesIndexRoute: typeof CommunitiesIndexRoute
   GamesIndexRoute: typeof GamesIndexRoute
+  ConnectSteamCallbackRoute: typeof ConnectSteamCallbackRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
@@ -347,6 +399,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/nexus': {
+      id: '/nexus'
+      path: '/nexus'
+      fullPath: '/nexus'
+      preLoaderRoute: typeof NexusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -359,6 +418,20 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -452,6 +525,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/connect/steam/callback': {
+      id: '/connect/steam/callback'
+      path: '/connect/steam/callback'
+      fullPath: '/connect/steam/callback'
+      preLoaderRoute: typeof ConnectSteamCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/transactional/preview': {
       id: '/lovable/email/transactional/preview'
       path: '/lovable/email/transactional/preview'
@@ -510,14 +590,18 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   LfgRoute: LfgRoute,
   LoginRoute: LoginRoute,
+  NexusRoute: NexusRoute,
   PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
+  SearchRoute: SearchRoute,
+  SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,
   CommunitiesSlugRoute: CommunitiesSlugRoute,
   GamesSlugRoute: GamesSlugRoute,
   UUsernameRoute: UUsernameRouteWithChildren,
   CommunitiesIndexRoute: CommunitiesIndexRoute,
   GamesIndexRoute: GamesIndexRoute,
+  ConnectSteamCallbackRoute: ConnectSteamCallbackRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
