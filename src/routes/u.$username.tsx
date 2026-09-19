@@ -34,7 +34,7 @@ import { SteamProfileShowcase } from "@/components/profile/SteamProfileShowcase"
 import { GAMES } from "@/config/games";
 import { getProfileBackground } from "@/config/profileBackgrounds";
 import { cn } from "@/lib/utils";
-import { getPublicSteamShowcase } from "@/lib/steamSync.functions";
+import { getPublicSteamShowcase, type PublicSteamShowcase } from "@/lib/steamSync.functions";
 import { getPublicProfileLoadout } from "@/lib/profileIdentity.functions";
 
 export const Route = createFileRoute("/u/$username")({
@@ -300,20 +300,242 @@ function ProfilePage() {
         </section>
 
         <aside className="grid min-w-0 gap-4 sm:grid-cols-3 lg:grid-cols-1 lg:self-start">
-          <Showcase icon={Gamepad2} title={copy("Identidade gamer", "Gamer identity", "Identidad gamer")} description={copy("Perfis específicos por jogo e favoritos.", "Game-specific profiles and favorites.", "Perfiles específicos por juego y favoritos.")} />
-          <Showcase icon={Award} title={copy("Conquistas", "Achievements", "Logros")} description={copy("Sistema preparado para uma etapa futura.", "System prepared for a future release.", "Sistema preparado para una futura versión.")} />
-          <Showcase icon={History} title={copy("Atividade", "Activity", "Actividad")} description={copy("Posts e histórico social vão ganhar mais profundidade na v0.2.", "Posts and social history will expand in v0.2.", "Las publicaciones y el historial social crecerán en v0.2.")} />
+          <SteamIdentityCard steam={steamShowcase} locale={locale} gameProfileCount={gameProfiles.length} />
+          <SteamAchievementsCard steam={steamShowcase} locale={locale} />
+          <SteamActivityCard steam={steamShowcase} locale={locale} postCount={posts.length} />
         </aside>
       </div>
     </main>
   );
 }
 
-function Showcase({ icon: Icon, title, description }: { icon: typeof Sparkles; title: string; description: string }) {
+function SteamIdentityCard({
+  steam,
+  locale,
+  gameProfileCount,
+}: {
+  steam: PublicSteamShowcase | null;
+  locale: "pt-BR" | "en" | "es";
+  gameProfileCount: number;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+
   return (
     <div className="surface-panel p-4">
-      <div className="flex items-center gap-2"><Icon className="size-4 text-gold-strong" /><h3 className="text-sm font-semibold">{title}</h3></div>
-      <p className="mt-3 text-xs leading-5 text-muted-foreground">{description}</p>
+      <div className="flex items-center gap-2">
+        <Gamepad2 className="size-4 text-gold-strong" />
+        <h3 className="text-sm font-semibold">
+          {copy("Identidade gamer", "Gamer identity", "Identidad gamer")}
+        </h3>
+      </div>
+
+      {steam ? (
+        <div className="mt-3 space-y-3">
+          <div className="rounded-xl border border-[#66c0f4]/15 bg-[#66c0f4]/5 p-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="truncate text-xs font-semibold text-foreground">
+                  {steam.personaName || "Steam"}
+                </p>
+                <p className="mt-1 text-[0.68rem] text-muted-foreground">
+                  {copy("Steam verificada", "Verified Steam", "Steam verificada")}
+                </p>
+              </div>
+              <ShieldCheck className="size-4 shrink-0 text-[#66c0f4]" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <MiniStat label={copy("Nível", "Level", "Nivel")} value={steam.steamLevel ?? "—"} />
+            <MiniStat label={copy("Jogos", "Games", "Juegos")} value={steam.libraryGameCount ?? steam.games.length} />
+            <MiniStat label={copy("Insígnias", "Badges", "Insignias")} value={steam.badgeCount ?? "—"} />
+            <MiniStat label="Game Profiles" value={gameProfileCount} />
+          </div>
+        </div>
+      ) : (
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">
+          {copy(
+            "Perfis específicos por jogo e favoritos. Ao vincular a Steam, nível, biblioteca e insígnias aparecem aqui.",
+            "Game-specific profiles and favorites. When Steam is linked, level, library and badges appear here.",
+            "Perfiles específicos por juego y favoritos. Al vincular Steam, nivel, biblioteca e insignias aparecen aquí.",
+          )}
+        </p>
+      )}
     </div>
   );
+}
+
+function SteamAchievementsCard({
+  steam,
+  locale,
+}: {
+  steam: PublicSteamShowcase | null;
+  locale: "pt-BR" | "en" | "es";
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const summary = steam?.achievementSummary ?? null;
+  const trackedGames =
+    steam?.games
+      .filter(
+        (game) =>
+          typeof game.achievementsTotal === "number" &&
+          game.achievementsTotal > 0 &&
+          typeof game.achievementPercent === "number",
+      )
+      .slice(0, 4) ?? [];
+  const overallPercent =
+    summary && summary.total > 0
+      ? Math.max(0, Math.min(100, (summary.unlocked / summary.total) * 100))
+      : 0;
+
+  return (
+    <div className="surface-panel p-4">
+      <div className="flex items-center gap-2">
+        <Award className="size-4 text-gold-strong" />
+        <h3 className="text-sm font-semibold">
+          {copy("Conquistas", "Achievements", "Logros")}
+        </h3>
+      </div>
+
+      {summary && summary.total > 0 ? (
+        <div className="mt-3">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="font-display text-xl font-bold">
+                {summary.unlocked}
+                <span className="ml-1 text-xs font-medium text-muted-foreground">
+                  / {summary.total}
+                </span>
+              </p>
+              <p className="mt-0.5 text-[0.67rem] text-muted-foreground">
+                {summary.gamesTracked} {copy("jogos com conquistas", "games with achievements", "juegos con logros")}
+              </p>
+            </div>
+            <span className="text-xs font-semibold text-gold-strong">
+              {Math.round(overallPercent)}%
+            </span>
+          </div>
+
+          <ProgressBar value={overallPercent} className="mt-2 h-1.5" />
+
+          {trackedGames.length > 0 ? (
+            <div className="mt-4 space-y-3 border-t border-border pt-3">
+              {trackedGames.map((game) => {
+                const percent = Math.max(
+                  0,
+                  Math.min(100, Number(game.achievementPercent ?? 0)),
+                );
+                return (
+                  <div key={game.appId} className="min-w-0">
+                    <div className="flex items-center justify-between gap-2 text-[0.68rem]">
+                      <span className="min-w-0 truncate font-medium text-foreground">
+                        {game.name}
+                      </span>
+                      <span className="shrink-0 tabular-nums text-muted-foreground">
+                        {game.achievementsUnlocked ?? 0}/{game.achievementsTotal}
+                      </span>
+                    </div>
+                    <ProgressBar value={percent} className="mt-1.5 h-1" />
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
+        </div>
+      ) : (
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">
+          {steam
+            ? copy(
+                "A Steam está conectada, mas as conquistas estão ocultas ou ainda não foram sincronizadas.",
+                "Steam is connected, but achievements are hidden or have not been synced yet.",
+                "Steam está conectada, pero los logros están ocultos o todavía no se han sincronizado.",
+              )
+            : copy(
+                "Vincule a Steam para exibir progresso real de conquistas por jogo.",
+                "Link Steam to show real achievement progress per game.",
+                "Vincula Steam para mostrar el progreso real de logros por juego.",
+              )}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function SteamActivityCard({
+  steam,
+  locale,
+  postCount,
+}: {
+  steam: PublicSteamShowcase | null;
+  locale: "pt-BR" | "en" | "es";
+  postCount: number;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const recent = steam?.recentGames.slice(0, 3) ?? [];
+
+  return (
+    <div className="surface-panel p-4">
+      <div className="flex items-center gap-2">
+        <History className="size-4 text-gold-strong" />
+        <h3 className="text-sm font-semibold">
+          {copy("Atividade", "Activity", "Actividad")}
+        </h3>
+      </div>
+
+      {recent.length > 0 ? (
+        <div className="mt-3 space-y-2">
+          {recent.map((game) => (
+            <div key={game.appId} className="rounded-xl border border-border bg-muted/10 px-3 py-2.5">
+              <p className="truncate text-xs font-semibold">{game.name}</p>
+              <p className="mt-1 text-[0.67rem] text-muted-foreground">
+                {formatSteamMinutes(game.recentMinutes)} {copy("nas últimas 2 semanas", "in the last 2 weeks", "en las últimas 2 semanas")}
+              </p>
+            </div>
+          ))}
+          <p className="pt-1 text-[0.67rem] text-muted-foreground">
+            {postCount} {copy("posts no MGP", "MGP posts", "posts en MGP")}
+          </p>
+        </div>
+      ) : (
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">
+          {steam
+            ? copy(
+                "Nenhum jogo recente público encontrado. A atividade social do MGP continua aparecendo normalmente.",
+                "No public recent games were found. MGP social activity still appears normally.",
+                "No se encontraron juegos recientes públicos. La actividad social de MGP sigue apareciendo normalmente.",
+              )
+            : copy(
+                "Posts e perfis de jogo formam seu histórico. A Steam adiciona jogos recentes automaticamente.",
+                "Posts and game profiles form your history. Steam automatically adds recent games.",
+                "Posts y perfiles de juego forman tu historial. Steam añade juegos recientes automáticamente.",
+              )}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded-lg border border-border bg-muted/10 px-2.5 py-2">
+      <p className="truncate text-[0.6rem] uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
+      <p className="mt-1 font-display text-sm font-bold">{value}</p>
+    </div>
+  );
+}
+
+function ProgressBar({ value, className }: { value: number; className?: string }) {
+  const percent = Math.max(0, Math.min(100, Number.isFinite(value) ? value : 0));
+  return (
+    <div className={cn("overflow-hidden rounded-full bg-muted", className)}>
+      <div className="h-full rounded-full bg-gold transition-[width]" style={{ width: `${percent}%` }} />
+    </div>
+  );
+}
+
+function formatSteamMinutes(minutes: number | null | undefined) {
+  if (!minutes) return "0h";
+  if (minutes < 60) return `${minutes}m`;
+  const value = minutes / 60;
+  return value >= 100 ? `${Math.round(value)}h` : `${value.toFixed(1)}h`;
 }
