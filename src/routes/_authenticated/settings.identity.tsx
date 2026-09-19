@@ -1,6 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-import { ProfileCosmeticsPreview } from "@/components/profile/ProfileCosmeticsPreview";
 import { ProfileIdentityPrivacy } from "@/components/profile/ProfileIdentityPrivacy";
 import { SettingsLayout } from "@/components/settings/SettingsLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,19 +35,18 @@ function IdentitySettingsPage() {
         <div>
           <p className="section-kicker">MGP / 0.1.9</p>
           <h2 className="mt-2 font-display text-2xl font-semibold text-foreground">
-            {copy("Identidade & cosméticos", "Identity & cosmetics", "Identidad y cosméticos")}
+            {copy("Dados opcionais & privacidade", "Optional data & privacy", "Datos opcionales y privacidad")}
           </h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
             {copy(
-              "A base da 0.2 separa dados pessoais opcionais das escolhas visuais do perfil, com privacidade por campo.",
-              "The 0.2 foundation separates optional personal details from profile visual choices, with field-level privacy.",
-              "La base de 0.2 separa los datos personales opcionales de las opciones visuales del perfil, con privacidad por campo.",
+              "Controle aqui apenas os dados opcionais exibidos no perfil e a privacidade de cada campo. Títulos, fundos, molduras e outros cosméticos ficam concentrados em Perfil.",
+              "Control only optional profile data and field-level privacy here. Titles, backgrounds, frames and other cosmetics now live together under Profile.",
+              "Controla aquí solo los datos opcionales del perfil y la privacidad de cada campo. Los títulos, fondos, marcos y demás cosméticos quedan reunidos en Perfil.",
             )}
           </p>
         </div>
 
         <ProfileIdentityPrivacy userId={userId} locale={locale} />
-        <ProfileCosmeticsPreview locale={locale} />
       </div>
     </SettingsLayout>
   );
