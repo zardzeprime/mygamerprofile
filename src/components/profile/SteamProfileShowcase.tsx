@@ -345,6 +345,7 @@ function SteamGameCard({
 }
 
 function steamInventoryGame(appId: number) {
+  if (appId === 753) return "Steam Community";
   if (appId === 730) return "Counter-Strike 2";
   if (appId === 570) return "Dota 2";
   if (appId === 440) return "Team Fortress 2";
