@@ -10,8 +10,10 @@ import {
   type Mode,
 } from "./core.ts";
 import { aiReady, complete, providerStatuses, type ChatMessage } from "./providers.ts";
-
-export const PROJECT_PUBLISHABLE_KEY = "sb_publishable_JXVaM-rr7Yu59l3x7WyHEg_qlR-uDMX";
+import {
+  isProjectPublishableKey,
+  preferredProjectPublishableKey,
+} from "./supabase-keys.ts";
 
 function env(name: string) {
   return Deno.env.get(name)?.trim() || undefined;
@@ -61,13 +63,17 @@ export async function authenticatedUser(req: Request) {
   const authorization = req.headers.get("authorization")?.trim();
   if (!authorization?.toLowerCase().startsWith("bearer ")) throw new Error("NEXUS_AUTH_REQUIRED");
   const token = authorization.slice(7).trim();
-  if (!token || token === PROJECT_PUBLISHABLE_KEY) throw new Error("NEXUS_AUTH_REQUIRED");
+  if (!token || isProjectPublishableKey(token)) throw new Error("NEXUS_AUTH_REQUIRED");
 
   const url = env("SUPABASE_URL");
-  if (!url) throw new Error("NEXUS_BACKEND_NOT_READY");
+  const requestApiKey = req.headers.get("apikey")?.trim();
+  const apiKey = isProjectPublishableKey(requestApiKey)
+    ? requestApiKey!
+    : preferredProjectPublishableKey();
+  if (!url || !apiKey) throw new Error("NEXUS_BACKEND_NOT_READY");
 
   const response = await fetch(`${url}/auth/v1/user`, {
-    headers: { apikey: PROJECT_PUBLISHABLE_KEY, Authorization: `Bearer ${token}` },
+    headers: { apikey: apiKey, Authorization: `Bearer ${token}` },
     signal: AbortSignal.timeout(6_000),
   });
   if (!response.ok) throw new Error("NEXUS_AUTH_INVALID");
