@@ -732,6 +732,7 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
         hasMore: false,
         unlocked: 0,
         total: 0,
+        failures: [] as number[],
       };
     }
 
