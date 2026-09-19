@@ -1,16 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import {
   BadgeCheck,
   Clock3,
   Gamepad2,
+  Library,
   Globe2,
   Link2,
   LockKeyhole,
   RefreshCw,
+  Package,
   ShieldCheck,
   ShieldQuestion,
   Swords,
+  Trophy,
 } from "lucide-react";
 import { SettingsLayout } from "@/components/settings/SettingsLayout";
 import { Button } from "@/components/ui/button";
@@ -20,6 +24,12 @@ import { localeCopy } from "@/i18n/locale-utils";
 import { supabase } from "@/integrations/supabase/client";
 import { getRiotApiReadiness } from "@/lib/riot.functions";
 import { getSteamApiReadiness } from "@/lib/steam.functions";
+import {
+  getSteamSyncStatus,
+  syncSteamAchievementsBatch,
+  syncSteamCore,
+  updateSteamSharing,
+} from "@/lib/steamSync.functions";
 
 export const Route = createFileRoute("/_authenticated/settings/connections")({
   head: () => ({
@@ -56,6 +66,33 @@ type VerificationState = {
 type ApiReadiness = {
   steam: { configured: boolean; openIdReady: boolean } | null;
   riot: { apiKeyConfigured: boolean; rsoConfigured: boolean; publicAppUrlConfigured: boolean } | null;
+};
+
+type SteamSyncStatus = {
+  profile: {
+    persona_name: string | null;
+    profile_url: string | null;
+    avatar_url: string | null;
+    steam_level: number | null;
+    badge_count: number;
+    xp: number;
+    library_visible: boolean;
+    inventory_visible: boolean;
+    show_library: boolean;
+    show_playtime: boolean;
+    show_achievements: boolean;
+    show_badges: boolean;
+    show_inventory: boolean;
+    last_sync_status: "never" | "syncing" | "ok" | "partial" | "error";
+    last_error: string | null;
+    last_synced_at: string | null;
+  } | null;
+  counts: {
+    games: number;
+    achievements: number;
+    badges: number;
+    inventoryItems: number;
+  };
 };
 
 type ConnectedAccountsReadClient = {
@@ -131,6 +168,13 @@ function SettingsConnectionsPage() {
   const [loading, setLoading] = useState(true);
   const [steamBusy, setSteamBusy] = useState(false);
   const [connectionError, setConnectionError] = useState("");
+  const [steamSyncStatus, setSteamSyncStatus] = useState<SteamSyncStatus | null>(null);
+  const [steamSyncing, setSteamSyncing] = useState(false);
+  const [steamSyncProgress, setSteamSyncProgress] = useState("");
+  const runSteamCore = useServerFn(syncSteamCore);
+  const runSteamAchievementsBatch = useServerFn(syncSteamAchievementsBatch);
+  const loadSteamSyncStatus = useServerFn(getSteamSyncStatus);
+  const saveSteamSharing = useServerFn(updateSteamSharing);
 
   useEffect(() => {
     if (!user?.id) {
@@ -144,7 +188,10 @@ function SettingsConnectionsPage() {
       const accountsClient = supabase as unknown as ConnectedAccountsReadClient;
       const verificationClient = supabase as unknown as VerificationReadClient;
 
-      const [accountsResult, verificationResult, steamReadiness, riotReadiness] = await Promise.all([
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+
+      const [accountsResult, verificationResult, steamReadiness, riotReadiness, syncStatus] = await Promise.all([
         accountsClient
           .from("connected_accounts")
           .select("provider,display_name,status,connected_at,last_synced_at")
@@ -156,12 +203,16 @@ function SettingsConnectionsPage() {
           .maybeSingle(),
         getSteamApiReadiness().catch(() => null),
         getRiotApiReadiness().catch(() => null),
+        accessToken
+          ? loadSteamSyncStatus({ data: { accessToken } }).catch(() => null)
+          : Promise.resolve(null),
       ]);
 
       if (cancelled) return;
       if (!accountsResult.error) setAccounts(accountsResult.data ?? []);
       if (!verificationResult.error) setVerification(verificationResult.data);
       setApiReadiness({ steam: steamReadiness, riot: riotReadiness });
+      if (syncStatus) setSteamSyncStatus(syncStatus as SteamSyncStatus);
       setLoading(false);
     };
 
@@ -169,7 +220,7 @@ function SettingsConnectionsPage() {
     return () => {
       cancelled = true;
     };
-  }, [user?.id]);
+  }, [loadSteamSyncStatus, user?.id]);
 
   const byProvider = useMemo(
     () => new Map(accounts.map((account) => [account.provider, account])),
@@ -205,6 +256,116 @@ function SettingsConnectionsPage() {
           "Não foi possível abrir o login oficial da Steam. A conexão segura foi reiniciada no backend do MGP; tente novamente em alguns segundos.",
           "Could not open the official Steam sign-in. The secure connection now runs through MGP's backend; try again in a few seconds.",
           "No se pudo abrir el acceso oficial de Steam. La conexión segura ahora se ejecuta en el backend de MGP; inténtalo de nuevo en unos segundos.",
+        ),
+      );
+    }
+  };
+
+  const refreshSteamSyncStatus = async (accessToken: string) => {
+    const status = await loadSteamSyncStatus({ data: { accessToken } });
+    setSteamSyncStatus(status as SteamSyncStatus);
+    return status as SteamSyncStatus;
+  };
+
+  const handleSteamSync = async () => {
+    if (steamSyncing) return;
+    setSteamSyncing(true);
+    setConnectionError("");
+    setSteamSyncProgress(
+      copy(
+        "Sincronizando perfil, biblioteca, horas, insígnias e inventários…",
+        "Syncing profile, library, playtime, badges and inventories…",
+        "Sincronizando perfil, biblioteca, horas, insignias e inventarios…",
+      ),
+    );
+
+    try {
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (sessionError || !accessToken) throw new Error("STEAM_AUTH_SESSION_MISSING");
+
+      const core = await runSteamCore({ data: { accessToken } });
+      let cursor = 0;
+      let processedGames = 0;
+      let guard = 0;
+
+      if (core.achievementEligible > 0) {
+        setSteamSyncProgress(
+          copy(
+            `Biblioteca importada. Sincronizando conquistas de ${core.achievementEligible} jogos…`,
+            `Library imported. Syncing achievements for ${core.achievementEligible} games…`,
+            `Biblioteca importada. Sincronizando logros de ${core.achievementEligible} juegos…`,
+          ),
+        );
+      }
+
+      while (guard < 50) {
+        const batch = await runSteamAchievementsBatch({
+          data: { accessToken, afterAppId: cursor, batchSize: 6 },
+        });
+        processedGames += batch.processed;
+        if (batch.nextCursor === null || batch.processed === 0) break;
+        cursor = batch.nextCursor;
+        guard += 1;
+
+        setSteamSyncProgress(
+          copy(
+            `Conquistas: ${Math.min(processedGames, core.achievementEligible)}/${core.achievementEligible} jogos processados…`,
+            `Achievements: ${Math.min(processedGames, core.achievementEligible)}/${core.achievementEligible} games processed…`,
+            `Logros: ${Math.min(processedGames, core.achievementEligible)}/${core.achievementEligible} juegos procesados…`,
+          ),
+        );
+
+        if (!batch.hasMore) break;
+      }
+
+      await refreshSteamSyncStatus(accessToken);
+      setSteamSyncProgress(
+        copy(
+          "Steam sincronizada. Os dados disponíveis já podem aparecer no seu perfil.",
+          "Steam synced. Available data can now appear on your profile.",
+          "Steam sincronizada. Los datos disponibles ya pueden aparecer en tu perfil.",
+        ),
+      );
+    } catch (error) {
+      console.error("[MGP Steam] Full sync failed", error);
+      setConnectionError(
+        copy(
+          "A sincronização da Steam falhou. Confira a privacidade do perfil/biblioteca e tente novamente.",
+          "Steam sync failed. Check your profile/library privacy and try again.",
+          "La sincronización de Steam falló. Revisa la privacidad del perfil/biblioteca e inténtalo de nuevo.",
+        ),
+      );
+      setSteamSyncProgress("");
+    } finally {
+      setSteamSyncing(false);
+    }
+  };
+
+  const handleSteamSharing = async (
+    key: "show_library" | "show_playtime" | "show_achievements" | "show_badges" | "show_inventory",
+    value: boolean,
+  ) => {
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error("STEAM_AUTH_SESSION_MISSING");
+      await saveSteamSharing({ data: { accessToken, [key]: value } });
+      setSteamSyncStatus((current) =>
+        current?.profile
+          ? {
+              ...current,
+              profile: { ...current.profile, [key]: value },
+            }
+          : current,
+      );
+    } catch (error) {
+      console.error("[MGP Steam] Sharing preference failed", error);
+      setConnectionError(
+        copy(
+          "Não foi possível salvar essa preferência de exibição.",
+          "Could not save that display preference.",
+          "No se pudo guardar esa preferencia de visualización.",
         ),
       );
     }
@@ -304,6 +465,17 @@ function SettingsConnectionsPage() {
             </p>
           ) : null}
         </section>
+
+        {byProvider.get("steam")?.status === "connected" ? (
+          <SteamDataPanel
+            status={steamSyncStatus}
+            syncing={steamSyncing}
+            progress={steamSyncProgress}
+            locale={locale}
+            onSync={handleSteamSync}
+            onSharingChange={handleSteamSharing}
+          />
+        ) : null}
 
         <section className="surface-panel overflow-hidden rounded-xl">
           <div className="border-b border-border p-5 sm:p-6">
@@ -499,6 +671,177 @@ function ProviderCard({
         </Button>
       )}
     </article>
+  );
+}
+
+function SteamDataPanel({
+  status,
+  syncing,
+  progress,
+  locale,
+  onSync,
+  onSharingChange,
+}: {
+  status: SteamSyncStatus | null;
+  syncing: boolean;
+  progress: string;
+  locale: "pt-BR" | "en" | "es";
+  onSync: () => void;
+  onSharingChange: (
+    key: "show_library" | "show_playtime" | "show_achievements" | "show_badges" | "show_inventory",
+    value: boolean,
+  ) => void;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const profile = status?.profile;
+  const counts = status?.counts ?? { games: 0, achievements: 0, badges: 0, inventoryItems: 0 };
+
+  const sharing = [
+    {
+      key: "show_library" as const,
+      label: copy("Mostrar biblioteca", "Show library", "Mostrar biblioteca"),
+      checked: profile?.show_library ?? true,
+    },
+    {
+      key: "show_playtime" as const,
+      label: copy("Mostrar horas jogadas", "Show playtime", "Mostrar horas jugadas"),
+      checked: profile?.show_playtime ?? true,
+    },
+    {
+      key: "show_achievements" as const,
+      label: copy("Mostrar conquistas", "Show achievements", "Mostrar logros"),
+      checked: profile?.show_achievements ?? true,
+    },
+    {
+      key: "show_badges" as const,
+      label: copy("Mostrar nível e insígnias", "Show level and badges", "Mostrar nivel e insignias"),
+      checked: profile?.show_badges ?? true,
+    },
+    {
+      key: "show_inventory" as const,
+      label: copy("Mostrar contagem de itens", "Show item count", "Mostrar cantidad de objetos"),
+      checked: profile?.show_inventory ?? false,
+    },
+  ];
+
+  return (
+    <section className="surface-panel rounded-xl p-5 sm:p-6">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0">
+          <p className="section-kicker">MGP / STEAM SYNC</p>
+          <h2 className="mt-2 font-display text-xl font-semibold">
+            {copy("Dados Steam no Game Profile", "Steam data in your Game Profile", "Datos de Steam en tu Game Profile")}
+          </h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+            {copy(
+              "Importa biblioteca, tempo de jogo, jogos recentes, nível, insígnias, conquistas e inventários públicos suportados. Dados que a Steam mantiver privados continuam privados.",
+              "Imports library, playtime, recent games, level, badges, achievements and supported public inventories. Data Steam keeps private remains private.",
+              "Importa biblioteca, tiempo de juego, juegos recientes, nivel, insignias, logros e inventarios públicos compatibles. Los datos privados en Steam siguen privados.",
+            )}
+          </p>
+        </div>
+        <Button onClick={onSync} disabled={syncing} className="shrink-0">
+          <RefreshCw className={`mr-2 size-4 ${syncing ? "animate-spin" : ""}`} />
+          {syncing
+            ? copy("Sincronizando…", "Syncing…", "Sincronizando…")
+            : copy("Sincronizar tudo", "Sync everything", "Sincronizar todo")}
+        </Button>
+      </div>
+
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <SteamMetric icon={Library} label={copy("Jogos", "Games", "Juegos")} value={counts.games} />
+        <SteamMetric icon={Trophy} label={copy("Conquistas", "Achievements", "Logros")} value={counts.achievements} />
+        <SteamMetric icon={BadgeCheck} label={copy("Insígnias", "Badges", "Insignias")} value={counts.badges} />
+        <SteamMetric icon={Package} label={copy("Itens públicos", "Public items", "Objetos públicos")} value={counts.inventoryItems} />
+      </div>
+
+      {progress ? (
+        <p className="mt-4 rounded-lg border border-gold/20 bg-gold-soft/25 px-3 py-2 text-xs leading-5 text-muted-foreground">
+          {progress}
+        </p>
+      ) : null}
+
+      {profile ? (
+        <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+          <div className="rounded-xl border border-border bg-muted/15 p-4">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+              <span className="font-semibold text-foreground">
+                {profile.persona_name || "Steam"}
+              </span>
+              {profile.steam_level !== null ? (
+                <span className="text-muted-foreground">
+                  {copy("Nível", "Level", "Nivel")} {profile.steam_level}
+                </span>
+              ) : null}
+              <span className={profile.library_visible ? "text-emerald-500" : "text-amber-500"}>
+                {profile.library_visible
+                  ? copy("Biblioteca visível", "Library visible", "Biblioteca visible")
+                  : copy("Biblioteca privada/indisponível", "Library private/unavailable", "Biblioteca privada/no disponible")}
+              </span>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {profile.last_synced_at
+                ? copy("Última sincronização: ", "Last sync: ", "Última sincronización: ") +
+                  new Date(profile.last_synced_at).toLocaleString()
+                : copy("Ainda não sincronizado.", "Not synced yet.", "Aún no sincronizado.")}
+            </p>
+            {profile.last_error ? (
+              <p className="mt-2 text-xs text-amber-500">
+                {copy("Alguns dados ficaram indisponíveis pela Steam: ", "Some Steam data was unavailable: ", "Algunos datos de Steam no estaban disponibles: ")}
+                {profile.last_error}
+              </p>
+            ) : null}
+          </div>
+
+          <div className="rounded-xl border border-border bg-muted/15 p-4">
+            <p className="text-xs font-bold uppercase tracking-[0.1em] text-muted-foreground">
+              {copy("Visibilidade no perfil", "Profile visibility", "Visibilidad en el perfil")}
+            </p>
+            <div className="mt-3 space-y-2">
+              {sharing.map((item) => (
+                <label key={item.key} className="flex cursor-pointer items-center justify-between gap-3 text-xs text-muted-foreground">
+                  <span>{item.label}</span>
+                  <input
+                    type="checkbox"
+                    checked={item.checked}
+                    onChange={(event) => onSharingChange(item.key, event.target.checked)}
+                    className="size-4 accent-current"
+                  />
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <p className="mt-4 text-xs text-muted-foreground">
+          {copy(
+            "Sua Steam está conectada. Clique em “Sincronizar tudo” para criar o primeiro snapshot.",
+            "Your Steam account is connected. Click “Sync everything” to create the first snapshot.",
+            "Tu Steam está conectada. Haz clic en “Sincronizar todo” para crear el primer snapshot.",
+          )}
+        </p>
+      )}
+    </section>
+  );
+}
+
+function SteamMetric({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Gamepad2;
+  label: string;
+  value: number;
+}) {
+  return (
+    <div className="rounded-xl border border-border bg-muted/15 p-4">
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <Icon className="size-4 text-gold-strong" />
+        <span className="text-xs font-semibold">{label}</span>
+      </div>
+      <p className="mt-2 font-display text-2xl font-bold">{value}</p>
+    </div>
   );
 }
 
