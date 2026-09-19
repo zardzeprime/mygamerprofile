@@ -100,6 +100,8 @@ export type PublicSteamShowcase = {
   libraryVisible: boolean;
   inventoryVisible: boolean;
   lastSyncedAt: string | null;
+  libraryGameCount: number | null;
+  perfectGames: number | null;
   games: Array<{
     appId: number;
     name: string;
