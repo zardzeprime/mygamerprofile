@@ -10,6 +10,7 @@ import {
   PanelTop,
   Sparkles,
   Trophy,
+  Type,
   Wallpaper,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -47,6 +48,7 @@ const KIND_META = {
   profile_effect: { icon: Sparkles, title: { "pt-BR": "Efeitos", en: "Effects", es: "Efectos" } },
   banner: { icon: PanelTop, title: { "pt-BR": "Faixas", en: "Banners", es: "Franjas" } },
   cursor: { icon: MousePointer2, title: { "pt-BR": "Cursores", en: "Cursors", es: "Cursores" } },
+  nameplate: { icon: Type, title: { "pt-BR": "Nome", en: "Name style", es: "Nombre" } },
 } as const;
 
 type SupportedKind = keyof typeof KIND_META;
@@ -108,7 +110,7 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
   }, [loadStudio]);
 
   const equipItem = async (
-    slot: "title" | "background" | "avatar_frame" | "profile_effect" | "banner" | "cursor",
+    slot: "title" | "background" | "avatar_frame" | "profile_effect" | "banner" | "cursor" | "nameplate",
     slug: string | null,
   ) => {
     if (savingKey) return;
@@ -344,7 +346,9 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
                       ? data.loadout.effect_slug === item.slug
                       : activeKind === "banner"
                         ? data.loadout.banner_slug === item.slug
-                        : data.loadout.cursor_slug === item.slug
+                        : activeKind === "cursor"
+                          ? data.loadout.cursor_slug === item.slug
+                          : data.loadout.nameplate_slug === item.slug
               }
               busy={Boolean(savingKey)}
               onEquip={() => equipItem(activeKind, item.slug)}
@@ -388,6 +392,10 @@ function CosmeticCard({
     ) : item.kind === "cursor" ? (
       <div className={cn("grid h-24 place-items-center bg-gradient-to-br from-zinc-900 to-black", item.css_class)}>
         <MousePointer2 className="size-6 text-white/75" />
+      </div>
+    ) : item.kind === "nameplate" ? (
+      <div className="grid h-24 place-items-center overflow-hidden bg-gradient-to-br from-zinc-900 to-black px-3">
+        <span className={cn("max-w-full truncate text-lg font-bold", item.css_class)}>Zardze Prime</span>
       </div>
     ) : (
       <div className={cn("h-24", item.css_class)} />
