@@ -4,10 +4,6 @@ import { z } from "zod";
 
 import { getSupabasePublicConfig } from "@/lib/supabase.server";
 
-const CANONICAL_SUPABASE_URL = "https://gudvdgpjfapshzqyfcpj.supabase.co";
-const CANONICAL_SUPABASE_PUBLISHABLE_KEY =
-  "sb_publishable_JXVaM-rr7Yu59l3x7WyHEg_qlR-uDMX";
-
 const SUPPORTED_INVENTORIES = [
   { appId: 730, contextId: "2", label: "Counter-Strike 2" },
   { appId: 570, contextId: "2", label: "Dota 2" },
@@ -100,6 +96,11 @@ export type PublicSteamShowcase = {
   libraryVisible: boolean;
   inventoryVisible: boolean;
   lastSyncedAt: string | null;
+  showLibrary?: boolean;
+  showPlaytime?: boolean;
+  showAchievements?: boolean;
+  showBadges?: boolean;
+  showInventory?: boolean;
   libraryGameCount: number | null;
   perfectGames: number | null;
   games: Array<{
@@ -136,20 +137,17 @@ function getSteamKey() {
 }
 
 function createUserDb(accessToken: string) {
-  return createClient(
-    CANONICAL_SUPABASE_URL,
-    CANONICAL_SUPABASE_PUBLISHABLE_KEY,
-    {
-      global: {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      },
-      auth: {
-        storage: undefined,
-        persistSession: false,
-        autoRefreshToken: false,
-      },
+  const { url, publishableKey } = getSupabasePublicConfig();
+  return createClient(url, publishableKey, {
+    global: {
+      headers: { Authorization: `Bearer ${accessToken}` },
     },
-  );
+    auth: {
+      storage: undefined,
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
 }
 
 async function authenticateSyncRequest(accessToken: string) {
