@@ -640,7 +640,14 @@ async function syncAchievementsForGame(
     l: "brazilian",
   });
 
-  const achievements = achievementsPayload?.playerstats?.achievements ?? [];
+  if (
+    !achievementsPayload?.playerstats ||
+    achievementsPayload.playerstats.success === false
+  ) {
+    throw new Error("STEAM_ACHIEVEMENTS_UNAVAILABLE");
+  }
+
+  const achievements = achievementsPayload.playerstats.achievements ?? [];
 
   const schemaPayload =
     achievements.length > 0
