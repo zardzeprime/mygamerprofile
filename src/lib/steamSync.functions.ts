@@ -5,9 +5,10 @@ import { z } from "zod";
 import { getSupabasePublicConfig } from "@/lib/supabase.server";
 
 const SUPPORTED_INVENTORIES = [
-  { appId: 730, contextId: "2", label: "Counter-Strike 2" },
-  { appId: 570, contextId: "2", label: "Dota 2" },
-  { appId: 440, contextId: "2", label: "Team Fortress 2" },
+  { appId: 753, contextId: "6", label: "Steam Community", requiresOwnership: false },
+  { appId: 730, contextId: "2", label: "Counter-Strike 2", requiresOwnership: true },
+  { appId: 570, contextId: "2", label: "Dota 2", requiresOwnership: true },
+  { appId: 440, contextId: "2", label: "Team Fortress 2", requiresOwnership: true },
 ] as const;
 
 const authTokenSchema = z.object({
@@ -498,7 +499,13 @@ export const syncSteamCore = createServerFn({ method: "POST" })
     const ownedAppIds = new Set(ownedGames.map((game) => game.appid));
 
     for (const inventory of SUPPORTED_INVENTORIES) {
-      if (libraryVisible && !ownedAppIds.has(inventory.appId)) continue;
+      if (
+        inventory.requiresOwnership &&
+        libraryVisible &&
+        !ownedAppIds.has(inventory.appId)
+      ) {
+        continue;
+      }
       const result = await fetchInventory(
         steamId,
         inventory.appId,
