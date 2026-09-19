@@ -144,3 +144,256 @@
     linear-gradient(145deg, #17172b, #090a12 72%);
 }
 
+/* Identity loadout system — original MG Profile visuals. */
+.mgp-identity-surface {
+  isolation: isolate;
+}
+
+.mgp-bg-obsidian {
+  background:
+    radial-gradient(circle at 18% 14%, rgba(255,255,255,0.06), transparent 34%),
+    linear-gradient(145deg, #18191d 0%, #0b0c0f 58%, #050607 100%);
+}
+
+.mgp-bg-black-gold {
+  background:
+    linear-gradient(120deg, transparent 0 34%, rgba(201,169,93,0.08) 34.3% 35%, transparent 35.3% 100%),
+    radial-gradient(circle at 76% 28%, rgba(201,169,93,0.24), transparent 30%),
+    linear-gradient(145deg, #17181b, #090a0c 72%);
+}
+
+.mgp-bg-deep-blue {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(54,93,165,0.32), transparent 32%),
+    radial-gradient(circle at 78% 70%, rgba(26,56,102,0.22), transparent 36%),
+    linear-gradient(145deg, #111827, #070b12 72%);
+}
+
+.mgp-bg-amethyst {
+  background:
+    radial-gradient(circle at 20% 22%, rgba(123,74,181,0.34), transparent 34%),
+    radial-gradient(circle at 80% 72%, rgba(66,35,108,0.28), transparent 36%),
+    linear-gradient(150deg, #21152d, #09090d 74%);
+}
+
+.mgp-bg-eclipse {
+  background:
+    radial-gradient(circle at 72% 24%, rgba(236,194,95,0.30) 0 8%, rgba(236,194,95,0.10) 9% 18%, transparent 35%),
+    radial-gradient(circle at 72% 24%, #08090b 0 7%, transparent 8%),
+    linear-gradient(145deg, #18191d, #07080a 72%);
+}
+
+.mgp-bg-ember {
+  background:
+    radial-gradient(circle at 22% 80%, rgba(226,91,31,0.52), transparent 26%),
+    radial-gradient(circle at 74% 18%, rgba(211,159,69,0.24), transparent 28%),
+    repeating-linear-gradient(118deg, transparent 0 24px, rgba(255,255,255,0.024) 25px 26px),
+    linear-gradient(145deg, #2a1710, #0a0a0b 72%);
+}
+
+.mgp-bg-ash-throne {
+  background:
+    linear-gradient(105deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 30px),
+    radial-gradient(circle at 45% 88%, rgba(210,92,38,0.34), transparent 26%),
+    radial-gradient(circle at 50% 15%, rgba(177,174,166,0.12), transparent 30%),
+    linear-gradient(160deg, #272320, #0b0b0c 68%);
+}
+
+.mgp-bg-abyss {
+  background:
+    radial-gradient(circle at 32% 30%, rgba(96,48,146,0.26), transparent 30%),
+    radial-gradient(circle at 76% 60%, rgba(33,15,54,0.38), transparent 34%),
+    linear-gradient(155deg, #120d18, #050507 72%);
+}
+
+.mgp-bg-crimson-moon {
+  background:
+    radial-gradient(circle at 78% 24%, rgba(182,28,50,0.52) 0 9%, rgba(182,28,50,0.16) 10% 20%, transparent 34%),
+    radial-gradient(circle at 18% 72%, rgba(91,21,33,0.34), transparent 28%),
+    linear-gradient(150deg, #220d12, #070708 72%);
+}
+
+.mgp-bg-tactical-grid {
+  background:
+    linear-gradient(rgba(201,169,93,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,169,93,0.055) 1px, transparent 1px),
+    radial-gradient(circle at 74% 22%, rgba(201,169,93,0.20), transparent 32%),
+    linear-gradient(145deg, #16191d, #090b0e 72%);
+  background-size: 28px 28px, 28px 28px, auto, auto;
+}
+
+.mgp-bg-prismatic-core {
+  background:
+    radial-gradient(circle at 18% 24%, rgba(65,106,196,0.30), transparent 30%),
+    radial-gradient(circle at 78% 64%, rgba(164,92,192,0.26), transparent 32%),
+    radial-gradient(circle at 74% 18%, rgba(201,169,93,0.20), transparent 28%),
+    linear-gradient(150deg, #171a2a, #08090f 70%);
+}
+
+.mgp-bg-mythic-ascent {
+  background:
+    radial-gradient(circle at 50% -10%, rgba(245,211,117,0.34), transparent 34%),
+    radial-gradient(circle at 18% 80%, rgba(101,87,190,0.28), transparent 28%),
+    radial-gradient(circle at 84% 74%, rgba(187,83,176,0.22), transparent 30%),
+    linear-gradient(150deg, #1b1a2d, #08080c 70%);
+}
+
+.mgp-frame-clean,
+.mgp-frame-gold,
+.mgp-frame-silver,
+.mgp-frame-rune,
+.mgp-frame-neon,
+.mgp-frame-ember,
+.mgp-frame-abyss,
+.mgp-frame-celestial {
+  position: relative;
+  border-radius: 999px;
+  padding: 4px;
+}
+
+.mgp-frame-clean { background: linear-gradient(145deg, rgba(255,255,255,.22), rgba(255,255,255,.06)); }
+.mgp-frame-gold { background: linear-gradient(145deg, #f2cf78, #8a6a25 60%, #f4dc98); box-shadow: 0 0 24px rgba(201,169,93,.18); }
+.mgp-frame-silver { background: linear-gradient(145deg, #eef1f4, #8b929c 58%, #d9dee5); }
+.mgp-frame-rune {
+  background: conic-gradient(from 20deg, #8e65cd, #2c1c45, #c7a95d, #604393, #8e65cd);
+  box-shadow: 0 0 26px rgba(132,84,198,.28);
+}
+.mgp-frame-neon {
+  background: conic-gradient(from 0deg, #75a7ff, #8f5ed6, #d3aa5c, #75a7ff);
+  box-shadow: 0 0 28px rgba(105,133,255,.30);
+}
+.mgp-frame-ember {
+  background: conic-gradient(from 0deg, #ffbd55, #6f2919, #f16b36, #1e1512, #ffbd55);
+  box-shadow: 0 0 28px rgba(239,95,39,.32);
+}
+.mgp-frame-abyss {
+  background: conic-gradient(from 15deg, #4c286e, #ad6be0, #130d1c, #6a378f, #4c286e);
+  box-shadow: 0 0 32px rgba(126,61,176,.34);
+}
+.mgp-frame-celestial {
+  background: conic-gradient(from 0deg, #fff1af, #9871ff, #61b1ff, #f0b0ff, #fff1af);
+  box-shadow: 0 0 34px rgba(229,205,121,.36), 0 0 56px rgba(124,102,221,.18);
+}
+
+.mgp-profile-effect-layer {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.mgp-effect-soft-glow::after,
+.mgp-effect-gold-dust::after,
+.mgp-effect-ember::after,
+.mgp-effect-signal::after,
+.mgp-effect-void::after,
+.mgp-effect-mythic::after {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  pointer-events: none;
+}
+
+.mgp-effect-soft-glow::after {
+  background: radial-gradient(circle at 50% 18%, rgba(201,169,93,.12), transparent 42%);
+  animation: mgp-soft-pulse 5s ease-in-out infinite;
+}
+
+.mgp-effect-gold-dust::after {
+  background-image:
+    radial-gradient(circle, rgba(240,205,111,.36) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(240,205,111,.20) 0 1px, transparent 1.5px);
+  background-size: 42px 42px, 67px 67px;
+  background-position: 0 0, 18px 14px;
+  animation: mgp-drift 12s linear infinite;
+}
+
+.mgp-effect-ember::after {
+  background:
+    radial-gradient(circle at 12% 82%, rgba(246,103,43,.22), transparent 12%),
+    radial-gradient(circle at 38% 92%, rgba(246,155,67,.18), transparent 10%),
+    radial-gradient(circle at 78% 88%, rgba(232,84,31,.20), transparent 12%);
+  animation: mgp-ember-rise 7s ease-in-out infinite;
+}
+
+.mgp-effect-signal::after {
+  border: 1px solid rgba(201,169,93,.12);
+  box-shadow: inset 0 0 60px rgba(201,169,93,.08);
+  animation: mgp-signal 4.5s ease-in-out infinite;
+}
+
+.mgp-effect-void::after {
+  background:
+    radial-gradient(circle at 24% 56%, rgba(111,61,161,.16), transparent 22%),
+    radial-gradient(circle at 76% 32%, rgba(68,31,111,.18), transparent 24%);
+  filter: blur(18px);
+  animation: mgp-drift 10s ease-in-out infinite alternate;
+}
+
+.mgp-effect-mythic::after {
+  background:
+    radial-gradient(circle at 50% 8%, rgba(255,226,137,.18), transparent 24%),
+    radial-gradient(circle at 18% 78%, rgba(116,105,229,.16), transparent 24%),
+    radial-gradient(circle at 82% 70%, rgba(208,111,211,.14), transparent 24%);
+  filter: blur(8px);
+  animation: mgp-soft-pulse 4s ease-in-out infinite;
+}
+
+.mgp-banner-graphite,
+.mgp-banner-ember,
+.mgp-banner-rift {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  z-index: 3;
+}
+.mgp-banner-graphite { background: linear-gradient(90deg, transparent, #686d75, transparent); }
+.mgp-banner-ember { background: linear-gradient(90deg, transparent, #f16632, #d3aa5c, transparent); box-shadow: 0 0 16px rgba(241,102,50,.25); }
+.mgp-banner-rift { background: linear-gradient(90deg, transparent, #637dff, #ad6ce0, #d3aa5c, transparent); box-shadow: 0 0 18px rgba(120,105,255,.25); }
+
+.mgp-cursor-gold { cursor: pointer; }
+.mgp-cursor-ember { cursor: cell; }
+.mgp-cursor-signal { cursor: crosshair; }
+
+.mgp-rarity-common { --identity-rarity: 156 163 175; }
+.mgp-rarity-uncommon { --identity-rarity: 74 222 128; }
+.mgp-rarity-rare { --identity-rarity: 96 165 250; }
+.mgp-rarity-epic { --identity-rarity: 192 132 252; }
+.mgp-rarity-legendary { --identity-rarity: 245 158 11; }
+.mgp-rarity-mythic { --identity-rarity: 244 114 182; }
+
+.mgp-rarity-chip {
+  border-color: rgb(var(--identity-rarity) / .30);
+  background: rgb(var(--identity-rarity) / .09);
+  color: rgb(var(--identity-rarity));
+}
+
+@keyframes mgp-soft-pulse {
+  0%,100% { opacity: .52; transform: scale(1); }
+  50% { opacity: .92; transform: scale(1.025); }
+}
+@keyframes mgp-drift {
+  from { transform: translate3d(-1%, 0, 0); }
+  to { transform: translate3d(2%, -2%, 0); }
+}
+@keyframes mgp-ember-rise {
+  0%,100% { transform: translateY(3%); opacity: .6; }
+  50% { transform: translateY(-3%); opacity: 1; }
+}
+@keyframes mgp-signal {
+  0%,100% { opacity: .35; transform: scale(.995); }
+  50% { opacity: .8; transform: scale(1.005); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mgp-effect-soft-glow::after,
+  .mgp-effect-gold-dust::after,
+  .mgp-effect-ember::after,
+  .mgp-effect-signal::after,
+  .mgp-effect-void::after,
+  .mgp-effect-mythic::after {
+    animation: none !important;
+  }
+}
+
