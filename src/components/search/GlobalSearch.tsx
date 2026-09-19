@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import {
   Gamepad2,
   Loader2,
@@ -13,16 +12,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { searchGamesAndCommunities } from "@/lib/globalSearch";
-import { searchPublicProfiles } from "@/lib/profiles.functions";
+import { searchPublicProfilesClient, type PublicProfileSearchResult } from "@/lib/publicProfiles.client";
 import { cn } from "@/lib/utils";
-
-type PublicProfileResult = {
-  id: string;
-  username: string;
-  display_name: string;
-  avatar_url: string | null;
-  bio: string | null;
-};
 
 export function GlobalSearch({
   mobile = false,
@@ -34,9 +25,8 @@ export function GlobalSearch({
   const { locale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const navigate = useNavigate();
-  const searchProfiles = useServerFn(searchPublicProfiles);
   const [query, setQuery] = useState("");
-  const [profiles, setProfiles] = useState<PublicProfileResult[]>([]);
+  const [profiles, setProfiles] = useState<PublicProfileSearchResult[]>([]);
   const [peopleLoading, setPeopleLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -58,7 +48,7 @@ export function GlobalSearch({
     let cancelled = false;
     const timer = window.setTimeout(() => {
       setPeopleLoading(true);
-      void searchProfiles({ data: { query: trimmed, limit: 5 } })
+      void searchPublicProfilesClient(trimmed, 5)
         .then((result) => {
           if (!cancelled) setProfiles(result);
         })
@@ -75,7 +65,7 @@ export function GlobalSearch({
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [searchProfiles, trimmed]);
+  }, [trimmed]);
 
   useEffect(() => {
     const close = (event: PointerEvent) => {
