@@ -14,10 +14,10 @@ export const Route = createFileRoute("/_authenticated/settings/identity")({
   },
   head: () => ({
     meta: [
-      { title: "Identidade e cosméticos — MGP" },
+      { title: "Dados e privacidade — MGP" },
       {
         name: "description",
-        content: "Controle dados opcionais de identidade, privacidade e cosméticos do seu perfil MGP.",
+        content: "Controle dados opcionais de identidade e privacidade do seu perfil MGP.",
       },
     ],
   }),
