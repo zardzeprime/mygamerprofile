@@ -210,6 +210,20 @@ function chunk<T>(items: T[], size: number) {
   return chunks;
 }
 
+async function evaluateProfileUnlocks(
+  db: ReturnType<typeof createUserDb>,
+  userId: string,
+) {
+  const { data, error } = await db.rpc("evaluate_profile_unlocks", {
+    target_user_id: userId,
+  });
+  if (error) {
+    console.warn("[MGP Identity] unlock evaluation failed", error);
+    return null;
+  }
+  return data;
+}
+
 async function getConnectedSteamAccount(
   db: ReturnType<typeof createUserDb>,
   userId: string,
@@ -565,8 +579,11 @@ export const syncSteamCore = createServerFn({ method: "POST" })
       .eq("owned", true)
       .eq("has_community_visible_stats", true);
 
+    const unlocks = await evaluateProfileUnlocks(db, userId);
+
     return {
       ok: true,
+      unlocks,
       steamId,
       personaName,
       libraryVisible,
@@ -756,9 +773,11 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
     }
 
     const nextCursor = Number(games.at(-1)?.app_id ?? 0);
+    const unlocks = await evaluateProfileUnlocks(db, userId);
 
     return {
       ok: true,
+      unlocks,
       processed: games.length,
       nextCursor,
       hasMore: games.length === data.batchSize,
