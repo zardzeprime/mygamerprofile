@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { getSupabasePublicConfig } from "@/lib/supabase.server";
 
 const CANONICAL_SUPABASE_URL = "https://gudvdgpjfapshzqyfcpj.supabase.co";
@@ -15,12 +14,16 @@ const SUPPORTED_INVENTORIES = [
   { appId: 440, contextId: "2", label: "Team Fortress 2" },
 ] as const;
 
-const achievementBatchSchema = z.object({
+const authTokenSchema = z.object({
+  accessToken: z.string().min(20).max(4096),
+});
+
+const achievementBatchSchema = authTokenSchema.extend({
   afterAppId: z.number().int().nonnegative().default(0),
   batchSize: z.number().int().min(1).max(10).default(6),
 });
 
-const sharingSchema = z.object({
+const sharingSchema = authTokenSchema.extend({
   show_library: z.boolean().optional(),
   show_playtime: z.boolean().optional(),
   show_achievements: z.boolean().optional(),
@@ -108,6 +111,13 @@ function createUserDb(accessToken: string) {
       },
     },
   );
+}
+
+async function authenticateSyncRequest(accessToken: string) {
+  const db = createUserDb(accessToken);
+  const { data, error } = await db.auth.getUser(accessToken);
+  if (error || !data.user) throw new Error("STEAM_SYNC_AUTH_INVALID");
+  return { db, userId: data.user.id };
 }
 
 async function steamApi<T>(
@@ -271,18 +281,18 @@ async function fetchInventory(
 }
 
 export const syncSteamCore = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .validator((data) => authTokenSchema.parse(data))
+  .handler(async ({ data }) => {
     const key = getSteamKey();
-    const db = createUserDb(context.accessToken);
-    const account = await getConnectedSteamAccount(db, context.userId);
+    const { db, userId } = await authenticateSyncRequest(data.accessToken);
+    const account = await getConnectedSteamAccount(db, userId);
     const steamId = account.provider_user_id;
     const now = new Date().toISOString();
     const warnings: string[] = [];
 
     await db.from("steam_profiles").upsert(
       {
-        user_id: context.userId,
+        user_id: userId,
         steam_id: steamId,
         last_sync_status: "syncing",
         last_error: null,
@@ -355,12 +365,12 @@ export const syncSteamCore = createServerFn({ method: "POST" })
       await db
         .from("steam_games")
         .update({ owned: false, recent_rank: null, playtime_2weeks: 0 })
-        .eq("user_id", context.userId);
+        .eq("user_id", userId);
 
       const rows = ownedGames.map((game) => {
         const recent = recentByApp.get(game.appid);
         return {
-          user_id: context.userId,
+          user_id: userId,
           app_id: game.appid,
           name: game.name ?? `App ${game.appid}`,
           icon_url: appIcon(game.appid, game.img_icon_url),
@@ -390,13 +400,13 @@ export const syncSteamCore = createServerFn({ method: "POST" })
       const { error: deleteBadgesError } = await db
         .from("steam_badges")
         .delete()
-        .eq("user_id", context.userId);
+        .eq("user_id", userId);
       if (deleteBadgesError) warnings.push("badges_cleanup_failed");
 
       const badgeRows = badges
         .filter((badge) => typeof badge.badgeid === "number")
         .map((badge) => ({
-          user_id: context.userId,
+          user_id: userId,
           badge_id: badge.badgeid,
           app_id: badge.appid ?? null,
           level: badge.level ?? 0,
@@ -432,7 +442,7 @@ export const syncSteamCore = createServerFn({ method: "POST" })
       const { error: deleteInventoryError } = await db
         .from("steam_inventory_items")
         .delete()
-        .eq("user_id", context.userId)
+        .eq("user_id", userId)
         .eq("app_id", inventory.appId)
         .eq("context_id", inventory.contextId);
       if (deleteInventoryError) {
@@ -442,7 +452,7 @@ export const syncSteamCore = createServerFn({ method: "POST" })
 
       const itemRows = result.items.map((item) => ({
         ...item,
-        user_id: context.userId,
+        user_id: userId,
         last_synced_at: now,
       }));
       inventoryItemCount += itemRows.length;
@@ -472,7 +482,7 @@ export const syncSteamCore = createServerFn({ method: "POST" })
 
     const { error: profileError } = await db.from("steam_profiles").upsert(
       {
-        user_id: context.userId,
+        user_id: userId,
         steam_id: steamId,
         persona_name: personaName,
         profile_url: profileUrl,
@@ -508,13 +518,13 @@ export const syncSteamCore = createServerFn({ method: "POST" })
         },
         last_synced_at: now,
       })
-      .eq("user_id", context.userId)
+      .eq("user_id", userId)
       .eq("provider", "steam");
 
     const { count: achievementEligible } = await db
       .from("steam_games")
       .select("id", { count: "exact", head: true })
-      .eq("user_id", context.userId)
+      .eq("user_id", userId)
       .eq("owned", true)
       .eq("has_community_visible_stats", true);
 
@@ -611,18 +621,17 @@ async function syncAchievementsForGame(
 }
 
 export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .validator((data) => achievementBatchSchema.parse(data ?? {}))
-  .handler(async ({ context, data }) => {
+  .validator((data) => achievementBatchSchema.parse(data))
+  .handler(async ({ data }) => {
     const key = getSteamKey();
-    const db = createUserDb(context.accessToken);
-    const account = await getConnectedSteamAccount(db, context.userId);
+    const { db, userId } = await authenticateSyncRequest(data.accessToken);
+    const account = await getConnectedSteamAccount(db, userId);
     const steamId = account.provider_user_id;
 
     const { data: games, error } = await db
       .from("steam_games")
       .select("app_id,name")
-      .eq("user_id", context.userId)
+      .eq("user_id", userId)
       .eq("owned", true)
       .eq("has_community_visible_stats", true)
       .gt("app_id", data.afterAppId)
@@ -654,13 +663,13 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
         const { error: deleteError } = await db
           .from("steam_achievements")
           .delete()
-          .eq("user_id", context.userId)
+          .eq("user_id", userId)
           .eq("app_id", appId);
         if (deleteError) throw deleteError;
 
         if (result.achievementRows.length > 0) {
           const rows = result.achievementRows.map((achievement) => ({
-            user_id: context.userId,
+            user_id: userId,
             app_id: appId,
             api_name: achievement.apiName,
             display_name: achievement.displayName,
@@ -696,7 +705,7 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
             stats: result.stats,
             achievements_synced_at: now,
           })
-          .eq("user_id", context.userId)
+          .eq("user_id", userId)
           .eq("app_id", appId);
         if (updateError) throw updateError;
       } catch (achievementError) {
@@ -722,10 +731,10 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
     };
   });
 
-export const getSteamSyncStatus = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const db = createUserDb(context.accessToken);
+export const getSteamSyncStatus = createServerFn({ method: "POST" })
+  .validator((data) => authTokenSchema.parse(data))
+  .handler(async ({ data }) => {
+    const { db, userId } = await authenticateSyncRequest(data.accessToken);
 
     const [
       profileResult,
@@ -737,25 +746,25 @@ export const getSteamSyncStatus = createServerFn({ method: "GET" })
       db
         .from("steam_profiles")
         .select("*")
-        .eq("user_id", context.userId)
+        .eq("user_id", userId)
         .maybeSingle(),
       db
         .from("steam_games")
         .select("id", { count: "exact", head: true })
-        .eq("user_id", context.userId)
+        .eq("user_id", userId)
         .eq("owned", true),
       db
         .from("steam_achievements")
         .select("id", { count: "exact", head: true })
-        .eq("user_id", context.userId),
+        .eq("user_id", userId),
       db
         .from("steam_badges")
         .select("id", { count: "exact", head: true })
-        .eq("user_id", context.userId),
+        .eq("user_id", userId),
       db
         .from("steam_inventory_items")
         .select("id", { count: "exact", head: true })
-        .eq("user_id", context.userId),
+        .eq("user_id", userId),
     ]);
 
     if (profileResult.error) throw new Error("STEAM_SYNC_STATUS_FAILED");
@@ -772,19 +781,22 @@ export const getSteamSyncStatus = createServerFn({ method: "GET" })
   });
 
 export const updateSteamSharing = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .validator((data) => sharingSchema.parse(data))
-  .handler(async ({ context, data }) => {
-    const db = createUserDb(context.accessToken);
+  .handler(async ({ data }) => {
+    const { db, userId } = await authenticateSyncRequest(data.accessToken);
+    const {
+      accessToken: _accessToken,
+      ...sharing
+    } = data;
     const payload = {
-      ...data,
+      ...sharing,
       updated_at: new Date().toISOString(),
     };
 
     const { data: updated, error } = await db
       .from("steam_profiles")
       .update(payload)
-      .eq("user_id", context.userId)
+      .eq("user_id", userId)
       .select("show_library,show_playtime,show_achievements,show_badges,show_inventory")
       .maybeSingle();
 
