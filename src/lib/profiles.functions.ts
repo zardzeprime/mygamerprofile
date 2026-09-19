@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
-import { getSupabasePublic } from "./supabase.server";
+import { getSupabasePublic, getSupabasePublicConfig } from "./supabase.server";
 
 type PublicProfile = Database["public"]["Tables"]["profiles"]["Row"] & {
   profile_background?: string;
@@ -48,68 +48,79 @@ const updateProfileSchema = z.object({
 });
 const followSchema = z.object({ following_id: z.string().uuid() });
 
+async function fetchPublicProfilesRest(
+  filters: Record<string, string>,
+  select: string,
+  limit: number,
+) {
+  const { url, publishableKey } = getSupabasePublicConfig();
+  const endpoint = new URL("/rest/v1/profiles", url);
+  endpoint.searchParams.set("select", select);
+  endpoint.searchParams.set("visibility", "eq.public");
+  endpoint.searchParams.set("limit", String(limit));
+  Object.entries(filters).forEach(([key, value]) => endpoint.searchParams.set(key, value));
+
+  const response = await fetch(endpoint, {
+    headers: {
+      apikey: publishableKey,
+      Accept: "application/json",
+    },
+    signal: AbortSignal.timeout(8_000),
+  });
+
+  if (!response.ok) {
+    console.error("[MGP] Public profiles REST lookup failed", response.status);
+    throw new Error("public_profile_lookup_failed");
+  }
+
+  return (await response.json()) as Array<Record<string, unknown>>;
+}
+
 export const getProfileByUsername = createServerFn({ method: "GET" })
   .validator((data) => usernameSchema.parse(data))
   .handler(async ({ data }) => {
-    // Public profile pages must not depend on browser auth state or anonymous
-    // client header quirks. Read through the trusted server client, but keep the
-    // public-visibility filter explicit so private profiles are never exposed.
-    const { getSupabaseAdmin } = await import("@/lib/supabase-admin.server");
-    const admin = getSupabaseAdmin();
+    // Public profile pages deliberately use the anonymous PostgREST path with
+    // only the publishable key. This mirrors what a logged-out visitor can read
+    // under RLS and avoids coupling the public route to browser auth state.
     const normalizedUsername = data.username.trim().toLowerCase();
-
-    const { data: profile, error } = await admin
-      .from("profiles")
-      .select("*")
-      .eq("visibility", "public")
-      .ilike("username", normalizedUsername)
-      .maybeSingle();
-
-    if (error) {
-      console.error("[MGP] Public profile lookup failed", error);
-      throw new Error("public_profile_lookup_failed");
-    }
+    const rows = await fetchPublicProfilesRest(
+      { username: `ilike.${normalizedUsername}` },
+      "*",
+      1,
+    );
+    const profile = rows[0] as PublicProfile | undefined;
     if (!profile) return null;
 
-    const publicProfile = profile as PublicProfile;
     return {
-      ...publicProfile,
-      followers: Number(publicProfile.followers_count ?? 0),
-      following: Number(publicProfile.following_count ?? 0),
+      ...profile,
+      followers: Number(profile.followers_count ?? 0),
+      following: Number(profile.following_count ?? 0),
     };
   });
 
 export const searchPublicProfiles = createServerFn({ method: "GET" })
   .validator((data) => profileSearchSchema.parse(data))
   .handler(async ({ data }) => {
-    const { getSupabaseAdmin } = await import("@/lib/supabase-admin.server");
-    const admin = getSupabaseAdmin();
-    const term = data.query.trim().replace(/[%_]/g, "");
+    const term = data.query
+      .trim()
+      .replace(/[%,()*]/g, "")
+      .slice(0, 80);
     if (!term) return [];
 
-    const pattern = `%${term}%`;
-    const [usernameResult, displayNameResult] = await Promise.all([
-      admin
-        .from("profiles")
-        .select("id,username,display_name,avatar_url,bio")
-        .eq("visibility", "public")
-        .ilike("username", pattern)
-        .limit(data.limit),
-      admin
-        .from("profiles")
-        .select("id,username,display_name,avatar_url,bio")
-        .eq("visibility", "public")
-        .ilike("display_name", pattern)
-        .limit(data.limit),
+    const pattern = `ilike.*${term}*`;
+    const select = "id,username,display_name,avatar_url,bio";
+    const [usernameRows, displayNameRows] = await Promise.all([
+      fetchPublicProfilesRest({ username: pattern }, select, data.limit),
+      fetchPublicProfilesRest({ display_name: pattern }, select, data.limit),
     ]);
 
-    if (usernameResult.error) throw new Error("profile_search_failed");
-    if (displayNameResult.error) throw new Error("profile_search_failed");
-
-    const merged = [
-      ...(usernameResult.data ?? []),
-      ...(displayNameResult.data ?? []),
-    ];
+    const merged = [...usernameRows, ...displayNameRows] as Array<{
+      id: string;
+      username: string;
+      display_name: string;
+      avatar_url: string | null;
+      bio: string | null;
+    }>;
     const unique = Array.from(new Map(merged.map((profile) => [profile.id, profile])).values());
 
     return unique
@@ -118,9 +129,21 @@ export const searchPublicProfiles = createServerFn({ method: "GET" })
         const firstUsername = first.username.toLowerCase();
         const secondUsername = second.username.toLowerCase();
         const firstScore =
-          firstUsername === q ? 0 : firstUsername.startsWith(q) ? 1 : first.display_name.toLowerCase().startsWith(q) ? 2 : 3;
+          firstUsername === q
+            ? 0
+            : firstUsername.startsWith(q)
+              ? 1
+              : first.display_name.toLowerCase().startsWith(q)
+                ? 2
+                : 3;
         const secondScore =
-          secondUsername === q ? 0 : secondUsername.startsWith(q) ? 1 : second.display_name.toLowerCase().startsWith(q) ? 2 : 3;
+          secondUsername === q
+            ? 0
+            : secondUsername.startsWith(q)
+              ? 1
+              : second.display_name.toLowerCase().startsWith(q)
+                ? 2
+                : 3;
         return firstScore - secondScore || firstUsername.localeCompare(secondUsername);
       })
       .slice(0, data.limit);
