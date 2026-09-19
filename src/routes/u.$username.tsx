@@ -182,7 +182,14 @@ function ProfilePage() {
             </div>
             <div className="min-w-0 flex-1 sm:pb-1">
               <div className="flex min-w-0 flex-wrap items-center gap-2">
-                <h1 className="min-w-0 truncate font-display text-2xl font-bold sm:text-3xl">{profile.display_name}</h1>
+                <h1
+                  className={cn(
+                    "min-w-0 truncate font-display text-2xl font-bold sm:text-3xl",
+                    identityLoadout?.nameplate?.cssClass,
+                  )}
+                >
+                  {profile.display_name}
+                </h1>
                 {isOwn ? <ShieldCheck className="size-5 shrink-0 text-gold-strong" aria-label={copy("Seu perfil", "Your profile", "Tu perfil")} /> : null}
               </div>
               <p className="mt-1 truncate text-sm text-muted-foreground">@{profile.username}</p>
