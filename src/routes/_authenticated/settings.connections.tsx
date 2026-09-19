@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import {
   BadgeCheck,
@@ -19,7 +20,11 @@ import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { supabase } from "@/integrations/supabase/client";
 import { getRiotApiReadiness } from "@/lib/riot.functions";
-import { getSteamApiReadiness } from "@/lib/steam.functions";
+import {
+  beginSteamConnection,
+  disconnectSteamAccount,
+  getSteamApiReadiness,
+} from "@/lib/steam.functions";
 
 export const Route = createFileRoute("/_authenticated/settings/connections")({
   head: () => ({
@@ -129,6 +134,10 @@ function SettingsConnectionsPage() {
   const [verification, setVerification] = useState<VerificationState | null>(null);
   const [apiReadiness, setApiReadiness] = useState<ApiReadiness>({ steam: null, riot: null });
   const [loading, setLoading] = useState(true);
+  const [steamBusy, setSteamBusy] = useState(false);
+  const [connectionError, setConnectionError] = useState("");
+  const startSteamConnection = useServerFn(beginSteamConnection);
+  const stopSteamConnection = useServerFn(disconnectSteamAccount);
 
   useEffect(() => {
     if (!user?.id) {
@@ -174,6 +183,56 @@ function SettingsConnectionsPage() {
     [accounts],
   );
 
+  const handleSteamConnect = async () => {
+    if (steamBusy) return;
+    setSteamBusy(true);
+    setConnectionError("");
+    try {
+      const result = await startSteamConnection();
+      window.location.assign(result.url);
+    } catch (error) {
+      console.error("[MGP Steam] Could not start OpenID link", error);
+      setSteamBusy(false);
+      setConnectionError(
+        copy(
+          "Não foi possível abrir o login oficial da Steam. Tente novamente.",
+          "Could not open the official Steam sign-in. Try again.",
+          "No se pudo abrir el acceso oficial de Steam. Inténtalo de nuevo.",
+        ),
+      );
+    }
+  };
+
+  const handleSteamDisconnect = async () => {
+    if (steamBusy) return;
+    const confirmed = window.confirm(
+      copy(
+        "Desconectar sua conta Steam do MG Profile?",
+        "Disconnect your Steam account from MG Profile?",
+        "¿Desconectar tu cuenta de Steam de MG Profile?",
+      ),
+    );
+    if (!confirmed) return;
+
+    setSteamBusy(true);
+    setConnectionError("");
+    try {
+      await stopSteamConnection();
+      setAccounts((current) => current.filter((account) => account.provider !== "steam"));
+    } catch (error) {
+      console.error("[MGP Steam] Could not disconnect account", error);
+      setConnectionError(
+        copy(
+          "Não foi possível desconectar a Steam agora. Tente novamente.",
+          "Could not disconnect Steam right now. Try again.",
+          "No se pudo desconectar Steam ahora. Inténtalo de nuevo.",
+        ),
+      );
+    } finally {
+      setSteamBusy(false);
+    }
+  };
+
   return (
     <SettingsLayout>
       <div className="space-y-5">
@@ -215,10 +274,18 @@ function SettingsConnectionsPage() {
                         ? apiReadiness.riot
                         : null
                   }
+                  steamBusy={steamBusy}
+                  onSteamConnect={handleSteamConnect}
+                  onSteamDisconnect={handleSteamDisconnect}
                 />
               );
             })}
           </div>
+          {connectionError ? (
+            <p className="mt-4 rounded-xl border border-destructive/25 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {connectionError}
+            </p>
+          ) : null}
         </section>
 
         <section className="surface-panel overflow-hidden rounded-xl">
@@ -287,9 +354,9 @@ function SettingsConnectionsPage() {
 
         <div className="rounded-xl border border-dashed border-border px-4 py-3 text-xs leading-5 text-muted-foreground">
           {copy(
-            "Steam, Riot e Google ainda dependem das credenciais/aprovações externas. Esta tela já representa o fluxo final para que possamos apresentar um produto testável durante os cadastros dos provedores.",
-            "Steam, Riot and Google still depend on external credentials/approval. This screen already represents the intended final flow so providers can review a testable product.",
-            "Steam, Riot y Google todavía dependen de credenciales/aprobaciones externas. Esta pantalla ya representa el flujo final para mostrar un producto comprobable.",
+            "Steam já pode ser vinculada pelo login oficial OpenID quando a Web API estiver disponível no servidor. Riot ainda depende da aprovação/RSO e Google depende da configuração OAuth do projeto.",
+            "Steam can now be linked through official OpenID when the Web API is available on the server. Riot still depends on approval/RSO and Google depends on the project OAuth configuration.",
+            "Steam ya puede vincularse mediante OpenID oficial cuando la Web API esté disponible en el servidor. Riot aún depende de aprobación/RSO y Google de la configuración OAuth del proyecto.",
           )}{" "}
           <Link to="/privacy" className="font-semibold text-gold-strong hover:underline">
             {copy("Ver privacidade", "View privacy", "Ver privacidad")}
@@ -306,6 +373,9 @@ function ProviderCard({
   locale,
   loading,
   readiness,
+  steamBusy,
+  onSteamConnect,
+  onSteamDisconnect,
 }: {
   provider: (typeof PROVIDERS)[number];
   account: ConnectedAccount | undefined;
@@ -315,6 +385,9 @@ function ProviderCard({
     | ApiReadiness["steam"]
     | ApiReadiness["riot"]
     | null;
+  steamBusy: boolean;
+  onSteamConnect: () => void;
+  onSteamDisconnect: () => void;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const Icon = provider.icon;
@@ -345,10 +418,17 @@ function ProviderCard({
         <span className="font-semibold text-foreground">{provider.futureData[locale === "pt-BR" ? 0 : locale === "en" ? 1 : 2]}</span>
         {account?.display_name ? <span className="mt-1 block">{account.display_name}</span> : null}
         {provider.key === "steam" && readiness && "configured" in readiness ? (
-          <span className={`mt-2 block font-semibold ${readiness.configured ? "text-emerald-500" : "text-amber-500"}`}>
-            {readiness.configured
-              ? copy("Web API pronta no servidor", "Web API ready on server", "Web API lista en el servidor")
-              : copy("Aguardando STEAM_WEB_API_KEY", "Waiting for STEAM_WEB_API_KEY", "Esperando STEAM_WEB_API_KEY")}
+          <span className="mt-2 block space-y-1">
+            <span className={`block font-semibold ${readiness.configured ? "text-emerald-500" : "text-amber-500"}`}>
+              {readiness.configured
+                ? copy("Web API pronta no servidor", "Web API ready on server", "Web API lista en el servidor")
+                : copy("Aguardando STEAM_WEB_API_KEY", "Waiting for STEAM_WEB_API_KEY", "Esperando STEAM_WEB_API_KEY")}
+            </span>
+            <span className={`block font-semibold ${readiness.openIdReady ? "text-emerald-500" : "text-amber-500"}`}>
+              {readiness.openIdReady
+                ? copy("Steam OpenID pronto", "Steam OpenID ready", "Steam OpenID listo")
+                : copy("Steam OpenID indisponível", "Steam OpenID unavailable", "Steam OpenID no disponible")}
+            </span>
           </span>
         ) : null}
         {provider.key === "riot" && readiness && "apiKeyConfigured" in readiness ? (
@@ -366,12 +446,41 @@ function ProviderCard({
           </span>
         ) : null}
       </div>
-      <Button variant={connected ? "outline" : "default"} className="mt-4 w-full" disabled={!connected}>
-        {connected ? <RefreshCw className="mr-2 size-4" /> : <Link2 className="mr-2 size-4" />}
-        {connected
-          ? copy("Gerenciar conexão", "Manage connection", "Gestionar conexión")
-          : copy("Conectar em breve", "Connect soon", "Conectar próximamente")}
-      </Button>
+      {provider.key === "steam" ? (
+        <Button
+          variant={connected ? "outline" : "default"}
+          className="mt-4 w-full"
+          disabled={
+            steamBusy ||
+            (!connected &&
+              (!readiness ||
+                !("configured" in readiness) ||
+                !readiness.configured ||
+                !readiness.openIdReady))
+          }
+          onClick={connected ? onSteamDisconnect : onSteamConnect}
+        >
+          {steamBusy ? (
+            <RefreshCw className="mr-2 size-4 animate-spin" />
+          ) : connected ? (
+            <RefreshCw className="mr-2 size-4" />
+          ) : (
+            <Link2 className="mr-2 size-4" />
+          )}
+          {steamBusy
+            ? copy("Aguarde…", "Please wait…", "Espera…")
+            : connected
+              ? copy("Desconectar Steam", "Disconnect Steam", "Desconectar Steam")
+              : copy("Conectar Steam", "Connect Steam", "Conectar Steam")}
+        </Button>
+      ) : (
+        <Button variant={connected ? "outline" : "default"} className="mt-4 w-full" disabled={!connected}>
+          {connected ? <RefreshCw className="mr-2 size-4" /> : <Link2 className="mr-2 size-4" />}
+          {connected
+            ? copy("Gerenciar conexão", "Manage connection", "Gestionar conexión")
+            : copy("Conectar em breve", "Connect soon", "Conectar próximamente")}
+        </Button>
+      )}
     </article>
   );
 }
