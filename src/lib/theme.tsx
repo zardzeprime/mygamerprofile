@@ -233,9 +233,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       const accountTheme = isThemePreference(profile.theme_preference)
         ? profile.theme_preference
         : null;
-      const accountAccent = isHexColor(profile.accent_color ?? null)
-        ? profile.accent_color.toLowerCase()
-        : null;
+      const rawAccountAccent = profile.accent_color ?? null;
+      const accountAccent = isHexColor(rawAccountAccent) ? rawAccountAccent.toLowerCase() : null;
 
       if (accountTheme) {
         setPreferenceState(accountTheme);
