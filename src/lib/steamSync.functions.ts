@@ -100,6 +100,8 @@ export type PublicSteamShowcase = {
   libraryVisible: boolean;
   inventoryVisible: boolean;
   lastSyncedAt: string | null;
+  libraryGameCount: number | null;
+  perfectGames: number | null;
   games: Array<{
     appId: number;
     name: string;
@@ -208,6 +210,28 @@ function chunk<T>(items: T[], size: number) {
     chunks.push(items.slice(index, index + size));
   }
   return chunks;
+}
+
+async function evaluateProfileUnlocks(
+  db: ReturnType<typeof createUserDb>,
+  userId: string,
+) {
+  const { data, error } = await db.rpc("evaluate_profile_unlocks", {
+    target_user_id: userId,
+  });
+  if (error) {
+    console.warn("[MGP Identity] unlock evaluation failed", error);
+    return null;
+  }
+
+  const { error: defaultsError } = await db.rpc("ensure_profile_default_loadout", {
+    target_user_id: userId,
+  });
+  if (defaultsError) {
+    console.warn("[MGP Identity] default loadout failed", defaultsError);
+  }
+
+  return data;
 }
 
 async function getConnectedSteamAccount(
@@ -565,8 +589,11 @@ export const syncSteamCore = createServerFn({ method: "POST" })
       .eq("owned", true)
       .eq("has_community_visible_stats", true);
 
+    const unlocks = await evaluateProfileUnlocks(db, userId);
+
     return {
       ok: true,
+      unlocks,
       steamId,
       personaName,
       libraryVisible,
@@ -756,9 +783,11 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
     }
 
     const nextCursor = Number(games.at(-1)?.app_id ?? 0);
+    const unlocks = await evaluateProfileUnlocks(db, userId);
 
     return {
       ok: true,
+      unlocks,
       processed: games.length,
       nextCursor,
       hasMore: games.length === data.batchSize,
