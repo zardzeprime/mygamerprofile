@@ -15,6 +15,7 @@ import { ValorantNews } from "@/components/games/ValorantNews";
 import { ValorantWeapons } from "@/components/games/ValorantWeapons";
 import { ValorantSkins } from "@/components/games/ValorantSkins";
 import { LeagueChampionExplorer } from "@/components/games/LeagueChampionExplorer";
+import { LeagueRunesExplorer } from "@/components/games/LeagueRunesExplorer";
 import { LeagueBuildLab } from "@/components/games/LeagueBuildLab";
 import { LeagueItemsExplorerV2 } from "@/components/games/LeagueItemsExplorerV2";
 import { LeagueModesExplorer } from "@/components/games/LeagueModesExplorer";
@@ -59,6 +60,7 @@ export function FutureCollection({
   if (gameSlug === "league-of-legends") {
     if (moduleKey === "builds") return <LeagueBuildLab locale={locale} />;
     if (moduleKey === "champions") return <LeagueChampionExplorer locale={locale} />;
+    if (moduleKey === "runes") return <LeagueRunesExplorer locale={locale} />;
     if (moduleKey === "skins") return <LeagueChampionExplorer locale={locale} mode="skins" />;
     if (moduleKey === "items") return <LeagueItemsExplorerV2 locale={locale} />;
     if (moduleKey === "modes") return <LeagueModesExplorer locale={locale} />;
@@ -93,6 +95,10 @@ export function FutureCollection({
     champions: [
       copy("Enciclopédia de campeões", "Champion encyclopedia", "Enciclopedia de campeones"),
       copy("Campeões, funções, habilidades e referências oficiais serão organizados aqui.", "Champions, roles, abilities and official references will be organized here.", "Campeones, roles, habilidades y referencias oficiales se organizarán aquí."),
+    ],
+    runes: [
+      copy("Compêndio de runas", "Rune compendium", "Compendio de runas"),
+      copy("Árvores, runas essenciais, opções secundárias e fragmentos de atributos.", "Trees, keystones, secondary choices and stat shards.", "Árboles, runas clave, opciones secundarias y fragmentos de atributos."),
     ],
     maps: [
       copy("Atlas de mapas", "Map atlas", "Atlas de mapas"),
@@ -140,7 +146,7 @@ export function FutureCollection({
     copy("Em preparação", "In preparation", "En preparación"),
     copy("Este espaço está sendo preparado.", "This space is being prepared.", "Este espacio se está preparando."),
   ];
-  const collectionModules: GameModuleKey[] = ["bosses", "agents", "champions", "maps", "weapons", "items", "modes", "skins"];
+  const collectionModules: GameModuleKey[] = ["bosses", "agents", "champions", "runes", "maps", "weapons", "items", "modes", "skins"];
   const isCollection = collectionModules.includes(moduleKey);
   const developmentCards = [
     {
