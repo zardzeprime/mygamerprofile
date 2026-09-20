@@ -173,8 +173,9 @@ export function LeagueBuildCreator({
     };
 
     void Promise.all([
-      fetch(`${LEAGUE_DDRAGON}/cdn/${version}/data/${language[locale]}/summoner.json`)
-        .then((response) => response.json() as Promise<{ data: Record<string, SummonerSpell> }>),
+      fetch(`${LEAGUE_DDRAGON}/cdn/${version}/data/${language[locale]}/summoner.json`).then(
+        (response) => response.json() as Promise<{ data: Record<string, SummonerSpell> }>,
+      ),
       loadLeagueRuneStyles(version, locale),
     ])
       .then(([spellPayload, styles]) => {
@@ -248,7 +249,9 @@ export function LeagueBuildCreator({
   const updateSkillOrder = (index: number, skill: SkillKey) => {
     setSkillOrder((current) => {
       const next = [...current] as [SkillKey, SkillKey, SkillKey];
-      const otherIndex = next.findIndex((entry, entryIndex) => entry === skill && entryIndex !== index);
+      const otherIndex = next.findIndex(
+        (entry, entryIndex) => entry === skill && entryIndex !== index,
+      );
       if (otherIndex >= 0) {
         const previous = next[index];
         if (!previous) return current;
@@ -265,9 +268,7 @@ export function LeagueBuildCreator({
     .filter(Boolean)
     .slice(0, 6);
 
-  const selectedPrimaryStyle = runeStyles.find(
-    (style) => style.id === runePage?.primaryStyleId,
-  );
+  const selectedPrimaryStyle = runeStyles.find((style) => style.id === runePage?.primaryStyleId);
   const runeComplete =
     Boolean(runePage?.primaryStyleId) &&
     Boolean(selectedPrimaryStyle) &&
@@ -329,9 +330,7 @@ export function LeagueBuildCreator({
       });
 
       const buildItems = {
-        boots: bootsId
-          ? { id: bootsId, name: items[bootsId]?.name ?? bootsId }
-          : null,
+        boots: bootsId ? { id: bootsId, name: items[bootsId]?.name ?? bootsId } : null,
         core: coreItems.map((id, index) => ({
           id,
           name: items[id]?.name ?? id,
@@ -394,7 +393,11 @@ export function LeagueBuildCreator({
             <div>
               <p className="section-kicker">BUILD CREATOR 2.0</p>
               <h3 className="mt-2 font-display text-2xl font-bold text-foreground">
-                {copy("Crie uma build completa", "Create a complete build", "Crea una build completa")}
+                {copy(
+                  "Crie uma build completa",
+                  "Create a complete build",
+                  "Crea una build completa",
+                )}
               </h3>
             </div>
             <span className="rounded-full border border-border bg-muted/10 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
@@ -435,7 +438,11 @@ export function LeagueBuildCreator({
 
             <label>
               <span className="text-xs font-black uppercase tracking-[0.09em] text-muted-foreground">
-                {copy("Patch / versão (opcional)", "Patch / version (optional)", "Parche / versión (opcional)")}
+                {copy(
+                  "Patch / versão (opcional)",
+                  "Patch / version (optional)",
+                  "Parche / versión (opcional)",
+                )}
               </span>
               <Input
                 value={patchLabel}
@@ -488,18 +495,22 @@ export function LeagueBuildCreator({
                 </p>
               </div>
               <div className="flex rounded-xl border border-border bg-muted/10 p-1">
-                {([
-                  ["core", copy("Core", "Core", "Core")],
-                  ["situational", copy("Situacionais", "Situational", "Situacionales")],
-                  ["boots", copy("Botas", "Boots", "Botas")],
-                ] as const).map(([target, label]) => (
+                {(
+                  [
+                    ["core", copy("Core", "Core", "Core")],
+                    ["situational", copy("Situacionais", "Situational", "Situacionales")],
+                    ["boots", copy("Botas", "Boots", "Botas")],
+                  ] as const
+                ).map(([target, label]) => (
                   <button
                     key={target}
                     type="button"
                     onClick={() => setPickerTarget(target)}
                     className={cn(
                       "rounded-lg px-3 py-2 text-xs font-bold transition-colors",
-                      pickerTarget === target ? "bg-gold/15 text-gold-strong" : "text-muted-foreground",
+                      pickerTarget === target
+                        ? "bg-gold/15 text-gold-strong"
+                        : "text-muted-foreground",
                     )}
                   >
                     {label}
@@ -516,7 +527,9 @@ export function LeagueBuildCreator({
                 max={3}
                 items={items}
                 version={version}
-                onRemove={(id) => setCoreItems((current) => current.filter((entry) => entry !== id))}
+                onRemove={(id) =>
+                  setCoreItems((current) => current.filter((entry) => entry !== id))
+                }
               />
               <ItemGroup
                 title={copy("Situacionais", "Situational", "Situacionales")}
@@ -572,7 +585,9 @@ export function LeagueBuildCreator({
                       loading="lazy"
                       className="mx-auto size-12 rounded-lg object-cover"
                     />
-                    <p className="mt-2 truncate text-[0.66rem] font-semibold text-foreground">{item.name}</p>
+                    <p className="mt-2 truncate text-[0.66rem] font-semibold text-foreground">
+                      {item.name}
+                    </p>
                     <p className="mt-0.5 text-[0.58rem] text-muted-foreground">
                       {item.gold?.total ? `${item.gold.total}g` : "—"}
                     </p>
@@ -626,7 +641,9 @@ export function LeagueBuildCreator({
                       className="size-10 rounded-lg border border-border object-cover"
                     />
                     <span className="min-w-0">
-                      <span className="block truncate text-xs font-bold text-foreground">{spell.name}</span>
+                      <span className="block truncate text-xs font-bold text-foreground">
+                        {spell.name}
+                      </span>
                       <span className="mt-0.5 line-clamp-2 block text-[0.64rem] leading-4 text-muted-foreground">
                         {stripMarkup(spell.description)}
                       </span>
@@ -691,7 +708,11 @@ export function LeagueBuildCreator({
                 )}
               />
               <span className="mt-1 block text-[0.62rem] text-muted-foreground">
-                {copy("Separe por vírgulas. Máximo de 6.", "Comma-separated. Maximum 6.", "Separadas por comas. Máximo 6.")}
+                {copy(
+                  "Separe por vírgulas. Máximo de 6.",
+                  "Comma-separated. Maximum 6.",
+                  "Separadas por comas. Máximo 6.",
+                )}
               </span>
             </label>
 
@@ -732,7 +753,11 @@ export function LeagueBuildCreator({
 
           <label className="block border-t border-border pt-6">
             <span className="text-xs font-black uppercase tracking-[0.09em] text-muted-foreground">
-              {copy("Descrição / como jogar", "Description / how to play", "Descripción / cómo jugar")}
+              {copy(
+                "Descrição / como jogar",
+                "Description / how to play",
+                "Descripción / cómo jugar",
+              )}
             </span>
             <textarea
               value={notes}
@@ -754,7 +779,11 @@ export function LeagueBuildCreator({
               onClick={() => void saveBuild()}
               className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-gold px-4 text-sm font-bold text-gold-foreground transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-45"
             >
-              {saving ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
+              {saving ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Sparkles className="size-4" />
+              )}
               {saving
                 ? copy("Salvando…", "Saving…", "Guardando…")
                 : copy("Salvar build", "Save build", "Guardar build")}
@@ -762,9 +791,15 @@ export function LeagueBuildCreator({
             <p className="text-xs leading-5 text-muted-foreground">
               {saveStatus === "saved"
                 ? copy(
-                    visibility === "public" ? "Build pública salva no seu perfil." : "Build privada salva no seu perfil.",
-                    visibility === "public" ? "Public build saved to your profile." : "Private build saved to your profile.",
-                    visibility === "public" ? "Build pública guardada en tu perfil." : "Build privada guardada en tu perfil.",
+                    visibility === "public"
+                      ? "Build pública salva no seu perfil."
+                      : "Build privada salva no seu perfil.",
+                    visibility === "public"
+                      ? "Public build saved to your profile."
+                      : "Private build saved to your profile.",
+                    visibility === "public"
+                      ? "Build pública guardada en tu perfil."
+                      : "Build privada guardada en tu perfil.",
                   )
                 : saveStatus === "login"
                   ? copy(
@@ -810,7 +845,10 @@ export function LeagueBuildCreator({
         <div className="border-b border-border bg-[radial-gradient(circle_at_top_right,hsl(var(--gold)/0.12),transparent_55%)] p-5">
           <p className="section-kicker">{copy("PRÉVIA", "PREVIEW", "VISTA PREVIA")}</p>
           <h3 className="mt-2 font-display text-xl font-bold text-foreground">
-            {title.trim() || (champion ? `${champion.name} · ${role}` : copy("Sua build", "Your build", "Tu build"))}
+            {title.trim() ||
+              (champion
+                ? `${champion.name} · ${role}`
+                : copy("Sua build", "Your build", "Tu build"))}
           </h3>
           <p className="mt-1 text-xs text-muted-foreground">
             {patchLabel.trim() || buildData?.patch || version} · {role}
@@ -852,10 +890,16 @@ export function LeagueBuildCreator({
           <PreviewBlock title={copy("Runas", "Runes", "Runas")}>
             <div className="flex items-center gap-2">
               {keystone ? (
-                <img src={leagueRuneIcon(keystone.icon)} alt="" className="size-10 rounded-full object-contain" />
+                <img
+                  src={leagueRuneIcon(keystone.icon)}
+                  alt=""
+                  className="size-10 rounded-full object-contain"
+                />
               ) : null}
               <div className="min-w-0">
-                <p className="truncate text-xs font-bold text-foreground">{keystone?.name ?? "—"}</p>
+                <p className="truncate text-xs font-bold text-foreground">
+                  {keystone?.name ?? "—"}
+                </p>
                 <p className="truncate text-[0.64rem] text-muted-foreground">
                   {primaryStyle?.name ?? copy("Árvore primária", "Primary tree", "Árbol primario")}
                 </p>
@@ -877,7 +921,9 @@ export function LeagueBuildCreator({
                   />
                 ) : null;
               })}
-              {!selectedSummoners.length ? <span className="text-xs text-muted-foreground">—</span> : null}
+              {!selectedSummoners.length ? (
+                <span className="text-xs text-muted-foreground">—</span>
+              ) : null}
             </div>
           </PreviewBlock>
 
@@ -888,7 +934,9 @@ export function LeagueBuildCreator({
                   <span className="grid size-8 place-items-center rounded-lg border border-gold/25 bg-gold/10 text-xs font-black text-gold-strong">
                     {skill}
                   </span>
-                  {index < skillOrder.length - 1 ? <ArrowRight className="size-3 text-muted-foreground" /> : null}
+                  {index < skillOrder.length - 1 ? (
+                    <ArrowRight className="size-3 text-muted-foreground" />
+                  ) : null}
                 </span>
               ))}
             </div>
@@ -914,7 +962,11 @@ export function LeagueBuildCreator({
               <div className="flex items-center gap-2">
                 <ShieldCheck className="size-3.5 text-gold-strong" />
                 <p className="text-xs font-bold text-foreground">
-                  {copy("Comparação com referência", "Reference comparison", "Comparación con referencia")}
+                  {copy(
+                    "Comparação com referência",
+                    "Reference comparison",
+                    "Comparación con referencia",
+                  )}
                 </p>
               </div>
               <p className="mt-2 text-[0.68rem] leading-5 text-muted-foreground">
@@ -928,7 +980,6 @@ export function LeagueBuildCreator({
           ) : null}
         </div>
       </aside>
-
     </section>
   );
 }

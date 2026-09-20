@@ -167,10 +167,7 @@ async function authenticateSyncRequest(accessToken: string) {
   return { db, userId: data.user.id };
 }
 
-async function steamApi<T>(
-  path: string,
-  params: Record<string, string | number | boolean>,
-) {
+async function steamApi<T>(path: string, params: Record<string, string | number | boolean>) {
   const url = new URL(`https://api.steampowered.com/${path}`);
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, String(value));
@@ -220,10 +217,7 @@ function chunk<T>(items: T[], size: number) {
   return chunks;
 }
 
-async function evaluateProfileUnlocks(
-  db: ReturnType<typeof createUserDb>,
-  userId: string,
-) {
+async function evaluateProfileUnlocks(db: ReturnType<typeof createUserDb>, userId: string) {
   const { data, error } = await db.rpc("evaluate_profile_unlocks", {
     target_user_id: userId,
   });
@@ -242,10 +236,7 @@ async function evaluateProfileUnlocks(
   return data;
 }
 
-async function getConnectedSteamAccount(
-  db: ReturnType<typeof createUserDb>,
-  userId: string,
-) {
+async function getConnectedSteamAccount(db: ReturnType<typeof createUserDb>, userId: string) {
   const { data, error } = await db
     .from("connected_accounts")
     .select("provider_user_id,display_name,public_metadata,status")
@@ -259,20 +250,14 @@ async function getConnectedSteamAccount(
   return data;
 }
 
-async function fetchInventory(
-  steamId: string,
-  appId: number,
-  contextId: string,
-) {
+async function fetchInventory(steamId: string, appId: number, contextId: string) {
   const assets: Array<Record<string, unknown>> = [];
   const descriptions = new Map<string, Record<string, unknown>>();
   let cursor: string | null = null;
   let pages = 0;
 
   while (pages < 5) {
-    const url = new URL(
-      `https://steamcommunity.com/inventory/${steamId}/${appId}/${contextId}`,
-    );
+    const url = new URL(`https://steamcommunity.com/inventory/${steamId}/${appId}/${contextId}`);
     url.searchParams.set("l", "brazilian");
     url.searchParams.set("count", "2000");
     if (cursor) url.searchParams.set("start_assetid", cursor);
@@ -316,35 +301,35 @@ async function fetchInventory(
     cursor = payload.last_assetid;
   }
 
-  const items = assets.map((asset) => {
-    const classId = String(asset["classid"] ?? "");
-    const instanceId = String(asset["instanceid"] ?? "0");
-    const description = descriptions.get(`${classId}_${instanceId}`) ?? {};
-    const icon = typeof description["icon_url"] === "string" ? description["icon_url"] : null;
+  const items = assets
+    .map((asset) => {
+      const classId = String(asset["classid"] ?? "");
+      const instanceId = String(asset["instanceid"] ?? "0");
+      const description = descriptions.get(`${classId}_${instanceId}`) ?? {};
+      const icon = typeof description["icon_url"] === "string" ? description["icon_url"] : null;
 
-    return {
-      app_id: appId,
-      context_id: contextId,
-      asset_id: String(asset["assetid"] ?? ""),
-      class_id: classId || null,
-      instance_id: instanceId || null,
-      amount: Number(asset["amount"] ?? 1),
-      name: typeof description["name"] === "string" ? description["name"] : null,
-      market_name:
-        typeof description["market_name"] === "string" ? description["market_name"] : null,
-      market_hash_name:
-        typeof description["market_hash_name"] === "string"
-          ? description["market_hash_name"]
-          : null,
-      type: typeof description["type"] === "string" ? description["type"] : null,
-      icon_url: icon
-        ? `https://community.fastly.steamstatic.com/economy/image/${icon}`
-        : null,
-      tradable: Number(description["tradable"] ?? 0) === 1,
-      marketable: Number(description["marketable"] ?? 0) === 1,
-      tags: Array.isArray(description["tags"]) ? description["tags"] : [],
-    };
-  }).filter((item) => item.asset_id);
+      return {
+        app_id: appId,
+        context_id: contextId,
+        asset_id: String(asset["assetid"] ?? ""),
+        class_id: classId || null,
+        instance_id: instanceId || null,
+        amount: Number(asset["amount"] ?? 1),
+        name: typeof description["name"] === "string" ? description["name"] : null,
+        market_name:
+          typeof description["market_name"] === "string" ? description["market_name"] : null,
+        market_hash_name:
+          typeof description["market_hash_name"] === "string"
+            ? description["market_hash_name"]
+            : null,
+        type: typeof description["type"] === "string" ? description["type"] : null,
+        icon_url: icon ? `https://community.fastly.steamstatic.com/economy/image/${icon}` : null,
+        tradable: Number(description["tradable"] ?? 0) === 1,
+        marketable: Number(description["marketable"] ?? 0) === 1,
+        tags: Array.isArray(description["tags"]) ? description["tags"] : [],
+      };
+    })
+    .filter((item) => item.asset_id);
 
   return { visible: true, items };
 }
@@ -410,9 +395,7 @@ export const syncSteamCore = createServerFn({ method: "POST" })
       Array.isArray(ownedPayload?.response?.games);
     const recentGames = recentPayload?.response?.games ?? [];
     const level =
-      levelPayload?.response?.player_level ??
-      badgesPayload?.response?.player_level ??
-      null;
+      levelPayload?.response?.player_level ?? badgesPayload?.response?.player_level ?? null;
     const badges = badgesPayload?.response?.badges ?? [];
 
     if (!player) warnings.push("profile_summary_unavailable");
@@ -445,12 +428,9 @@ export const syncSteamCore = createServerFn({ method: "POST" })
           icon_url: appIcon(game.appid, game.img_icon_url),
           playtime_forever: game.playtime_forever ?? 0,
           playtime_2weeks: recent?.recentMinutes ?? game.playtime_2weeks ?? 0,
-          last_played_at: unixTimestamp(
-            recent?.lastPlayed ?? game.rtime_last_played,
-          ),
+          last_played_at: unixTimestamp(recent?.lastPlayed ?? game.rtime_last_played),
           recent_rank: recent?.rank ?? null,
-          has_community_visible_stats:
-            game.has_community_visible_stats === true,
+          has_community_visible_stats: game.has_community_visible_stats === true,
           last_synced_at: now,
           owned: true,
         };
@@ -499,18 +479,10 @@ export const syncSteamCore = createServerFn({ method: "POST" })
     const ownedAppIds = new Set(ownedGames.map((game) => game.appid));
 
     for (const inventory of SUPPORTED_INVENTORIES) {
-      if (
-        inventory.requiresOwnership &&
-        libraryVisible &&
-        !ownedAppIds.has(inventory.appId)
-      ) {
+      if (inventory.requiresOwnership && libraryVisible && !ownedAppIds.has(inventory.appId)) {
         continue;
       }
-      const result = await fetchInventory(
-        steamId,
-        inventory.appId,
-        inventory.contextId,
-      );
+      const result = await fetchInventory(steamId, inventory.appId, inventory.contextId);
       if (!result.visible) continue;
 
       inventoryVisible = true;
@@ -534,11 +506,9 @@ export const syncSteamCore = createServerFn({ method: "POST" })
 
       for (const rowsChunk of chunk(itemRows, 100)) {
         if (rowsChunk.length === 0) continue;
-        const { error } = await db
-          .from("steam_inventory_items")
-          .upsert(rowsChunk, {
-            onConflict: "user_id,app_id,context_id,asset_id",
-          });
+        const { error } = await db.from("steam_inventory_items").upsert(rowsChunk, {
+          onConflict: "user_id,app_id,context_id,asset_id",
+        });
         if (error) warnings.push(`inventory_save_${inventory.appId}`);
       }
     }
@@ -547,13 +517,10 @@ export const syncSteamCore = createServerFn({ method: "POST" })
       player?.profileurl ??
       (account.public_metadata as Record<string, unknown> | null)?.["profile_url"] ??
       `https://steamcommunity.com/profiles/${steamId}/`;
-    const avatarUrl =
-      player?.avatarfull ?? player?.avatarmedium ?? player?.avatar ?? null;
-    const personaName =
-      player?.personaname ?? account.display_name ?? `Steam ${steamId.slice(-6)}`;
+    const avatarUrl = player?.avatarfull ?? player?.avatarmedium ?? player?.avatar ?? null;
+    const personaName = player?.personaname ?? account.display_name ?? `Steam ${steamId.slice(-6)}`;
 
-    const syncStatus =
-      warnings.length === 0 ? "ok" : warnings.length < 4 ? "partial" : "error";
+    const syncStatus = warnings.length === 0 ? "ok" : warnings.length < 4 ? "partial" : "error";
 
     const { error: profileError } = await db.from("steam_profiles").upsert(
       {
@@ -586,10 +553,7 @@ export const syncSteamCore = createServerFn({ method: "POST" })
           profile_url: profileUrl,
           avatar_url: avatarUrl,
           country_code: player?.loccountrycode ?? null,
-          visibility:
-            player?.communityvisibilitystate === 3
-              ? "public"
-              : "private_or_limited",
+          visibility: player?.communityvisibilitystate === 3 ? "public" : "private_or_limited",
         },
         last_synced_at: now,
       })
@@ -623,11 +587,7 @@ export const syncSteamCore = createServerFn({ method: "POST" })
     };
   });
 
-async function syncAchievementsForGame(
-  key: string,
-  steamId: string,
-  appId: number,
-) {
+async function syncAchievementsForGame(key: string, steamId: string, appId: number) {
   const achievementsPayload = await optionalSteamApi<{
     playerstats?: {
       success?: boolean;
@@ -640,10 +600,7 @@ async function syncAchievementsForGame(
     l: "brazilian",
   });
 
-  if (
-    !achievementsPayload?.playerstats ||
-    achievementsPayload.playerstats.success === false
-  ) {
+  if (!achievementsPayload?.playerstats || achievementsPayload.playerstats.success === false) {
     throw new Error("STEAM_ACHIEVEMENTS_UNAVAILABLE");
   }
 
@@ -686,8 +643,7 @@ async function syncAchievementsForGame(
       const schema = schemaMap.get(achievement.apiname as string);
       return {
         apiName: achievement.apiname as string,
-        displayName:
-          achievement.name ?? schema?.displayName ?? achievement.apiname ?? null,
+        displayName: achievement.name ?? schema?.displayName ?? achievement.apiname ?? null,
         description: achievement.description ?? schema?.description ?? null,
         achieved: achievement.achieved === 1,
         unlockTime: unixTimestamp(achievement.unlocktime),
@@ -766,9 +722,7 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
             icon_gray_url: achievement.iconGrayUrl,
             last_synced_at: now,
           }));
-          const { error: insertError } = await db
-            .from("steam_achievements")
-            .insert(rows);
+          const { error: insertError } = await db.from("steam_achievements").insert(rows);
           if (insertError) throw insertError;
         }
 
@@ -785,9 +739,7 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
             achievements_unlocked: gameUnlocked,
             achievements_total: gameTotal,
             achievement_percent:
-              gameTotal > 0
-                ? Number(((gameUnlocked / gameTotal) * 100).toFixed(2))
-                : 0,
+              gameTotal > 0 ? Number(((gameUnlocked / gameTotal) * 100).toFixed(2)) : 0,
             stats: result.stats,
             achievements_synced_at: now,
           })
@@ -795,11 +747,7 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
           .eq("app_id", appId);
         if (updateError) throw updateError;
       } catch (achievementError) {
-        console.warn(
-          "[MGP Steam Sync] achievement sync failed",
-          appId,
-          achievementError,
-        );
+        console.warn("[MGP Steam Sync] achievement sync failed", appId, achievementError);
         failures.push(appId);
       }
     }
@@ -824,36 +772,24 @@ export const getSteamSyncStatus = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { db, userId } = await authenticateSyncRequest(data.accessToken);
 
-    const [
-      profileResult,
-      gamesResult,
-      achievementsResult,
-      badgesResult,
-      inventoryResult,
-    ] = await Promise.all([
-      db
-        .from("steam_profiles")
-        .select("*")
-        .eq("user_id", userId)
-        .maybeSingle(),
-      db
-        .from("steam_games")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", userId)
-        .eq("owned", true),
-      db
-        .from("steam_achievements")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", userId),
-      db
-        .from("steam_badges")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", userId),
-      db
-        .from("steam_inventory_items")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", userId),
-    ]);
+    const [profileResult, gamesResult, achievementsResult, badgesResult, inventoryResult] =
+      await Promise.all([
+        db.from("steam_profiles").select("*").eq("user_id", userId).maybeSingle(),
+        db
+          .from("steam_games")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", userId)
+          .eq("owned", true),
+        db
+          .from("steam_achievements")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", userId),
+        db.from("steam_badges").select("id", { count: "exact", head: true }).eq("user_id", userId),
+        db
+          .from("steam_inventory_items")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", userId),
+      ]);
 
     if (profileResult.error) throw new Error("STEAM_SYNC_STATUS_FAILED");
 
@@ -880,9 +816,7 @@ export const updateSteamSharing = createServerFn({ method: "POST" })
       show_inventory: data.show_inventory,
     };
     const payload = {
-      ...Object.fromEntries(
-        Object.entries(sharing).filter(([, value]) => value !== undefined),
-      ),
+      ...Object.fromEntries(Object.entries(sharing).filter(([, value]) => value !== undefined)),
       updated_at: new Date().toISOString(),
     };
 
@@ -901,10 +835,7 @@ export const getPublicSteamShowcase = createServerFn({ method: "GET" })
   .validator((data) => publicShowcaseSchema.parse(data))
   .handler(async ({ data }) => {
     const { url, publishableKey } = getSupabasePublicConfig();
-    const endpoint = new URL(
-      "/rest/v1/rpc/get_public_steam_showcase",
-      url,
-    );
+    const endpoint = new URL("/rest/v1/rpc/get_public_steam_showcase", url);
 
     const response = await fetch(endpoint, {
       method: "POST",

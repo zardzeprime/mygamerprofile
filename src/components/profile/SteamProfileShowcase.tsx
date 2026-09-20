@@ -1,12 +1,4 @@
-import {
-  Clock3,
-  Crown,
-  ExternalLink,
-  Gamepad2,
-  Package,
-  ShieldCheck,
-  Trophy,
-} from "lucide-react";
+import { Clock3, Crown, ExternalLink, Gamepad2, Package, ShieldCheck, Trophy } from "lucide-react";
 import { useState } from "react";
 
 import type { Locale } from "@/i18n";
@@ -38,12 +30,9 @@ export function SteamProfileShowcase({
     steam.showLibrary ?? (steam.libraryGameCount !== null || steam.games.length > 0);
   const playtimeShared =
     steam.showPlaytime ??
-    (steam.games.some((game) => game.playtimeMinutes !== null) ||
-      steam.recentGames.length > 0);
-  const achievementsShared =
-    steam.showAchievements ?? steam.achievementSummary !== null;
-  const badgesShared =
-    steam.showBadges ?? (steam.steamLevel !== null || steam.badgeCount !== null);
+    (steam.games.some((game) => game.playtimeMinutes !== null) || steam.recentGames.length > 0);
+  const achievementsShared = steam.showAchievements ?? steam.achievementSummary !== null;
+  const badgesShared = steam.showBadges ?? (steam.steamLevel !== null || steam.badgeCount !== null);
   const hiddenValue = copy("Oculto", "Hidden", "Oculto");
 
   return (
@@ -315,13 +304,9 @@ function SteamGameCard({
         <div className="flex min-w-0 items-end gap-3">
           <GameIcon iconUrl={game.iconUrl} name={game.name} large />
           <div className="min-w-0 flex-1">
-            <h4 className="truncate font-display text-sm font-semibold text-white">
-              {game.name}
-            </h4>
+            <h4 className="truncate font-display text-sm font-semibold text-white">{game.name}</h4>
             <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.68rem] text-white/62">
-              {game.playtimeMinutes !== null ? (
-                <span>{hours(game.playtimeMinutes)}</span>
-              ) : null}
+              {game.playtimeMinutes !== null ? <span>{hours(game.playtimeMinutes)}</span> : null}
               {game.achievementsTotal ? (
                 <span>
                   {game.achievementsUnlocked ?? 0}/{game.achievementsTotal}{" "}
@@ -387,16 +372,9 @@ function GameIcon({
       )}
     >
       {iconUrl ? (
-        <img
-          src={iconUrl}
-          alt=""
-          loading="lazy"
-          className="max-h-full max-w-full object-contain"
-        />
+        <img src={iconUrl} alt="" loading="lazy" className="max-h-full max-w-full object-contain" />
       ) : (
-        <span className="text-[0.62rem] font-bold uppercase text-white/65">
-          {name.slice(0, 2)}
-        </span>
+        <span className="text-[0.62rem] font-bold uppercase text-white/65">{name.slice(0, 2)}</span>
       )}
     </span>
   );
