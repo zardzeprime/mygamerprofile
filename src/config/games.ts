@@ -13,6 +13,7 @@ export type GameModuleKey =
   | "news"
   | "agents"
   | "champions"
+  | "runes"
   | "maps"
   | "weapons"
   | "items"
@@ -80,6 +81,7 @@ export const MODULE_LABELS: Record<GameModuleKey, Record<Locale, string>> = {
   news: { "pt-BR": "Novidades", en: "News", es: "Novedades" },
   agents: { "pt-BR": "Agentes", en: "Agents", es: "Agentes" },
   champions: { "pt-BR": "Campeões", en: "Champions", es: "Campeones" },
+  runes: { "pt-BR": "Runas", en: "Runes", es: "Runas" },
   maps: { "pt-BR": "Mapas", en: "Maps", es: "Mapas" },
   weapons: { "pt-BR": "Armas", en: "Weapons", es: "Armas" },
   items: { "pt-BR": "Itens", en: "Items", es: "Objetos" },
@@ -562,7 +564,7 @@ export const GAMES: GameConfig[] = [
     platforms: ["PC"],
     ageRating: "12+",
     themeKey: "competitive",
-    modules: ["overview", "news", "champions", "builds", "maps", "items", "skins", "competitive", "guides"],
+    modules: ["overview", "news", "champions", "runes", "builds", "maps", "items", "skins", "competitive", "guides"],
     profileFields: [
       {
         key: "favorite_champion",
