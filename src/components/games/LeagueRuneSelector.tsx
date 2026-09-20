@@ -107,13 +107,12 @@ export function LeagueRuneSelector({
 
   const choosePrimaryRune = (slotIndex: number, runeId: number) => {
     if (!primary) return;
-    const next = [...selection.primaryPerkIds];
-    const previousInSlot = primary.slots[slotIndex]?.runes
-      .map((rune) => rune.id)
-      .find((id) => next.includes(id));
-    const previousIndex = previousInSlot ? next.indexOf(previousInSlot) : -1;
-    if (previousIndex >= 0) next.splice(previousIndex, 1);
-    next.push(runeId);
+    const next = primary.slots
+      .map((slot, index) => {
+        if (index === slotIndex) return runeId;
+        return slot.runes.find((rune) => selection.primaryPerkIds.includes(rune.id))?.id;
+      })
+      .filter((id): id is number => typeof id === "number");
     onChange({ ...selection, primaryPerkIds: next });
   };
 
