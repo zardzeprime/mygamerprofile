@@ -161,8 +161,7 @@ export function LeagueRuneSelector({
   }
 
   return (
-    <>
-      <div className="space-y-5">
+    <div className="space-y-5">
       <div className="rounded-2xl border border-border bg-muted/10 p-4">
         <div className="flex items-center gap-2">
           <Sparkles className="size-4 text-gold-strong" />
@@ -277,7 +276,7 @@ export function LeagueRuneSelector({
         activeStyle={primary}
         onSelect={choosePrimaryStyle}
       />
-    </>
+    </div>
   );
 }
 
@@ -389,14 +388,6 @@ function RuneSlot({
           );
         })}
       </div>
-      </div>
-
-      <LeagueRuneTreeWheel
-        locale={locale}
-        styles={styles}
-        activeStyle={primary}
-        onSelect={choosePrimaryStyle}
-      />
-    </>
+    </div>
   );
 }
