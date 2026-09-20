@@ -264,9 +264,13 @@ export function LeagueBuildCreator({
     .filter(Boolean)
     .slice(0, 6);
 
+  const selectedPrimaryStyle = runeStyles.find(
+    (style) => style.id === runePage?.primaryStyleId,
+  );
   const runeComplete =
     Boolean(runePage?.primaryStyleId) &&
-    (runePage?.primaryPerkIds.length ?? 0) >= 4 &&
+    Boolean(selectedPrimaryStyle) &&
+    (runePage?.primaryPerkIds.length ?? 0) === (selectedPrimaryStyle?.slots.length ?? 0) &&
     Boolean(runePage?.secondaryStyleId) &&
     (runePage?.secondaryPerkIds.length ?? 0) === 2 &&
     (runePage?.statShards.length ?? 0) === 3;
