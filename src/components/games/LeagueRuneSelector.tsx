@@ -1,6 +1,7 @@
 import { Loader2, ShieldCheck, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import { LeagueRuneTreeWheel } from "@/components/games/LeagueRuneTreeWheel";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import {
@@ -160,7 +161,8 @@ export function LeagueRuneSelector({
   }
 
   return (
-    <div className="space-y-5">
+    <>
+      <div className="space-y-5">
       <div className="rounded-2xl border border-border bg-muted/10 p-4">
         <div className="flex items-center gap-2">
           <Sparkles className="size-4 text-gold-strong" />
@@ -380,6 +382,14 @@ function RuneSlot({
           );
         })}
       </div>
-    </div>
+      </div>
+
+      <LeagueRuneTreeWheel
+        locale={locale}
+        styles={styles}
+        activeStyle={primary}
+        onSelect={choosePrimaryStyle}
+      />
+    </>
   );
 }
