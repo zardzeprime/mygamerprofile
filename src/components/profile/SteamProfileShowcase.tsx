@@ -104,7 +104,7 @@ export function SteamProfileShowcase({
           icon={Trophy}
           label={copy("Conquistas", "Achievements", "Logros")}
           value={achievementsShared ? (achievement ? achievement.unlocked : "—") : hiddenValue}
-          helper={achievementsShared && achievement ? `/${achievement.total}` : undefined}
+          {...(achievementsShared && achievement ? { helper: `/${achievement.total}` } : {})}
         />
         <Metric
           icon={ShieldCheck}
@@ -151,7 +151,7 @@ export function SteamProfileShowcase({
               <SteamGameCard
                 key={game.appId}
                 game={game}
-                rank={playtimeShared ? index + 1 : undefined}
+                {...(playtimeShared ? { rank: index + 1 } : {})}
                 locale={locale}
               />
             ))}

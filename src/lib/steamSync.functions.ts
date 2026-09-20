@@ -306,7 +306,7 @@ async function fetchInventory(
     }
 
     for (const description of payload.descriptions ?? []) {
-      const key = `${String(description.classid ?? "")}_${String(description.instanceid ?? "0")}`;
+      const key = `${String(description["classid"] ?? "")}_${String(description["instanceid"] ?? "0")}`;
       descriptions.set(key, description);
     }
     assets.push(...(payload.assets ?? []));
@@ -317,32 +317,32 @@ async function fetchInventory(
   }
 
   const items = assets.map((asset) => {
-    const classId = String(asset.classid ?? "");
-    const instanceId = String(asset.instanceid ?? "0");
+    const classId = String(asset["classid"] ?? "");
+    const instanceId = String(asset["instanceid"] ?? "0");
     const description = descriptions.get(`${classId}_${instanceId}`) ?? {};
-    const icon = typeof description.icon_url === "string" ? description.icon_url : null;
+    const icon = typeof description["icon_url"] === "string" ? description["icon_url"] : null;
 
     return {
       app_id: appId,
       context_id: contextId,
-      asset_id: String(asset.assetid ?? ""),
+      asset_id: String(asset["assetid"] ?? ""),
       class_id: classId || null,
       instance_id: instanceId || null,
-      amount: Number(asset.amount ?? 1),
-      name: typeof description.name === "string" ? description.name : null,
+      amount: Number(asset["amount"] ?? 1),
+      name: typeof description["name"] === "string" ? description["name"] : null,
       market_name:
-        typeof description.market_name === "string" ? description.market_name : null,
+        typeof description["market_name"] === "string" ? description["market_name"] : null,
       market_hash_name:
-        typeof description.market_hash_name === "string"
-          ? description.market_hash_name
+        typeof description["market_hash_name"] === "string"
+          ? description["market_hash_name"]
           : null,
-      type: typeof description.type === "string" ? description.type : null,
+      type: typeof description["type"] === "string" ? description["type"] : null,
       icon_url: icon
         ? `https://community.fastly.steamstatic.com/economy/image/${icon}`
         : null,
-      tradable: Number(description.tradable ?? 0) === 1,
-      marketable: Number(description.marketable ?? 0) === 1,
-      tags: Array.isArray(description.tags) ? description.tags : [],
+      tradable: Number(description["tradable"] ?? 0) === 1,
+      marketable: Number(description["marketable"] ?? 0) === 1,
+      tags: Array.isArray(description["tags"]) ? description["tags"] : [],
     };
   }).filter((item) => item.asset_id);
 
@@ -545,7 +545,7 @@ export const syncSteamCore = createServerFn({ method: "POST" })
 
     const profileUrl =
       player?.profileurl ??
-      (account.public_metadata as Record<string, unknown> | null)?.profile_url ??
+      (account.public_metadata as Record<string, unknown> | null)?.["profile_url"] ??
       `https://steamcommunity.com/profiles/${steamId}/`;
     const avatarUrl =
       player?.avatarfull ?? player?.avatarmedium ?? player?.avatar ?? null;

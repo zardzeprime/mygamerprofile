@@ -23,6 +23,14 @@ type LocalizedText = {
   es?: string;
 };
 
+type SerializableValue =
+  | string
+  | number
+  | boolean
+  | null
+  | SerializableValue[]
+  | { [key: string]: SerializableValue };
+
 export type ProfileIdentityRarity =
   | "common"
   | "uncommon"
@@ -38,7 +46,7 @@ export type ProfileTitleCatalogItem = {
   rarity: ProfileIdentityRarity;
   source: string;
   icon_key: string;
-  unlock_rule: Record<string, unknown>;
+  unlock_rule: { [key: string]: SerializableValue };
   unlocked: boolean;
   unlocked_at: string | null;
   is_new: boolean;
@@ -200,7 +208,7 @@ export const getProfileIdentityStudio = createServerFn({ method: "POST" })
         ...item,
         name: item.name as LocalizedText,
         description: item.description as LocalizedText,
-        unlock_rule: (item.unlock_rule ?? {}) as Record<string, unknown>,
+        unlock_rule: (item.unlock_rule ?? {}) as { [key: string]: SerializableValue },
         rarity: item.rarity as ProfileIdentityRarity,
         unlocked: Boolean(unlock),
         unlocked_at: unlock?.unlocked_at ?? null,

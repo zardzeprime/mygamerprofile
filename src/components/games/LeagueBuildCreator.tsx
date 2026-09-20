@@ -251,6 +251,7 @@ export function LeagueBuildCreator({
       const otherIndex = next.findIndex((entry, entryIndex) => entry === skill && entryIndex !== index);
       if (otherIndex >= 0) {
         const previous = next[index];
+        if (!previous) return current;
         next[otherIndex] = previous;
       }
       next[index] = skill;

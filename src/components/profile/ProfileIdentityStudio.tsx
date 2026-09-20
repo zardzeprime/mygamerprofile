@@ -156,8 +156,9 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
   );
 
   useEffect(() => {
-    if (availableKinds.length > 0 && !availableKinds.includes(activeKind)) {
-      setActiveKind(availableKinds[0]);
+    const firstAvailableKind = availableKinds[0];
+    if (firstAvailableKind && !availableKinds.includes(activeKind)) {
+      setActiveKind(firstAvailableKind);
     }
   }, [activeKind, availableKinds]);
 
