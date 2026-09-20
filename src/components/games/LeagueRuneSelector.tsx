@@ -270,7 +270,14 @@ export function LeagueRuneSelector({
           ))}
         </div>
       </div>
-    </div>
+
+      <LeagueRuneTreeWheel
+        locale={locale}
+        styles={styles}
+        activeStyle={primary}
+        onSelect={choosePrimaryStyle}
+      />
+    </>
   );
 }
 
