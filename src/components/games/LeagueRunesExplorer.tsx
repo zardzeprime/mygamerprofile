@@ -1,6 +1,7 @@
-import { ArrowUp, BookOpen, Loader2, Search, Sparkles } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { BookOpen, Loader2, Search, Sparkles } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
+import { LeagueRuneTreeWheel } from "@/components/games/LeagueRuneTreeWheel";
 import { Input } from "@/components/ui/input";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
@@ -24,8 +25,6 @@ export function LeagueRunesExplorer({ locale }: { locale: Locale }) {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
-  const runeControlsRef = useRef<HTMLDivElement>(null);
-  const [showRuneJump, setShowRuneJump] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -68,29 +67,6 @@ export function LeagueRunesExplorer({ locale }: { locale: Locale }) {
       active = false;
     };
   }, [locale, version]);
-
-  useEffect(() => {
-    const target = runeControlsRef.current;
-    if (!target) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowRuneJump(!entry.isIntersecting && entry.boundingClientRect.top < 0);
-      },
-      { threshold: 0.15, rootMargin: "-72px 0px 0px 0px" },
-    );
-
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, []);
-
-  const jumpToRuneControls = () => {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    runeControlsRef.current?.scrollIntoView({
-      behavior: reducedMotion ? "auto" : "smooth",
-      block: "start",
-    });
-  };
 
   const activeStyle =
     styles.find((style) => style.id === activeStyleId) ?? styles[0] ?? null;
@@ -136,7 +112,7 @@ export function LeagueRunesExplorer({ locale }: { locale: Locale }) {
           </p>
         </div>
 
-        <div ref={runeControlsRef} className="scroll-mt-24 p-5 sm:p-6">
+        <div className="p-5 sm:p-6">
           <label className="flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 focus-within:border-gold/50">
             <Search className="size-4 text-muted-foreground" />
             <Input
@@ -297,23 +273,13 @@ export function LeagueRunesExplorer({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      {showRuneJump ? (
-        <button
-          type="button"
-          onClick={jumpToRuneControls}
-          aria-label={copy(
-            "Voltar para trocar a árvore principal",
-            "Back to change the primary rune tree",
-            "Volver para cambiar el árbol principal",
-          )}
-          className="fixed bottom-5 right-4 z-50 inline-flex min-h-12 items-center gap-2 rounded-full border border-gold/35 bg-background/95 px-3.5 text-xs font-black uppercase tracking-[0.08em] text-foreground shadow-lift backdrop-blur transition hover:-translate-y-0.5 hover:border-gold/60 sm:right-6 sm:px-4"
-        >
-          <ArrowUp className="size-4 text-gold-strong" />
-          <span className="sm:hidden">{copy("Árvore", "Tree", "Árbol")}</span>
-          <span className="hidden sm:inline">
-            {copy("Trocar árvore principal", "Change primary tree", "Cambiar árbol principal")}
-          </span>
-        </button>
+{activeStyle ? (
+        <LeagueRuneTreeWheel
+          locale={locale}
+          styles={styles}
+          activeStyle={activeStyle}
+          onSelect={(style) => setActiveStyleId(style.id)}
+        />
       ) : null}
     </div>
   );
