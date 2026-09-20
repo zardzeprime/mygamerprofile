@@ -1,5 +1,6 @@
 import {
   ArrowRight,
+  ArrowUp,
   Eye,
   EyeOff,
   Footprints,
@@ -13,7 +14,7 @@ import {
   Tags,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { LeagueRuneSelector } from "@/components/games/LeagueRuneSelector";
 import { Input } from "@/components/ui/input";
@@ -150,6 +151,8 @@ export function LeagueBuildCreator({
 
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "login" | "error">("idle");
+  const runeEditorRef = useRef<HTMLDivElement>(null);
+  const [showRuneJump, setShowRuneJump] = useState(false);
 
   useEffect(() => {
     if (!champion) return;
@@ -193,6 +196,29 @@ export function LeagueBuildCreator({
       active = false;
     };
   }, [locale, version]);
+
+  useEffect(() => {
+    const target = runeEditorRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowRuneJump(!entry.isIntersecting && entry.boundingClientRect.top < 0);
+      },
+      { threshold: 0.12, rootMargin: "-72px 0px 0px 0px" },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, []);
+
+  const jumpToRuneEditor = () => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    runeEditorRef.current?.scrollIntoView({
+      behavior: reducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
+  };
 
   const selectedItemIds = useMemo(
     () => new Set([...(bootsId ? [bootsId] : []), ...coreItems, ...situationalItems]),
@@ -581,7 +607,7 @@ export function LeagueBuildCreator({
             </div>
           </div>
 
-          <div className="border-t border-border pt-6">
+          <div ref={runeEditorRef} className="scroll-mt-24 border-t border-border pt-6">
             <LeagueRuneSelector
               version={version}
               locale={locale}
@@ -927,6 +953,25 @@ export function LeagueBuildCreator({
           ) : null}
         </div>
       </aside>
+
+      {showRuneJump ? (
+        <button
+          type="button"
+          onClick={jumpToRuneEditor}
+          aria-label={copy(
+            "Voltar para editar as runas da build",
+            "Back to edit build runes",
+            "Volver para editar las runas de la build",
+          )}
+          className="fixed bottom-5 right-4 z-50 inline-flex min-h-12 items-center gap-2 rounded-full border border-gold/35 bg-background/95 px-3.5 text-xs font-black uppercase tracking-[0.08em] text-foreground shadow-lift backdrop-blur transition hover:-translate-y-0.5 hover:border-gold/60 sm:right-6 sm:px-4"
+        >
+          <ArrowUp className="size-4 text-gold-strong" />
+          <span className="sm:hidden">{copy("Runas", "Runes", "Runas")}</span>
+          <span className="hidden sm:inline">
+            {copy("Editar runas", "Edit runes", "Editar runas")}
+          </span>
+        </button>
+      ) : null}
     </section>
   );
 }
