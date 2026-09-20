@@ -9,7 +9,15 @@ const authSchema = z.object({
 });
 
 const equipSchema = authSchema.extend({
-  slot: z.enum(["title", "background", "avatar_frame", "profile_effect", "banner", "cursor", "nameplate"]),
+  slot: z.enum([
+    "title",
+    "background",
+    "avatar_frame",
+    "profile_effect",
+    "banner",
+    "cursor",
+    "nameplate",
+  ]),
   slug: z.string().trim().min(2).max(80).nullable(),
 });
 
@@ -23,13 +31,11 @@ type LocalizedText = {
   es?: string;
 };
 
+type SerializableValue =
+  string | number | boolean | null | SerializableValue[] | { [key: string]: SerializableValue };
+
 export type ProfileIdentityRarity =
-  | "common"
-  | "uncommon"
-  | "rare"
-  | "epic"
-  | "legendary"
-  | "mythic";
+  "common" | "uncommon" | "rare" | "epic" | "legendary" | "mythic";
 
 export type ProfileTitleCatalogItem = {
   slug: string;
@@ -38,7 +44,7 @@ export type ProfileTitleCatalogItem = {
   rarity: ProfileIdentityRarity;
   source: string;
   icon_key: string;
-  unlock_rule: Record<string, unknown>;
+  unlock_rule: { [key: string]: SerializableValue };
   unlocked: boolean;
   unlocked_at: string | null;
   is_new: boolean;
@@ -46,7 +52,15 @@ export type ProfileTitleCatalogItem = {
 
 export type ProfileCosmeticCatalogItem = {
   slug: string;
-  kind: "background" | "banner" | "avatar_frame" | "cursor" | "profile_effect" | "badge" | "chibi" | "nameplate";
+  kind:
+    | "background"
+    | "banner"
+    | "avatar_frame"
+    | "cursor"
+    | "profile_effect"
+    | "badge"
+    | "chibi"
+    | "nameplate";
   name: LocalizedText;
   description: LocalizedText;
   css_class: string | null;
@@ -146,40 +160,52 @@ export const getProfileIdentityStudio = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { db, userId } = await authenticate(data.accessToken);
 
-    await db
-      .rpc("evaluate_profile_unlocks", { target_user_id: userId })
-      .then(({ error }) => {
-        if (error) console.warn("[MGP Identity] evaluation failed", error);
-      });
+    await db.rpc("evaluate_profile_unlocks", { target_user_id: userId }).then(({ error }) => {
+      if (error) console.warn("[MGP Identity] evaluation failed", error);
+    });
 
-    const [titlesResult, titleUnlocksResult, cosmeticsResult, cosmeticUnlocksResult, loadoutResult] =
-      await Promise.all([
-        db
-          .from("profile_titles")
-          .select("slug,name,description,rarity,source,icon_key,unlock_rule")
-          .eq("active", true)
-          .order("created_at"),
-        db
-          .from("profile_title_unlocks")
-          .select("title_slug,unlocked_at,is_new")
-          .eq("user_id", userId),
-        db
-          .from("profile_cosmetics")
-          .select("slug,kind,name,description,css_class,rarity,animated,acquisition_method")
-          .eq("active", true)
-          .in("kind", ["background", "avatar_frame", "profile_effect", "banner", "cursor", "nameplate"])
-          .order("kind")
-          .order("created_at"),
-        db
-          .from("profile_cosmetic_unlocks")
-          .select("cosmetic_slug,unlocked_at,is_new")
-          .eq("user_id", userId),
-        db
-          .from("profile_loadouts")
-          .select("title_slug,background_slug,avatar_frame_slug,effect_slug,banner_slug,cursor_slug,nameplate_slug")
-          .eq("user_id", userId)
-          .maybeSingle(),
-      ]);
+    const [
+      titlesResult,
+      titleUnlocksResult,
+      cosmeticsResult,
+      cosmeticUnlocksResult,
+      loadoutResult,
+    ] = await Promise.all([
+      db
+        .from("profile_titles")
+        .select("slug,name,description,rarity,source,icon_key,unlock_rule")
+        .eq("active", true)
+        .order("created_at"),
+      db
+        .from("profile_title_unlocks")
+        .select("title_slug,unlocked_at,is_new")
+        .eq("user_id", userId),
+      db
+        .from("profile_cosmetics")
+        .select("slug,kind,name,description,css_class,rarity,animated,acquisition_method")
+        .eq("active", true)
+        .in("kind", [
+          "background",
+          "avatar_frame",
+          "profile_effect",
+          "banner",
+          "cursor",
+          "nameplate",
+        ])
+        .order("kind")
+        .order("created_at"),
+      db
+        .from("profile_cosmetic_unlocks")
+        .select("cosmetic_slug,unlocked_at,is_new")
+        .eq("user_id", userId),
+      db
+        .from("profile_loadouts")
+        .select(
+          "title_slug,background_slug,avatar_frame_slug,effect_slug,banner_slug,cursor_slug,nameplate_slug",
+        )
+        .eq("user_id", userId)
+        .maybeSingle(),
+    ]);
 
     if (titlesResult.error) throw new Error("PROFILE_TITLES_LOAD_FAILED");
     if (titleUnlocksResult.error) throw new Error("PROFILE_TITLE_UNLOCKS_LOAD_FAILED");
@@ -200,7 +226,7 @@ export const getProfileIdentityStudio = createServerFn({ method: "POST" })
         ...item,
         name: item.name as LocalizedText,
         description: item.description as LocalizedText,
-        unlock_rule: (item.unlock_rule ?? {}) as Record<string, unknown>,
+        unlock_rule: (item.unlock_rule ?? {}) as { [key: string]: SerializableValue },
         rarity: item.rarity as ProfileIdentityRarity,
         unlocked: Boolean(unlock),
         unlocked_at: unlock?.unlocked_at ?? null,
@@ -249,8 +275,7 @@ export const equipProfileIdentity = createServerFn({ method: "POST" })
           .maybeSingle();
         if (error || !unlock) throw new Error("PROFILE_TITLE_LOCKED");
       } else {
-        const expectedKind =
-          data.slot === "profile_effect" ? "profile_effect" : data.slot;
+        const expectedKind = data.slot === "profile_effect" ? "profile_effect" : data.slot;
         const [{ data: unlock, error: unlockError }, { data: cosmetic, error: cosmeticError }] =
           await Promise.all([
             db
@@ -282,16 +307,14 @@ export const equipProfileIdentity = createServerFn({ method: "POST" })
             ? "avatar_frame_slug"
             : `${data.slot}_slug`;
 
-    const { error } = await db
-      .from("profile_loadouts")
-      .upsert(
-        {
-          user_id: userId,
-          [column]: data.slug,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "user_id" },
-      );
+    const { error } = await db.from("profile_loadouts").upsert(
+      {
+        user_id: userId,
+        [column]: data.slug,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id" },
+    );
 
     if (error) throw new Error("PROFILE_IDENTITY_EQUIP_FAILED");
 

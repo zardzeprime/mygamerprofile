@@ -93,11 +93,13 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
       } catch (reason) {
         console.error("[MGP Identity] studio load failed", reason);
         if (!cancelled) {
-          setError(copy(
-            "Não foi possível carregar sua coleção visual agora.",
-            "Could not load your visual collection right now.",
-            "No se pudo cargar tu colección visual ahora.",
-          ));
+          setError(
+            copy(
+              "Não foi possível carregar sua coleção visual agora.",
+              "Could not load your visual collection right now.",
+              "No se pudo cargar tu colección visual ahora.",
+            ),
+          );
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -110,7 +112,14 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
   }, [loadStudio]);
 
   const equipItem = async (
-    slot: "title" | "background" | "avatar_frame" | "profile_effect" | "banner" | "cursor" | "nameplate",
+    slot:
+      | "title"
+      | "background"
+      | "avatar_frame"
+      | "profile_effect"
+      | "banner"
+      | "cursor"
+      | "nameplate",
     slug: string | null,
   ) => {
     if (savingKey) return;
@@ -125,11 +134,13 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
       window.dispatchEvent(new Event("mgp:profile-updated"));
     } catch (reason) {
       console.error("[MGP Identity] equip failed", reason);
-      setError(copy(
-        "Não foi possível equipar esse item. Confirme se ele já foi desbloqueado.",
-        "Could not equip this item. Confirm that it has already been unlocked.",
-        "No se pudo equipar este objeto. Confirma que ya esté desbloqueado.",
-      ));
+      setError(
+        copy(
+          "Não foi possível equipar esse item. Confirme se ele já foi desbloqueado.",
+          "Could not equip this item. Confirm that it has already been unlocked.",
+          "No se pudo equipar este objeto. Confirma que ya esté desbloqueado.",
+        ),
+      );
     } finally {
       setSavingKey("");
     }
@@ -156,8 +167,9 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
   );
 
   useEffect(() => {
-    if (availableKinds.length > 0 && !availableKinds.includes(activeKind)) {
-      setActiveKind(availableKinds[0]);
+    const firstAvailableKind = availableKinds[0];
+    if (firstAvailableKind && !availableKinds.includes(activeKind)) {
+      setActiveKind(firstAvailableKind);
     }
   }, [activeKind, availableKinds]);
 
@@ -194,7 +206,11 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
       <section className="surface-panel rounded-2xl p-6">
         <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin text-gold-strong" />
-          {copy("Preparando sua coleção…", "Preparing your collection…", "Preparando tu colección…")}
+          {copy(
+            "Preparando sua coleção…",
+            "Preparing your collection…",
+            "Preparando tu colección…",
+          )}
         </div>
       </section>
     );
@@ -253,7 +269,8 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
 
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
           <span className="text-[0.68rem] font-medium text-muted-foreground">
-            {unlockedTitles}/{data.titles.length} {copy("desbloqueados", "unlocked", "desbloqueados")}
+            {unlockedTitles}/{data.titles.length}{" "}
+            {copy("desbloqueados", "unlocked", "desbloqueados")}
           </span>
           <button
             type="button"
@@ -284,12 +301,25 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
                 )}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <span className={cn("mgp-rarity-chip rounded-md border px-2 py-1 text-[0.58rem] font-bold uppercase tracking-[0.09em]", `mgp-rarity-${title.rarity}`)}>
+                  <span
+                    className={cn(
+                      "mgp-rarity-chip rounded-md border px-2 py-1 text-[0.58rem] font-bold uppercase tracking-[0.09em]",
+                      `mgp-rarity-${title.rarity}`,
+                    )}
+                  >
                     {RARITY_LABEL[title.rarity]?.[locale] ?? title.rarity}
                   </span>
-                  {equipped ? <Check className="size-4 text-gold-strong" /> : !title.unlocked ? <LockKeyhole className="size-4 text-muted-foreground" /> : title.is_new ? <Sparkles className="size-4 text-gold-strong" /> : null}
+                  {equipped ? (
+                    <Check className="size-4 text-gold-strong" />
+                  ) : !title.unlocked ? (
+                    <LockKeyhole className="size-4 text-muted-foreground" />
+                  ) : title.is_new ? (
+                    <Sparkles className="size-4 text-gold-strong" />
+                  ) : null}
                 </div>
-                <p className="mt-3 truncate text-sm font-semibold">{localized(title.name, locale)}</p>
+                <p className="mt-3 truncate text-sm font-semibold">
+                  {localized(title.name, locale)}
+                </p>
                 <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
                   {localized(title.description, locale)}
                 </p>
@@ -301,7 +331,9 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
         <div className="mt-7 border-t border-border pt-6">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <h3 className="font-display text-base font-semibold">{copy("Cosméticos", "Cosmetics", "Cosméticos")}</h3>
+              <h3 className="font-display text-base font-semibold">
+                {copy("Cosméticos", "Cosmetics", "Cosméticos")}
+              </h3>
               <p className="mt-1 text-xs text-muted-foreground">
                 {copy(
                   "Escolha uma categoria por vez. O que você já pode usar aparece primeiro.",
@@ -322,26 +354,26 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
-          {availableKinds.map((kind) => {
-            const meta = KIND_META[kind];
-            const Icon = meta.icon;
-            return (
-              <button
-                key={kind}
-                type="button"
-                onClick={() => setActiveKind(kind)}
-                className={cn(
-                  "inline-flex min-h-9 items-center gap-2 rounded-xl border px-3 text-xs font-semibold transition",
-                  activeKind === kind
-                    ? "border-gold/45 bg-gold-soft/40 text-foreground"
-                    : "border-border bg-muted/15 text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <Icon className="size-3.5" />
-                {meta.title[locale]}
-              </button>
-            );
-          })}
+            {availableKinds.map((kind) => {
+              const meta = KIND_META[kind];
+              const Icon = meta.icon;
+              return (
+                <button
+                  key={kind}
+                  type="button"
+                  onClick={() => setActiveKind(kind)}
+                  className={cn(
+                    "inline-flex min-h-9 items-center gap-2 rounded-xl border px-3 text-xs font-semibold transition",
+                    activeKind === kind
+                      ? "border-gold/45 bg-gold-soft/40 text-foreground"
+                      : "border-border bg-muted/15 text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <Icon className="size-3.5" />
+                  {meta.title[locale]}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -404,12 +436,19 @@ function CosmeticCard({
         <div className={item.css_class ?? undefined} />
       </div>
     ) : item.kind === "cursor" ? (
-      <div className={cn("grid h-24 place-items-center bg-gradient-to-br from-zinc-900 to-black", item.css_class)}>
+      <div
+        className={cn(
+          "grid h-24 place-items-center bg-gradient-to-br from-zinc-900 to-black",
+          item.css_class,
+        )}
+      >
         <MousePointer2 className="size-6 text-white/75" />
       </div>
     ) : item.kind === "nameplate" ? (
       <div className="grid h-24 place-items-center overflow-hidden bg-gradient-to-br from-zinc-900 to-black px-3">
-        <span className={cn("max-w-full truncate text-lg font-bold", item.css_class)}>Zardze Prime</span>
+        <span className={cn("max-w-full truncate text-lg font-bold", item.css_class)}>
+          Zardze Prime
+        </span>
       </div>
     ) : (
       <div className={cn("h-24", item.css_class)} />
@@ -430,11 +469,26 @@ function CosmeticCard({
     >
       <div className="relative">
         {preview}
-        <span className={cn("mgp-rarity-chip absolute left-2 top-2 rounded-md border px-2 py-1 text-[0.56rem] font-bold uppercase tracking-[0.08em]", `mgp-rarity-${item.rarity}`)}>
+        <span
+          className={cn(
+            "mgp-rarity-chip absolute left-2 top-2 rounded-md border px-2 py-1 text-[0.56rem] font-bold uppercase tracking-[0.08em]",
+            `mgp-rarity-${item.rarity}`,
+          )}
+        >
           {RARITY_LABEL[item.rarity]?.[locale] ?? item.rarity}
         </span>
         <span className="absolute right-2 top-2 grid size-7 place-items-center rounded-full border border-white/15 bg-black/45 text-white backdrop-blur">
-          {equipped ? <Check className="size-4" /> : item.unlocked ? (item.is_new ? <Sparkles className="size-3.5" /> : <Award className="size-3.5" />) : <LockKeyhole className="size-3.5" />}
+          {equipped ? (
+            <Check className="size-4" />
+          ) : item.unlocked ? (
+            item.is_new ? (
+              <Sparkles className="size-3.5" />
+            ) : (
+              <Award className="size-3.5" />
+            )
+          ) : (
+            <LockKeyhole className="size-3.5" />
+          )}
         </span>
       </div>
       <div className="p-3">

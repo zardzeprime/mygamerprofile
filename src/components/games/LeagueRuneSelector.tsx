@@ -56,7 +56,8 @@ export function LeagueRuneSelector({
   }, [locale, version]);
 
   const selection = value ?? createDefaultRunePage(styles);
-  const primary = styles.find((style) => style.id === selection.primaryStyleId) ?? styles[0] ?? null;
+  const primary =
+    styles.find((style) => style.id === selection.primaryStyleId) ?? styles[0] ?? null;
   const secondary =
     styles.find((style) => style.id === selection.secondaryStyleId && style.id !== primary?.id) ??
     styles.find((style) => style.id !== primary?.id) ??
@@ -75,7 +76,7 @@ export function LeagueRuneSelector({
     const nextSecondary =
       secondary?.id !== style.id
         ? secondary
-        : styles.find((candidate) => candidate.id !== style.id) ?? null;
+        : (styles.find((candidate) => candidate.id !== style.id) ?? null);
 
     onChange({
       ...selection,
@@ -142,7 +143,11 @@ export function LeagueRuneSelector({
       <div className="rounded-2xl border border-border bg-muted/10 p-5">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin text-gold-strong" />
-          {copy("Carregando árvores de runas…", "Loading rune trees…", "Cargando árboles de runas…")}
+          {copy(
+            "Carregando árvores de runas…",
+            "Loading rune trees…",
+            "Cargando árboles de runas…",
+          )}
         </div>
       </div>
     );
@@ -161,8 +166,7 @@ export function LeagueRuneSelector({
   }
 
   return (
-    <>
-      <div className="space-y-5">
+    <div className="space-y-5">
       <div className="rounded-2xl border border-border bg-muted/10 p-4">
         <div className="flex items-center gap-2">
           <Sparkles className="size-4 text-gold-strong" />
@@ -225,7 +229,11 @@ export function LeagueRuneSelector({
           })}
           <p className="text-[0.68rem] leading-5 text-muted-foreground">
             {selection.secondaryPerkIds.length}/2{" "}
-            {copy("runas secundárias escolhidas", "secondary runes selected", "runas secundarias elegidas")}
+            {copy(
+              "runas secundárias escolhidas",
+              "secondary runes selected",
+              "runas secundarias elegidas",
+            )}
           </p>
         </div>
       </RuneTreeBlock>
@@ -258,7 +266,9 @@ export function LeagueRuneSelector({
                           : "border-border bg-muted/10 hover:border-gold/25",
                       )}
                     >
-                      <span className="block text-xs font-bold text-foreground">{option.name[locale]}</span>
+                      <span className="block text-xs font-bold text-foreground">
+                        {option.name[locale]}
+                      </span>
                       <span className="mt-0.5 block text-[0.66rem] leading-4 text-muted-foreground">
                         {option.description[locale]}
                       </span>
@@ -277,7 +287,7 @@ export function LeagueRuneSelector({
         activeStyle={primary}
         onSelect={choosePrimaryStyle}
       />
-    </>
+    </div>
   );
 }
 
@@ -380,7 +390,9 @@ function RuneSlot({
                 )}
               />
               <span className="min-w-0">
-                <span className="block truncate text-xs font-bold text-foreground">{rune.name}</span>
+                <span className="block truncate text-xs font-bold text-foreground">
+                  {rune.name}
+                </span>
                 <span className="mt-1 line-clamp-2 block text-[0.66rem] leading-4 text-muted-foreground">
                   {stripLeagueMarkup(rune.shortDesc)}
                 </span>
@@ -389,14 +401,6 @@ function RuneSlot({
           );
         })}
       </div>
-      </div>
-
-      <LeagueRuneTreeWheel
-        locale={locale}
-        styles={styles}
-        activeStyle={primary}
-        onSelect={choosePrimaryStyle}
-      />
-    </>
+    </div>
   );
 }
