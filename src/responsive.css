@@ -206,3 +206,49 @@ article {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* Premium shell + ad-ready grid. Empty ad slots collapse until inventory is activated. */
+.mgp-ad-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1rem, 2vw, 1.75rem);
+  width: 100%;
+}
+.mgp-ad-layout__main { min-width: 0; }
+.mgp-ad-layout__rail { display: none; min-width: 0; }
+.mgp-ad-slot:empty { display: none; }
+.mgp-ad-slot:not(:empty) {
+  width: 100%;
+  overflow: clip;
+  border: 1px solid color-mix(in oklab, var(--color-border) 76%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--color-background) 88%, var(--color-gold) 2%);
+  contain: layout paint;
+}
+.mgp-ad-slot--leaderboard:not(:empty) { min-height: 90px; }
+.mgp-ad-slot--rectangle:not(:empty) { min-height: 250px; }
+.mgp-ad-slot--rail:not(:empty) { min-height: 600px; }
+
+@media (min-width: 1280px) {
+  .mgp-ad-layout:has(.mgp-ad-layout__rail > :not(:empty)) {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+    align-items: start;
+  }
+  .mgp-ad-layout__rail:has(> :not(:empty)) {
+    display: block;
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .surface-panel,
+  .game-card {
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+  .surface-panel:hover,
+  .game-card:hover {
+    border-color: color-mix(in oklab, var(--color-gold) 28%, var(--color-border));
+  }
+}
