@@ -8,6 +8,27 @@ revoke all on table public.community_editorial_drafts from anon, authenticated;
 revoke all on table public.mgp_content_catalog from anon, authenticated;
 revoke all on table public.nexus_runtime_events from anon, authenticated;
 
+drop policy if exists "No client access to editorial drafts" on public.community_editorial_drafts;
+create policy "No client access to editorial drafts"
+on public.community_editorial_drafts for all
+to anon, authenticated
+using (false)
+with check (false);
+
+drop policy if exists "No client access to MGP content catalog" on public.mgp_content_catalog;
+create policy "No client access to MGP content catalog"
+on public.mgp_content_catalog for all
+to anon, authenticated
+using (false)
+with check (false);
+
+drop policy if exists "No client access to NEXUS runtime events" on public.nexus_runtime_events;
+create policy "No client access to NEXUS runtime events"
+on public.nexus_runtime_events for all
+to anon, authenticated
+using (false)
+with check (false);
+
 -- User roles are readable only by the signed-in owner through RLS. Clients must
 -- never be able to insert/update/delete their own role rows.
 revoke all on table public.user_roles from anon, authenticated;
