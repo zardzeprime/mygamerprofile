@@ -48,15 +48,16 @@ function SupportPage() {
   const { locale } = useI18n();
   const copy = (pt: string, en: string, es: string) =>
     localeCopy(locale, pt, en, es);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"key" | "code" | null>(null);
   const pix = SUPPORT_METHODS.find((method) => method.id === "pix");
   const recurring = SUPPORT_METHODS.find((method) => method.id === "recurring");
 
-  const copyPix = async () => {
-    if (!pix?.pixKey) return;
-    await navigator.clipboard.writeText(pix.pixKey);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
+  const copyPix = async (kind: "key" | "code") => {
+    const value = kind === "code" ? pix?.pixCopyPasteCode : pix?.pixKey;
+    if (!value) return;
+    await navigator.clipboard.writeText(value);
+    setCopied(kind);
+    window.setTimeout(() => setCopied(null), 1800);
   };
 
   return (
@@ -241,21 +242,43 @@ function SupportPage() {
                       </span>
                     </div>
                   ) : null}
-                  <button type="button" onClick={copyPix} className="brand-button min-h-11 gap-2">
-                    {copied ? <CheckCircle2 className="size-4" /> : <Copy className="size-4" />}
-                    {copied
-                      ? copy("Chave copiada", "Key copied", "Clave copiada")
-                      : copy("Copiar chave Pix", "Copy Pix key", "Copiar clave Pix")}
-                  </button>
-                  {!pix.pixMerchantCity ? (
-                    <p className="text-[0.68rem] leading-5 text-muted-foreground">
-                      {copy(
-                        "QR Code Pix aguardando a cidade cadastrada do recebedor.",
-                        "Pix QR code is waiting for the recipient's registered city.",
-                        "El código QR Pix está esperando la ciudad registrada del receptor.",
-                      )}
-                    </p>
+                  {pix.pixQrImageUrl && pix.pixCopyPasteCode ? (
+                    <div className="grid gap-4 sm:grid-cols-[10.5rem_minmax(0,1fr)] sm:items-center">
+                      <div className="rounded-xl border border-border bg-white p-3 shadow-sm">
+                        <img
+                          src={pix.pixQrImageUrl}
+                          alt={copy("QR Code Pix do MG Profile", "MG Profile Pix QR code", "Código QR Pix de MG Profile")}
+                          className="mx-auto aspect-square w-full"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-xs leading-5 text-muted-foreground">
+                          {copy(
+                            "QR Code estático sem valor fixo. Abra o app do seu banco, escaneie e escolha quanto deseja apoiar.",
+                            "Static QR code with no fixed amount. Open your banking app, scan it and choose how much you want to support.",
+                            "Código QR estático sin valor fijo. Abre la app de tu banco, escanéalo y elige cuánto deseas apoyar.",
+                          )}
+                        </p>
+                        <p className="text-[0.68rem] font-semibold text-muted-foreground">
+                          {pix.pixMerchantCity}
+                        </p>
+                      </div>
+                    </div>
                   ) : null}
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" onClick={() => void copyPix("code")} className="brand-button min-h-11 gap-2">
+                      {copied === "code" ? <CheckCircle2 className="size-4" /> : <Copy className="size-4" />}
+                      {copied === "code"
+                        ? copy("Pix Copia e Cola copiado", "Pix code copied", "Código Pix copiado")
+                        : copy("Copiar Pix Copia e Cola", "Copy Pix code", "Copiar código Pix")}
+                    </button>
+                    <button type="button" onClick={() => void copyPix("key")} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border px-4 text-sm font-semibold text-foreground transition hover:bg-muted/50">
+                      {copied === "key" ? <CheckCircle2 className="size-4" /> : <Copy className="size-4" />}
+                      {copied === "key"
+                        ? copy("Chave copiada", "Key copied", "Clave copiada")
+                        : copy("Copiar chave", "Copy key", "Copiar clave")}
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <span className="inline-flex min-h-11 items-center rounded-lg border border-dashed border-border px-4 text-sm font-semibold text-muted-foreground">

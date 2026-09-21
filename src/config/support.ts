@@ -10,6 +10,8 @@ export type SupportMethod = {
   pixKey?: string | null;
   pixRecipientName?: string | null;
   pixMerchantCity?: string | null;
+  pixCopyPasteCode?: string | null;
+  pixQrImageUrl?: string | null;
 };
 
 /**
@@ -26,7 +28,10 @@ export const SUPPORT_METHODS: SupportMethod[] = [
     description: "Apoio pontual direto ao projeto.",
     pixKey: "fb7a6f3e-3a3a-4870-8b34-ff608d6c99cf",
     pixRecipientName: "Esdras Oliveira e Oliveira Junior",
-    pixMerchantCity: null,
+    pixMerchantCity: "Conceição do Almeida, BA",
+    pixCopyPasteCode:
+      "00020126580014br.gov.bcb.pix0136fb7a6f3e-3a3a-4870-8b34-ff608d6c99cf5204000053039865802BR5922ESDRAS OLIVEIRA JUNIOR6013CONCEICAO ALM62070503***6304252C",
+    pixQrImageUrl: "/support/mgp-pix-qr.png",
   },
   {
     id: "recurring",

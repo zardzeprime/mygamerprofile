@@ -39,9 +39,9 @@ function LoginPage() {
       setOauthLoading(false);
       setError(
         copy(
-          "Login com Google ainda precisa ser habilitado nas credenciais OAuth do MGP.",
-          "Google sign-in still needs to be enabled in MGP's OAuth credentials.",
-          "El acceso con Google aún debe habilitarse en las credenciales OAuth de MGP.",
+          "Não foi possível iniciar o login com Google agora. Tente novamente.",
+          "Could not start Google sign-in right now. Please try again.",
+          "No se pudo iniciar sesión con Google ahora. Inténtalo de nuevo.",
         ),
       );
     }
