@@ -19,7 +19,6 @@ import { I18nProvider } from "../i18n";
 import { ThemeProvider, themeBootstrapScript } from "../lib/theme";
 import { SoundProvider } from "../lib/sound";
 import { RouteTransitionLoader } from "../components/common/RouteTransitionLoader";
-import { PointerAura } from "../components/common/PointerAura";
 import { AppHeader } from "../components/layout/AppHeader";
 import { AppFooter } from "../components/layout/AppFooter";
 import { NexusChat } from "../components/nexus/NexusChat";
@@ -200,7 +199,6 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <SoundProvider>
-          <PointerAura />
           <RouteTransitionLoader />
           <div className="flex min-h-screen flex-col bg-background">
             <AppHeader />

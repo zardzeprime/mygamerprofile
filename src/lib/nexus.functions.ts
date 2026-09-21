@@ -18,7 +18,7 @@ const NEXUS_SEND_TIMEOUT_MS = 52_000;
 
 function timeoutForBody(body: Record<string, unknown>) {
   const action = typeof body["action"] === "string" ? body["action"] : "";
-  return action === "guest.send" || action === "member.send"
+  return action === "guest.send" || action === "member.send" || action === "translate.souls"
     ? NEXUS_SEND_TIMEOUT_MS
     : NEXUS_READ_TIMEOUT_MS;
 }
@@ -125,4 +125,23 @@ export async function sendNexusMessage({
     },
     data.accessToken,
   );
+}
+
+
+export async function translateNexusSoulsCopy({
+  data,
+}: Envelope<{ locale: Locale; text: string }>) {
+  return invokeNexus({
+    action: "translate.souls",
+    scope: "souls-compendium",
+    locale: data.locale,
+    text: data.text,
+  }) as Promise<{
+    text: string;
+    locale: Locale;
+    cached?: boolean;
+    provider?: string;
+    model?: string;
+    latencyMs?: number;
+  }>;
 }

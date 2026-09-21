@@ -29,6 +29,7 @@ import {
   type SoulsCompendiumEntry,
   type SoulsCompendiumGame,
 } from "@/lib/souls-compendium";
+import { localizeSoulsDescription } from "@/lib/souls-localization";
 import { cn } from "@/lib/utils";
 import {
   DS1_UPGRADE_PATHS,
@@ -95,6 +96,9 @@ export function SoulsItemCompendium({
   const [ringEffects, setRingEffects] = useState<SoulsRingEffect[]>([]);
   const [itemMetadata, setItemMetadata] = useState<SoulsItemMetadata[]>([]);
   const [spellMetadata, setSpellMetadata] = useState<SoulsSpellMetadata[]>([]);
+  const [localizedDescription, setLocalizedDescription] = useState<string | null>(null);
+  const [descriptionLoading, setDescriptionLoading] = useState(false);
+  const [descriptionTranslationFailed, setDescriptionTranslationFailed] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -235,6 +239,48 @@ export function SoulsItemCompendium({
   const selectedMetadata = selected ? findSoulsItemMetadata(itemMetadata, selected.name) : null;
   const selectedSpellMetadata =
     selected?.category === "magic" ? findSoulsSpellMetadata(spellMetadata, selected.name) : null;
+
+  useEffect(() => {
+    let active = true;
+    setDescriptionTranslationFailed(false);
+
+    if (!selected?.description) {
+      setLocalizedDescription(null);
+      setDescriptionLoading(false);
+      return () => {
+        active = false;
+      };
+    }
+
+    if (locale === "en") {
+      setLocalizedDescription(selected.description);
+      setDescriptionLoading(false);
+      return () => {
+        active = false;
+      };
+    }
+
+    setLocalizedDescription(null);
+    setDescriptionLoading(true);
+    void localizeSoulsDescription(selected, locale)
+      .then((text) => {
+        if (active) setLocalizedDescription(text);
+      })
+      .catch((error) => {
+        console.warn("[SoulsItemCompendium] localized description unavailable", error);
+        if (active) {
+          setLocalizedDescription(selected.description);
+          setDescriptionTranslationFailed(true);
+        }
+      })
+      .finally(() => {
+        if (active) setDescriptionLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [locale, selected]);
 
   const gameName =
     gameSlug === "dark-souls-remastered" ? "Dark Souls Remastered" : "Dark Souls III";
@@ -451,14 +497,34 @@ export function SoulsItemCompendium({
                             "Descripción de referencia",
                           )}
                         </p>
-                        <p className="mt-2 whitespace-pre-line text-sm leading-6 text-muted-foreground">
-                          {selected.description ||
-                            copy(
-                              "Sem descrição na fonte.",
-                              "No source description.",
-                              "Sin descripción en la fuente.",
+                        {descriptionLoading ? (
+                          <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+                            <Loader2 className="size-4 animate-spin text-gold-strong" />
+                            {copy(
+                              "Traduzindo descrição para português…",
+                              "Loading description…",
+                              "Traduciendo descripción al español…",
                             )}
-                        </p>
+                          </div>
+                        ) : (
+                          <p className="mt-2 whitespace-pre-line text-sm leading-6 text-muted-foreground">
+                            {localizedDescription ||
+                              copy(
+                                "Sem descrição na fonte.",
+                                "No source description.",
+                                "Sin descripción en la fuente.",
+                              )}
+                          </p>
+                        )}
+                        {descriptionTranslationFailed && locale !== "en" ? (
+                          <p className="mt-3 rounded-lg border border-amber-500/20 bg-amber-500/[0.05] px-3 py-2 text-[0.66rem] leading-5 text-amber-200/85">
+                            {copy(
+                              "Tradução temporariamente indisponível; mostrando a fonte original em inglês.",
+                              "Translation is temporarily unavailable; showing the original English source.",
+                              "La traducción no está disponible temporalmente; se muestra la fuente original en inglés.",
+                            )}
+                          </p>
+                        ) : null}
                       </section>
 
                       <section className="rounded-2xl border border-amber-500/25 bg-amber-500/[0.06] p-4">
@@ -466,7 +532,7 @@ export function SoulsItemCompendium({
                           {copy("Créditos e direitos", "Credits & rights", "Créditos y derechos")}
                         </p>
                         <p className="mt-1 text-[0.66rem] leading-5 text-muted-foreground">
-                          {SOULS_COMPENDIUM_SOURCE.rights}
+                          {SOULS_COMPENDIUM_SOURCE.rights[locale]}
                         </p>
                         <a
                           href={SOULS_COMPENDIUM_SOURCE.url}
@@ -631,7 +697,7 @@ function WeaponTechnicalCard({
           label={copy("Modificação", "Modification", "Modificación")}
           value={
             isDs3
-              ? ds3InfusionLabel(infusion)
+              ? ds3InfusionLabel(infusion, locale)
               : DS1_UPGRADE_PATHS[ds1Path].label
           }
         />
@@ -759,7 +825,7 @@ function WeaponTechnicalCard({
             >
               {(weapon.infusions?.length ? weapon.infusions : ["-"]).map((value) => (
                 <option key={value} value={value}>
-                  {ds3InfusionLabel(value)}
+                  {ds3InfusionLabel(value, locale)}
                 </option>
               ))}
             </select>
@@ -807,9 +873,9 @@ function WeaponTechnicalCard({
         {!isDs3 && ds1Path !== "regular" ? (
           <p className="mt-3 rounded-xl border border-amber-500/20 bg-amber-500/[0.05] p-3 text-[0.66rem] leading-5 text-muted-foreground">
             {copy(
-              `Rota ${DS1_UPGRADE_PATHS[ds1Path].label}: ${DS1_UPGRADE_PATHS[ds1Path].description} Quando a fonte não fornece letra exata por arma nessa rota, o MGP mostra o foco do scaling sem inventar uma graduação.`,
-              `${DS1_UPGRADE_PATHS[ds1Path].label} path: ${DS1_UPGRADE_PATHS[ds1Path].description} When the source does not provide an exact per-weapon letter for this path, MGP shows the scaling focus without inventing a grade.`,
-              `Ruta ${DS1_UPGRADE_PATHS[ds1Path].label}: ${DS1_UPGRADE_PATHS[ds1Path].description} Cuando la fuente no ofrece una letra exacta por arma en esta ruta, MGP muestra el enfoque del scaling sin inventar una graduación.`,
+              `Rota ${DS1_UPGRADE_PATHS[ds1Path].label}: ${ds1PathDescription(ds1Path, "pt-BR")} Quando a fonte não fornece letra exata por arma nessa rota, o MGP mostra o foco do scaling sem inventar uma graduação.`,
+              `${DS1_UPGRADE_PATHS[ds1Path].label} path: ${ds1PathDescription(ds1Path, "en")} When the source does not provide an exact per-weapon letter for this path, MGP shows the scaling focus without inventing a grade.`,
+              `Ruta ${DS1_UPGRADE_PATHS[ds1Path].label}: ${ds1PathDescription(ds1Path, "es")} Cuando la fuente no ofrece una letra exacta por arma en esta ruta, MGP muestra el enfoque del scaling sin inventar una graduación.`,
             )}
           </p>
         ) : null}
@@ -828,7 +894,7 @@ function WeaponTechnicalCard({
       {weapon.attackTypes?.length ? (
         <p className="mt-3 text-[0.66rem] leading-5 text-muted-foreground">
           <strong className="text-foreground">{copy("Ataques:", "Attacks:", "Ataques:")}</strong>{" "}
-          {weapon.attackTypes.join(" · ")}
+          {weapon.attackTypes.map((value) => localizeAttackType(value, locale)).join(" · ")}
         </p>
       ) : null}
       {weapon.obtained?.length ? (
@@ -875,8 +941,81 @@ function ds1ScalingForPath(
   return {};
 }
 
-function ds3InfusionLabel(value: string) {
-  if (!value || value === "-") return "Sem infusão";
+function ds1PathDescription(path: Ds1UpgradePath, locale: Locale) {
+  const copy: Record<Ds1UpgradePath, Record<Locale, string>> = {
+    regular: {
+      "pt-BR": "Mantém o scaling natural da arma e chega até +15 quando a arma permite.",
+      en: "Keeps the weapon's natural scaling and reaches +15 when the weapon supports it.",
+      es: "Mantiene el scaling natural del arma y llega hasta +15 cuando el arma lo permite.",
+    },
+    raw: {
+      "pt-BR": "Aumenta o dano base e reduz a importância do scaling.",
+      en: "Raises base damage while reducing the importance of attribute scaling.",
+      es: "Aumenta el daño base y reduce la importancia del scaling por atributos.",
+    },
+    crystal: {
+      "pt-BR": "Prioriza dano físico alto, preservando parte do foco original em atributos.",
+      en: "Prioritizes high physical damage while retaining part of the weapon's original attribute focus.",
+      es: "Prioriza un daño físico alto y conserva parte del enfoque original en atributos.",
+    },
+    magic: {
+      "pt-BR": "Divide o dano com magia e adiciona foco em Inteligência.",
+      en: "Splits damage with magic and adds an Intelligence focus.",
+      es: "Divide el daño con magia y añade enfoque en Inteligencia.",
+    },
+    enchanted: {
+      "pt-BR": "Aprofunda o foco em Inteligência em troca de parte do scaling físico.",
+      en: "Pushes the Intelligence focus further at the cost of some physical scaling.",
+      es: "Profundiza el enfoque en Inteligencia a cambio de parte del scaling físico.",
+    },
+    divine: {
+      "pt-BR": "Divide o dano com magia e adiciona foco em Fé.",
+      en: "Splits damage with magic and adds a Faith focus.",
+      es: "Divide el daño con magia y añade enfoque en Fe.",
+    },
+    occult: {
+      "pt-BR": "Aprofunda o foco em Fé e altera o comportamento contra alvos específicos.",
+      en: "Pushes the Faith focus further and changes performance against specific targets.",
+      es: "Profundiza el enfoque en Fe y cambia el rendimiento contra objetivos específicos.",
+    },
+    fire: {
+      "pt-BR": "Adiciona dano de fogo e remove o scaling normal de atributos.",
+      en: "Adds fire damage and removes normal attribute scaling.",
+      es: "Añade daño de fuego y elimina el scaling normal por atributos.",
+    },
+    chaos: {
+      "pt-BR": "Adiciona dano de fogo, remove o scaling normal e considera Humanidade segurada.",
+      en: "Adds fire damage, removes normal scaling and takes held Humanity into account.",
+      es: "Añade daño de fuego, elimina el scaling normal y tiene en cuenta la Humanidad acumulada.",
+    },
+    lightning: {
+      "pt-BR": "Adiciona dano de raio e remove o scaling normal de atributos.",
+      en: "Adds lightning damage and removes normal attribute scaling.",
+      es: "Añade daño de rayo y elimina el scaling normal por atributos.",
+    },
+  };
+  return copy[path][locale];
+}
+
+function localizeAttackType(value: string, locale: Locale) {
+  if (locale === "en") return value;
+  const dictionary =
+    locale === "es"
+      ? { Regular: "Normal", Slash: "Corte", Thrust: "Perforación", Strike: "Golpe" }
+      : { Regular: "Normal", Slash: "Corte", Thrust: "Perfuração", Strike: "Impacto" };
+  return value
+    .split("/")
+    .map((part) => {
+      const trimmed = part.trim();
+      return dictionary[trimmed as keyof typeof dictionary] ?? trimmed;
+    })
+    .join(" / ");
+}
+
+function ds3InfusionLabel(value: string, locale: Locale) {
+  if (!value || value === "-") {
+    return localeCopy(locale, "Sem infusão", "No infusion", "Sin infusión");
+  }
   const normalized = value.trim().toLowerCase();
   const gemByInfusion: Record<string, string> = {
     heavy: "Heavy · Heavy Gem",

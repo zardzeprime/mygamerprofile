@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, Crosshair, Palette, Volume2 } from "lucide-react";
+import { Axe, Check, Crosshair, Palette, Sword, Volume2 } from "lucide-react";
 import { DEFAULT_ACCENT_COLOR, useTheme } from "@/lib/theme";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
@@ -115,11 +115,46 @@ function SettingsAppearancePage() {
           </div>
         </section>
         <section className="surface-panel p-4 sm:p-6">
-          <h3 className="flex items-center gap-2 text-sm font-semibold"><Crosshair className="size-4 text-gold-strong" />{copy("Cursor", "Cursor", "Cursor")}</h3>
-          <p className="mt-1 text-xs text-muted-foreground">{copy("Escolha o cursor do MGP. A espada é o padrão; o machado foi preservado como cosmético.", "Choose your MGP cursor. The sword is the default; the axe is preserved as a cosmetic.", "Elige el cursor de MGP. La espada es el predeterminado; el hacha se conserva como cosmético.")}</p>
+          <h3 className="flex items-center gap-2 text-sm font-semibold">
+            <Crosshair className="size-4 text-gold-strong" />
+            {copy("Cursor", "Cursor", "Cursor")}
+          </h3>
+          <p className="mt-1 max-w-2xl text-xs leading-relaxed text-muted-foreground">
+            {copy(
+              "Cursores mais compactos e limpos. Eles acompanham sua cor principal sem cobrir conteúdo da tela.",
+              "Cleaner, more compact cursors. They follow your accent color without covering screen content.",
+              "Cursores más compactos y limpios. Siguen tu color principal sin cubrir el contenido de la pantalla.",
+            )}
+          </p>
           <div className="mt-4 grid gap-2 sm:grid-cols-3">
-            {([["sword", copy("Espada", "Sword", "Espada")], ["axe", copy("Machado", "Axe", "Hacha")], ["reticle", copy("Mira", "Reticle", "Mira")]] as const).map(([value,label]) => (
-              <button key={value} type="button" aria-pressed={cursorStyle===value} onClick={()=>setCursorStyle(value)} className={`min-h-11 rounded-xl border px-4 py-3 text-left text-sm font-semibold transition-all hover:-translate-y-0.5 ${cursorStyle===value?"border-gold bg-gold-soft text-gold-strong":"border-border bg-surface hover:border-gold/40"}`}>{label}</button>
+            {([
+              ["sword", copy("Espada", "Sword", "Espada"), Sword],
+              ["axe", copy("Machado", "Axe", "Hacha"), Axe],
+              ["reticle", copy("Mira", "Reticle", "Mira"), Crosshair],
+            ] as const).map(([value, label, Icon]) => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={cursorStyle === value}
+                onClick={() => setCursorStyle(value)}
+                className={`flex min-h-16 items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm font-semibold transition-all hover:-translate-y-0.5 ${
+                  cursorStyle === value
+                    ? "border-gold bg-gold-soft text-gold-strong"
+                    : "border-border bg-surface hover:border-gold/40"
+                }`}
+              >
+                <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-border bg-background/60">
+                  <Icon className="size-4" aria-hidden="true" />
+                </span>
+                <span>
+                  <span className="block">{label}</span>
+                  <span className="mt-0.5 block text-[0.65rem] font-medium text-muted-foreground">
+                    {value === "reticle"
+                      ? copy("Precisão central", "Centered precision", "Precisión central")
+                      : copy("Ponta no hotspot", "Tip-aligned hotspot", "Punta alineada")}
+                  </span>
+                </span>
+              </button>
             ))}
           </div>
         </section>
