@@ -6,6 +6,7 @@ import {
   Eye,
   EyeOff,
   Gift,
+  ExternalLink,
   MapPin,
   Search,
   Shield,
@@ -20,7 +21,11 @@ import { cn } from "@/lib/utils";
 import type { Locale } from "@/i18n";
 import { localeCopy, toContentLocale } from "@/i18n/locale-utils";
 import { DARK_SOULS_BOSSES, type DarkSoulsBoss } from "@/data/darkSoulsBosses";
-import { DARK_SOULS_BOSS_WIKI } from "@/data/darkSoulsBossWiki";
+import {
+  DARK_SOULS_BOSS_REVIEWED_AT,
+  DARK_SOULS_BOSS_SOURCES,
+  DARK_SOULS_BOSS_WIKI,
+} from "@/data/darkSoulsBossWiki";
 import { getDarkSoulsBossImage } from "@/data/darkSoulsBossImages";
 
 type Filter = "all" | "required" | "optional" | "dlc";
@@ -328,17 +333,33 @@ function BossDetail({
             {boss.location[contentLocale]}
           </p>
         </div>
-        {wiki ? (
-          <div className="rounded-xl border border-border bg-muted/30 px-4 py-3 text-right">
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-              {copy("Recompensa NG", "NG reward", "Recompensa NG")}
-            </p>
-            <p className="mt-1 flex items-center justify-end gap-1.5 font-display text-xl font-bold text-foreground">
-              <Coins className="size-4 text-gold-strong" />
-              {wiki.souls.toLocaleString(locale)}
-            </p>
-          </div>
-        ) : null}
+        <div className="flex flex-col items-end gap-2">
+          {wiki ? (
+            <div className="rounded-xl border border-border bg-muted/30 px-4 py-3 text-right">
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                {copy("Recompensa NG", "NG reward", "Recompensa NG")}
+              </p>
+              <p className="mt-1 flex items-center justify-end gap-1.5 font-display text-xl font-bold text-foreground">
+                <Coins className="size-4 text-gold-strong" />
+                {wiki.souls.toLocaleString(locale)}
+              </p>
+            </div>
+          ) : null}
+          {DARK_SOULS_BOSS_SOURCES[boss.slug] ? (
+            <a
+              href={DARK_SOULS_BOSS_SOURCES[boss.slug]}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 text-[0.68rem] font-bold text-gold-strong hover:underline"
+            >
+              {copy("Fonte factual revisada", "Reviewed factual source", "Fuente factual revisada")}
+              <ExternalLink className="size-3" />
+            </a>
+          ) : null}
+          <span className="text-[0.6rem] text-muted-foreground">
+            {copy("Revisado em", "Reviewed", "Revisado")} {DARK_SOULS_BOSS_REVIEWED_AT}
+          </span>
+        </div>
       </div>
 
       <div className="mt-7 grid gap-4 md:grid-cols-2">
