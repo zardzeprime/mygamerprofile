@@ -4,6 +4,7 @@ type LocalizedText = Record<Locale, string>;
 
 export type BossWikiEntry = {
   souls: number;
+  healthNg?: string;
   loreIntro: LocalizedText;
   spoilerLore: LocalizedText;
   drops: LocalizedText[];
@@ -52,6 +53,7 @@ export const DARK_SOULS_BOSS_SOURCES: Record<string, string> = {
 export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   "asylum-demon": {
     souls: 2000,
+    healthNg: "825",
     loreIntro: {
       "pt-BR": "Um grande demônio que guarda a saída do Northern Undead Asylum. Ele apresenta o jogador à linhagem de demônios ligada ao caos de Izalith sem exigir contexto prévio da história.",
       en: "A massive demon guarding the way out of the Northern Undead Asylum. It introduces the player to the demon lineage tied to Izalith's Chaos without requiring prior story context.",
@@ -66,6 +68,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "stray-demon": {
     souls: 20000,
+    healthNg: "5,250",
     loreIntro: {
       "pt-BR": "Uma versão muito mais poderosa da mesma família demoníaca encontrada sob o Asilo. Sua presença sugere que o local guarda perigos que o tutorial apenas deixava entrever.",
       en: "A far stronger member of the same demonic family found beneath the Asylum. Its presence suggests the area hides dangers the tutorial only hinted at.",
@@ -78,6 +81,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "taurus-demon": {
     souls: 3000,
+    healthNg: "1,215",
     loreIntro: {
       "pt-BR": "Um demônio taurino que bloqueia uma muralha do Undead Burg. Criaturas semelhantes aparecem mais tarde próximas às ruínas de Izalith, conectando esse encontro inicial a uma ameaça muito maior.",
       en: "A bull-like demon blocking a wall in the Undead Burg. Similar creatures later appear near Izalith's ruins, connecting this early encounter to a much larger threat.",
@@ -90,6 +94,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "bell-gargoyles": {
     souls: 10000,
+    healthNg: "1,000 (primeira gárgula)",
     loreIntro: {
       "pt-BR": "As gárgulas protegem o primeiro Bell of Awakening no topo da igreja de Undead Parish. A luta coloca o objetivo da jornada literalmente atrás de seus guardiões.",
       en: "The gargoyles guard the first Bell of Awakening atop the Undead Parish church. The fight places a key journey objective literally behind its guardians.",
@@ -108,6 +113,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "capra-demon": {
     souls: 6000,
+    healthNg: "1,176",
     loreIntro: {
       "pt-BR": "Um demônio de duas lâminas que ocupa as ruas inferiores do Undead Burg. O encontro mostra que a ameaça demoníaca já alcançou regiões habitadas muito longe de Izalith.",
       en: "A dual-bladed demon occupying the Lower Undead Burg. The encounter shows that the demonic threat has reached inhabited regions far from Izalith.",
@@ -123,6 +129,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "gaping-dragon": {
     souls: 25000,
+    healthNg: "4,401",
     loreIntro: {
       "pt-BR": "Um descendente distante dos dragões antigos, deformado por uma fome sem fim. Sua anatomia extrema transforma o próprio torso em uma enorme mandíbula.",
       en: "A distant descendant of the ancient dragons, warped by endless hunger. Its extreme anatomy turns much of its torso into a gigantic maw.",
@@ -136,6 +143,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "chaos-witch-quelaag": {
     souls: 20000,
+    healthNg: "3,139",
     loreIntro: {
       "pt-BR": "Quelaag é uma das filhas da Witch of Izalith. A catástrofe da Flame of Chaos alterou seu corpo, mas não apagou sua consciência nem sua ligação com a família.",
       en: "Quelaag is one of the Witch of Izalith's daughters. The Flame of Chaos catastrophe transformed her body without erasing her mind or her bond with her family.",
@@ -151,6 +159,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "moonlight-butterfly": {
     souls: 10000,
+    healthNg: "1,255",
     loreIntro: {
       "pt-BR": "Uma criatura mágica que paira sobre Darkroot Garden. O jogo a relaciona aos experimentos e criações de Seath the Scaleless.",
       en: "A magical creature hovering over Darkroot Garden. The game links it to the experiments and creations of Seath the Scaleless.",
@@ -163,6 +172,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "great-grey-wolf-sif": {
     souls: 40000,
+    healthNg: "3,432",
     loreIntro: {
       "pt-BR": "Sif é o grande lobo companheiro de Artorias e guarda seu túmulo em Darkroot Garden. A espada que carrega transforma o encontro em um eco direto do legado do cavaleiro.",
       en: "Sif is Artorias' great wolf companion and guards his grave in Darkroot Garden. The sword it carries turns the encounter into a direct echo of the knight's legacy.",
@@ -178,6 +188,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "iron-golem": {
     souls: 40000,
+    healthNg: "2,880",
     loreIntro: {
       "pt-BR": "O guardião de Sen's Fortress é um gigante de ferro criado ao redor do osso de um Everlasting Dragon. Sua função é impedir que qualquer aventureiro indigno alcance Anor Londo.",
       en: "The guardian of Sen's Fortress is an iron giant built around the bone of an Everlasting Dragon. Its purpose is to stop unworthy adventurers from reaching Anor Londo.",
@@ -190,6 +201,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "ornstein-and-smough": {
     souls: 50000,
+    healthNg: "Ornstein 1,642 · Smough 2,645 (formas normais)",
     loreIntro: {
       "pt-BR": "Dragon Slayer Ornstein e Executioner Smough defendem a grande catedral de Anor Londo. Ornstein pertenceu aos Four Knights of Gwyn; Smough era o carrasco da cidade e nunca recebeu a mesma honra.",
       en: "Dragon Slayer Ornstein and Executioner Smough defend Anor Londo's great cathedral. Ornstein belonged to Gwyn's Four Knights; Smough was the city's executioner and never received the same honor.",
@@ -206,6 +218,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "dark-sun-gwyndolin": {
     souls: 40000,
+    healthNg: "2,000",
     loreIntro: {
       "pt-BR": "Gwyndolin é o filho mais jovem de Gwyn e a divindade ligada à lua que permanece em Anor Londo. Ele lidera os Blades of the Darkmoon e guarda a tumba honorária do pai.",
       en: "Gwyndolin is Gwyn's youngest child and the moon-aligned deity who remains in Anor Londo. He leads the Blades of the Darkmoon and guards his father's honorary tomb.",
@@ -218,6 +231,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "crossbreed-priscilla": {
     souls: 30000,
+    healthNg: "2,300",
     loreIntro: {
       "pt-BR": "Priscilla é uma híbrida de dragão e outro ser, isolada no Painted World of Ariamis. Ela não inicia o combate e permite que o jogador deixe seu mundo em paz.",
       en: "Priscilla is a crossbreed of a dragon and another being, isolated within the Painted World of Ariamis. She does not initiate combat and allows the player to leave her world in peace.",
@@ -231,6 +245,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "seath-the-scaleless": {
     souls: 60000,
+    healthNg: "5,525",
     loreIntro: {
       "pt-BR": "Seath nasceu sem as escamas de imortalidade dos Everlasting Dragons. Ele traiu sua própria espécie, aliou-se a Gwyn e recebeu o título de Duke junto de um fragmento de Lord Soul.",
       en: "Seath was born without the immortal scales of the Everlasting Dragons. He betrayed his own kind, allied with Gwyn and received a dukedom along with a fragment of a Lord Soul.",
@@ -244,6 +259,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "pinwheel": {
     souls: 15000,
+    healthNg: "1,326",
     loreIntro: {
       "pt-BR": "Um necromante mascarado que tomou parte do poder de Gravelord Nito e governa as profundezas das Catacombs. Sua imagem mistura três máscaras associadas a pai, mãe e filho.",
       en: "A masked necromancer who stole some of Gravelord Nito's power and rules the depths of the Catacombs. Its image combines three masks associated with father, mother and child.",
@@ -259,6 +275,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "gravelord-nito": {
     souls: 60000,
+    healthNg: "4,317",
     loreIntro: {
       "pt-BR": "Nito, o First of the Dead, foi um dos seres que encontrou uma Lord Soul no início da Age of Fire. Seu poder está ligado à morte, doença e decomposição.",
       en: "Nito, the First of the Dead, was one of the beings who found a Lord Soul at the dawn of the Age of Fire. His power is tied to death, disease and decay.",
@@ -271,6 +288,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "four-kings": {
     souls: 60000,
+    healthNg: "9,604 (barra compartilhada)",
     loreIntro: {
       "pt-BR": "Os Four Kings eram governantes de New Londo reconhecidos por Gwyn, que lhes concedeu seus títulos e fragmentos de uma grande alma.",
       en: "The Four Kings were rulers of New Londo recognized by Gwyn, who granted them their titles and fragments of a great soul.",
@@ -286,6 +304,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "ceaseless-discharge": {
     souls: 20000,
+    healthNg: "4,200",
     loreIntro: {
       "pt-BR": "O único filho conhecido da Witch of Izalith nasceu consumido por feridas de lava. Suas irmãs criaram para ele o Orange Charred Ring na tentativa de aliviar a dor.",
       en: "The Witch of Izalith's only known son was born consumed by lava sores. His sisters created the Orange Charred Ring in an attempt to ease his pain.",
@@ -298,6 +317,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "demon-firesage": {
     souls: 20000,
+    healthNg: "5,950",
     loreIntro: {
       "pt-BR": "Um demônio ancestral descrito como o último mestre das antigas artes do fogo. Apesar do nome, seus ataques explosivos não são simplesmente dano de fogo.",
       en: "An ancient demon described as the last master of the old fire arts. Despite the name, its explosive attacks are not simply fire damage.",
@@ -310,6 +330,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "centipede-demon": {
     souls: 40000,
+    healthNg: "3,432",
     loreIntro: {
       "pt-BR": "Uma criatura nascida no local onde o filho da Witch of Izalith perdeu o Orange Charred Ring. O corpo do demônio parece ter crescido ao redor dessa ligação com a lava.",
       en: "A creature born where the Witch of Izalith's son lost the Orange Charred Ring. The demon's body appears to have grown around that connection to lava.",
@@ -323,6 +344,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "bed-of-chaos": {
     souls: 60000,
+    healthNg: "2 pontos de objetivo (gimmick)",
     loreIntro: {
       "pt-BR": "O Bed of Chaos é o resultado da tentativa da Witch of Izalith de reproduzir a First Flame. O experimento criou a Flame of Chaos e transformou Izalith para sempre.",
       en: "The Bed of Chaos is the result of the Witch of Izalith's attempt to recreate the First Flame. The experiment created the Flame of Chaos and changed Izalith forever.",
@@ -335,6 +357,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "gwyn-lord-of-cinder": {
     souls: 70000,
+    healthNg: "4,250",
     loreIntro: {
       "pt-BR": "Gwyn encontrou uma Lord Soul no início da Age of Fire e liderou a guerra que derrubou os Everlasting Dragons. Seu nome está ligado ao sol, aos raios e à fundação da ordem dos deuses em Anor Londo.",
       en: "Gwyn found a Lord Soul at the dawn of the Age of Fire and led the war that overthrew the Everlasting Dragons. His name is tied to sunlight, lightning and the divine order centered on Anor Londo.",
@@ -348,6 +371,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "sanctuary-guardian": {
     souls: 30000,
+    healthNg: "2,560",
     loreIntro: {
       "pt-BR": "Uma criatura quimérica semelhante a uma manticora que protege a entrada de Oolacile Sanctuary. É o primeiro grande obstáculo do conteúdo adicional.",
       en: "A manticore-like chimeric creature guarding the entrance to Oolacile Sanctuary. It is the first major obstacle of the additional content.",
@@ -361,6 +385,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "artorias-the-abysswalker": {
     souls: 50000,
+    healthNg: "3,750",
     loreIntro: {
       "pt-BR": "Sir Artorias foi um dos Four Knights of Gwyn, célebre pela habilidade com a greatsword e pela capacidade de enfrentar o Abyss. Seu símbolo é o lobo, e Sif tornou-se seu companheiro.",
       en: "Sir Artorias was one of Gwyn's Four Knights, famed for his greatsword skill and ability to face the Abyss. His symbol is the wolf, and Sif became his companion.",
@@ -373,6 +398,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "black-dragon-kalameet": {
     souls: 60000,
+    healthNg: "5,400",
     loreIntro: {
       "pt-BR": "Kalameet é um dos últimos dragões antigos ainda vivos na era visitada em Oolacile. Mesmo guerreiros de Anor Londo evitavam enfrentá-lo diretamente.",
       en: "Kalameet is one of the last ancient dragons still alive in the era visited in Oolacile. Even Anor Londo's warriors avoided confronting it directly.",
@@ -386,6 +412,7 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
   },
   "manus-father-of-the-abyss": {
     souls: 60000,
+    healthNg: "6,665",
     loreIntro: {
       "pt-BR": "Manus é descrito como um humano primordial cuja Humanity saiu de controle. O despertar dele está no centro da expansão do Abyss em Oolacile.",
       en: "Manus is described as a primeval human whose Humanity went wild. His awakening is central to the Abyss spreading through Oolacile.",
