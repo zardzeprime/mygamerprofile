@@ -543,7 +543,6 @@ export async function calculateDs3Ar(
     weapon.level,
     weapon.maxUpgrade,
     twoHanded,
-    saturations,
   );
 
   return {
@@ -571,11 +570,15 @@ function casualRating(
   upgrade: number,
   maxUpgrade: number,
   twoHanded: boolean,
-  ds3Saturations?: number[][],
 ) {
   if (!requirementMet(stats, weapon.requirements, twoHanded)) return 1;
 
+  const effectiveStats = {
+    ...stats,
+    str: Math.min(99, stats.str * (twoHanded ? 1.5 : 1)),
+  };
   const relevant: number[] = [];
+
   (["str", "dex", "int", "fth", "lck"] as SoulsDpsStat[]).forEach((stat) => {
     const grade = weapon.scalingLetters?.[stat];
     const weight =
@@ -584,26 +587,17 @@ function casualRating(
         : gradeWeight(grade);
     if (weight <= 0) return;
 
-    let statFit = ds1StatCurve(stats[stat]);
-    if (ds3Saturations && weapon.game === "dark-souls-iii") {
-      const index =
-        stat === "int"
-          ? 0
-          : stat === "fth"
-            ? 0
-            : 0;
-      const curve = ds3Saturations[index];
-      if (curve?.[clampStat(stats[stat])]) {
-        statFit = Math.min(1, curve[clampStat(stats[stat])] / 100);
-      }
-    }
-    relevant.push(weight * statFit);
+    relevant.push(weight * ds1StatCurve(effectiveStats[stat]));
   });
 
   const bestFit = relevant.length ? Math.max(...relevant) : 0.15;
   const upgradeFit = maxUpgrade > 0 ? Math.min(1, upgrade / maxUpgrade) : 0;
-  const normalized = Math.min(1, bestFit * 0.75 + upgradeFit * 0.15 + 0.1);
-  return Math.max(1, Math.min(10, Math.round(normalized * 10)));
+
+  // Calibrado para leitura humana: B + ~40 no atributo principal chega a
+  // "Excelente" com a arma bem melhorada; A/S com investimento alto alcança
+  // "Excepcional/Overpower". O score não pretende substituir AR real.
+  const rawScore = 2 + bestFit * 8 + upgradeFit;
+  return Math.max(1, Math.min(10, Math.round(rawScore)));
 }
 
 export function calculateDs1Estimate(
