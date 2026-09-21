@@ -29,6 +29,12 @@ import {
   type SoulsDpsStat,
   type SoulsDpsWeapon,
 } from "@/lib/souls-dps";
+import {
+  loadSoulsArmorTechnical,
+  normalizeSoulsEquipmentName,
+  type SoulsArmorTechnical,
+  type SoulsArmorSlot,
+} from "@/lib/souls-armor";
 
 const CATEGORIES: Array<{
   key: "all" | SoulsCompendiumCategory;
@@ -57,6 +63,7 @@ export function SoulsItemCompendium({
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [technicalWeapons, setTechnicalWeapons] = useState<SoulsDpsWeapon[]>([]);
+  const [technicalArmor, setTechnicalArmor] = useState<SoulsArmorTechnical[]>([]);
 
   useEffect(() => {
     let active = true;
@@ -70,6 +77,23 @@ export function SoulsItemCompendium({
       .catch((error) => {
         console.warn("[SoulsItemCompendium] technical weapon data unavailable", error);
         if (active) setTechnicalWeapons([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [gameSlug]);
+
+  useEffect(() => {
+    let active = true;
+
+    void loadSoulsArmorTechnical(gameSlug)
+      .then((data) => {
+        if (active) setTechnicalArmor(data);
+      })
+      .catch((error) => {
+        console.warn("[SoulsItemCompendium] technical armor data unavailable", error);
+        if (active) setTechnicalArmor([]);
       });
 
     return () => {
@@ -118,7 +142,16 @@ export function SoulsItemCompendium({
     selected?.category === "weapon"
       ? technicalWeapons.find(
           (weapon) =>
-            weapon.name.toLocaleLowerCase() === selected.name.toLocaleLowerCase(),
+            normalizeSoulsEquipmentName(weapon.name) ===
+            normalizeSoulsEquipmentName(selected.name),
+        ) ?? null
+      : null;
+  const technicalArmorEntry =
+    selected?.category === "armor"
+      ? technicalArmor.find(
+          (armor) =>
+            normalizeSoulsEquipmentName(armor.name) ===
+            normalizeSoulsEquipmentName(selected.name),
         ) ?? null
       : null;
 
@@ -281,6 +314,9 @@ export function SoulsItemCompendium({
                 {technicalWeapon ? (
                   <WeaponTechnicalCard weapon={technicalWeapon} locale={locale} />
                 ) : null}
+                {technicalArmorEntry ? (
+                  <ArmorTechnicalCard armor={technicalArmorEntry} locale={locale} />
+                ) : null}
 
                 <div>
                   <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
@@ -428,6 +464,125 @@ function WeaponTechnicalCard({
           {weapon.obtained.join(" · ")}
         </p>
       ) : null}
+    </div>
+  );
+}
+
+function ArmorTechnicalCard({
+  armor,
+  locale,
+}: {
+  armor: SoulsArmorTechnical;
+  locale: Locale;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const slotLabels: Record<SoulsArmorSlot, string> = {
+    head: copy("Cabeça", "Head", "Cabeza"),
+    chest: copy("Peito", "Chest", "Pecho"),
+    arms: copy("Braços", "Arms", "Brazos"),
+    legs: copy("Pernas", "Legs", "Piernas"),
+    unknown: copy("Peça", "Piece", "Pieza"),
+  };
+
+  const defenseRows: Array<[string, number | undefined]> = [
+    [copy("Físico", "Physical", "Físico"), armor.defense.physical],
+    [copy("Impacto", "Strike", "Golpe"), armor.defense.strike],
+    [copy("Corte", "Slash", "Corte"), armor.defense.slash],
+    [copy("Perfuração", "Thrust", "Perforación"), armor.defense.thrust],
+    [copy("Magia", "Magic", "Magia"), armor.defense.magic],
+    [copy("Fogo", "Fire", "Fuego"), armor.defense.fire],
+    [copy("Raio", "Lightning", "Rayo"), armor.defense.lightning],
+    ["Dark", armor.defense.dark],
+  ].filter((entry): entry is [string, number] => typeof entry[1] === "number");
+
+  const resistanceRows: Array<[string, number | undefined]> = [
+    [copy("Sangramento", "Bleed", "Sangrado"), armor.resistance.bleed],
+    [copy("Veneno", "Poison", "Veneno"), armor.resistance.poison],
+    [copy("Gelo", "Frost", "Hielo"), armor.resistance.frost],
+    [copy("Maldição", "Curse", "Maldición"), armor.resistance.curse],
+  ].filter((entry): entry is [string, number] => typeof entry[1] === "number");
+
+  return (
+    <div className="rounded-2xl border border-gold/25 bg-gold/[0.05] p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-gold-strong">
+            {copy("Características da armadura", "Armor characteristics", "Características de armadura")}
+          </p>
+          <p className="mt-1 text-[0.66rem] leading-5 text-muted-foreground">
+            {armor.game === "dark-souls-iii"
+              ? copy(
+                  "Absorções e resistências da peça sem buffs externos.",
+                  "Piece absorption and resistances before external buffs.",
+                  "Absorciones y resistencias de la pieza antes de buffs externos.",
+                )
+              : copy(
+                  "Defesas da peça no estado base; quando disponível, o reforço final aparece separado.",
+                  "Base-state defenses; when available, final reinforcement appears separately.",
+                  "Defensas base; cuando está disponible, el refuerzo final aparece por separado.",
+                )}
+          </p>
+        </div>
+        <Shield className="size-4 shrink-0 text-gold-strong" />
+      </div>
+
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        <TechCell label={copy("Slot", "Slot", "Slot")} value={slotLabels[armor.slot]} compact />
+        <TechCell label={copy("Peso", "Weight", "Peso")} value={armor.weight} compact />
+        <TechCell label="Poise" value={armor.poise} compact />
+      </div>
+
+      <p className="mt-4 text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+        {armor.game === "dark-souls-iii"
+          ? copy("Absorção", "Absorption", "Absorción")
+          : copy("Defesa base", "Base defense", "Defensa base")}
+      </p>
+      <div className="mt-2 grid grid-cols-2 gap-1.5">
+        {defenseRows.map(([label, value]) => (
+          <TechCell key={label} label={label} value={value} compact />
+        ))}
+      </div>
+
+      <p className="mt-4 text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+        {copy("Resistências", "Resistances", "Resistencias")}
+      </p>
+      <div className="mt-2 grid grid-cols-2 gap-1.5">
+        {resistanceRows.map(([label, value]) => (
+          <TechCell key={label} label={label} value={value} compact />
+        ))}
+      </div>
+
+      {armor.maxUpgrade ? (
+        <div className="mt-4 rounded-xl border border-border bg-background/45 p-3">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[0.6rem] font-black uppercase tracking-[0.08em] text-foreground">
+              {copy("Reforço final", "Final reinforcement", "Refuerzo final")}
+            </p>
+            <span className="rounded-lg border border-gold/25 bg-gold/10 px-2 py-1 text-[0.6rem] font-black text-gold-strong">
+              +{armor.maxUpgrade.level}
+            </span>
+          </div>
+          <div className="mt-2 grid grid-cols-2 gap-1.5">
+            <TechCell label="PHY" value={armor.maxUpgrade.defense.physical} compact />
+            <TechCell label="MAG" value={armor.maxUpgrade.defense.magic} compact />
+            <TechCell label="FIRE" value={armor.maxUpgrade.defense.fire} compact />
+            <TechCell label="LIGHT" value={armor.maxUpgrade.defense.lightning} compact />
+          </div>
+        </div>
+      ) : null}
+
+      <a
+        href={armor.source.url}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-4 inline-flex items-center gap-1 text-[0.66rem] font-bold text-gold-strong hover:underline"
+      >
+        {armor.source.label}
+        <ExternalLink className="size-3" />
+      </a>
+      <p className="mt-1 text-[0.6rem] leading-4 text-muted-foreground">
+        {armor.source.note}
+      </p>
     </div>
   );
 }
