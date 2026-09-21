@@ -78,7 +78,8 @@ export const Route = createFileRoute("/lfg")({
 function LfgPage() {
   const { t, locale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const { user } = useAuth();\n  const userId = user?.id ?? null;
+  const { user } = useAuth();
+  const userId = user?.id ?? null;
   const { games, posts: initialPosts } = Route.useLoaderData();
   const search = Route.useSearch();
   const [posts, setPosts] = useState(initialPosts);
