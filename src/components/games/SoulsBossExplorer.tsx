@@ -21,6 +21,7 @@ import {
   type SoulsBossResearch,
   type SoulsGameSlug,
 } from "@/data/soulsBossResearch";
+import { getSoulsBossImage } from "@/data/soulsBossImages";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
@@ -55,6 +56,7 @@ export function SoulsBossExplorer({
   }, [bosses, filter, locale, query]);
 
   const selected = bosses.find((boss) => boss.slug === selectedSlug) ?? filtered[0] ?? bosses[0];
+  const selectedImage = getSoulsBossImage(gameSlug, selected?.slug);
   const selectBoss = (boss: SoulsBossResearch) => {
     setSelectedSlug(boss.slug);
     requestAnimationFrame(() => {
@@ -116,32 +118,54 @@ export function SoulsBossExplorer({
             <div className="mb-4 flex items-start justify-between gap-3">
               <div>
                 <p className="section-kicker">
-                  {copy("SCREENSHOT DO ENCONTRO", "ENCOUNTER SCREENSHOT", "CAPTURA DEL ENCUENTRO")}
+                  {copy("ARTE DO ENCONTRO", "ENCOUNTER ART", "ARTE DEL ENCUENTRO")}
                 </p>
                 <p className="mt-1 text-sm font-semibold text-foreground">
-                  {copy("Em produção pelo MGP", "In production by MGP", "En producción por MGP")}
+                  {selectedImage
+                    ? copy("Procedência registrada", "Provenance recorded", "Procedencia registrada")
+                    : copy("Fallback MGP", "MGP fallback", "Fallback MGP")}
                 </p>
               </div>
               <Sparkles className="size-5 text-gold-strong" />
             </div>
-            <div className="flex aspect-[3/4] flex-col items-center justify-center rounded-lg border border-dashed border-gold/25 bg-[radial-gradient(circle_at_top,hsl(var(--gold)/0.08),transparent_58%)] p-6 text-center">
-              <Swords className="size-10 text-gold-strong" />
-              <p className="mt-4 font-display text-2xl font-bold text-foreground">{selected.name}</p>
-              <p className="mt-3 max-w-xs text-xs leading-6 text-muted-foreground">
-                {copy(
-                  "As screenshots próprias deste encontro ainda serão capturadas, tratadas e enquadradas pelo MGP. A ficha permanece funcional sem arte externa enquanto isso.",
-                  "Original screenshots for this encounter will still be captured, processed and framed by MGP. The entry remains fully functional without external artwork meanwhile.",
-                  "Las capturas propias de este encuentro aún serán tomadas, tratadas y encuadradas por MGP. La ficha sigue funcional sin arte externa mientras tanto.",
-                )}
-              </p>
-            </div>
-            <p className="mt-3 text-xs leading-5 text-muted-foreground">
-              {copy(
-                "Quando a biblioteca visual ficar pronta, todos os chefes usarão screenshots de gameplay com padrão consistente.",
-                "Once the visual library is ready, every boss will use consistently framed gameplay screenshots.",
-                "Cuando la biblioteca visual esté lista, todos los jefes usarán capturas de gameplay con un encuadre consistente.",
-              )}
-            </p>
+            {selectedImage ? (
+              <>
+                <div className="aspect-[3/4] overflow-hidden rounded-lg border border-border bg-black/25">
+                  <img
+                    src={selectedImage.url}
+                    alt={selected.name}
+                    className={cn(
+                      "h-full w-full",
+                      selectedImage.detailFit === "contain" ? "object-contain p-2" : "object-cover",
+                    )}
+                    style={{
+                      objectPosition: selectedImage.detailObjectPosition,
+                      transform: `scale(${selectedImage.detailScale ?? 1})`,
+                    }}
+                  />
+                </div>
+                <a
+                  href={selectedImage.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 inline-flex items-center gap-1 text-[0.68rem] font-bold text-gold-strong hover:underline"
+                >
+                  {selectedImage.sourceLabel[locale]} <ExternalLink className="size-3" />
+                </a>
+                <p className="mt-2 text-[0.64rem] leading-5 text-muted-foreground">
+                  {copy(
+                    "Referência visual usada durante o beta. Dark Souls III e seus assets pertencem aos respectivos detentores de direitos, incluindo FromSoftware/Bandai Namco.",
+                    "Visual reference used during beta. Dark Souls III and its assets belong to their respective rights holders, including FromSoftware/Bandai Namco.",
+                    "Referencia visual usada durante la beta. Dark Souls III y sus assets pertenecen a sus respectivos titulares, incluyendo FromSoftware/Bandai Namco.",
+                  )}
+                </p>
+              </>
+            ) : (
+              <div className="flex aspect-[3/4] flex-col items-center justify-center rounded-lg border border-dashed border-gold/25 bg-[radial-gradient(circle_at_top,hsl(var(--gold)/0.08),transparent_58%)] p-6 text-center">
+                <Swords className="size-10 text-gold-strong" />
+                <p className="mt-4 font-display text-2xl font-bold text-foreground">{selected.name}</p>
+              </div>
+            )}
           </aside>
         </div>
       </section>
@@ -188,6 +212,7 @@ export function SoulsBossExplorer({
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((boss, index) => {
+            const image = getSoulsBossImage(gameSlug, boss.slug);
             const active = boss.slug === selected.slug;
             return (
               <Button
@@ -203,7 +228,22 @@ export function SoulsBossExplorer({
               >
                 <span className="grid h-full w-full grid-rows-[5.5rem_1fr]">
                   <span className="relative flex items-end overflow-hidden border-b border-border bg-[radial-gradient(circle_at_top_left,hsl(var(--gold)/0.08),transparent_65%)] p-4">
-                    <span className="absolute right-4 top-3 grid size-9 place-items-center rounded-full border border-gold/20 bg-background/60">
+                    {image ? (
+                      <>
+                        <img
+                          src={image.url}
+                          alt=""
+                          loading="lazy"
+                          className={cn(
+                            "absolute inset-0 h-full w-full opacity-55 transition duration-300 group-hover:scale-105 group-hover:opacity-70",
+                            image.cardFit === "contain" ? "object-contain p-1" : "object-cover",
+                          )}
+                          style={{ objectPosition: image.cardObjectPosition }}
+                        />
+                        <span className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/35 to-transparent" />
+                      </>
+                    ) : null}
+                    <span className="absolute right-4 top-3 grid size-9 place-items-center rounded-full border border-gold/20 bg-background/70 backdrop-blur">
                       <Swords className="size-4 text-gold-strong" />
                     </span>
                     <span className="flex w-full items-center justify-between gap-2">
@@ -229,7 +269,9 @@ export function SoulsBossExplorer({
                       {boss.shortContext[locale]}
                     </span>
                     <span className="mt-3 block text-[0.67rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                      {copy("Screenshot MGP em desenvolvimento", "MGP screenshot in development", "Captura MGP en desarrollo")}
+                      {image
+                        ? copy("Arte de referência · fonte registrada", "Reference art · source recorded", "Arte de referencia · fuente registrada")
+                        : copy("Arte em revisão", "Artwork in review", "Arte en revisión")}
                     </span>
                     <span className="mt-3 flex flex-wrap gap-1.5">
                       {boss.mechanicTags.slice(0, 3).map((tag) => (
@@ -256,9 +298,9 @@ export function SoulsBossExplorer({
 
       <p className="rounded-lg border border-border bg-muted/15 p-4 text-xs leading-5 text-muted-foreground">
         {copy(
-          "Nota editorial: os textos do MG Profile são resumos próprios baseados em fatos do jogo e fontes de pesquisa. A biblioteca externa de artes de chefes foi retirada desta versão; screenshots próprias de gameplay ainda serão produzidas e revisadas.",
-          "Editorial note: MG Profile texts are original summaries based on game facts and research sources. External boss artwork has been removed from this version; original gameplay screenshots are still being produced and reviewed.",
-          "Nota editorial: los textos de MG Profile son resúmenes propios basados en hechos del juego y fuentes de investigación. El arte externo de jefes fue retirado de esta versión; todavía se producirán y revisarán capturas propias de gameplay.",
+          "Nota editorial: os textos do MG Profile são resumos próprios baseados em fatos do jogo e fontes de pesquisa. Artes externas usadas no beta mantêm procedência visível; capturas próprias ainda poderão substituir essas referências depois.",
+          "Editorial note: MG Profile texts are original summaries based on game facts and research sources. External artwork used during beta retains visible provenance; original captures may replace those references later.",
+          "Nota editorial: los textos de MG Profile son resúmenes propios basados en hechos del juego y fuentes de investigación. El arte externo usado en beta mantiene procedencia visible; capturas propias podrán sustituir esas referencias después.",
         )}
       </p>
     </div>
