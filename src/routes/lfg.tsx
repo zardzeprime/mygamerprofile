@@ -655,7 +655,7 @@ function LfgPage() {
                         {post.slots_open}/{Math.max(0, post.slots_total - 1)} {copy("vagas", "spots", "plazas")}
                       </span>
                       <span className="rounded-md bg-muted px-2 py-1">
-                        {post.min_age}–{post.max_age}+
+                        {post.min_age}–{post.max_age} {copy("anos", "years", "años")}
                       </span>
                       {post.scheduled_for ? (
                         <span className="rounded-md bg-muted px-2 py-1">
