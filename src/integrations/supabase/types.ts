@@ -219,7 +219,10 @@ export type Database = {
           created_at: string
           description: string
           expires_at: string | null
-          game_id: string
+          external_game_id: string | null
+          external_game_name: string | null
+          external_game_source: string | null
+          game_id: string | null
           id: string
           language: string | null
           mic_required: boolean
@@ -236,7 +239,10 @@ export type Database = {
           created_at?: string
           description: string
           expires_at?: string | null
-          game_id: string
+          external_game_id?: string | null
+          external_game_name?: string | null
+          external_game_source?: string | null
+          game_id?: string | null
           id?: string
           language?: string | null
           mic_required?: boolean
@@ -253,7 +259,10 @@ export type Database = {
           created_at?: string
           description?: string
           expires_at?: string | null
-          game_id?: string
+          external_game_id?: string | null
+          external_game_name?: string | null
+          external_game_source?: string | null
+          game_id?: string | null
           id?: string
           language?: string | null
           mic_required?: boolean
