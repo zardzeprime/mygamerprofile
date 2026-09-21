@@ -5,13 +5,30 @@ import {
   Hammer,
   ShieldCheck,
   Sparkles,
+  Loader2,
+  Save,
   Swords,
   WandSparkles,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
+
+type SaveUserBuildRpcClient = {
+  rpc: (
+    fn: "save_user_build_v1",
+    args: {
+      p_game_slug: string;
+      p_subject_key: string;
+      p_title: string;
+      p_build_data: Record<string, unknown>;
+      p_source_context: Record<string, unknown>;
+      p_visibility: "public" | "private";
+    },
+  ) => Promise<{ data: string | null; error: { message?: string } | null }>;
+};
 
 type VerifiedBuild = {
   id: string;
@@ -194,6 +211,9 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
   const [coreTwo, setCoreTwo] = useState("");
   const [variant, setVariant] = useState("");
   const [notes, setNotes] = useState("");
+  const [visibility, setVisibility] = useState<"public" | "private">("private");
+  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "login" | "error">("idle");
 
   const active = useMemo(
     () => BUILDS.find((build) => build.id === selected) ?? BUILDS[0],
@@ -201,6 +221,54 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
   );
   if (!active) return null;
   const ActiveIcon = active.icon;
+
+  const saveCustomBuild = async () => {
+    if (!coreOne.trim() || saving) return;
+    setSaving(true);
+    setSaveStatus("idle");
+
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      if (!authData.user) {
+        setSaveStatus("login");
+        return;
+      }
+
+      const rpc = supabase as unknown as SaveUserBuildRpcClient;
+      const { error } = await rpc.rpc("save_user_build_v1", {
+        p_game_slug: "dark-souls-iii",
+        p_subject_key: active.id,
+        p_title: customName.trim() || copy("Minha build DS3", "My DS3 build", "Mi build DS3"),
+        p_build_data: {
+          schemaVersion: 2,
+          game: "dark-souls-iii",
+          basePreset: active.id,
+          startingClass: active.startingClass,
+          customName: customName.trim(),
+          core: [coreOne.trim(), coreTwo.trim()].filter(Boolean),
+          situational: variant.trim() || null,
+          notes: notes.trim(),
+          referenceStats: active.stats,
+        },
+        p_source_context: {
+          createdWith: "mgp-souls-builder-v2",
+          presetSources: active.sources.map((source) => ({
+            label: source.label,
+            url: source.url,
+          })),
+        },
+        p_visibility: visibility,
+      });
+
+      if (error) throw new Error(error.message || "SAVE_BUILD_FAILED");
+      setSaveStatus("saved");
+    } catch (error) {
+      console.error("[SoulsBuildLab] save build failed", error);
+      setSaveStatus("error");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -368,6 +436,53 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
             ))}
           </div>
           {notes ? <p className="mt-3 text-sm leading-6 text-muted-foreground">{notes}</p> : null}
+        </div>
+
+        <div className="mt-5 flex flex-col gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex rounded-xl border border-border bg-muted/10 p-1">
+            {(["private", "public"] as const).map((value) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setVisibility(value)}
+                className={cn(
+                  "rounded-lg px-3 py-2 text-xs font-bold transition-colors",
+                  visibility === value
+                    ? "bg-gold/15 text-gold-strong"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {value === "private"
+                  ? copy("Privada", "Private", "Privada")
+                  : copy("Pública", "Public", "Pública")}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-xs text-muted-foreground">
+              {saveStatus === "saved"
+                ? copy("Build salva no seu perfil.", "Build saved to your profile.", "Build guardada en tu perfil.")
+                : saveStatus === "login"
+                  ? copy("Entre na sua conta para salvar.", "Sign in to save.", "Inicia sesión para guardar.")
+                  : saveStatus === "error"
+                    ? copy("Não foi possível salvar agora.", "Could not save right now.", "No se pudo guardar ahora.")
+                    : !coreOne.trim()
+                      ? copy("Adicione pelo menos um item core.", "Add at least one core item.", "Añade al menos un objeto core.")
+                      : copy("Pronta para salvar.", "Ready to save.", "Lista para guardar.")}
+            </p>
+            <button
+              type="button"
+              disabled={!coreOne.trim() || saving}
+              onClick={() => void saveCustomBuild()}
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-gold px-4 text-sm font-bold text-gold-foreground transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
+              {saving
+                ? copy("Salvando…", "Saving…", "Guardando…")
+                : copy("Salvar build", "Save build", "Guardar build")}
+            </button>
+          </div>
         </div>
       </section>
     </div>
