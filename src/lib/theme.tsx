@@ -80,7 +80,22 @@ function applyCursor(style: CursorStyle) {
 }
 
 function applyAccent(v:string|null, cursor:CursorStyle){if(typeof document==="undefined")return;const r=document.documentElement;r.style.removeProperty("--mgp-user-accent-foreground");if(isHexColor(v)){r.style.setProperty("--mgp-user-accent",v);r.style.setProperty("--mgp-user-accent-foreground",readableForeground(v));r.dataset.accent="custom"}else{r.style.removeProperty("--mgp-user-accent");delete r.dataset.accent}applyCursor(cursor)}
-function read(k:string){try{return localStorage.getItem(k)}catch{return null}} function store(k:string,v:string|null){try{v===null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch{}}
+function read(key: string) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function store(key: string, value: string | null) {
+  try {
+    if (value === null) localStorage.removeItem(key);
+    else localStorage.setItem(key, value);
+  } catch {
+    // Appearance preferences remain available in memory when storage is blocked.
+  }
+}
 async function persistAccountPreference(patch:{theme_preference?:"dark";accent_color?:string|null}){try{const{data:{user}}=await supabase.auth.getUser();if(!user)return;const p=supabase.from("profiles") as unknown as {update:(v:ProfileAppearanceUpdate)=>{eq:(c:"id",v:string)=>Promise<{error:{message:string}|null}>}};const{error}=await p.update(patch).eq("id",user.id);if(error)console.warn("[MGP] appearance sync",error.message)}catch(e){console.warn("[MGP] appearance local only",e)}}
 export const themeBootstrapScript=`(function(){var r=document.documentElement;r.classList.add("dark");r.style.colorScheme="dark";try{localStorage.setItem("mgp-theme","dark");var a=localStorage.getItem("mgp-accent-color");if(a&&/^#[0-9a-f]{6}$/i.test(a)){r.style.setProperty("--mgp-user-accent",a.toLowerCase());r.dataset.accent="custom"}else{r.style.removeProperty("--mgp-user-accent");delete r.dataset.accent}}catch(e){}})();`;
 export function ThemeProvider({children}:{children:ReactNode}){
