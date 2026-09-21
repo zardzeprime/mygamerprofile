@@ -22,6 +22,12 @@ import {
   type SoulsGameSlug,
 } from "@/data/soulsBossResearch";
 import { getSoulsBossImage } from "@/data/soulsBossImages";
+import {
+  DS3_BOSS_DEFENSE_SOURCE,
+  getDs3BossDefenseProfile,
+  type SoulsDamageChannel,
+  type SoulsStatusChannel,
+} from "@/data/soulsBossDefenses";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
@@ -317,6 +323,8 @@ function BossDetail({
   gameSlug: SoulsGameSlug;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const defenseProfile =
+    gameSlug === "dark-souls-iii" ? getDs3BossDefenseProfile(boss.slug) : null;
   const systemTitle =
     gameSlug === "dark-souls-iii"
       ? copy(
@@ -370,6 +378,102 @@ function BossDetail({
         </InfoCard>
       </div>
 
+      {defenseProfile ? (
+        <section className="mt-4 rounded-lg border border-border bg-muted/20 p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h4 className="flex items-center gap-2 font-display text-lg font-bold text-foreground">
+                <ShieldCheck className="size-4 text-gold-strong" />
+                {copy("Defesas, fraquezas e status", "Defense, weaknesses & status", "Defensas, debilidades y estados")}
+              </h4>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                {copy(
+                  "Absorção negativa significa vulnerabilidade. Quanto maior a absorção positiva, mais aquele tipo de dano é reduzido.",
+                  "Negative absorption means vulnerability. Higher positive absorption means that damage type is reduced more heavily.",
+                  "La absorción negativa indica vulnerabilidad. Cuanto mayor la absorción positiva, más se reduce ese tipo de daño.",
+                )}
+              </p>
+            </div>
+            <a
+              href={DS3_BOSS_DEFENSE_SOURCE.url}
+              target="_blank"
+              rel="noreferrer"
+              className="shrink-0 inline-flex items-center gap-1.5 text-[0.66rem] font-bold text-gold-strong hover:underline"
+            >
+              {copy("Tabela técnica", "Technical sheet", "Tabla técnica")}
+              <ExternalLink className="size-3" />
+            </a>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            {defenseProfile.variants.map((variant) => (
+              <div key={variant.label} className="rounded-xl border border-border bg-background/45 p-3.5">
+                <p className="text-xs font-black uppercase tracking-[0.08em] text-foreground">
+                  {variant.label}
+                </p>
+                {Object.keys(variant.absorption).length ? (
+                  <>
+                    <p className="mt-3 text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+                      {copy("Absorção", "Absorption", "Absorción")}
+                    </p>
+                    <div className="mt-2 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+                      {(Object.entries(variant.absorption) as Array<[SoulsDamageChannel, number]>).map(([channel, value]) => (
+                        <div
+                          key={channel}
+                          className={cn(
+                            "rounded-lg border px-2.5 py-2",
+                            value < 0
+                              ? "border-emerald-500/25 bg-emerald-500/[0.06]"
+                              : value >= 60
+                                ? "border-red-500/20 bg-red-500/[0.04]"
+                                : "border-border bg-muted/10",
+                          )}
+                        >
+                          <p className="text-[0.52rem] font-black uppercase tracking-[0.08em] text-muted-foreground">
+                            {damageChannelLabel(channel, locale)}
+                          </p>
+                          <p className={cn("mt-0.5 text-sm font-black", value < 0 ? "text-emerald-300" : "text-foreground")}>
+                            {value > 0 ? "+" : ""}{value}%
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : null}
+
+                {variant.status && Object.keys(variant.status).length ? (
+                  <>
+                    <p className="mt-3 text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+                      {copy("Status / limiar", "Status / threshold", "Estado / umbral")}
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {(Object.entries(variant.status) as Array<[SoulsStatusChannel, number | "immune"]>).map(([channel, value]) => (
+                        <span
+                          key={channel}
+                          className="rounded-full border border-border bg-muted/10 px-2.5 py-1 text-[0.66rem] font-semibold text-muted-foreground"
+                        >
+                          {statusChannelLabel(channel, locale)} · {value === "immune"
+                            ? copy("Imune", "Immune", "Inmune")
+                            : value}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                ) : null}
+
+                {variant.note ? (
+                  <p className="mt-3 text-[0.66rem] leading-5 text-muted-foreground">{variant.note}</p>
+                ) : null}
+              </div>
+            ))}
+          </div>
+
+          {defenseProfile.note ? (
+            <p className="mt-3 text-[0.66rem] leading-5 text-muted-foreground">{defenseProfile.note}</p>
+          ) : null}
+        </section>
+      ) : null}
+
       <section className="mt-4 rounded-lg border border-border bg-muted/20 p-5">
         <h4 className="flex items-center gap-2 font-display text-lg font-bold text-foreground">
           <Swords className="size-4 text-gold-strong" />
@@ -410,6 +514,29 @@ function BossDetail({
       </div>
     </article>
   );
+}
+
+function damageChannelLabel(channel: SoulsDamageChannel, locale: Locale) {
+  const labels: Record<SoulsDamageChannel, [string, string, string]> = {
+    physical: ["Físico", "Physical", "Físico"],
+    strike: ["Impacto", "Strike", "Golpe"],
+    slash: ["Corte", "Slash", "Corte"],
+    thrust: ["Perfuração", "Thrust", "Perforación"],
+    magic: ["Magia", "Magic", "Magia"],
+    fire: ["Fogo", "Fire", "Fuego"],
+    lightning: ["Raio", "Lightning", "Rayo"],
+    dark: ["Dark", "Dark", "Oscuro"],
+  };
+  return localeCopy(locale, ...labels[channel]);
+}
+
+function statusChannelLabel(channel: SoulsStatusChannel, locale: Locale) {
+  const labels: Record<SoulsStatusChannel, [string, string, string]> = {
+    bleed: ["Sangramento", "Bleed", "Sangrado"],
+    poison: ["Veneno", "Poison", "Veneno"],
+    frost: ["Gelo", "Frost", "Hielo"],
+  };
+  return localeCopy(locale, ...labels[channel]);
 }
 
 function kindLabel(kind: SoulsBossKind, locale: Locale) {
