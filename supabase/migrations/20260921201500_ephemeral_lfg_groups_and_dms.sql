@@ -277,3 +277,23 @@ begin
   );
 end;
 $$;
+
+
+drop policy if exists "Age-compatible users can request LFG matches" on public.lfg_applications;
+create policy "Age-compatible users can request LFG matches"
+on public.lfg_applications for insert
+to authenticated
+with check (
+  applicant_user_id = (select auth.uid())
+  and private.lfg_age_matches_post(applicant_user_id, lfg_post_id)
+  and exists (
+    select 1
+    from public.lfg_posts lp
+    where lp.id = lfg_post_id
+      and lp.status = 'open'
+      and lp.expires_at is not null
+      and lp.expires_at > now()
+      and lp.slots_open > 0
+      and lp.user_id <> (select auth.uid())
+  )
+);
