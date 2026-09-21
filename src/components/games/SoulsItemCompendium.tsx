@@ -40,6 +40,11 @@ import {
   loadSoulsRingEffects,
   type SoulsRingEffect,
 } from "@/lib/souls-ring-effects";
+import {
+  findSoulsItemMetadata,
+  loadSoulsItemMetadata,
+  type SoulsItemMetadata,
+} from "@/lib/souls-item-metadata";
 
 const CATEGORIES: Array<{
   key: "all" | SoulsCompendiumCategory;
@@ -70,6 +75,7 @@ export function SoulsItemCompendium({
   const [technicalWeapons, setTechnicalWeapons] = useState<SoulsDpsWeapon[]>([]);
   const [technicalArmor, setTechnicalArmor] = useState<SoulsArmorTechnical[]>([]);
   const [ringEffects, setRingEffects] = useState<SoulsRingEffect[]>([]);
+  const [itemMetadata, setItemMetadata] = useState<SoulsItemMetadata[]>([]);
 
   useEffect(() => {
     let active = true;
@@ -117,6 +123,23 @@ export function SoulsItemCompendium({
       .catch((error) => {
         console.warn("[SoulsItemCompendium] ring effect data unavailable", error);
         if (active) setRingEffects([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [gameSlug]);
+
+  useEffect(() => {
+    let active = true;
+
+    void loadSoulsItemMetadata(gameSlug)
+      .then((data) => {
+        if (active) setItemMetadata(data);
+      })
+      .catch((error) => {
+        console.warn("[SoulsItemCompendium] item metadata unavailable", error);
+        if (active) setItemMetadata([]);
       });
 
     return () => {
@@ -179,6 +202,7 @@ export function SoulsItemCompendium({
       : null;
   const technicalRingEffect =
     selected?.category === "ring" ? findSoulsRingEffect(ringEffects, selected.name) : null;
+  const selectedMetadata = selected ? findSoulsItemMetadata(itemMetadata, selected.name) : null;
 
   const gameName = gameSlug === "dark-souls-remastered" ? "Dark Souls Remastered" : "Dark Souls III";
 
@@ -345,6 +369,9 @@ export function SoulsItemCompendium({
                 {technicalRingEffect ? (
                   <RingEffectCard effect={technicalRingEffect} locale={locale} />
                 ) : null}
+                {selectedMetadata ? (
+                  <ItemMetadataCard metadata={selectedMetadata} locale={locale} />
+                ) : null}
 
                 <div>
                   <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
@@ -492,6 +519,48 @@ function WeaponTechnicalCard({
           {weapon.obtained.join(" · ")}
         </p>
       ) : null}
+    </div>
+  );
+}
+
+function ItemMetadataCard({
+  metadata,
+  locale,
+}: {
+  metadata: SoulsItemMetadata;
+  locale: Locale;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+
+  return (
+    <div className="rounded-2xl border border-border bg-muted/10 p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="rounded-full border border-border bg-background/55 px-2.5 py-1 text-[0.6rem] font-black uppercase tracking-[0.08em] text-muted-foreground">
+          {metadata.category}
+        </span>
+        <span className="rounded-full border border-gold/20 bg-gold/[0.05] px-2.5 py-1 text-[0.6rem] font-black uppercase tracking-[0.08em] text-gold-strong">
+          {metadata.subcategory}
+        </span>
+      </div>
+
+      {metadata.skill ? (
+        <div className="mt-3">
+          <p className="text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+            {copy("Skill / habilidade", "Skill", "Skill / habilidad")}
+          </p>
+          <p className="mt-1 text-sm font-bold text-foreground">{metadata.skill}</p>
+        </div>
+      ) : null}
+
+      <a
+        href={metadata.source.url}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-3 inline-flex items-center gap-1 text-[0.66rem] font-bold text-gold-strong hover:underline"
+      >
+        {metadata.source.label}
+        <ExternalLink className="size-3" />
+      </a>
     </div>
   );
 }
