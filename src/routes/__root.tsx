@@ -125,6 +125,11 @@ function RootShell({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7774329183197175"
+          crossOrigin="anonymous"
+        />
       </head>
       <body>
         <I18nProvider>{children}</I18nProvider>
