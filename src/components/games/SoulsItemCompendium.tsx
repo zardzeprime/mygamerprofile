@@ -688,7 +688,7 @@ function ArmorTechnicalCard({
     unknown: copy("Peça", "Piece", "Pieza"),
   };
 
-  const defenseRows: Array<[string, number | undefined]> = [
+  const defenseRows = ([
     [copy("Físico", "Physical", "Físico"), armor.defense.physical],
     [copy("Impacto", "Strike", "Golpe"), armor.defense.strike],
     [copy("Corte", "Slash", "Corte"), armor.defense.slash],
@@ -697,14 +697,18 @@ function ArmorTechnicalCard({
     [copy("Fogo", "Fire", "Fuego"), armor.defense.fire],
     [copy("Raio", "Lightning", "Rayo"), armor.defense.lightning],
     ["Dark", armor.defense.dark],
-  ].filter((entry): entry is [string, number] => typeof entry[1] === "number");
+  ] satisfies Array<[string, number | undefined]>).filter(
+    (entry): entry is [string, number] => typeof entry[1] === "number",
+  );
 
-  const resistanceRows: Array<[string, number | undefined]> = [
+  const resistanceRows = ([
     [copy("Sangramento", "Bleed", "Sangrado"), armor.resistance.bleed],
     [copy("Veneno", "Poison", "Veneno"), armor.resistance.poison],
     [copy("Gelo", "Frost", "Hielo"), armor.resistance.frost],
     [copy("Maldição", "Curse", "Maldición"), armor.resistance.curse],
-  ].filter((entry): entry is [string, number] => typeof entry[1] === "number");
+  ] satisfies Array<[string, number | undefined]>).filter(
+    (entry): entry is [string, number] => typeof entry[1] === "number",
+  );
 
   return (
     <div className="rounded-2xl border border-gold/25 bg-gold/[0.05] p-4">

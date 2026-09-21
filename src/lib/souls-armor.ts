@@ -225,8 +225,11 @@ async function loadDs3Armor() {
     const match = line.match(/^\s*\{\s*\d+\s*,\s*"([^"]+)"\s*,\s*([^}]+)\}\s*,?/);
     if (!match) continue;
 
-    const name = match[1].trim();
-    const parts = match[2].split(",").map((part) => part.trim());
+    const rawName = match[1];
+    const rawParts = match[2];
+    if (!rawName || !rawParts) continue;
+    const name = rawName.trim();
+    const parts = rawParts.split(",").map((part) => part.trim());
     if (parts.length < 14) continue;
 
     const [

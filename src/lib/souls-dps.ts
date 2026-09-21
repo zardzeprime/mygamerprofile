@@ -37,23 +37,23 @@ export type SoulsDpsWeapon = {
   id: string;
   game: SoulsDpsGame;
   name: string;
-  weaponClass?: string;
-  iconUrl?: string;
-  weight?: number;
+  weaponClass?: string | undefined;
+  iconUrl?: string | undefined;
+  weight?: number | undefined;
   requirements: SoulsRequirements;
   baseDamage: SoulsDamage;
-  maxDamage?: SoulsDamage;
-  durability?: number;
-  enchantable?: boolean;
-  scalingLetters?: Partial<Record<SoulsDpsStat, string | null>>;
-  scalingNumeric?: SoulsScaling;
-  infusions?: string[];
+  maxDamage?: SoulsDamage | undefined;
+  durability?: number | undefined;
+  enchantable?: boolean | undefined;
+  scalingLetters?: Partial<Record<SoulsDpsStat, string | null>> | undefined;
+  scalingNumeric?: SoulsScaling | undefined;
+  infusions?: string[] | undefined;
   maxUpgrade: number;
   sourceUrl: string;
-  obtained?: string[];
-  attackTypes?: string[];
-  description?: string;
-  weaponSkill?: string;
+  obtained?: string[] | undefined;
+  attackTypes?: string[] | undefined;
+  description?: string | undefined;
+  weaponSkill?: string | undefined;
 };
 
 export type Ds3WeaponLevel = SoulsDpsWeapon & {
@@ -352,7 +352,10 @@ function flattenDs1ReinforcementRows(payload: unknown) {
       if (key === "category" || !Array.isArray(value)) return;
       value.forEach((entry) => {
         if (entry && typeof entry === "object") {
-          rows.push({ ...(entry as Ds1ReinforcementRow), category });
+          rows.push({
+            ...(entry as Ds1ReinforcementRow),
+            ...(category ? { category } : {}),
+          });
         }
       });
     });
@@ -544,7 +547,7 @@ async function loadDs3LevelRows(level: number) {
 
 async function loadDs3UpgradeLimits() {
   if (ds3UniqueCache) return ds3UniqueCache;
-  ds3UniqueCache = fetch(`${DS3_BASE}/uniqueness.tsv`)
+    const request = fetch(`${DS3_BASE}/uniqueness.tsv`)
     .then(async (response) => {
       if (!response.ok) return new Map<string, number>();
       const text = await response.text();
@@ -559,12 +562,13 @@ async function loadDs3UpgradeLimits() {
       return map;
     })
     .catch(() => new Map<string, number>());
-  return ds3UniqueCache;
+    ds3UniqueCache = request;
+    return request;
 }
 
 export async function loadDs3Weapons() {
   if (ds3CatalogCache) return ds3CatalogCache;
-  ds3CatalogCache = Promise.all([
+    const request = Promise.all([
     loadDs3LevelRows(0),
     loadDs3UpgradeLimits(),
     fetch(`${DS3_BASE}/order.json`).then(async (response) => {
@@ -595,8 +599,9 @@ export async function loadDs3Weapons() {
         const variants = byName.get(name);
         if (!variants?.length) return null;
         const base = variants.find((row) => row.infusion === "-") ?? variants[0];
+        if (!base) return null;
         const infusions = variants.map((row) => row.infusion);
-        return {
+        const entry: SoulsDpsWeapon = {
           id: `ds3:${name}`,
           game: "dark-souls-iii" as const,
           name,
@@ -620,16 +625,18 @@ export async function loadDs3Weapons() {
           weaponSkill: extractDs3WeaponSkill(
             compendiumByName.get(name.toLocaleLowerCase())?.description,
           ),
-        } satisfies SoulsDpsWeapon;
+        };
+        return entry;
       })
-      .filter((entry): entry is SoulsDpsWeapon => Boolean(entry));
+      .filter((entry): entry is SoulsDpsWeapon => entry !== null);
   });
-  return ds3CatalogCache;
+  ds3CatalogCache = request;
+  return request;
 }
 
 async function loadDs3Saturations() {
   if (saturationCache) return saturationCache;
-  saturationCache = fetch(`${DS3_BASE}/saturations.csv`).then(async (response) => {
+  const request = fetch(`${DS3_BASE}/saturations.csv`).then(async (response) => {
     if (!response.ok) throw new Error("DS3_SATURATIONS_UNAVAILABLE");
     const text = await response.text();
     const rows = text.split(/\r?\n/).filter(Boolean).map(parseCsvLine);
@@ -644,7 +651,8 @@ async function loadDs3Saturations() {
     }
     return output;
   });
-  return saturationCache;
+  saturationCache = request;
+  return request;
 }
 
 export async function loadDs3WeaponLevel(
@@ -760,7 +768,7 @@ export async function calculateDs3Ar(
     totalAr,
     requirementsMet: reqMet,
     rating,
-    ratingLabel: SOULS_RATING_LABELS[rating - 1],
+    ratingLabel: SOULS_RATING_LABELS[rating - 1] ?? SOULS_RATING_LABELS[0] ?? "Em revisão",
     scalingGrades: {
       str: scalingLetterFromCoefficient(scaling.str),
       dex: scalingLetterFromCoefficient(scaling.dex),
@@ -879,7 +887,7 @@ export function calculateDs1Estimate(
       totalAr: 0,
       requirementsMet: reqMet,
       rating,
-      ratingLabel: SOULS_RATING_LABELS[rating - 1],
+      ratingLabel: SOULS_RATING_LABELS[rating - 1] ?? SOULS_RATING_LABELS[0] ?? "Em revisão",
       scalingGrades: pathScaling,
       numericAvailable: false,
       notes: [
@@ -922,7 +930,7 @@ export function calculateDs1Estimate(
     totalAr,
     requirementsMet: reqMet,
     rating,
-    ratingLabel: SOULS_RATING_LABELS[rating - 1],
+    ratingLabel: SOULS_RATING_LABELS[rating - 1] ?? SOULS_RATING_LABELS[0] ?? "Em revisão",
     scalingGrades: Object.fromEntries(
       Object.entries(scaling)
         .filter(([, grade]) => Boolean(grade))

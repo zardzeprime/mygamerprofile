@@ -34,7 +34,12 @@ const base = (
   status?: SoulsBossDefenseVariant["status"],
   note?: string,
 ): SoulsBossDefenseProfile => ({
-  variants: [{ label: "Boss", absorption, status, note }],
+  variants: [{
+    label: "Boss",
+    absorption,
+    ...(status ? { status } : {}),
+    ...(note ? { note } : {}),
+  }],
 });
 
 export const DARK_SOULS_III_BOSS_DEFENSES: Record<string, SoulsBossDefenseProfile> = {
