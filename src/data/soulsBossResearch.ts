@@ -47,7 +47,7 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Sem summon NPC", "No NPC summon", "Sin invocación de PNJ"),
       text("Sem Boss Soul", "No Boss Soul", "Sin Alma de jefe"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Iudex+Gundyr",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:iudex-gundyr",
     researchStatus: "reviewed",
   },
   {
@@ -192,7 +192,7 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Summons NPC disponíveis", "NPC summons available", "Invocaciones de PNJ disponibles"),
       text("Segunda barra de vida", "Second health bar", "Segunda barra de vida"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Abyss+Watchers",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:abyss-watchers",
     researchStatus: "reviewed",
   },
   {
@@ -281,7 +281,7 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Summons NPC disponíveis", "NPC summons available", "Invocaciones de PNJ disponibles"),
       text("Clone replica sequências", "Clone replica sequências", "Clone replica sequências"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Pontiff+Sulyvahn",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:pontiff-sulyvahn",
     researchStatus: "reviewed",
   },
   {
@@ -314,7 +314,7 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
         "Riposte por stagger na cabeça",
       ),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Yhorm+the+Giant",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:yhorm-the-giant",
     researchStatus: "reviewed",
   },
   {
@@ -350,7 +350,7 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
         "Dano mágico e fogo relevantes",
       ),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Aldrich,+Devourer+of+Gods",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:aldrich-devourer-of-gods",
     researchStatus: "reviewed",
   },
   {
@@ -386,7 +386,7 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
         "Pode ser enfrentada antecipadamente",
       ),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Dancer+of+the+Boreal+Valley",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:dancer-of-the-boreal-valley",
     researchStatus: "reviewed",
   },
   {
@@ -555,7 +555,7 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Riposte após stagger", "Riposte after a stagger", "Riposte tras romper postura"),
       text("Encontro opcional", "Optional encounter", "Encuentro opcional"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/The+Nameless+King",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:the-nameless-king",
     researchStatus: "reviewed",
   },
   {
@@ -587,7 +587,7 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       ),
       text("Segunda barra de vida", "Second health bar", "Segunda barra de vida"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Soul+of+Cinder",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:soul-of-cinder",
     researchStatus: "reviewed",
   },
   {
@@ -648,7 +648,7 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Summon NPC disponível", "NPC summon available", "Invocación de PNJ disponible"),
       text("Frostbite e fogo negro", "Frostbite e fogo negro", "Frostbite e fogo negro"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Sister+Friede+%26+Father+Ariandel",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:sister-friede",
     researchStatus: "reviewed",
   },
   {
@@ -737,7 +737,7 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       ),
       text("Encontro opcional", "Optional encounter", "Encuentro opcional"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Darkeater+Midir",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:darkeater-midir",
     researchStatus: "reviewed",
   },
   {
@@ -769,7 +769,7 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
         "Poison e Toxic podem ser relevantes",
       ),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Slave+Knight+Gael",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:slave-knight-gael",
     researchStatus: "reviewed",
   },
 ];
