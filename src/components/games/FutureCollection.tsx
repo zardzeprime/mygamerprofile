@@ -14,6 +14,7 @@ import { ValorantMaps } from "@/components/games/ValorantMaps";
 import { ValorantNews } from "@/components/games/ValorantNews";
 import { ValorantWeapons } from "@/components/games/ValorantWeapons";
 import { ValorantSkins } from "@/components/games/ValorantSkins";
+import { ValorantLineupsPanel } from "@/components/games/ValorantLineupsPanel";
 import { LeagueChampionExplorer } from "@/components/games/LeagueChampionExplorer";
 import { LeagueRunesExplorer } from "@/components/games/LeagueRunesExplorer";
 import { LeagueBuildLab } from "@/components/games/LeagueBuildLab";
@@ -55,6 +56,7 @@ export function FutureCollection({
     if (moduleKey === "weapons") return <ValorantWeapons locale={locale} />;
     if (moduleKey === "skins") return <ValorantSkins locale={locale} />;
     if (moduleKey === "competitive") return <CompetitiveCompendium game="valorant" locale={locale} />;
+    if (moduleKey === "lineups") return <ValorantLineupsPanel locale={locale} />;
   }
 
   if (gameSlug === "league-of-legends") {
