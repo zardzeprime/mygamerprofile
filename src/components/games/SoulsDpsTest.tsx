@@ -6,6 +6,7 @@ import {
   Loader2,
   Minus,
   Plus,
+  Search,
   ShieldAlert,
   Sparkles,
   Sword,
@@ -18,13 +19,16 @@ import { localeCopy } from "@/i18n/locale-utils";
 import {
   calculateDs1Estimate,
   calculateDs3Ar,
+  DS1_UPGRADE_PATHS,
   explainSoulsSynergy,
+  getDs1UpgradePathOptions,
   loadDs1Weapons,
   loadDs3WeaponLevel,
   loadDs3Weapons,
   SOULS_DPS_SOURCES,
   SOULS_RATING_COLORS,
   SOULS_RATING_LABELS,
+  type Ds1UpgradePath,
   type Ds3WeaponLevel,
   type SoulsDpsResult,
   type SoulsDpsStat,
@@ -64,6 +68,8 @@ export function SoulsDpsTest({
   const [weapons, setWeapons] = useState<SoulsDpsWeapon[]>([]);
   const [weaponName, setWeaponName] = useState("");
   const [infusion, setInfusion] = useState("-");
+  const [ds1Path, setDs1Path] = useState<Ds1UpgradePath>("regular");
+  const [humanity, setHumanity] = useState(0);
   const [upgrade, setUpgrade] = useState(0);
   const [stats, setStats] = useState<SoulsStats>(DEFAULT_STATS);
   const [twoHanded, setTwoHanded] = useState(false);
@@ -73,6 +79,7 @@ export function SoulsDpsTest({
   const [levelWeapon, setLevelWeapon] = useState<Ds3WeaponLevel | null>(null);
   const [result, setResult] = useState<SoulsDpsResult | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [iconFailed, setIconFailed] = useState(false);
 
   const isDs3 = gameSlug === "dark-souls-iii";
 
@@ -89,6 +96,9 @@ export function SoulsDpsTest({
         const first = data[0];
         setWeaponName(first?.name ?? "");
         setInfusion(first?.infusions?.includes("-") ? "-" : first?.infusions?.[0] ?? "-");
+        setDs1Path("regular");
+        setHumanity(0);
+        setQuery("");
         setUpgrade(0);
       })
       .catch((error) => {
@@ -109,9 +119,31 @@ export function SoulsDpsTest({
     [weaponName, weapons],
   );
 
+  const ds1PathOptions = useMemo(
+    () => (selectedWeapon && !isDs3 ? getDs1UpgradePathOptions(selectedWeapon) : ["regular"] as Ds1UpgradePath[]),
+    [isDs3, selectedWeapon],
+  );
+  const maxUpgrade = selectedWeapon
+    ? isDs3 || ds1Path === "regular"
+      ? selectedWeapon.maxUpgrade
+      : DS1_UPGRADE_PATHS[ds1Path].maxUpgrade
+    : 0;
+
+  const chooseWeapon = (name: string) => {
+    setWeaponName(name);
+    setQuery("");
+    setUpgrade(0);
+    setDs1Path("regular");
+    setHumanity(0);
+    setIconFailed(false);
+  };
+
   useEffect(() => {
     if (!selectedWeapon) return;
-    setUpgrade((current) => Math.min(current, selectedWeapon.maxUpgrade));
+    setUpgrade((current) => Math.min(current, maxUpgrade));
+    if (!isDs3 && !ds1PathOptions.includes(ds1Path)) {
+      setDs1Path("regular");
+    }
     if (isDs3) {
       const nextInfusion = selectedWeapon.infusions?.includes(infusion)
         ? infusion
@@ -120,7 +152,7 @@ export function SoulsDpsTest({
           : selectedWeapon.infusions?.[0] ?? "-";
       if (nextInfusion !== infusion) setInfusion(nextInfusion);
     }
-  }, [infusion, isDs3, selectedWeapon]);
+  }, [ds1Path, ds1PathOptions, infusion, isDs3, maxUpgrade, selectedWeapon]);
 
   useEffect(() => {
     if (!selectedWeapon) {
@@ -130,7 +162,16 @@ export function SoulsDpsTest({
 
     if (!isDs3) {
       setLevelWeapon(null);
-      setResult(calculateDs1Estimate(selectedWeapon, stats, upgrade, twoHanded));
+      setResult(
+        calculateDs1Estimate(
+          selectedWeapon,
+          stats,
+          upgrade,
+          twoHanded,
+          ds1Path,
+          humanity,
+        ),
+      );
       return;
     }
 
@@ -158,22 +199,45 @@ export function SoulsDpsTest({
     return () => {
       active = false;
     };
-  }, [infusion, isDs3, selectedWeapon, stats, twoHanded, upgrade]);
+  }, [ds1Path, humanity, infusion, isDs3, selectedWeapon, stats, twoHanded, upgrade]);
 
   const filteredWeapons = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase(locale);
-    if (!normalized) return weapons;
-    return weapons.filter((weapon) =>
-      `${weapon.name} ${weapon.weaponClass ?? ""}`
+    const normalize = (value: string) =>
+      value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
         .toLocaleLowerCase(locale)
-        .includes(normalized),
-    );
+        .trim();
+    const normalized = normalize(query);
+    if (!normalized) return weapons;
+
+    return weapons
+      .map((weapon) => {
+        const name = normalize(weapon.name);
+        const haystack = normalize(`${weapon.name} ${weapon.weaponClass ?? ""}`);
+        const score = name === normalized ? 0 : name.startsWith(normalized) ? 1 : haystack.includes(normalized) ? 2 : 9;
+        return { weapon, score };
+      })
+      .filter(({ score }) => score < 9)
+      .sort((a, b) => a.score - b.score || a.weapon.name.localeCompare(b.weapon.name, locale))
+      .map(({ weapon }) => weapon);
   }, [locale, query, weapons]);
 
+  const searchResults = query.trim() ? filteredWeapons.slice(0, 8) : [];
+
   const currentWeapon = levelWeapon ?? selectedWeapon;
-  const synergy = currentWeapon
+  const naturalSynergy = currentWeapon
     ? explainSoulsSynergy(currentWeapon, stats, twoHanded)
     : [];
+  const synergy =
+    !isDs3 && ds1Path !== "regular"
+      ? [
+          DS1_UPGRADE_PATHS[ds1Path].description,
+          ...(ds1Path === "chaos"
+            ? [`Humanidade segurada: ${humanity}/10.`]
+            : []),
+        ]
+      : naturalSynergy;
   const source = isDs3 ? SOULS_DPS_SOURCES.ds3 : SOULS_DPS_SOURCES.ds1;
 
   if (loading) {
@@ -251,10 +315,12 @@ export function SoulsDpsTest({
             <div className="grid gap-5 lg:grid-cols-[15rem_minmax(0,1fr)]">
               <div>
                 <div className="grid aspect-square place-items-center overflow-hidden rounded-2xl border border-border bg-black/25 p-4">
-                  {selectedWeapon.iconUrl ? (
+                  {(currentWeapon?.iconUrl ?? selectedWeapon.iconUrl) && !iconFailed ? (
                     <img
-                      src={selectedWeapon.iconUrl}
-                      alt=""
+                      key={`${selectedWeapon.id}:${currentWeapon?.iconUrl ?? selectedWeapon.iconUrl}`}
+                      src={currentWeapon?.iconUrl ?? selectedWeapon.iconUrl}
+                      alt={selectedWeapon.name}
+                      onError={() => setIconFailed(true)}
                       className="max-h-full max-w-full object-contain"
                     />
                   ) : (
@@ -271,16 +337,70 @@ export function SoulsDpsTest({
               </div>
 
               <div className="space-y-4">
-                <div>
+                <div className="relative z-20">
                   <label className="text-xs font-black uppercase tracking-[0.09em] text-muted-foreground">
                     {copy("Buscar arma", "Search weapon", "Buscar arma")}
                   </label>
-                  <Input
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    className="mt-2"
-                    placeholder={copy("Claymore, Uchigatana…", "Claymore, Uchigatana…", "Claymore, Uchigatana…")}
-                  />
+                  <div className="relative mt-2">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      value={query}
+                      onChange={(event) => setQuery(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" && searchResults[0]) {
+                          event.preventDefault();
+                          chooseWeapon(searchResults[0].name);
+                        }
+                        if (event.key === "Escape") setQuery("");
+                      }}
+                      className="pl-9"
+                      placeholder={copy(
+                        "Digite nome ou classe da arma…",
+                        "Type weapon name or class…",
+                        "Escribe nombre o clase del arma…",
+                      )}
+                    />
+                  </div>
+
+                  {query.trim() ? (
+                    <div className="absolute left-0 right-0 top-full mt-2 max-h-80 overflow-y-auto rounded-2xl border border-border bg-background/98 p-1.5 shadow-2xl backdrop-blur">
+                      {searchResults.length ? (
+                        searchResults.map((weapon) => (
+                          <button
+                            key={weapon.id}
+                            type="button"
+                            onClick={() => chooseWeapon(weapon.name)}
+                            className={cn(
+                              "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-muted/50",
+                              weapon.name === selectedWeapon.name && "bg-gold/[0.08]",
+                            )}
+                          >
+                            <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-black/20 p-1">
+                              {weapon.iconUrl ? (
+                                <img src={weapon.iconUrl} alt="" className="max-h-full max-w-full object-contain" />
+                              ) : (
+                                <Sword className="size-4 text-muted-foreground" />
+                              )}
+                            </span>
+                            <span className="min-w-0">
+                              <span className="block truncate text-sm font-bold text-foreground">
+                                {weapon.name}
+                              </span>
+                              {weapon.weaponClass ? (
+                                <span className="block truncate text-[0.66rem] text-muted-foreground">
+                                  {weapon.weaponClass}
+                                </span>
+                              ) : null}
+                            </span>
+                          </button>
+                        ))
+                      ) : (
+                        <p className="px-3 py-4 text-xs text-muted-foreground">
+                          {copy("Nenhuma arma encontrada.", "No weapon found.", "No se encontró ningún arma.")}
+                        </p>
+                      )}
+                    </div>
+                  ) : null}
                 </div>
 
                 <label className="block">
@@ -290,13 +410,10 @@ export function SoulsDpsTest({
                   <div className="relative mt-2">
                     <select
                       value={selectedWeapon.name}
-                      onChange={(event) => {
-                        setWeaponName(event.target.value);
-                        setUpgrade(0);
-                      }}
+                      onChange={(event) => chooseWeapon(event.target.value)}
                       className="h-11 w-full appearance-none rounded-xl border border-border bg-background px-3 pr-10 text-sm font-semibold text-foreground outline-none focus:border-gold/50"
                     >
-                      {filteredWeapons.map((weapon) => (
+                      {weapons.map((weapon) => (
                         <option key={weapon.id} value={weapon.name}>
                           {weapon.name}
                         </option>
@@ -325,6 +442,62 @@ export function SoulsDpsTest({
                   </label>
                 ) : null}
 
+                {!isDs3 ? (
+                  <div>
+                    <label className="block">
+                      <span className="text-xs font-black uppercase tracking-[0.09em] text-muted-foreground">
+                        {copy("Caminho de reforço / elemento", "Upgrade path / element", "Ruta de mejora / elemento")}
+                      </span>
+                      <select
+                        value={ds1Path}
+                        onChange={(event) => {
+                          const next = event.target.value as Ds1UpgradePath;
+                          setDs1Path(next);
+                          setUpgrade(0);
+                        }}
+                        className="mt-2 h-11 w-full rounded-xl border border-border bg-background px-3 text-sm font-semibold text-foreground outline-none focus:border-gold/50"
+                      >
+                        {ds1PathOptions.map((value) => (
+                          <option key={value} value={value}>
+                            {DS1_UPGRADE_PATHS[value].label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <p className="mt-2 text-[0.66rem] leading-5 text-muted-foreground">
+                      {DS1_UPGRADE_PATHS[ds1Path].description}
+                    </p>
+                    {ds1PathOptions.length === 1 ? (
+                      <p className="mt-1 text-[0.64rem] leading-5 text-amber-300/80">
+                        {copy(
+                          "Arma única/especial: o MGP mantém apenas a rota própria para não mostrar ascensões incompatíveis.",
+                          "Unique/special weapon: MGP keeps only its native route to avoid showing incompatible ascensions.",
+                          "Arma única/especial: MGP mantiene solo su ruta propia para no mostrar ascensos incompatibles.",
+                        )}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                {!isDs3 && ds1Path === "chaos" ? (
+                  <div>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-xs font-black uppercase tracking-[0.09em] text-muted-foreground">
+                        {copy("Humanidade segurada", "Held Humanity", "Humanidad acumulada")}
+                      </span>
+                      <span className="text-sm font-black text-gold-strong">{humanity}/10</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={10}
+                      value={humanity}
+                      onChange={(event) => setHumanity(Number(event.target.value))}
+                      className="mt-3 w-full accent-[hsl(var(--gold))]"
+                    />
+                  </div>
+                ) : null}
+
                 <div>
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-xs font-black uppercase tracking-[0.09em] text-muted-foreground">
@@ -337,22 +510,28 @@ export function SoulsDpsTest({
                   <input
                     type="range"
                     min={0}
-                    max={selectedWeapon.maxUpgrade}
+                    max={maxUpgrade}
                     value={upgrade}
                     onChange={(event) => setUpgrade(Number(event.target.value))}
                     className="mt-3 w-full accent-[hsl(var(--gold))]"
                   />
                   <div className="mt-1 flex justify-between text-[0.62rem] text-muted-foreground">
                     <span>+0</span>
-                    <span>+{selectedWeapon.maxUpgrade}</span>
+                    <span>+{maxUpgrade}</span>
                   </div>
                   {!isDs3 ? (
                     <p className="mt-2 text-[0.66rem] leading-5 text-muted-foreground">
-                      {copy(
-                        "No DS1, o upgrade participa do modelo Casual e da estimativa avançada; rotas especiais de +5 ainda ficam marcadas como beta.",
-                        "In DS1, upgrade feeds the Casual model and advanced estimate; special +5 paths are still treated as beta.",
-                        "En DS1, la mejora alimenta el modelo Casual y la estimación avanzada; las rutas especiales +5 siguen en beta.",
-                      )}
+                      {ds1Path === "regular"
+                        ? copy(
+                            "Rota Normal: o modo Avançado usa a estimativa de AR do MGP até o limite real da arma.",
+                            "Normal path: Advanced mode uses MGP's AR estimate up to the weapon's real limit.",
+                            "Ruta Normal: el modo Avanzado usa la estimación de AR de MGP hasta el límite real del arma.",
+                          )
+                        : copy(
+                            "Rotas especiais mudam elemento/scaling. O Casual já reage à rota; AR numérico fica oculto até termos a curva exata por arma.",
+                            "Special paths change element/scaling. Casual mode already reacts to the path; numeric AR stays hidden until per-weapon curves are validated.",
+                            "Las rutas especiales cambian elemento/escalado. Casual ya reacciona a la ruta; el AR numérico queda oculto hasta validar curvas por arma.",
+                          )}
                     </p>
                   ) : null}
                 </div>
@@ -420,6 +599,11 @@ export function SoulsDpsTest({
             <h3 className="mt-2 font-display text-xl font-bold text-foreground">
               {selectedWeapon.name}
             </h3>
+            {!isDs3 ? (
+              <span className="mt-2 inline-flex rounded-full border border-gold/25 bg-gold/[0.07] px-2.5 py-1 text-[0.62rem] font-black uppercase tracking-[0.08em] text-gold-strong">
+                {DS1_UPGRADE_PATHS[ds1Path].label} · +{upgrade}
+              </span>
+            ) : null}
             {selectedWeapon.weaponClass ? (
               <p className="mt-1 text-xs text-muted-foreground">{selectedWeapon.weaponClass}</p>
             ) : null}
@@ -453,7 +637,10 @@ export function SoulsDpsTest({
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {(Object.keys(STAT_LABELS) as SoulsDpsStat[]).map((stat) => {
-                  const grade = currentWeapon?.scalingLetters?.[stat];
+                  const grade =
+                    !isDs3 && ds1Path !== "regular"
+                      ? result?.scalingGrades?.[stat]
+                      : currentWeapon?.scalingLetters?.[stat];
                   if (!grade || grade === "-") return null;
                   return (
                     <span
@@ -464,6 +651,16 @@ export function SoulsDpsTest({
                     </span>
                   );
                 })}
+                {!isDs3 && ["fire", "lightning"].includes(ds1Path) ? (
+                  <span className="rounded-lg border border-border bg-muted/10 px-2 py-1.5 text-xs font-bold text-muted-foreground">
+                    {copy("Sem scaling de stats", "No stat scaling", "Sin escalado de stats")}
+                  </span>
+                ) : null}
+                {!isDs3 && ds1Path === "chaos" ? (
+                  <span className="rounded-lg border border-border bg-muted/10 px-2 py-1.5 text-xs font-bold text-foreground">
+                    HUM · {humanity}/10
+                  </span>
+                ) : null}
               </div>
             </div>
           </section>
@@ -743,14 +940,26 @@ function AdvancedResult({
             {isDs3 ? "Attack Rating" : copy("AR estimado", "Estimated AR", "AR estimado")}
           </p>
           <p className="mt-1 font-display text-4xl font-black text-foreground">
-            {calculating ? "…" : result ? Math.round(result.totalAr) : "—"}
+            {calculating
+              ? "…"
+              : result?.numericAvailable === false
+                ? copy("Qualitativo", "Qualitative", "Cualitativo")
+                : result
+                  ? Math.round(result.totalAr)
+                  : "—"}
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
-            {copy(
-              "Antes de defesa/absorção do inimigo.",
-              "Before enemy defense/absorption.",
-              "Antes de defensa/absorción del enemigo.",
-            )}
+            {result?.numericAvailable === false
+              ? copy(
+                  "Esta rota altera a arma, mas o MGP não exibe um AR inventado: use o Casual para a leitura de compatibilidade enquanto a curva exata por arma não está validada.",
+                  "This path changes the weapon, but MGP does not display invented AR: use Casual for compatibility until exact per-weapon curves are validated.",
+                  "Esta ruta altera el arma, pero MGP no muestra un AR inventado: usa Casual hasta validar la curva exacta por arma.",
+                )
+              : copy(
+                  "Antes de defesa/absorção do inimigo.",
+                  "Before enemy defense/absorption.",
+                  "Antes de defensa/absorción del enemigo.",
+                )}
           </p>
         </div>
 
