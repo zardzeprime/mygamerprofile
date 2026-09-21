@@ -305,12 +305,19 @@ export const requestLfgMatch = createServerFn({ method: "POST" })
 
     const { data: post, error: postError } = await context.supabase
       .from("lfg_posts")
-      .select("id,user_id,status,slots_open,min_age,max_age")
+      .select("id,user_id,status,slots_open,min_age,max_age,expires_at")
       .eq("id", data.postId)
       .maybeSingle();
     if (postError || !post) throw new Error("LFG_POST_NOT_FOUND");
     if (post.user_id === context.userId) throw new Error("LFG_CANNOT_MATCH_OWN_GROUP");
-    if (post.status !== "open" || post.slots_open <= 0) throw new Error("LFG_GROUP_UNAVAILABLE");
+    if (
+      post.status !== "open" ||
+      post.slots_open <= 0 ||
+      !post.expires_at ||
+      new Date(post.expires_at).getTime() <= Date.now()
+    ) {
+      throw new Error("LFG_GROUP_UNAVAILABLE");
+    }
     if (ageState.age < post.min_age || ageState.age > post.max_age) {
       throw new Error("LFG_AGE_MISMATCH");
     }
