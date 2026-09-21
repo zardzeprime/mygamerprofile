@@ -28,11 +28,13 @@ const REASONS = [
   "sexual_content",
   "extreme_violence",
   "scam",
+  "age_misrepresentation",
+  "unsafe_contact",
   "other",
 ] as const;
 
 interface ReportDialogProps {
-  targetType: "profile" | "post" | "comment" | "lfg";
+  targetType: "profile" | "post" | "comment" | "lfg" | "lfg_message";
   targetId: string;
   username?: string;
 }
@@ -40,7 +42,7 @@ interface ReportDialogProps {
 export function ReportDialog({ targetType, targetId, username }: ReportDialogProps) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
-  const [reason, setReason] = useState<string>("");
+  const [reason, setReason] = useState<(typeof REASONS)[number] | "">("");
   const [details, setDetails] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -74,7 +76,7 @@ export function ReportDialog({ targetType, targetId, username }: ReportDialogPro
             {username && <p className="text-sm text-muted-foreground">@{username}</p>}
             <div className="space-y-2">
               <Label htmlFor="reason">{t("report.reason")}</Label>
-              <Select value={reason} onValueChange={setReason}>
+              <Select value={reason} onValueChange={(value) => setReason(value as (typeof REASONS)[number])}>
                 <SelectTrigger id="reason">
                   <SelectValue placeholder={t("report.reason")} />
                 </SelectTrigger>
