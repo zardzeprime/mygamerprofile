@@ -66,21 +66,15 @@ function applyCursorAppearance() {
   const highlight = "#59616d";
   const shadow = "#000000";
 
-  const arrowPath = "M6.2 4.6 27.1 17.1 18.3 19.2 14.2 29.3 10.4 27.5 13.9 18.5 6.2 15.9Z";
-
-  const arrow = `
+  // Default cursor: a slim sword. Keep cursor rendering data-driven so future
+  // cosmetics (axe, knife, reticle, etc.) can plug into the same pipeline.
+  const sword = `
     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
-      <defs>
-        <linearGradient id="body" x1="7" y1="5" x2="18" y2="29" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stop-color="${bodyTop}"/>
-          <stop offset="1" stop-color="${bodyBottom}"/>
-        </linearGradient>
-      </defs>
-      <path d="${arrowPath}" fill="${shadow}" opacity="0.18" transform="translate(1.15 1.15)"/>
-      <path d="${arrowPath}" fill="url(#body)" stroke="${neutralOutline}" stroke-width="3" stroke-linejoin="round"/>
-      <path d="${arrowPath}" fill="none" stroke="${accent}" stroke-width="1.45" stroke-linejoin="round"/>
-      <path d="M8.4 8.1 21.5 15.9" fill="none" stroke="${highlight}" stroke-width="1.3" stroke-linecap="round" opacity="0.48"/>
-      <path d="M12.3 25.8 15.6 18.2" fill="none" stroke="${accent}" stroke-width="1.15" stroke-linecap="round" opacity="0.82"/>
+      <path d="M7 33 31.5 8.5 35 5 33.2 10.2 10.5 35Z" fill="${shadow}" opacity=".22" transform="translate(1 1)"/>
+      <path d="M7 33 31.5 8.5 35 5 33.2 10.2 10.5 35Z" fill="${bodyTop}" stroke="${neutralOutline}" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M10 30 31.5 8.5" stroke="${accent}" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M7 27 13 33M5.5 30.5 9.5 34.5" stroke="${accent}" stroke-width="2" stroke-linecap="round"/>
+      <path d="M8.5 34.5 5.5 37.5" stroke="${neutralOutline}" stroke-width="2.5" stroke-linecap="round"/>
     </svg>
   `;
 
@@ -104,7 +98,7 @@ function applyCursorAppearance() {
     </svg>
   `;
 
-  root.style.setProperty("--mgp-cursor-default", `${cursorDataUri(arrow)} 6 5`);
+  root.style.setProperty("--mgp-cursor-default", `${cursorDataUri(sword)} 34 6`);
   root.style.setProperty("--mgp-cursor-pointer", `${cursorDataUri(pointer)} 20 20`);
 }
 
@@ -166,7 +160,7 @@ async function persistAccountPreference(patch: {
 }
 
 /** Lock dark mode before first paint and preserve the independent accent preference. */
-export const themeBootstrapScript = `(function(){var c=null;try{localStorage.setItem("mgp-theme","dark");c=localStorage.getItem("mgp-accent-color");}catch(e){}var r=document.documentElement;r.classList.add("dark");r.style.colorScheme="dark";if(c&&/^#[0-9a-f]{6}$/i.test(c)){var h=c.slice(1),R=parseInt(h.slice(0,2),16)/255,G=parseInt(h.slice(2,4),16)/255,B=parseInt(h.slice(4,6),16)/255,L=function(x){return x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2.4)},Y=.2126*L(R)+.7152*L(G)+.0722*L(B);r.style.setProperty("--mgp-user-accent",c);r.style.setProperty("--mgp-user-accent-foreground",Y>.42?"#111318":"#ffffff");r.dataset.accent="custom";}})();`;
+export const themeBootstrapScript = `(function(){var c=null;try{localStorage.setItem("mgp-theme","dark");c=localStorage.getItem("mgp-accent-color");}catch(e){}var r=document.documentElement;r.classList.add("dark");r.style.colorScheme="dark";if(c&&/^#[0-9a-f]{6}$/i.test(c)){r.style.setProperty("--mgp-user-accent",c);r.dataset.accent="custom";}})();`;
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [accentColor, setAccentColorState] = useState<string | null>(null);
