@@ -9,6 +9,7 @@ export type CompletionRequest = {
   maxOutputTokens?: number;
   providerOrder?: ProviderId[];
   timeoutMs?: number;
+  grounding?: boolean;
 };
 
 export type ProviderTiming = {
@@ -363,12 +364,14 @@ export async function complete(request: CompletionRequest) {
     [...request.messages].reverse().find((message) => message.role === "user")?.content ?? "";
 
   let groundedSystem = request.system;
-  try {
-    groundedSystem = await augmentSystemWithMgpContent(request.system, latestUserMessage);
-  } catch (error) {
-    // Site-content grounding is useful context, but it must never prevent the
-    // support AI from answering if the catalog/database is temporarily slow.
-    console.warn("[NEXUS] content grounding skipped", errorText(error));
+  if (request.grounding !== false) {
+    try {
+      groundedSystem = await augmentSystemWithMgpContent(request.system, latestUserMessage);
+    } catch (error) {
+      // Site-content grounding is useful context, but it must never prevent the
+      // support AI from answering if the catalog/database is temporarily slow.
+      console.warn("[NEXUS] content grounding skipped", errorText(error));
+    }
   }
 
   const groundedRequest: CompletionRequest = {
