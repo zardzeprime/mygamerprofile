@@ -26,11 +26,11 @@ export const SUPPORT_METHODS: SupportMethod[] = [
   },
   {
     id: "recurring",
-    status: "setup",
+    status: "active",
     label: "Apoio recorrente",
     description: "Apoio mensal para ajudar o MGP a manter custos contínuos.",
     provider: "Ko-fi",
-    url: null,
+    url: "https://ko-fi.com/P3I627EQG9",
   },
 ];
 
@@ -38,3 +38,7 @@ export const SUPPORT_METHODS: SupportMethod[] = [
 export const SUPPORT_INSTAGRAM_HANDLE = "@zard.prime";
 export const SUPPORT_INSTAGRAM_URL = "https://www.instagram.com/zard.prime/";
 export const SUPPORT_EMAIL = "contato@mgprofile.online";
+
+
+export const SUPPORT_KOFI_ID = "P3I627EQG9";
+export const SUPPORT_KOFI_URL = "https://ko-fi.com/P3I627EQG9";

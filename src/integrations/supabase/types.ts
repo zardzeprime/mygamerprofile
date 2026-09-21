@@ -427,24 +427,129 @@ export type Database = {
         }
         Relationships: []
       }
+      lfg_applications: {
+        Row: {
+          applicant_user_id: string
+          created_at: string
+          id: string
+          lfg_post_id: string
+          note: string | null
+          responded_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          applicant_user_id: string
+          created_at?: string
+          id?: string
+          lfg_post_id: string
+          note?: string | null
+          responded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          applicant_user_id?: string
+          created_at?: string
+          id?: string
+          lfg_post_id?: string
+          note?: string | null
+          responded_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lfg_applications_applicant_user_id_fkey"
+            columns: ["applicant_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lfg_applications_lfg_post_id_fkey"
+            columns: ["lfg_post_id"]
+            isOneToOne: false
+            referencedRelation: "lfg_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lfg_dm_messages: {
+        Row: {
+          application_id: string
+          body: string
+          created_at: string
+          id: string
+          read_at: string | null
+          recipient_user_id: string
+          sender_user_id: string
+        }
+        Insert: {
+          application_id: string
+          body: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_user_id: string
+          sender_user_id: string
+        }
+        Update: {
+          application_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          recipient_user_id?: string
+          sender_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lfg_dm_messages_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "lfg_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lfg_dm_messages_recipient_user_id_fkey"
+            columns: ["recipient_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lfg_dm_messages_sender_user_id_fkey"
+            columns: ["sender_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lfg_posts: {
         Row: {
           created_at: string
           description: string
           expires_at: string | null
           external_game_id: string | null
+          external_game_image_url: string | null
           external_game_name: string | null
           external_game_source: string | null
           game_id: string | null
           id: string
           language: string | null
+          max_age: number
           mic_required: boolean
+          min_age: number
           mode: string | null
           platform: string
           region: string | null
+          scheduled_for: string | null
           slots_open: number
           slots_total: number
           status: string
+          title: string | null
           updated_at: string
           user_id: string
         }
@@ -453,18 +558,23 @@ export type Database = {
           description: string
           expires_at?: string | null
           external_game_id?: string | null
+          external_game_image_url?: string | null
           external_game_name?: string | null
           external_game_source?: string | null
           game_id?: string | null
           id?: string
           language?: string | null
+          max_age?: number
           mic_required?: boolean
+          min_age?: number
           mode?: string | null
           platform: string
           region?: string | null
+          scheduled_for?: string | null
           slots_open?: number
           slots_total?: number
           status?: string
+          title?: string | null
           updated_at?: string
           user_id: string
         }
@@ -473,18 +583,23 @@ export type Database = {
           description?: string
           expires_at?: string | null
           external_game_id?: string | null
+          external_game_image_url?: string | null
           external_game_name?: string | null
           external_game_source?: string | null
           game_id?: string | null
           id?: string
           language?: string | null
+          max_age?: number
           mic_required?: boolean
+          min_age?: number
           mode?: string | null
           platform?: string
           region?: string | null
+          scheduled_for?: string | null
           slots_open?: number
           slots_total?: number
           status?: string
+          title?: string | null
           updated_at?: string
           user_id?: string
         }
