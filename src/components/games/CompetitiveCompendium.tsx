@@ -19,15 +19,33 @@ import {
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 
-type RegionFilter = "all" | "americas" | "emea" | "pacific" | "china";
+type RegionFilter =
+  | "all"
+  | "americas"
+  | "emea"
+  | "pacific"
+  | "china"
+  | "lck"
+  | "lec"
+  | "lcs"
+  | "lpl"
+  | "cblol"
+  | "lcp";
 
-const REGION_FILTERS: RegionFilter[] = ["all", "americas", "emea", "pacific", "china"];
+const VALORANT_REGION_FILTERS: RegionFilter[] = ["all", "americas", "emea", "pacific", "china"];
+const LEAGUE_REGION_FILTERS: RegionFilter[] = ["all", "lck", "lec", "lcs", "lpl", "cblol", "lcp"];
 
 const REGION_LABELS: Record<Exclude<RegionFilter, "all">, string> = {
   americas: "Americas",
   emea: "EMEA",
   pacific: "Pacific",
   china: "China",
+  lck: "LCK",
+  lec: "LEC",
+  lcs: "LCS",
+  lpl: "LPL",
+  cblol: "CBLOL",
+  lcp: "LCP",
 };
 
 function regionLabel(region: EsportsTeam["region"], fallback?: string) {
@@ -110,9 +128,9 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                     "Elige una región y abre un equipo. El perfil del jugador muestra rol, configuraciones verificadas, mira y la fuente exacta de cada dato.",
                   )
                 : copy(
-                    "Escolha um time para abrir o elenco e as informações profissionais verificadas pelo MG Profile.",
-                    "Choose a team to open its roster and professional information verified by MG Profile.",
-                    "Elige un equipo para abrir su plantilla y la información profesional verificada por MG Profile.",
+                    "Filtre por circuito, abra um time e veja elenco, função e procedência. Configurações pessoais de jogadores de LoL não são inventadas quando não existe fonte pública confiável.",
+                    "Filter by circuit, open a team and view roster, role and provenance. LoL player settings are never invented when no reliable public source exists.",
+                    "Filtra por circuito, abre un equipo y consulta plantilla, rol y procedencia. Las configuraciones personales de jugadores de LoL nunca se inventan sin una fuente pública fiable.",
                   )}
             </p>
           </div>
@@ -149,30 +167,35 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
               className="h-11 w-full min-w-0 rounded-xl border border-border bg-background px-3 text-base text-foreground outline-none focus-visible:ring-2 focus-visible:ring-gold/40" />
           </label>
 
-          {game === "valorant" ? (
-            <div className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {REGION_FILTERS.map((region) => {
-                const active = regionFilter === region;
-                const label =
-                  region === "all" ? copy("Todos", "All", "Todos") : REGION_LABELS[region];
-                return (
-                  <button
-                    key={region}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => { setRegionFilter(region); setPage(1); }}
-                    className={`shrink-0 min-h-11 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                      active
-                        ? "border-gold/40 bg-gold/10 text-gold-strong"
-                        : "border-border bg-background/45 text-muted-foreground hover:border-gold/25 hover:text-foreground"
-                    }`}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-          ) : null}
+          <div className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {(game === "valorant" ? VALORANT_REGION_FILTERS : LEAGUE_REGION_FILTERS).map((region) => {
+              const active = regionFilter === region;
+              const label =
+                region === "all" ? copy("Todos", "All", "Todos") : REGION_LABELS[region];
+              const hasTeams =
+                region === "all" || teams.some((team) => team.region === region);
+              return (
+                <button
+                  key={region}
+                  type="button"
+                  aria-pressed={active}
+                  disabled={!hasTeams}
+                  onClick={() => {
+                    if (!hasTeams) return;
+                    setRegionFilter(region);
+                    setPage(1);
+                  }}
+                  className={`shrink-0 min-h-11 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                    active
+                      ? "border-gold/40 bg-gold/10 text-gold-strong"
+                      : "border-border bg-background/45 text-muted-foreground hover:border-gold/25 hover:text-foreground"
+                  } disabled:cursor-not-allowed disabled:opacity-35`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
 
           <p className="mt-3 text-xs text-muted-foreground" role="status">
             {matchingTeams.length} {copy("times encontrados", "teams found", "equipos encontrados")}
