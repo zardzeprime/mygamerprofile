@@ -73,78 +73,60 @@ const EVENTS: EsportsEvent[] = [
 
 const UPCOMING_MATCHES: UpcomingMatch[] = [
   {
-    key: "lec-2026-09-18",
-    date: "18 Sep",
-    league: "LEC · Playoffs",
-    left: "Movistar KOI",
-    right: "Natus Vincere",
-    format: "Bo5",
-    href: "https://lolesports.com/",
-  },
-  {
-    key: "lcs-2026-09-18",
-    date: "18 Sep",
+    key: "lcs-2026-09-25",
+    date: "25 Sep",
     league: "LCS · Playoffs",
-    left: "Sentinels",
+    left: "TBD",
     right: "Shopify Rebellion",
     format: "Bo5",
     href: "https://lolesports.com/",
   },
   {
-    key: "lec-2026-09-19",
-    date: "19 Sep",
-    league: "LEC · Playoffs",
-    left: "TBD",
-    right: "Karmine Corp",
-    format: "Bo5",
-    href: "https://lolesports.com/",
-  },
-  {
-    key: "cblol-2026-09-19",
-    date: "19 Sep",
+    key: "cblol-2026-09-26",
+    date: "26 Sep",
     league: "CBLOL · Playoffs",
-    left: "RED Kalunga",
-    right: "Vivo Keyd Stars",
+    left: "FURIA",
+    right: "RED Canids",
     format: "Bo5",
     href: "https://lolesports.com/",
   },
   {
-    key: "lcs-2026-09-19",
-    date: "19 Sep",
+    key: "lcs-2026-09-26",
+    date: "26 Sep",
     league: "LCS · Playoffs",
-    left: "Cloud9 Kia",
-    right: "LYON",
-    format: "Bo5",
-    href: "https://lolesports.com/",
-  },
-  {
-    key: "lec-2026-09-20",
-    date: "20 Sep",
-    league: "LEC · Finals",
-    left: "TBD",
-    right: "G2 Esports",
-    format: "Bo5",
-    href: "https://lolesports.com/",
-  },
-  {
-    key: "cblol-2026-09-20",
-    date: "20 Sep",
-    league: "CBLOL · Playoffs",
     left: "TBD",
     right: "TBD",
     format: "Bo5",
     href: "https://lolesports.com/",
   },
   {
-    key: "lcs-2026-09-20",
-    date: "20 Sep",
-    league: "LCS · Playoffs",
-    left: "FlyQuest",
-    right: "Team Liquid Alienware",
+    key: "cblol-2026-09-27",
+    date: "27 Sep",
+    league: "CBLOL · Upper Final",
+    left: "LOUD",
+    right: "LOS",
     format: "Bo5",
     href: "https://lolesports.com/",
   },
-];
+  {
+    key: "lcs-2026-09-27",
+    date: "27 Sep",
+    league: "LCS · Playoffs",
+    left: "TBD",
+    right: "Cloud9",
+    format: "Bo5",
+    href: "https://lolesports.com/",
+  },
+  {
+    key: "lcs-2026-10-03",
+    date: "03 Oct",
+    league: "LCS · Playoffs",
+    left: "TBD",
+    right: "TBD",
+    format: "Bo5",
+    href: "https://lolesports.com/",
+  },
+]
 
 const REGIONS = ["CBLOL", "LCK", "LPL", "LEC", "LCS", "LCP"];
 
@@ -206,9 +188,9 @@ export function LeagueEsportsPanel({
         <div className="border-t border-border p-4">
           <p className="text-[0.62rem] leading-5 text-muted-foreground">
             {copy(
-              "Agenda revisada em 18/09/2026. Confrontos marcados como TBD ainda dependem do resultado das chaves.",
-              "Schedule reviewed on 2026-09-18. TBD matchups still depend on bracket results.",
-              "Calendario revisado el 18/09/2026. Los cruces TBD todavía dependen de los resultados del cuadro.",
+              "Agenda revisada em 21/09/2026. Confrontos marcados como TBD ainda dependem do resultado das chaves.",
+              "Schedule reviewed on 2026-09-21. TBD matchups still depend on bracket results.",
+              "Calendario revisado el 21/09/2026. Los cruces TBD todavía dependen de los resultados del cuadro.",
             )}
           </p>
           {onOpenCompetitive ? (
@@ -250,7 +232,7 @@ export function LeagueEsportsPanel({
               </h3>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              {copy("Snapshot do calendário oficial · 18/09/2026", "Official schedule snapshot · 2026-09-18", "Snapshot del calendario oficial · 18/09/2026")}
+              {copy("Snapshot do calendário oficial · 21/09/2026", "Official schedule snapshot · 2026-09-21", "Snapshot del calendario oficial · 21/09/2026")}
             </p>
           </div>
           <a href="https://lolesports.com/" target="_blank" rel="noreferrer" className="shrink-0 text-xs font-bold text-gold-strong hover:underline">
