@@ -1,6 +1,6 @@
 # MGP — Connected Accounts
 
-Last reviewed: 2026-09-15
+Last reviewed: 2026-09-21
 
 ## Goal
 
@@ -63,35 +63,27 @@ No production Riot button should redirect until the actual product credentials a
 
 ## Google
 
-Google is intended primarily as optional sign-in/account identity, not as a source of gaming data.
+Google is used primarily as optional sign-in/account identity, not as a source of gaming data.
 
-Initial scopes should remain minimal:
+Current scopes are intentionally minimal:
 
 - `openid`
 - `email`
 - `profile`
 
-Production configuration needs:
+Production configuration uses Supabase Auth with the exact provider callback:
 
-- Google Auth Platform branding
-- production audience
-- verified authorized domain(s)
-- web OAuth client
-- exact HTTPS redirect URI
-- current MGP Privacy Policy and Terms URLs
+`https://gudvdgpjfapshzqyfcpj.supabase.co/auth/v1/callback`
 
-Planned route shape:
+The login/register flow uses normal Google OAuth. The authenticated Connected Accounts page uses Supabase identity linking so an email/password account can add Google without replacing the MGP user id. Connected state is derived from the user's Supabase Auth identities rather than requiring a duplicate `connected_accounts` row.
 
-- start: `/connect/google`
-- callback: `/connect/google/callback`
-
-If MGP later uses Google only as an authentication provider through Supabase Auth, the final redirect URI may be the Supabase OAuth callback instead; use the exact callback supplied by the configured auth provider rather than inventing one.
+Google OAuth was probed successfully on 2026-09-21: the Supabase provider reported enabled and the authorize endpoint redirected to `accounts.google.com`.
 
 ## UI state
 
 `/settings/connections` is the single user-facing control center.
 
-Buttons stay disabled/marked as coming soon until the corresponding provider is fully configured. This prevents a production-looking dead OAuth flow and gives provider reviewers a clear prototype of the intended user journey.
+Buttons stay disabled only for providers that are not production-ready. Steam and Google are active. Riot account linking remains disabled until production approval/RSO is available.
 
 ## Disconnect and deletion
 
