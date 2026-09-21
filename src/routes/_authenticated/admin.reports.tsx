@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { listReports, updateReportStatus } from "@/lib/reports.functions";
-import { useI18n } from "@/i18n";
+import { useI18n, type TranslationKey } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -39,9 +39,9 @@ function AdminReportsPage() {
   const [reports, setReports] = useState(initial);
   const doUpdate = useServerFn(updateReportStatus);
 
-  const handleStatusChange = async (id: string, status: string) => {
+  const handleStatusChange = async (id: string, status: (typeof STATUSES)[number]) => {
     const updated = await doUpdate({ data: { id, status } });
-    setReports((prev) => prev.map((r) => (r.id === id ? (updated as any) : r)));
+    setReports((prev) => prev.map((r) => (r.id === id ? { ...r, ...updated } : r)));
   };
 
   return (
@@ -73,18 +73,18 @@ function AdminReportsPage() {
                               : "bg-gold-soft/50 text-gold-foreground"
                       }
                     >
-                      {t(`admin.status.${report.status}` as any)}
+                      {t(`admin.status.${report.status}` as TranslationKey)}
                     </Badge>
                   </div>
                   <p className="mt-2 text-sm">
-                    {t(`report.reasons.${report.reason}` as any)} · {report.reporter?.display_name} (@
+                    {t(`report.reasons.${report.reason}` as TranslationKey)} · {report.reporter?.display_name} (@
                     {report.reporter?.username})
                   </p>
                   {report.details && <p className="mt-1 text-sm text-muted-foreground">{report.details}</p>}
                 </div>
                 <Select
                   value={report.status}
-                  onValueChange={(value) => handleStatusChange(report.id, value)}
+                  onValueChange={(value) => handleStatusChange(report.id, value as (typeof STATUSES)[number])}
                 >
                   <SelectTrigger className="w-36">
                     <SelectValue />
@@ -92,7 +92,7 @@ function AdminReportsPage() {
                   <SelectContent>
                     {STATUSES.map((s) => (
                       <SelectItem key={s} value={s}>
-                        {t(`admin.status.${s}` as any)}
+                        {t(`admin.status.${s}` as TranslationKey)}
                       </SelectItem>
                     ))}
                   </SelectContent>
