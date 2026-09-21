@@ -27,6 +27,30 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Probe Google OAuth provider
+        shell: bash
+        run: |
+          set -euo pipefail
+          SETTINGS="$(curl -fsS 'https://gudvdgpjfapshzqyfcpj.supabase.co/auth/v1/settings' \
+            -H 'apikey: sb_publishable_JXVaM-rr7Yu59l3x7WyHEg_qlR-uDMX')"
+          GOOGLE_ENABLED="$(printf '%s' "$SETTINGS" | jq -r '.external.google // false')"
+          echo "google_enabled=$GOOGLE_ENABLED"
+          test "$GOOGLE_ENABLED" = "true"
+
+          curl -fsS -D /tmp/google-oauth-headers -o /dev/null \
+            'https://gudvdgpjfapshzqyfcpj.supabase.co/auth/v1/authorize?provider=google&redirect_to=https%3A%2F%2Fmgprofile.online%2Fonboarding' \
+            -H 'apikey: sb_publishable_JXVaM-rr7Yu59l3x7WyHEg_qlR-uDMX'
+          LOCATION="$(awk 'BEGIN{IGNORECASE=1} /^location:/{sub(/^[^:]+:[[:space:]]*/, ""); gsub(/\r/, ""); print; exit}' /tmp/google-oauth-headers)"
+          python - "$LOCATION" <<'PY'
+          import sys
+          from urllib.parse import urlparse
+          location = sys.argv[1]
+          parsed = urlparse(location)
+          print(f"oauth_redirect_host={parsed.hostname or ''}")
+          if parsed.hostname not in {"accounts.google.com", "accounts.googleusercontent.com"}:
+              raise SystemExit("Google OAuth authorize endpoint did not redirect to Google")
+          PY
+
       - name: Validate VALORANT data
         run: bun run check:valorant
 
