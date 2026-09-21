@@ -18,14 +18,19 @@ const SOURCE_PAGE = "https://github.com/LeMinerva/Dark-Souls-Documents";
 const gameNumber = (game: SoulsCompendiumGame) =>
   game === "dark-souls-remastered" ? 1 : 3;
 
+function cleanSoulsText(value: string) {
+  return value
+    .replace(/^##/, "")
+    .replace(/#\d/g, "")
+    .trim();
+}
+
 function parseTextNodes(xmlText: string) {
   const doc = new DOMParser().parseFromString(xmlText, "application/xml");
-  return Array.from(doc.getElementsByTagName("text")).map((node) =>
-    (node.textContent ?? "")
-      .replace(/^##/, "")
-      .replace(/#\d/g, "")
-      .trim(),
-  );
+  return Array.from(doc.getElementsByTagName("text")).map((node, index) => ({
+    id: node.getAttribute("id") ?? String(index),
+    value: cleanSoulsText(node.textContent ?? ""),
+  }));
 }
 
 export async function loadSoulsCompendiumCategory(
@@ -47,16 +52,18 @@ export async function loadSoulsCompendiumCategory(
     descriptionsResponse.text(),
   ]);
   const names = parseTextNodes(namesXml);
-  const descriptions = parseTextNodes(descriptionsXml);
+  const descriptions = new Map(
+    parseTextNodes(descriptionsXml).map((entry) => [entry.id, entry.value] as const),
+  );
 
   return names
-    .map((name, index) => ({
-      id: `${game}:${category}:${index}`,
+    .map((entry, index) => ({
+      id: `${game}:${category}:${entry.id}`,
       game,
       category,
       index,
-      name,
-      description: descriptions[index] ?? "",
+      name: entry.value,
+      description: descriptions.get(entry.id) ?? "",
       iconUrl: `${SOURCE_REPO}/icons/${category}${gameNo}/${index}.webp`,
       sourceUrl: SOURCE_PAGE,
     }))
