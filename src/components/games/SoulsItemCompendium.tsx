@@ -353,6 +353,19 @@ function WeaponTechnicalCard({
         {weapon.weight != null ? (
           <TechCell label={copy("Peso", "Weight", "Peso")} value={weapon.weight} />
         ) : null}
+        {weapon.durability != null ? (
+          <TechCell label={copy("Durabilidade", "Durability", "Durabilidad")} value={weapon.durability} />
+        ) : null}
+        {weapon.enchantable != null ? (
+          <TechCell
+            label={copy("Buff de arma", "Weapon buff", "Buff de arma")}
+            value={
+              weapon.enchantable
+                ? copy("Permitido", "Allowed", "Permitido")
+                : copy("Não", "No", "No")
+            }
+          />
+        ) : null}
         <TechCell label={copy("Upgrade", "Upgrade", "Mejora")} value={`+0 → +${weapon.maxUpgrade}`} />
         {weapon.infusions?.length ? (
           <TechCell
