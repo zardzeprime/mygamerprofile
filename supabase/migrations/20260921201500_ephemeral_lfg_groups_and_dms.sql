@@ -125,24 +125,36 @@ end;
 $$;
 
 drop policy if exists "Matched users can read LFG DMs" on public.lfg_dm_messages;
-create policy "Matched users can read active LFG DMs"
+drop policy if exists "Matched users can read active LFG DMs" on public.lfg_dm_messages;
+drop policy if exists "Admins can read LFG DMs for moderation" on public.lfg_dm_messages;
+drop policy if exists "Participants or admins can read active LFG DMs" on public.lfg_dm_messages;
+
+create policy "Participants or admins can read active LFG DMs"
 on public.lfg_dm_messages for select
 to authenticated
 using (
-  ((select auth.uid()) = sender_user_id or (select auth.uid()) = recipient_user_id)
-  and exists (
+  exists (
     select 1
-    from public.lfg_applications la
-    join public.lfg_posts lp on lp.id = la.lfg_post_id
-    where la.id = application_id
-      and la.status = 'accepted'
-      and la.chat_expires_at is not null
-      and la.chat_expires_at > now()
-      and (
-        (sender_user_id = la.applicant_user_id and recipient_user_id = lp.user_id)
-        or
-        (recipient_user_id = la.applicant_user_id and sender_user_id = lp.user_id)
-      )
+    from public.user_roles ur
+    where ur.user_id = (select auth.uid())
+      and ur.role = 'admin'::public.app_role
+  )
+  or (
+    ((select auth.uid()) = sender_user_id or (select auth.uid()) = recipient_user_id)
+    and exists (
+      select 1
+      from public.lfg_applications la
+      join public.lfg_posts lp on lp.id = la.lfg_post_id
+      where la.id = application_id
+        and la.status = 'accepted'
+        and la.chat_expires_at is not null
+        and la.chat_expires_at > now()
+        and (
+          (sender_user_id = la.applicant_user_id and recipient_user_id = lp.user_id)
+          or
+          (recipient_user_id = la.applicant_user_id and sender_user_id = lp.user_id)
+        )
+    )
   )
 );
 
@@ -167,19 +179,6 @@ with check (
         or
         (recipient_user_id = la.applicant_user_id and sender_user_id = lp.user_id)
       )
-  )
-);
-
-drop policy if exists "Admins can read LFG DMs for moderation" on public.lfg_dm_messages;
-create policy "Admins can read LFG DMs for moderation"
-on public.lfg_dm_messages for select
-to authenticated
-using (
-  exists (
-    select 1
-    from public.user_roles ur
-    where ur.user_id = (select auth.uid())
-      and ur.role = 'admin'::public.app_role
   )
 );
 
