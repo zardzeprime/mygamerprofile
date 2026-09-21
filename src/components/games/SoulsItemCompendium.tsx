@@ -525,12 +525,12 @@ function WeaponTechnicalCard({
     setInfusion(nextInfusion);
     setDs1Path("regular");
     setUpgrade(0);
-    const preferred = stats.find(([stat]) => {
+    const preferred = (["str", "dex", "int", "fth", "lck"] as SoulsDpsStat[]).find((stat) => {
       const grade = weapon.scalingLetters?.[stat];
       return Boolean(grade && grade !== "-");
-    })?.[0];
+    });
     setFocusStat(preferred ?? "str");
-  }, [weapon.id]);
+  }, [weapon]);
 
   const maxUpgrade = isDs3
     ? weapon.maxUpgrade
@@ -579,7 +579,12 @@ function WeaponTechnicalCard({
   const scaling = isDs3
     ? (currentWeapon.scalingLetters ?? weapon.scalingLetters ?? {})
     : ds1ScalingForPath(weapon, ds1Path);
-  const damageSource = currentWeapon.baseDamage;
+  const damageSource =
+    isDs3
+      ? currentWeapon.baseDamage
+      : ds1Path === "regular"
+        ? ds1RegularDamageAtUpgrade(weapon, upgrade)
+        : weapon.baseDamage;
   const damage = [
     ["PHY", damageSource.physical],
     ["MAG", damageSource.magic],
@@ -836,6 +841,18 @@ function WeaponTechnicalCard({
       ) : null}
     </div>
   );
+}
+
+function ds1RegularDamageAtUpgrade(weapon: SoulsDpsWeapon, upgrade: number) {
+  const ratio = weapon.maxUpgrade > 0 ? Math.min(1, Math.max(0, upgrade) / weapon.maxUpgrade) : 0;
+  const end = weapon.maxDamage ?? weapon.baseDamage;
+  return {
+    physical: weapon.baseDamage.physical + (end.physical - weapon.baseDamage.physical) * ratio,
+    magic: weapon.baseDamage.magic + (end.magic - weapon.baseDamage.magic) * ratio,
+    fire: weapon.baseDamage.fire + (end.fire - weapon.baseDamage.fire) * ratio,
+    lightning: weapon.baseDamage.lightning + (end.lightning - weapon.baseDamage.lightning) * ratio,
+    dark: weapon.baseDamage.dark + (end.dark - weapon.baseDamage.dark) * ratio,
+  };
 }
 
 function ds1ScalingForPath(
