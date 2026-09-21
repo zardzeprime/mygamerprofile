@@ -196,6 +196,7 @@ const DS3_MIRROR_FILENAMES: Record<string, string> = {
   "aldrich-devourer-of-gods": "aldrich.jpg",
   "dancer-of-the-boreal-valley": "dancer.jpg",
   "dragonslayer-armour": "dragonslayer.jpg",
+  "oceiros-the-consumed-king": "oceiros.jpg",
   "lothric-younger-prince-and-lorian-elder-prince": "lothric.jpg",
   "the-nameless-king": "nameless_king.jpg",
   "champion-s-gravetender-and-gravetender-greatwolf": "champions_gravetender.jpg",
@@ -204,6 +205,7 @@ const DS3_MIRROR_FILENAMES: Record<string, string> = {
   "halflight-spear-of-the-church": "halflight.jpg",
   "darkeater-midir": "midir.jpg",
   "slave-knight-gael": "gael.jpg",
+  "yhorm-the-giant": "yhorm.jpg",
 };
 
 function getDs3MirrorSourceUrl(bossSlug: string) {
