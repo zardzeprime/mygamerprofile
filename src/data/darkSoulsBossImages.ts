@@ -8,6 +8,11 @@ type ImageFit = "cover" | "contain";
 const reliableImageUrl = (url: string) =>
   `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=1200&fit=inside&we`;
 
+const localAsset = <T extends { url: string }>(asset: T, url: string): T => ({
+  ...asset,
+  url,
+});
+
 
 export type DarkSoulsBossImageAsset = {
   url: string;
@@ -310,18 +315,18 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
     detailScale: 1.1,
   }),
 
-  "gravelord-nito": creativeUncut("ds-nito", {
+  "gravelord-nito": localAsset(creativeUncut("ds-nito", {
     cardObjectPosition: "50% 28%",
     detailObjectPosition: "50% 34%",
     detailScale: 1.1,
-  }),
+  }), "/assets/bosses/ds1/gravelord-nito.jpg"),
 
-  "seath-the-scaleless": creativeUncut("ds-crystal-dragon", {
+  "seath-the-scaleless": localAsset(creativeUncut("ds-crystal-dragon", {
     cardObjectPosition: "50% 39%",
     detailObjectPosition: "50% 42%",
     cardScale: 1.07,
     detailScale: 1.11,
-  }),
+  }), "/assets/bosses/ds1/seath-the-scaleless.jpg"),
 
   "four-kings": fandomAsset("Four kings.jpg", {
     label: conceptLabel,
@@ -368,15 +373,15 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
     detailFit: "cover",
   }),
 
-  "bed-of-chaos": fandomAsset("Bed of Chaos.jpg", {
+  "bed-of-chaos": localAsset(fandomAsset("Bed of Chaos.jpg", {
     cardObjectPosition: "50% 38%",
     detailObjectPosition: "50% 42%",
     cardScale: 1.08,
     detailScale: 1.14,
     detailFit: "cover",
-  }),
+  }), "/assets/bosses/ds1/bed-of-chaos.jpg"),
 
-  "gwyn-lord-of-cinder": fandomAsset("Gwyn, Lord of Cinder concept art.jpg", {
+  "gwyn-lord-of-cinder": localAsset(fandomAsset("Gwyn, Lord of Cinder concept art.jpg", {
     label: conceptLabel,
     kind: "concept-art",
     cardObjectPosition: "50% 21%",
@@ -384,7 +389,7 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
     cardScale: 1.06,
     detailScale: 1.1,
     detailFit: "contain",
-  }),
+  }), "/assets/bosses/ds1/gwyn-lord-of-cinder.jpg"),
 
   "sanctuary-guardian": remasteredAsset("Sanctuary Guardian.jpg", {
     cardObjectPosition: "58% 42%",
