@@ -9,6 +9,7 @@ export type GameModuleKey =
   | "community"
   | "builds"
   | "dps-test"
+  | "fashion-test"
   | "bosses"
   | "guides"
   | "news"
@@ -78,6 +79,7 @@ export const MODULE_LABELS: Record<GameModuleKey, Record<Locale, string>> = {
   community: { "pt-BR": "Comunidade", en: "Community", es: "Comunidad" },
   builds: { "pt-BR": "Builds", en: "Builds", es: "Builds" },
   "dps-test": { "pt-BR": "DPS Test", en: "DPS Test", es: "DPS Test" },
+  "fashion-test": { "pt-BR": "Fashion Test", en: "Fashion Test", es: "Fashion Test" },
   bosses: { "pt-BR": "Chefes", en: "Bosses", es: "Jefes" },
   guides: { "pt-BR": "Guias", en: "Guides", es: "Guías" },
   news: { "pt-BR": "Novidades", en: "News", es: "Novedades" },
@@ -132,7 +134,7 @@ export const GAMES: GameConfig[] = [
     platforms: ["PC", "PlayStation", "Xbox", "Nintendo Switch"],
     ageRating: "16+",
     themeKey: "dark_souls",
-    modules: ["overview", "builds", "dps-test", "bosses", "items", "guides"],
+    modules: ["overview", "builds", "dps-test", "fashion-test", "bosses", "items", "guides"],
     expansions: [{ slug: "artorias-of-the-abyss", name: "Artorias of the Abyss", kind: "dlc" }],
     profileFields: [
       {
@@ -225,7 +227,7 @@ export const GAMES: GameConfig[] = [
     platforms: ["PC", "PlayStation 4", "Xbox One"],
     ageRating: "16+",
     themeKey: "dark_souls",
-    modules: ["overview", "news", "builds", "dps-test", "bosses", "items", "guides"],
+    modules: ["overview", "news", "builds", "dps-test", "fashion-test", "bosses", "items", "guides"],
     expansions: [
       { slug: "ashes-of-ariandel", name: "Ashes of Ariandel", kind: "dlc", releaseLabel: "2016" },
       { slug: "the-ringed-city", name: "The Ringed City", kind: "dlc", releaseLabel: "2017" },
