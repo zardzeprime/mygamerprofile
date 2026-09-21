@@ -96,6 +96,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: "MGP — My Gamer Profile" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "google-adsense-account", content: "ca-pub-7774329183197175" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
