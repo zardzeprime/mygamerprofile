@@ -66,7 +66,7 @@ function extractSkill(description: string) {
   const match = cleaned.match(/\bSkill:\s*([^.!?]+?)(?=(?:\s{2,}|Repel|Raise|Assume|Without|$))/i);
   if (match?.[1]?.trim()) return match[1].trim();
 
-  const simpler = cleaned.match(/\bSkill:\s*([A-Za-z][A-Za-z '\-]+)/i);
+  const simpler = cleaned.match(/\bSkill:\s*([A-Za-z][A-Za-z '-]+)/i);
   return simpler?.[1]?.trim();
 }
 
