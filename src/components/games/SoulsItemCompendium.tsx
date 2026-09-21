@@ -35,6 +35,11 @@ import {
   type SoulsArmorTechnical,
   type SoulsArmorSlot,
 } from "@/lib/souls-armor";
+import {
+  findSoulsRingEffect,
+  loadSoulsRingEffects,
+  type SoulsRingEffect,
+} from "@/lib/souls-ring-effects";
 
 const CATEGORIES: Array<{
   key: "all" | SoulsCompendiumCategory;
@@ -64,6 +69,7 @@ export function SoulsItemCompendium({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [technicalWeapons, setTechnicalWeapons] = useState<SoulsDpsWeapon[]>([]);
   const [technicalArmor, setTechnicalArmor] = useState<SoulsArmorTechnical[]>([]);
+  const [ringEffects, setRingEffects] = useState<SoulsRingEffect[]>([]);
 
   useEffect(() => {
     let active = true;
@@ -94,6 +100,23 @@ export function SoulsItemCompendium({
       .catch((error) => {
         console.warn("[SoulsItemCompendium] technical armor data unavailable", error);
         if (active) setTechnicalArmor([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [gameSlug]);
+
+  useEffect(() => {
+    let active = true;
+
+    void loadSoulsRingEffects(gameSlug)
+      .then((data) => {
+        if (active) setRingEffects(data);
+      })
+      .catch((error) => {
+        console.warn("[SoulsItemCompendium] ring effect data unavailable", error);
+        if (active) setRingEffects([]);
       });
 
     return () => {
@@ -154,6 +177,8 @@ export function SoulsItemCompendium({
             normalizeSoulsEquipmentName(selected.name),
         ) ?? null
       : null;
+  const technicalRingEffect =
+    selected?.category === "ring" ? findSoulsRingEffect(ringEffects, selected.name) : null;
 
   const gameName = gameSlug === "dark-souls-remastered" ? "Dark Souls Remastered" : "Dark Souls III";
 
@@ -317,6 +342,9 @@ export function SoulsItemCompendium({
                 {technicalArmorEntry ? (
                   <ArmorTechnicalCard armor={technicalArmorEntry} locale={locale} />
                 ) : null}
+                {technicalRingEffect ? (
+                  <RingEffectCard effect={technicalRingEffect} locale={locale} />
+                ) : null}
 
                 <div>
                   <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
@@ -464,6 +492,43 @@ function WeaponTechnicalCard({
           {weapon.obtained.join(" · ")}
         </p>
       ) : null}
+    </div>
+  );
+}
+
+function RingEffectCard({
+  effect,
+  locale,
+}: {
+  effect: SoulsRingEffect;
+  locale: Locale;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+
+  return (
+    <div className="rounded-2xl border border-gold/25 bg-gold/[0.05] p-4">
+      <div className="flex items-center gap-2">
+        <Gem className="size-4 text-gold-strong" />
+        <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-gold-strong">
+          {copy("Efeito técnico", "Technical effect", "Efecto técnico")}
+        </p>
+      </div>
+      <div className="mt-3 space-y-2">
+        {effect.effects.map((line, index) => (
+          <p key={index} className="text-xs leading-5 text-muted-foreground">
+            • {line}
+          </p>
+        ))}
+      </div>
+      <a
+        href={effect.source.url}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-3 inline-flex items-center gap-1 text-[0.66rem] font-bold text-gold-strong hover:underline"
+      >
+        {effect.source.label}
+        <ExternalLink className="size-3" />
+      </a>
     </div>
   );
 }
