@@ -170,7 +170,25 @@ export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
   // sources currently wired into MGP. Its game-cover fallback is intentionally kept.
 };
 
+const DARK_SOULS_III_LOCAL_IMAGE_SLUGS: Record<string, string> = {
+  "nameless-king": "the-nameless-king",
+  "twin-princes": "lothric-younger-prince-and-lorian-elder-prince",
+  "lorian-elder-prince-and-lothric-younger-prince":
+    "lothric-younger-prince-and-lorian-elder-prince",
+  "sister-friede": "sister-friede-and-father-ariandel",
+  "demon-prince": "demon-in-pain-demon-from-below-and-demon-prince",
+};
+
 export function getSoulsBossImage(gameSlug: SoulsGameSlug, bossSlug?: string) {
   if (!bossSlug || gameSlug !== "dark-souls-iii") return undefined;
-  return DARK_SOULS_III_BOSS_IMAGES[bossSlug];
+  const asset = DARK_SOULS_III_BOSS_IMAGES[bossSlug];
+  if (!asset) return undefined;
+
+  // Keep every DS3 boss card/detail on a first-party static path. Alias slugs resolve
+  // to the canonical vendored file while sourceUrl/sourceLabel remain available.
+  const localSlug = DARK_SOULS_III_LOCAL_IMAGE_SLUGS[bossSlug] ?? bossSlug;
+  return {
+    ...asset,
+    url: `/assets/bosses/ds3/${localSlug}.jpg`,
+  };
 }
