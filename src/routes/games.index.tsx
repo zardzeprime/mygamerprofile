@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { EmptyState } from "@/components/common/EmptyState";
+import { AdReadyLayout, AdSlot } from "@/components/common/AdSlot";
 import { GameCard } from "@/components/games/GameCard";
 import { ACTIVE_GAMES } from "@/config/gameAvailability";
 import { useI18n } from "@/i18n";
@@ -67,7 +68,7 @@ function GamesCatalog() {
   ];
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
+    <AdReadyLayout className="mx-auto w-full max-w-[92rem] px-4 py-10 sm:px-6 sm:py-16" rail={<AdSlot id="games-catalog-rail" format="rail" />}>
       <p className="section-kicker">MGP / 0.1.9</p>
       <h1 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-5xl">{t("games.title")}</h1>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">{t("games.subtitle")}</p>
@@ -109,6 +110,7 @@ function GamesCatalog() {
         </div>
       </div>
 
+      <AdSlot id="games-catalog-top" format="leaderboard" className="mt-6" />
       <div className="mt-8">
         {results.length === 0 ? (
           <EmptyState title={t("games.empty")} />
@@ -120,6 +122,7 @@ function GamesCatalog() {
           </div>
         )}
       </div>
-    </div>
+      <AdSlot id="games-catalog-after-grid" format="leaderboard" className="mt-8" />
+    </AdReadyLayout>
   );
 }
