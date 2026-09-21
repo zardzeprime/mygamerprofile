@@ -468,9 +468,9 @@ function LfgTextChatDialog({
           </Button>
           <span className="text-[0.68rem] leading-5 text-muted-foreground">
             {copy(
-              "Use “idade falsa ou suspeita” na denúncia quando houver inconsistência.",
-              "Use “false or suspicious age” in the report when ages do not seem consistent.",
-              "Usa “edad falsa o sospechosa” en la denuncia cuando haya inconsistencias.",
+              "Se algo inadequado acontecer, denuncie antes da DM expirar. Mensagens denunciadas ficam preservadas para moderação. Use “idade falsa ou suspeita” quando houver inconsistência.",
+              "If something unsafe happens, report it before the DM expires. Reported messages are preserved for moderation. Use “false or suspicious age” when ages do not seem consistent.",
+              "Si ocurre algo inadecuado, denúncialo antes de que expire el DM. Los mensajes denunciados se conservan para moderación. Usa “edad falsa o sospechosa” cuando haya inconsistencias.",
             )}
           </span>
         </div>

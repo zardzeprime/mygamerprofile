@@ -211,9 +211,9 @@ function SupportPage() {
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
           {copy(
-            "A estrutura já está pronta, mas os meios de pagamento ainda estão em configuração. A ideia é manter uma opção direta por Pix e uma opção recorrente em plataforma brasileira.",
-            "The structure is ready, but payment methods are still being configured. The plan is to keep a direct Pix option and a recurring option through a Brazilian platform.",
-            "La estructura está lista, pero los métodos de pago siguen en configuración. La idea es mantener una opción directa por Pix y otra recurrente mediante una plataforma brasileña.",
+            "O Ko-fi já está ativo para apoio recorrente. O Pix será a opção direta para quem preferir contribuir uma vez, com chave e QR Code dedicados ao projeto.",
+            "Ko-fi is already active for recurring support. Pix will be the direct option for anyone who prefers a one-time contribution, with a dedicated key and QR code for the project.",
+            "Ko-fi ya está activo para apoyo recurrente. Pix será la opción directa para quien prefiera contribuir una sola vez, con una clave y un código QR dedicados al proyecto.",
           )}
         </p>
 
@@ -319,9 +319,9 @@ function SupportPage() {
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
           {copy(
-            "Usuários logados podem mandar mensagem direto para a caixa administrativa e acompanhar a resposta na própria página. E-mail e Instagram continuam disponíveis para quem preferir falar por fora.",
-            "Signed-in users can message the admin inbox directly and track replies on this page. Email and Instagram remain available for anyone who prefers an external channel.",
-            "Los usuarios que hayan iniciado sesión pueden enviar mensajes directamente a la bandeja administrativa y seguir la respuesta en esta misma página. El correo e Instagram siguen disponibles para quien prefiera un canal externo.",
+            "Usuários logados podem mandar mensagem direto para a caixa administrativa e acompanhar a resposta na própria página. O e-mail mgprofilesocial@gmail.com e o Instagram continuam disponíveis para quem preferir falar por fora.",
+            "Signed-in users can message the admin inbox directly and track replies on this page. The email mgprofilesocial@gmail.com and Instagram remain available for anyone who prefers an external channel.",
+            "Los usuarios que hayan iniciado sesión pueden enviar mensajes directamente a la bandeja administrativa y seguir la respuesta en esta misma página. El correo mgprofilesocial@gmail.com e Instagram siguen disponibles para quien prefiera un canal externo.",
           )}
         </p>
 
