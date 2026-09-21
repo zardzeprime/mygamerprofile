@@ -13,18 +13,30 @@ const listLfgSchema = z.object({
   status: z.enum(LFG_STATUSES).optional(),
   page: z.number().int().min(1).default(1),
 });
-const createLfgSchema = z.object({
-  game_id: z.string().uuid(),
-  platform: z.string().trim().min(1).max(40),
-  region: z.string().trim().max(80).optional(),
-  language: z.string().trim().max(16).optional(),
-  mode: z.string().trim().max(80).optional(),
-  description: z.string().trim().min(1).max(1000),
-  mic_required: z.boolean().optional(),
-  slots_total: z.number().int().min(1).max(99).optional(),
-  slots_open: z.number().int().min(0).max(99).optional(),
-  expires_at: z.string().datetime().optional(),
-});
+const createLfgSchema = z
+  .object({
+    game_id: z.string().uuid().nullable().optional(),
+    external_game_source: z.enum(["steam", "riot"]).nullable().optional(),
+    external_game_id: z.string().trim().max(120).nullable().optional(),
+    external_game_name: z.string().trim().max(160).nullable().optional(),
+    platform: z.string().trim().min(1).max(40),
+    region: z.string().trim().max(80).optional(),
+    language: z.string().trim().max(16).optional(),
+    mode: z.string().trim().max(80).optional(),
+    description: z.string().trim().min(1).max(1000),
+    mic_required: z.boolean().optional(),
+    slots_total: z.number().int().min(2).max(99).optional(),
+    slots_open: z.number().int().min(0).max(99).optional(),
+    expires_at: z.string().datetime().optional(),
+  })
+  .refine(
+    (data) =>
+      Boolean(
+        data.game_id ||
+          (data.external_game_source && data.external_game_id && data.external_game_name),
+      ),
+    { message: "game_reference_required" },
+  );
 const updateLfgSchema = z.object({
   id: z.string().uuid(),
   platform: z.string().trim().min(1).max(40).optional(),
@@ -71,7 +83,10 @@ export const createLfgPost = createServerFn({ method: "POST" })
       .from("lfg_posts")
       .insert({
         user_id: context.userId,
-        game_id: data.game_id,
+        game_id: data.game_id ?? null,
+        external_game_source: data.game_id ? null : data.external_game_source ?? null,
+        external_game_id: data.game_id ? null : data.external_game_id ?? null,
+        external_game_name: data.game_id ? null : data.external_game_name ?? null,
         platform: data.platform,
         region: data.region || null,
         language: data.language || null,
