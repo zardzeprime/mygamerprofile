@@ -28,7 +28,7 @@ comment on column public.steam_profiles.favorite_started_on is
 comment on column public.steam_profiles.proud_achievement_api_names is
   'Up to three unlocked Steam achievement API names selected by the owner.';
 
-create or replace function public.get_public_steam_profile_highlight(target_user_id uuid)
+create or replace function public.get_public_steam_showcase(target_user_id uuid)
 returns jsonb
 language plpgsql
 stable
@@ -37,14 +37,13 @@ set search_path = ''
 as $$
 declare
   sp public.steam_profiles%rowtype;
-  sg public.steam_games%rowtype;
-  achievements jsonb := '[]'::jsonb;
+  result jsonb;
 begin
   if not exists (
     select 1
     from public.profiles p
     where p.id = target_user_id
-      and (p.visibility = 'public' or (select auth.uid()) = target_user_id)
+      and p.visibility = 'public'
   ) then
     return null;
   end if;
@@ -52,65 +51,124 @@ begin
   select *
   into sp
   from public.steam_profiles
-  where user_id = target_user_id
-  limit 1;
+  where user_id = target_user_id;
 
-  if sp.user_id is null or sp.favorite_app_id is null then
+  if not found then
     return null;
   end if;
 
-  select *
-  into sg
-  from public.steam_games
-  where user_id = target_user_id
-    and app_id = sp.favorite_app_id
-    and owned = true
-  limit 1;
-
-  if sg.id is null then
-    return null;
-  end if;
-
-  if sp.show_achievements and cardinality(sp.proud_achievement_api_names) > 0 then
-    select coalesce(
-      jsonb_agg(
-        jsonb_build_object(
-          'apiName', sa.api_name,
-          'name', coalesce(sa.display_name, sa.api_name),
-          'description', sa.description,
-          'unlockTime', sa.unlock_time,
-          'iconUrl', sa.icon_url
+  result := jsonb_build_object(
+    'connected', true,
+    'personaName', sp.persona_name,
+    'profileUrl', sp.profile_url,
+    'avatarUrl', sp.avatar_url,
+    'countryCode', sp.country_code,
+    'steamLevel', sp.steam_level,
+    'libraryVisible', sp.library_visible,
+    'inventoryVisible', sp.inventory_visible,
+    'lastSyncedAt', sp.last_synced_at,
+    'games',
+      case when sp.show_library then coalesce((
+        select jsonb_agg(to_jsonb(g) order by g.playtime_forever desc)
+        from (
+          select
+            sg.app_id as "appId",
+            sg.name,
+            sg.icon_url as "iconUrl",
+            case when sp.show_playtime then sg.playtime_forever else null end as "playtimeMinutes",
+            case when sp.show_achievements then sg.achievements_unlocked else null end as "achievementsUnlocked",
+            case when sp.show_achievements then sg.achievements_total else null end as "achievementsTotal",
+            case when sp.show_achievements then sg.achievement_percent else null end as "achievementPercent",
+            sg.playtime_forever
+          from public.steam_games sg
+          where sg.user_id = target_user_id
+            and sg.owned = true
+          order by sg.playtime_forever desc
+          limit 12
+        ) g
+      ), '[]'::jsonb) else '[]'::jsonb end,
+    'recentGames',
+      case when sp.show_playtime then coalesce((
+        select jsonb_agg(to_jsonb(r) order by r.recent_rank asc)
+        from (
+          select
+            sg.app_id as "appId",
+            sg.name,
+            sg.icon_url as "iconUrl",
+            sg.playtime_2weeks as "recentMinutes",
+            sg.playtime_forever as "playtimeMinutes",
+            sg.last_played_at as "lastPlayedAt",
+            sg.recent_rank
+          from public.steam_games sg
+          where sg.user_id = target_user_id
+            and sg.owned = true
+            and sg.recent_rank is not null
+          order by sg.recent_rank asc
+          limit 6
+        ) r
+      ), '[]'::jsonb) else '[]'::jsonb end,
+    'achievementSummary',
+      case when sp.show_achievements then (
+        select jsonb_build_object(
+          'unlocked', coalesce(sum(sg.achievements_unlocked), 0),
+          'total', coalesce(sum(sg.achievements_total), 0),
+          'gamesTracked', count(*) filter (where sg.achievements_total > 0)
         )
-        order by array_position(sp.proud_achievement_api_names, sa.api_name)
-      ),
-      '[]'::jsonb
-    )
-    into achievements
-    from public.steam_achievements sa
-    where sa.user_id = target_user_id
-      and sa.app_id = sp.favorite_app_id
-      and sa.achieved = true
-      and sa.api_name = any(sp.proud_achievement_api_names);
-  end if;
-
-  return jsonb_build_object(
-    'appId', sg.app_id,
-    'name', sg.name,
-    'iconUrl', sg.icon_url,
-    'playtimeMinutes',
-      case
-        when sp.show_playtime and sp.favorite_show_playtime then sg.playtime_forever
-        else null
-      end,
-    'startedYear', sp.favorite_started_year,
-    'startedOn', sp.favorite_started_on,
-    'achievements', achievements
+        from public.steam_games sg
+        where sg.user_id = target_user_id
+          and sg.owned = true
+      ) else null end,
+    'favoriteGame',
+      case when sp.favorite_app_id is not null then (
+        select jsonb_build_object(
+          'appId', sg.app_id,
+          'name', sg.name,
+          'iconUrl', sg.icon_url,
+          'playtimeMinutes',
+            case when sp.show_playtime and sp.favorite_show_playtime
+              then sg.playtime_forever else null end,
+          'startedYear', sp.favorite_started_year,
+          'startedOn', sp.favorite_started_on,
+          'achievements',
+            case when sp.show_achievements then coalesce((
+              select jsonb_agg(
+                jsonb_build_object(
+                  'apiName', sa.api_name,
+                  'name', coalesce(sa.display_name, sa.api_name),
+                  'description', sa.description,
+                  'unlockTime', sa.unlock_time,
+                  'iconUrl', sa.icon_url
+                )
+                order by array_position(sp.proud_achievement_api_names, sa.api_name)
+              )
+              from public.steam_achievements sa
+              where sa.user_id = target_user_id
+                and sa.app_id = sp.favorite_app_id
+                and sa.achieved = true
+                and sa.api_name = any(sp.proud_achievement_api_names)
+            ), '[]'::jsonb) else '[]'::jsonb end
+        )
+        from public.steam_games sg
+        where sg.user_id = target_user_id
+          and sg.app_id = sp.favorite_app_id
+          and sg.owned = true
+        limit 1
+      ) else null end,
+    'badgeCount', case when sp.show_badges then sp.badge_count else null end,
+    'xp', case when sp.show_badges then sp.xp else null end,
+    'inventoryItemCount',
+      case when sp.show_inventory then (
+        select count(*) from public.steam_inventory_items si
+        where si.user_id = target_user_id
+      ) else null end
   );
+
+  return result;
 end;
 $$;
 
-revoke all on function public.get_public_steam_profile_highlight(uuid) from public;
-grant execute on function public.get_public_steam_profile_highlight(uuid) to anon, authenticated;
+revoke all on function public.get_public_steam_showcase(uuid) from public;
+grant execute on function public.get_public_steam_showcase(uuid) to anon, authenticated;
 
 alter table public.lfg_posts
   alter column game_id drop not null,
