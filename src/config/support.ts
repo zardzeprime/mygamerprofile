@@ -8,6 +8,8 @@ export type SupportMethod = {
   provider?: string;
   url?: string | null;
   pixKey?: string | null;
+  pixRecipientName?: string | null;
+  pixMerchantCity?: string | null;
 };
 
 /**
@@ -19,10 +21,12 @@ export type SupportMethod = {
 export const SUPPORT_METHODS: SupportMethod[] = [
   {
     id: "pix",
-    status: "setup",
+    status: "active",
     label: "Pix",
     description: "Apoio pontual direto ao projeto.",
-    pixKey: null,
+    pixKey: "fb7a6f3e-3a3a-4870-8b34-ff608d6c99cf",
+    pixRecipientName: "Esdras Oliveira e Oliveira Junior",
+    pixMerchantCity: null,
   },
   {
     id: "recurring",

@@ -60,19 +60,19 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          Você deve ter pelo menos 13 anos para criar uma conta. Pessoas de 13 a
-          17 anos estão sujeitas à política de supervisão do MGP. Para usuários
-          de até 16 anos, recursos sociais podem permanecer limitados até que o
-          vínculo ou a confirmação de responsável exigidos pela legislação e
-          pelo desenho de segurança da plataforma estejam atendidos.
+          Você deve ter pelo menos 13 anos para criar uma conta. A data de
+          nascimento informada no onboarding é privada e, durante a beta, é
+          usada para aplicar faixas automáticas de segurança no LFG. Essas
+          faixas limitam quais contas podem pedir/aceitar match entre si e não
+          podem ser ampliadas manualmente pelo criador do grupo.
         </p>
         <p>
-          A data de nascimento informada no onboarding é usada para aplicar
-          regras de faixa etária e não aparece no perfil público. Informar uma
-          data não transforma essa informação, por si só, em verificação forte
-          de idade. Quando a lei exigir mecanismo confiável de aferição para um
-          conteúdo ou serviço proibido a menores, o MGP não considerará um
-          simples botão “tenho 18 anos” suficiente.
+          A idade usada nessa fase é declarada pelo próprio usuário e não é
+          apresentada como verificação documental. Informar uma data falsa para
+          contornar regras de segurança é proibido e pode ser denunciado,
+          bloqueado e resultar em restrições. Quando uma funcionalidade ou a lei
+          exigir mecanismo mais forte de aferição, o MGP poderá exigir
+          verificação adicional antes de liberar o recurso.
         </p>
         <p>
           Cada jogo pode possuir classificação indicativa própria. Ter acesso ao
@@ -115,8 +115,11 @@ const sections: LegalSection[] = [
         <p>
           O MGP permite criar um perfil gamer, selecionar jogos, preencher Game
           Profiles, publicar e interagir com conteúdo da comunidade e buscar
-          grupos por LFG. Alguns recursos ainda podem estar em beta, ser
-          experimentais ou depender de terceiros.
+          grupos por LFG. No LFG, anúncios e DMs de matches podem ser
+          temporários; o prazo aparece na interface e mensagens expiradas podem
+          ser removidas automaticamente. Conteúdo denunciado pode ser
+          preservado por mais tempo para moderação e segurança. Alguns recursos
+          ainda podem estar em beta, ser experimentais ou depender de terceiros.
         </p>
         <p>
           Dados informados manualmente — como rank, função, personagem, build ou
