@@ -76,57 +76,57 @@ const creativeUncut = (
 });
 
 export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
-  "iudex-gundyr": creativeUncut("ds3-gunda", {
+  "iudex-gundyr": ds3("Gundyr concept.png",
     cardObjectPosition: "50% 28%",
     detailObjectPosition: "50% 34%",
     detailScale: 1.08,
   }),
-  "vordt-of-the-boreal-valley": creativeUncut("ds3-vordt-of-the-boreal-valley", {
+  "vordt-of-the-boreal-valley": ds3("Vordt concept.png",
     cardObjectPosition: "50% 42%",
     detailObjectPosition: "50% 43%",
     detailScale: 1.08,
   }),
-  "curse-rotted-greatwood": creativeUncut("ds3-curse-rotted-greatwood", {
+  "curse-rotted-greatwood": ds3("Curse rotted greatwood concept.png",
     cardObjectPosition: "50% 38%",
     detailObjectPosition: "50% 40%",
     detailScale: 1.08,
   }),
-  "crystal-sage": creativeUncut("ds3-crystal-sage", {
+  "crystal-sage": ds3("Crystal sage concept.png",
     cardObjectPosition: "50% 24%",
     detailObjectPosition: "50% 30%",
     detailScale: 1.08,
   }),
-  "deacons-of-the-deep": creativeUncut("ds3-deacons-of-the-deep", {
+  "deacons-of-the-deep": ds3("Deacons concept.png",
     cardObjectPosition: "50% 35%",
     detailObjectPosition: "50% 38%",
     detailScale: 1.1,
   }),
-  "abyss-watchers": creativeUncut("ds3-the-abyss-watchers", {
+  "abyss-watchers": ds3("Abyss Watcher (DS3 Design Works).png",
     cardObjectPosition: "50% 26%",
     detailObjectPosition: "50% 31%",
     detailScale: 1.08,
   }),
-  "high-lord-wolnir": creativeUncut("ds3-high-lord-wolnir", {
+  "high-lord-wolnir": ds3("Wolnir concept.png",
     cardObjectPosition: "50% 36%",
     detailObjectPosition: "50% 39%",
     detailScale: 1.08,
   }),
-  "old-demon-king": creativeUncut("ds3-old-demon-king", {
+  "old-demon-king": ds3("Old demon king concept.png",
     cardObjectPosition: "50% 36%",
     detailObjectPosition: "50% 40%",
     detailScale: 1.1,
   }),
-  "pontiff-sulyvahn": creativeUncut("ds3-pontiff-sulyvahn", {
+  "pontiff-sulyvahn": ds3("Pontiff sulyvahn concept.png",
     cardObjectPosition: "50% 24%",
     detailObjectPosition: "50% 30%",
     detailScale: 1.08,
   }),
-  "aldrich-devourer-of-gods": creativeUncut("ds3-aldrich-devourer-of-gods", {
+  "aldrich-devourer-of-gods": ds3("Aldrich concept art.png",
     cardObjectPosition: "50% 34%",
     detailObjectPosition: "50% 38%",
     detailScale: 1.08,
   }),
-  "yhorm-the-giant": creativeUncut("ds3-yhorm-the-giant", {
+  "yhorm-the-giant": ds3("Yhorm concept.png",
     cardObjectPosition: "31% 34%",
     detailObjectPosition: "30% 40%",
     cardScale: 1.08,
@@ -143,12 +143,12 @@ export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
     detailObjectPosition: "50% 40%",
     detailScale: 1.08,
   }),
-  "champion-gundyr": creativeUncut("ds3-gunda", {
+  "champion-gundyr": ds3("Gundyr concept.png",
     cardObjectPosition: "50% 28%",
     detailObjectPosition: "50% 34%",
     detailScale: 1.1,
   }),
-  "dragonslayer-armour": creativeUncut("ds3-dragonslayer-armor", {
+  "dragonslayer-armour": ds3("Dragonslayer armour concept.png",
     cardObjectPosition: "50% 24%",
     detailObjectPosition: "50% 31%",
     detailScale: 1.08,
@@ -174,17 +174,17 @@ export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
       detailScale: 1.08,
     },
   ),
-  "ancient-wyvern": creativeUncut("ds3-ancient-wyvern", {
+  "ancient-wyvern": ds3("Ancient wyvern concept.png",
     cardObjectPosition: "50% 42%",
     detailObjectPosition: "50% 44%",
     detailScale: 1.1,
   }),
-  "the-nameless-king": creativeUncut("ds3-the-nameless-king", {
+  "the-nameless-king": ds3("Nameless king concept.png",
     cardObjectPosition: "50% 25%",
     detailObjectPosition: "50% 31%",
     detailScale: 1.08,
   }),
-  "nameless-king": creativeUncut("ds3-the-nameless-king", {
+  "nameless-king": ds3("Nameless king concept.png",
     cardObjectPosition: "50% 25%",
     detailObjectPosition: "50% 31%",
     detailScale: 1.08,
@@ -210,22 +210,22 @@ export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
     detailFit: "cover",
   },
 
-  "sister-friede-and-father-ariandel": creativeUncut("ds3-sister-friede", {
+  "sister-friede-and-father-ariandel": ds3("Friede concept.png",
     cardObjectPosition: "50% 24%",
     detailObjectPosition: "50% 30%",
     detailScale: 1.07,
   }),
-  "sister-friede": creativeUncut("ds3-sister-friede", {
+  "sister-friede": ds3("Friede concept.png",
     cardObjectPosition: "50% 24%",
     detailObjectPosition: "50% 30%",
     detailScale: 1.07,
   }),
-  "demon-in-pain-demon-from-below-and-demon-prince": creativeUncut("ds3-demon-prince", {
+  "demon-in-pain-demon-from-below-and-demon-prince": ds3("Demon Prince artwork.png",
     cardObjectPosition: "50% 40%",
     detailObjectPosition: "50% 42%",
     detailScale: 1.12,
   }),
-  "demon-prince": creativeUncut("ds3-demon-prince", {
+  "demon-prince": ds3("Demon Prince artwork.png",
     cardObjectPosition: "50% 40%",
     detailObjectPosition: "50% 42%",
     detailScale: 1.12,
@@ -238,12 +238,12 @@ export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
     1.04,
     "contain",
   ),
-  "darkeater-midir": creativeUncut("ds3-darkeater-midir", {
+  "darkeater-midir": ds3("MidirConcept.png",
     cardObjectPosition: "50% 40%",
     detailObjectPosition: "50% 42%",
     detailScale: 1.1,
   }),
-  "slave-knight-gael": creativeUncut("ds3-slave-knight-gael", {
+  "slave-knight-gael": ds3("Gael phase1 concept.png",
     cardObjectPosition: "50% 27%",
     detailObjectPosition: "50% 33%",
     detailScale: 1.08,
