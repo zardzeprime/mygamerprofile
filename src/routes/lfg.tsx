@@ -322,8 +322,7 @@ function LfgPage() {
           </p>
         </div>
         {user ? (
-          verification?.verified ? (
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
                 <Button>{t("lfg.create")}</Button>
               </DialogTrigger>
@@ -331,6 +330,15 @@ function LfgPage() {
               <DialogHeader>
                 <DialogTitle>{t("lfg.create")}</DialogTitle>
               </DialogHeader>
+              {!verification?.verified ? (
+                <p className="rounded-lg border border-amber-500/20 bg-amber-500/[0.05] px-3 py-2 text-xs leading-5 text-muted-foreground">
+                  {copy(
+                    "Você pode publicar o grupo agora. Para aceitar um match e liberar a DM, sua idade precisará estar verificada.",
+                    "You can publish the group now. To accept a match and unlock DMs, your age will need to be verified.",
+                    "Puedes publicar el grupo ahora. Para aceptar un match y habilitar los mensajes directos, tu edad deberá estar verificada.",
+                  )}
+                </p>
+              ) : null}
               <form onSubmit={handleCreate} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="title">{copy("Título do grupo", "Group title", "Título del grupo")}</Label>
@@ -476,13 +484,6 @@ function LfgPage() {
               </form>
             </DialogContent>
             </Dialog>
-          ) : (
-            <Button asChild variant="outline">
-              <Link to="/settings/connections">
-                {copy("Verificar idade para criar grupo", "Verify age to create a group", "Verificar edad para crear un grupo")}
-              </Link>
-            </Button>
-          )
         ) : null}
       </div>
 
