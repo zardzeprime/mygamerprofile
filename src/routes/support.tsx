@@ -223,19 +223,40 @@ function SupportPage() {
             title="Pix"
             badge={copy("Recomendado para apoio pontual", "Best for one-time support", "Recomendado para apoyo puntual")}
             description={copy(
-              "Quando for ativado, o MGP usará uma chave aleatória dedicada ao projeto, evitando expor CPF, telefone ou e-mail pessoal.",
-              "When enabled, MGP will use a random key dedicated to the project, avoiding exposure of a personal ID, phone number or email.",
-              "Cuando se active, MGP usará una clave aleatoria dedicada al proyecto, evitando exponer documento, teléfono o correo personal.",
+              "O Pix usa uma chave aleatória dedicada ao projeto, evitando expor CPF, telefone ou e-mail pessoal. O nome do recebedor é mostrado antes da cópia para você conferir o destino.",
+              "Pix uses a random key dedicated to the project, avoiding exposure of a personal ID, phone number or email. The recipient name is shown before copying so you can confirm the destination.",
+              "Pix usa una clave aleatoria dedicada al proyecto, evitando exponer documento, teléfono o correo personal. El nombre del receptor aparece antes de copiar para confirmar el destino.",
             )}
             active={Boolean(pix?.pixKey)}
             action={
               pix?.pixKey ? (
-                <button type="button" onClick={copyPix} className="brand-button min-h-11 gap-2">
-                  {copied ? <CheckCircle2 className="size-4" /> : <Copy className="size-4" />}
-                  {copied
-                    ? copy("Chave copiada", "Key copied", "Clave copiada")
-                    : copy("Copiar chave Pix", "Copy Pix key", "Copiar clave Pix")}
-                </button>
+                <div className="space-y-3">
+                  {pix.pixRecipientName ? (
+                    <div className="rounded-lg border border-border bg-background/45 px-3 py-2">
+                      <span className="block text-[0.62rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+                        {copy("Recebedor", "Recipient", "Receptor")}
+                      </span>
+                      <span className="mt-1 block text-sm font-semibold text-foreground">
+                        {pix.pixRecipientName}
+                      </span>
+                    </div>
+                  ) : null}
+                  <button type="button" onClick={copyPix} className="brand-button min-h-11 gap-2">
+                    {copied ? <CheckCircle2 className="size-4" /> : <Copy className="size-4" />}
+                    {copied
+                      ? copy("Chave copiada", "Key copied", "Clave copiada")
+                      : copy("Copiar chave Pix", "Copy Pix key", "Copiar clave Pix")}
+                  </button>
+                  {!pix.pixMerchantCity ? (
+                    <p className="text-[0.68rem] leading-5 text-muted-foreground">
+                      {copy(
+                        "QR Code Pix aguardando a cidade cadastrada do recebedor.",
+                        "Pix QR code is waiting for the recipient's registered city.",
+                        "El código QR Pix está esperando la ciudad registrada del receptor.",
+                      )}
+                    </p>
+                  ) : null}
+                </div>
               ) : (
                 <span className="inline-flex min-h-11 items-center rounded-lg border border-dashed border-border px-4 text-sm font-semibold text-muted-foreground">
                   {copy("Em configuração", "Being configured", "En configuración")}
