@@ -18,6 +18,8 @@ export type DarkSoulsBossImageAsset = {
   url: string;
   sourceUrl: string;
   sourceLabel: LocalizedText;
+  assetSourceUrl?: string;
+  assetSourceLabel?: LocalizedText;
   kind: "promotional" | "ptde-screenshot" | "wiki-image" | "concept-art";
   cardObjectPosition?: string;
   detailObjectPosition?: string;
@@ -427,15 +429,41 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
   // Demon Firesage. The MGP placeholder remains preferable to reusing another demon.
 };
 
+const localMirrorLabel: LocalizedText = {
+  "pt-BR": "Fonte técnica do arquivo local",
+  en: "Technical source for local file",
+  es: "Fuente técnica del archivo local",
+};
+
+const DS1_MIRROR_FILENAMES: Record<string, string> = {
+  "bell-gargoyles": "bell_gargoyle.jpg",
+  "artorias-the-abysswalker": "knight_artorias.jpg",
+};
+
+function getDs1MirrorSourceUrl(slug: string) {
+  if (slug === "ornstein-and-smough") {
+    return "https://github.com/WilliamWang5632/Rankify/blob/main/rankify/client/src/assets/ornstein-and-smough.jpg";
+  }
+  if (slug === "moonlight-butterfly") {
+    return "https://github.com/luxzap7/Dark-Souls-Pathfinder/blob/main/public/assets/images/bosses/ds1/moonlight_butterfly.jpg";
+  }
+
+  const filename = DS1_MIRROR_FILENAMES[slug] ?? `${slug.replaceAll("-", "_")}.jpg`;
+  return `https://github.com/joshuamooredev/boss-tracker-collection/blob/main/src/assets/images/DarkSoulsI/${filename}`;
+}
+
 export function getDarkSoulsBossImage(slug?: string) {
   if (!slug) return undefined;
   const asset = DARK_SOULS_BOSS_IMAGES[slug];
   if (!asset) return undefined;
 
   // Boss artwork is vendored under /public so cards and detail views never depend
-  // on a third-party hotlink at runtime. sourceUrl/sourceLabel stay intact for credit.
+  // on a third-party hotlink at runtime. The exact mirror used for the local binary
+  // is tracked separately from the original reference/rights link.
   return {
     ...asset,
     url: `/assets/bosses/ds1/${slug}.jpg`,
+    assetSourceUrl: getDs1MirrorSourceUrl(slug),
+    assetSourceLabel: localMirrorLabel,
   };
 }
