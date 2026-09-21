@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Supabase Edge runtime handles dynamic RPC/database row shapes in this module. */
 import { createClient } from "npm:@supabase/supabase-js@2.116.0";
 
 import {
