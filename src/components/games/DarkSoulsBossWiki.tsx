@@ -21,6 +21,7 @@ import type { Locale } from "@/i18n";
 import { localeCopy, toContentLocale } from "@/i18n/locale-utils";
 import { DARK_SOULS_BOSSES, type DarkSoulsBoss } from "@/data/darkSoulsBosses";
 import { DARK_SOULS_BOSS_WIKI } from "@/data/darkSoulsBossWiki";
+import { getDarkSoulsBossImage } from "@/data/darkSoulsBossImages";
 
 type Filter = "all" | "required" | "optional" | "dlc";
 
@@ -49,6 +50,7 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
 
   const selected =
     DARK_SOULS_BOSSES.find((boss) => boss.slug === selectedSlug) ?? filtered[0] ?? DARK_SOULS_BOSSES[0];
+  const selectedImage = getDarkSoulsBossImage(selected?.slug);
 
   const selectBoss = (boss: DarkSoulsBoss) => {
     setSelectedSlug(boss.slug);
@@ -109,33 +111,51 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
           <aside className="border-t border-border bg-muted/20 p-5 xl:border-l xl:border-t-0 sm:p-6">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
-                <p className="section-kicker">{copy("SCREENSHOT", "SCREENSHOT", "CAPTURA")}</p>
+                <p className="section-kicker">{copy("ARTE DE REFERÊNCIA", "REFERENCE ART", "ARTE DE REFERENCIA")}</p>
                 <p className="mt-1 text-sm font-semibold text-foreground">
-                  {copy("Em produção pelo MGP", "In production by MGP", "En producción por MGP")}
+                  {selectedImage
+                    ? copy("Procedência registrada", "Provenance recorded", "Procedencia registrada")
+                    : copy("Fallback MGP", "MGP fallback", "Fallback MGP")}
                 </p>
               </div>
               <Sparkles className="size-5 text-gold-strong" />
             </div>
 
-            <div className="flex aspect-[4/5] flex-col items-center justify-center rounded-xl border border-dashed border-gold/25 bg-[radial-gradient(circle_at_top,hsl(var(--gold)/0.08),transparent_55%)] p-6 text-center">
-              <Skull className="size-11 text-gold-strong" />
-              <p className="mt-4 font-display text-2xl font-bold text-foreground">{selected?.name}</p>
-              <p className="mt-3 max-w-xs text-xs leading-6 text-muted-foreground">
-                {copy(
-                  "As screenshots próprias dos encontros ainda serão capturadas, tratadas e enquadradas pelo MGP. Até lá, esta ficha permanece sem arte externa.",
-                  "Original encounter screenshots will still be captured, processed and framed by MGP. Until then, this entry intentionally ships without external boss artwork.",
-                  "Las capturas propias de los encuentros aún serán tomadas, tratadas y encuadradas por MGP. Hasta entonces, esta ficha permanece sin arte externa.",
-                )}
-              </p>
-            </div>
-
-            <p className="mt-3 text-xs leading-5 text-muted-foreground">
-              {copy(
-                "Objetivo: substituir esta área por screenshots consistentes de gameplay, com o mesmo enquadramento e identidade visual em todos os chefes.",
-                "Goal: replace this area with consistent gameplay screenshots using the same framing and visual identity across every boss.",
-                "Objetivo: reemplazar esta área con capturas de gameplay consistentes y el mismo encuadre visual para todos los jefes.",
-              )}
-            </p>
+            {selectedImage ? (
+              <>
+                <div className="aspect-[4/5] overflow-hidden rounded-xl border border-border bg-black/25">
+                  <img
+                    src={selectedImage.url}
+                    alt={selected?.name ?? ""}
+                    className="h-full w-full object-cover"
+                    style={{
+                      objectPosition: selectedImage.detailObjectPosition,
+                      transform: `scale(${selectedImage.detailScale ?? 1})`,
+                    }}
+                  />
+                </div>
+                <a
+                  href={selectedImage.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 inline-flex items-center gap-1 text-[0.68rem] font-bold text-gold-strong hover:underline"
+                >
+                  {selectedImage.sourceLabel[locale]} ↗
+                </a>
+                <p className="mt-2 text-[0.64rem] leading-5 text-muted-foreground">
+                  {copy(
+                    "Arte/screenshot exibido como referência no beta. Dark Souls e seus assets pertencem aos respectivos detentores de direitos, incluindo FromSoftware/Bandai Namco.",
+                    "Artwork/screenshot shown as beta reference. Dark Souls and its assets belong to their respective rights holders, including FromSoftware/Bandai Namco.",
+                    "Arte/captura mostrada como referencia en la beta. Dark Souls y sus assets pertenecen a sus respectivos titulares, incluyendo FromSoftware/Bandai Namco.",
+                  )}
+                </p>
+              </>
+            ) : (
+              <div className="flex aspect-[4/5] flex-col items-center justify-center rounded-xl border border-dashed border-gold/25 bg-[radial-gradient(circle_at_top,hsl(var(--gold)/0.08),transparent_55%)] p-6 text-center">
+                <Skull className="size-11 text-gold-strong" />
+                <p className="mt-4 font-display text-2xl font-bold text-foreground">{selected?.name}</p>
+              </div>
+            )}
           </aside>
         </div>
       </section>
@@ -178,6 +198,7 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((boss) => {
             const wiki = DARK_SOULS_BOSS_WIKI[boss.slug];
+            const image = getDarkSoulsBossImage(boss.slug);
             const active = boss.slug === selected?.slug;
 
             return (
@@ -191,7 +212,19 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                 )}
               >
                 <div className="relative flex h-28 items-end overflow-hidden border-b border-border bg-[radial-gradient(circle_at_top_left,hsl(var(--gold)/0.08),transparent_65%)] p-4">
-                  <div className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-gold/20 bg-background/60">
+                  {image ? (
+                    <>
+                      <img
+                        src={image.url}
+                        alt=""
+                        loading="lazy"
+                        className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-300 group-hover:scale-105 group-hover:opacity-70"
+                        style={{ objectPosition: image.cardObjectPosition }}
+                      />
+                      <span className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/35 to-transparent" />
+                    </>
+                  ) : null}
+                  <div className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-gold/20 bg-background/70 backdrop-blur">
                     <Skull className="size-4 text-gold-strong" />
                   </div>
                   <div className="flex w-full items-end justify-between gap-3">
@@ -223,7 +256,9 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                     {boss.shortSummary[contentLocale]}
                   </p>
                   <p className="mt-3 text-[0.67rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                    {copy("Screenshot MGP em desenvolvimento", "MGP screenshot in development", "Captura MGP en desarrollo")}
+                    {image
+                      ? copy("Arte de referência · fonte registrada", "Reference art · source recorded", "Arte de referencia · fuente registrada")
+                      : copy("Arte em revisão", "Artwork in review", "Arte en revisión")}
                   </p>
                   {wiki ? (
                     <p className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-foreground">
@@ -250,9 +285,9 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
 
       <p className="text-xs leading-relaxed text-muted-foreground">
         {copy(
-          "Nota editorial: os textos do MGP são resumos originais baseados em fatos do jogo e referências consolidadas. As imagens individuais dos chefes foram temporariamente retiradas; screenshots próprias de gameplay ainda serão capturadas, tratadas e padronizadas pela equipe MGP.",
-          "Editorial note: MGP copy is original summary text based on game facts and established references. Individual boss images are temporarily withheld; original gameplay screenshots will still be captured, processed and standardized by MGP.",
-          "Nota editorial: los textos de MGP son resúmenes originales basados en hechos del juego y referencias consolidadas. Las imágenes individuales de jefes fueron retiradas temporalmente; MGP todavía capturará, tratará y estandarizará screenshots propias de gameplay.",
+          "Nota editorial: os textos do MGP são resumos originais baseados em fatos do jogo e referências consolidadas. Artes e screenshots de terceiros usados no beta mantêm fonte visível e serão substituídos gradualmente por capturas próprias quando possível.",
+          "Editorial note: MGP copy is original summary text based on game facts and established references. Third-party art and screenshots used during beta retain visible sourcing and will be gradually replaced by original captures where possible.",
+          "Nota editorial: los textos de MGP son resúmenes originales basados en hechos del juego y referencias consolidadas. El arte y las capturas de terceros usados en beta mantienen su fuente visible y se sustituirán gradualmente por capturas propias cuando sea posible.",
         )}
       </p>
     </div>
