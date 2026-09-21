@@ -92,6 +92,12 @@ export async function loadSoulsCompendium(game: SoulsCompendiumGame) {
 export const SOULS_COMPENDIUM_SOURCE = {
   label: "Dark Souls Documents · LeMinerva",
   url: SOURCE_PAGE,
-  rights:
-    "Ícones e textos de referência pertencem aos respectivos detentores de direitos da franquia Dark Souls, incluindo FromSoftware/Bandai Namco. O MGP os exibe no beta como referência com procedência registrada.",
+  rights: {
+    "pt-BR":
+      "Ícones e textos de referência pertencem aos respectivos detentores de direitos da franquia Dark Souls, incluindo FromSoftware/Bandai Namco. O MGP os exibe no beta como referência com procedência registrada.",
+    en:
+      "Reference icons and text belong to the respective Dark Souls rights holders, including FromSoftware/Bandai Namco. MGP displays them in beta as sourced reference material.",
+    es:
+      "Los iconos y textos de referencia pertenecen a los respectivos titulares de derechos de Dark Souls, incluidos FromSoftware/Bandai Namco. MGP los muestra en la beta como material de referencia con procedencia identificada.",
+  },
 };
