@@ -12,6 +12,7 @@ import {
   Star,
 } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
+import { AdReadyLayout, AdSlot } from "@/components/common/AdSlot";
 import { MODULE_LABELS, getGameConfig, type GameModuleKey, type GameConfig } from "@/config/games";
 import { isGameActive } from "@/config/gameAvailability";
 import { GAME_EDITORIAL_OVERVIEW } from "@/data/gameEditorialOverview";
@@ -189,7 +190,8 @@ function GameHub() {
         </div>
       </section>
 
-      <div className="mx-auto min-w-0 w-full max-w-7xl px-4 sm:px-6">
+      <AdReadyLayout className="mx-auto min-w-0 w-full max-w-[92rem] px-4 sm:px-6" rail={<AdSlot id={`game-${game.slug}-rail`} format="rail" />}>
+        <div className="min-w-0">
         <div className="sticky top-[4.25rem] z-30 -mx-2 py-2 md:hidden">
           <div className="max-h-[calc(100dvh-5.25rem)] overflow-y-auto overscroll-contain rounded-2xl border border-border bg-background/96 p-2 shadow-lift backdrop-blur-lg">
             <button
@@ -410,7 +412,9 @@ function GameHub() {
             )}
           </div>
         </div>
-      </div>
+        <AdSlot id={`game-${game.slug}-after-content`} format="leaderboard" className="mb-8" />
+        </div>
+      </AdReadyLayout>
     </div>
   );
 }
