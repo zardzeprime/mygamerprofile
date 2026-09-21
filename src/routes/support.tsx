@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
+import { KoFiSupportButton } from "@/components/support/KoFiSupportButton";
 import { SupportFeedbackDesk } from "@/components/support/SupportFeedbackDesk";
 import {
   SUPPORT_EMAIL,
@@ -253,23 +254,7 @@ function SupportPage() {
               "Una campaña recurrente permite apoyar mensualmente sin convertir MGP en una suscripción obligatoria.",
             )}
             active={Boolean(recurring?.url)}
-            action={
-              recurring?.url ? (
-                <a
-                  href={recurring.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="brand-button min-h-11 gap-2"
-                >
-                  {copy("Apoiar mensalmente", "Support monthly", "Apoyar mensualmente")}
-                  <ExternalLink className="size-4" />
-                </a>
-              ) : (
-                <span className="inline-flex min-h-11 items-center rounded-lg border border-dashed border-border px-4 text-sm font-semibold text-muted-foreground">
-                  {copy("Campanha em configuração", "Campaign being configured", "Campaña en configuración")}
-                </span>
-              )
-            }
+            action={<KoFiSupportButton />}
           />
         </div>
       </section>
