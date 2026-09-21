@@ -133,12 +133,22 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
 
             {selectedImage ? (
               <>
-                <div className="aspect-[4/5] overflow-hidden rounded-xl border border-border bg-black/25">
+                <a
+                  href={selectedImage.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={copy(
+                    "Abrir fonte e direitos da imagem",
+                    "Open image source and rights",
+                    "Abrir fuente y derechos de la imagen",
+                  )}
+                  className="group relative block aspect-[4/5] overflow-hidden rounded-xl border border-border bg-black/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+                >
                   <img
                     src={selectedImage.url}
                     alt={selected?.name ?? ""}
                     className={cn(
-                      "h-full w-full",
+                      "h-full w-full transition-opacity group-hover:opacity-90",
                       selectedImage.detailFit === "contain" ? "object-contain p-2" : "object-cover",
                     )}
                     style={{
@@ -146,14 +156,19 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                       transform: `scale(${selectedImage.detailScale ?? 1})`,
                     }}
                   />
-                </div>
+                  <span className="absolute bottom-2 right-2 grid size-8 place-items-center rounded-full border border-white/15 bg-black/65 text-white backdrop-blur">
+                    <ExternalLink className="size-3.5" />
+                  </span>
+                </a>
                 <a
                   href={selectedImage.sourceUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="mt-3 inline-flex items-center gap-1 text-[0.68rem] font-bold text-gold-strong hover:underline"
                 >
-                  {selectedImage.sourceLabel[locale]} ↗
+                  {copy("Fonte / direitos da imagem", "Image source / rights", "Fuente / derechos de la imagen")}
+                  <span aria-hidden="true">·</span>
+                  {selectedImage.sourceLabel[locale]} <ExternalLink className="size-3" />
                 </a>
                 <p className="mt-2 text-[0.64rem] leading-5 text-muted-foreground">
                   {copy(
