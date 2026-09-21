@@ -38,6 +38,7 @@ const RIOT_EXTERNAL_GAMES = [
   { id: "teamfight-tactics", name: "Teamfight Tactics" },
   { id: "wild-rift", name: "League of Legends: Wild Rift" },
   { id: "legends-of-runeterra", name: "Legends of Runeterra" },
+  { id: "2xko", name: "2XKO" },
 ] as const;
 
 type SteamLfgGame = {
@@ -171,9 +172,10 @@ function LfgPage() {
   const selectedGame = gameOptions.find((game) => game.key === selectedGameKey) ?? null;
   const maxPartySize = (() => {
     const name = selectedGame?.name.toLocaleLowerCase() ?? "";
-    if (name.includes("valorant") || name.includes("league of legends")) return 5;
+    if (name.includes("valorant") || name === "league of legends" || name.includes("wild rift")) return 5;
     if (name.includes("dark souls")) return 4;
     if (name.includes("teamfight tactics")) return 8;
+    if (name.includes("legends of runeterra") || name.includes("2xko")) return 2;
     return 8;
   })();
   const partySizes = Array.from({ length: Math.max(1, maxPartySize - 1) }, (_, index) => index + 2);
