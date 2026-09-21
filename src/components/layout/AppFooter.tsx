@@ -50,7 +50,7 @@ export function AppFooter() {
               </a>
             </nav>
             <p className="text-xs text-muted-foreground">
-              {t("brand.tagline")} · MG Profile v0.1.6B · © {new Date().getFullYear()}
+              {t("brand.tagline")} · {locale === "pt-BR" ? "Beta público" : locale === "es" ? "Beta público" : "Public beta"} · © {new Date().getFullYear()}
             </p>
           </div>
         </div>
