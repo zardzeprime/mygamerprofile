@@ -20,7 +20,11 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Locale } from "@/i18n";
 import { localeCopy, toContentLocale } from "@/i18n/locale-utils";
-import { DARK_SOULS_BOSSES, type DarkSoulsBoss } from "@/data/darkSoulsBosses";
+import {
+  DARK_SOULS_BOSSES,
+  DARK_SOULS_BOSS_COMBAT_SOURCE,
+  type DarkSoulsBoss,
+} from "@/data/darkSoulsBosses";
 import {
   DARK_SOULS_BOSS_REVIEWED_AT,
   DARK_SOULS_BOSS_SOURCES,
@@ -373,6 +377,56 @@ function BossDetail({
           </p>
         </InfoCard>
       </div>
+
+      {(boss.weaknesses?.length || boss.resistances?.length) ? (
+        <div className="mt-4">
+          <InfoCard icon={Shield} title={copy("Fraquezas e resistências", "Weaknesses & resistances", "Debilidades y resistencias")}>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-gold-strong">
+                  {copy("Fraquezas / boas opções", "Weaknesses / strong options", "Debilidades / buenas opciones")}
+                </p>
+                {boss.weaknesses?.length ? (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {boss.weaknesses.map((entry, index) => (
+                      <span key={index} className="rounded-full border border-gold/25 bg-gold/[0.06] px-2.5 py-1 text-xs font-semibold text-foreground">
+                        {entry[contentLocale]}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-2 text-xs">{copy("Nenhuma dominante registrada.", "No dominant weakness recorded.", "Sin debilidad dominante registrada.")}</p>
+                )}
+              </div>
+              <div>
+                <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+                  {copy("Resistências", "Resistances", "Resistencias")}
+                </p>
+                {boss.resistances?.length ? (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {boss.resistances.map((entry, index) => (
+                      <span key={index} className="rounded-full border border-border bg-background/50 px-2.5 py-1 text-xs font-semibold text-muted-foreground">
+                        {entry[contentLocale]}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-2 text-xs">{copy("Nenhuma resistência dominante registrada.", "No dominant resistance recorded.", "Sin resistencia dominante registrada.")}</p>
+                )}
+              </div>
+            </div>
+            <a
+              href={DARK_SOULS_BOSS_COMBAT_SOURCE.url}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex items-center gap-1.5 text-[0.66rem] font-bold text-gold-strong hover:underline"
+            >
+              {copy("Fonte de matchup / cross-check", "Matchup source / cross-check", "Fuente de matchup / verificación")}
+              <ExternalLink className="size-3" />
+            </a>
+          </InfoCard>
+        </div>
+      ) : null}
 
       {wiki ? (
         <div className="mt-4 grid gap-4 md:grid-cols-2">
