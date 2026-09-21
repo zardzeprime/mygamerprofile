@@ -2,6 +2,17 @@ import { loadSoulsCompendiumCategory } from "@/lib/souls-compendium";
 
 export type SoulsDpsGame = "dark-souls-remastered" | "dark-souls-iii";
 export type SoulsDpsStat = "str" | "dex" | "int" | "fth" | "lck";
+export type Ds1UpgradePath =
+  | "regular"
+  | "raw"
+  | "crystal"
+  | "magic"
+  | "enchanted"
+  | "divine"
+  | "occult"
+  | "fire"
+  | "chaos"
+  | "lightning";
 
 export type SoulsStats = {
   str: number;
@@ -69,6 +80,7 @@ export type SoulsDpsResult = {
   ratingLabel: string;
   scalingGrades: Partial<Record<SoulsDpsStat, string>>;
   notes: string[];
+  numericAvailable?: boolean;
 };
 
 const DS1_WEAPONS_URL =
@@ -88,6 +100,82 @@ function extractDs3WeaponSkill(description?: string) {
   const inlineMatch = description.match(/\bSkill:\s*([^.!?\n]+)/i);
   const value = (lineMatch?.[1] ?? inlineMatch?.[1])?.trim();
   return value || undefined;
+}
+
+export const DS1_UPGRADE_PATHS: Record<
+  Ds1UpgradePath,
+  {
+    label: string;
+    maxUpgrade: number;
+    family: "physical" | "magic" | "faith" | "fire" | "chaos" | "lightning";
+    description: string;
+  }
+> = {
+  regular: {
+    label: "Normal",
+    maxUpgrade: 15,
+    family: "physical",
+    description: "Mantém o scaling natural da arma e chega até +15.",
+  },
+  raw: {
+    label: "Raw",
+    maxUpgrade: 5,
+    family: "physical",
+    description: "Aumenta dano base e reduz a importância do scaling.",
+  },
+  crystal: {
+    label: "Crystal",
+    maxUpgrade: 5,
+    family: "physical",
+    description: "Prioriza dano físico alto, preservando o foco original de atributos.",
+  },
+  magic: {
+    label: "Magic",
+    maxUpgrade: 10,
+    family: "magic",
+    description: "Divide o dano com magia e adiciona foco em Inteligência.",
+  },
+  enchanted: {
+    label: "Enchanted",
+    maxUpgrade: 5,
+    family: "magic",
+    description: "Aprofunda o foco em Inteligência em troca de parte do scaling físico.",
+  },
+  divine: {
+    label: "Divine",
+    maxUpgrade: 10,
+    family: "faith",
+    description: "Divide o dano com magia e adiciona foco em Fé.",
+  },
+  occult: {
+    label: "Occult",
+    maxUpgrade: 5,
+    family: "faith",
+    description: "Aprofunda o foco em Fé e altera o comportamento contra alvos específicos.",
+  },
+  fire: {
+    label: "Fire",
+    maxUpgrade: 10,
+    family: "fire",
+    description: "Adiciona dano de fogo e remove o scaling normal de atributos.",
+  },
+  chaos: {
+    label: "Chaos",
+    maxUpgrade: 5,
+    family: "chaos",
+    description: "Adiciona dano de fogo, remove scaling normal e usa Humanidade segurada até 10.",
+  },
+  lightning: {
+    label: "Lightning",
+    maxUpgrade: 5,
+    family: "lightning",
+    description: "Adiciona dano de raio e remove o scaling normal de atributos.",
+  },
+};
+
+export function getDs1UpgradePathOptions(weapon: SoulsDpsWeapon) {
+  if (weapon.maxUpgrade < 15) return ["regular"] as Ds1UpgradePath[];
+  return Object.keys(DS1_UPGRADE_PATHS) as Ds1UpgradePath[];
 }
 
 const emptyDamage = (): SoulsDamage => ({
@@ -727,15 +815,85 @@ export function calculateDs1Estimate(
   stats: SoulsStats,
   upgrade: number,
   twoHanded: boolean,
+  path: Ds1UpgradePath = "regular",
+  humanity = 0,
 ): SoulsDpsResult {
   const reqMet = requirementMet(stats, weapon.requirements, twoHanded);
   const effectiveStats = {
     ...stats,
     str: Math.min(99, Math.floor(stats.str * (twoHanded ? 1.5 : 1))),
   };
-  const safeUpgrade = Math.max(0, Math.min(weapon.maxUpgrade, upgrade));
-  const upgradeRatio = weapon.maxUpgrade > 0 ? safeUpgrade / weapon.maxUpgrade : 0;
+  const pathProfile = DS1_UPGRADE_PATHS[path];
+  const effectiveMaxUpgrade =
+    path === "regular" ? weapon.maxUpgrade : pathProfile.maxUpgrade;
+  const safeUpgrade = Math.max(0, Math.min(effectiveMaxUpgrade, upgrade));
+  const upgradeRatio =
+    effectiveMaxUpgrade > 0 ? safeUpgrade / effectiveMaxUpgrade : 0;
   const scaling = weapon.scalingLetters ?? {};
+
+  if (path !== "regular") {
+    const humanityValue = Math.max(0, Math.min(10, Math.round(humanity)));
+    const originalRating = casualRating(
+      weapon,
+      stats,
+      Math.min(safeUpgrade, weapon.maxUpgrade),
+      Math.max(1, weapon.maxUpgrade),
+      twoHanded,
+    );
+
+    let pathScore = 5 + upgradeRatio * 2;
+    let pathScaling: Partial<Record<SoulsDpsStat, string>> = {};
+
+    if (path === "raw") {
+      pathScore = 4.5 + upgradeRatio * 2.5 + Math.min(1.5, originalRating / 10);
+    } else if (path === "crystal") {
+      pathScore = Math.min(10, originalRating + 0.75 * upgradeRatio);
+      pathScaling = Object.fromEntries(
+        Object.entries(scaling)
+          .filter(([, grade]) => Boolean(grade) && grade !== "-")
+          .map(([stat, grade]) => [stat, grade ?? "-"]),
+      );
+    } else if (path === "magic") {
+      pathScore = 3.5 + ds1StatCurve(stats.int) * 4 + upgradeRatio * 2;
+      pathScaling = { int: "FOCO" };
+    } else if (path === "enchanted") {
+      pathScore = 3 + ds1StatCurve(stats.int) * 5 + upgradeRatio * 2;
+      pathScaling = { int: "FOCO+" };
+    } else if (path === "divine") {
+      pathScore = 3.5 + ds1StatCurve(stats.fth) * 4 + upgradeRatio * 2;
+      pathScaling = { fth: "FOCO" };
+    } else if (path === "occult") {
+      pathScore = 3 + ds1StatCurve(stats.fth) * 5 + upgradeRatio * 2;
+      pathScaling = { fth: "FOCO+" };
+    } else if (path === "fire" || path === "lightning") {
+      pathScore = 4.5 + upgradeRatio * 3.5;
+    } else if (path === "chaos") {
+      pathScore = 4 + upgradeRatio * 3 + (humanityValue / 10) * 2;
+    }
+
+    if (!reqMet) pathScore = 1;
+    const rating = Math.max(1, Math.min(10, Math.round(pathScore)));
+
+    return {
+      damage: emptyDamage(),
+      totalAr: 0,
+      requirementsMet: reqMet,
+      rating,
+      ratingLabel: SOULS_RATING_LABELS[rating - 1],
+      scalingGrades: pathScaling,
+      numericAvailable: false,
+      notes: [
+        `Rota ${pathProfile.label}: ${pathProfile.description}`,
+        "No beta, as rotas especiais do DS1 usam leitura qualitativa de scaling/upgrade. O MGP não inventa um AR exato sem uma curva por arma validada.",
+        ...(path === "chaos"
+          ? [`Humanidade considerada: ${humanityValue}/10.`]
+          : []),
+        ...(reqMet
+          ? []
+          : ["Você ainda não cumpre todos os requisitos da arma; o desempenho cai drasticamente."]),
+      ],
+    };
+  }
   const statsByDamage: Array<[keyof SoulsDamage, SoulsDpsStat[]]> = [
     ["physical", ["str", "dex"]],
     ["magic", ["int", "fth"]],
@@ -757,7 +915,7 @@ export function calculateDs1Estimate(
   });
 
   const totalAr = Object.values(damage).reduce((sum, value) => sum + value, 0);
-  const rating = casualRating(weapon, stats, upgrade, weapon.maxUpgrade, twoHanded);
+  const rating = casualRating(weapon, stats, safeUpgrade, weapon.maxUpgrade, twoHanded);
 
   return {
     damage,
@@ -770,6 +928,7 @@ export function calculateDs1Estimate(
         .filter(([, grade]) => Boolean(grade))
         .map(([stat, grade]) => [stat, grade ?? "-"]),
     ),
+    numericAvailable: true,
     notes: [
       "Dark Souls 1 usa uma estimativa de AR no beta; o modo Casual prioriza compatibilidade de stats, scaling e upgrade.",
       ...(reqMet
