@@ -134,13 +134,13 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
             {selectedImage ? (
               <>
                 <a
-                  href={selectedImage.sourceUrl}
+                  href={selectedImage.assetSourceUrl ?? selectedImage.sourceUrl}
                   target="_blank"
                   rel="noreferrer"
                   aria-label={copy(
-                    "Abrir fonte e direitos da imagem",
-                    "Open image source and rights",
-                    "Abrir fuente y derechos de la imagen",
+                    "Abrir fonte do arquivo da imagem",
+                    "Open image file source",
+                    "Abrir fuente del archivo de la imagen",
                   )}
                   className="group relative block aspect-[4/5] overflow-hidden rounded-xl border border-border bg-black/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
                 >
@@ -160,16 +160,28 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                     <ExternalLink className="size-3.5" />
                   </span>
                 </a>
-                <a
-                  href={selectedImage.sourceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-3 inline-flex items-center gap-1 text-[0.68rem] font-bold text-gold-strong hover:underline"
-                >
-                  {copy("Fonte / direitos da imagem", "Image source / rights", "Fuente / derechos de la imagen")}
-                  <span aria-hidden="true">·</span>
-                  {selectedImage.sourceLabel[locale]} <ExternalLink className="size-3" />
-                </a>
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-[0.68rem] font-bold">
+                  {selectedImage.assetSourceUrl ? (
+                    <a
+                      href={selectedImage.assetSourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 text-gold-strong hover:underline"
+                    >
+                      {copy("Fonte do arquivo", "File source", "Fuente del archivo")}
+                      <ExternalLink className="size-3" />
+                    </a>
+                  ) : null}
+                  <a
+                    href={selectedImage.sourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 text-gold-strong hover:underline"
+                  >
+                    {copy("Referência / direitos", "Reference / rights", "Referencia / derechos")}
+                    <ExternalLink className="size-3" />
+                  </a>
+                </div>
                 <p className="mt-2 text-[0.64rem] leading-5 text-muted-foreground">
                   {copy(
                     "Arte/screenshot exibido como referência no beta. Dark Souls e seus assets pertencem aos respectivos detentores de direitos, incluindo FromSoftware/Bandai Namco.",
