@@ -31,6 +31,7 @@ import { PostCard } from "@/components/posts/PostCard";
 import { ReportDialog } from "@/components/common/ReportDialog";
 import { PublicProfileIdentity } from "@/components/profile/PublicProfileIdentity";
 import { SteamProfileShowcase } from "@/components/profile/SteamProfileShowcase";
+import { SteamFavoriteGameHighlight } from "@/components/profile/SteamFavoriteGameHighlight";
 import { GAMES } from "@/config/games";
 import { getProfileBackground } from "@/config/profileBackgrounds";
 import { cn } from "@/lib/utils";
@@ -59,6 +60,7 @@ export const Route = createFileRoute("/u/$username")({
         console.warn("[Profile] Could not load public identity loadout.", error);
         return null;
       }),
+
     ]);
 
     return { profile, posts, gameProfiles, steamShowcase, identityLoadout };
@@ -94,6 +96,7 @@ function ProfilePage() {
   const { locale, t } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const { profile, posts, gameProfiles, steamShowcase, identityLoadout } = Route.useLoaderData();
+  const gameHighlight = steamShowcase?.favoriteGame ?? null;
   const { user } = useAuth();
   const isOwn = user?.id === profile.id;
   const [following, setFollowing] = useState<boolean | null>(null);
@@ -220,6 +223,16 @@ function ProfilePage() {
                   <Link to="/settings/profile"><Edit3 className="mr-2 size-4" />{t("profile.editProfile")}</Link>
                 </Button>
               ) : null}
+              {isOwn ? (
+                <Button asChild className="flex-1 sm:flex-none">
+                  <a
+                    href={`/lfg?compose=1${gameHighlight ? `&game=steam:${gameHighlight.appId}` : ""}`}
+                  >
+                    <Gamepad2 className="mr-2 size-4" />
+                    {copy("Procurando por grupo", "Looking for group", "Buscando grupo")}
+                  </a>
+                </Button>
+              ) : null}
               {!isOwn && user ? (
                 <Button onClick={handleFollow} disabled={followBusy} variant={following ? "outline" : "default"} className="flex-1 sm:flex-none">
                   <UserRoundPlus className="mr-2 size-4" />
@@ -240,6 +253,12 @@ function ProfilePage() {
       {steamShowcase ? (
         <div className="mt-5">
           <SteamProfileShowcase steam={steamShowcase} locale={locale} />
+        </div>
+      ) : null}
+
+      {gameHighlight ? (
+        <div className="mt-5">
+          <SteamFavoriteGameHighlight highlight={gameHighlight} locale={locale} />
         </div>
       ) : null}
 

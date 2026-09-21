@@ -12,6 +12,13 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
@@ -179,7 +186,7 @@ export function SoulsItemCompendium({
       .then((data) => {
         if (!active) return;
         setEntries(data);
-        setSelectedId(data[0]?.id ?? null);
+        setSelectedId(null);
       })
       .catch((error) => {
         console.warn("[SoulsItemCompendium] load failed", error);
@@ -203,8 +210,7 @@ export function SoulsItemCompendium({
     });
   }, [category, entries, locale, query]);
 
-  const selected =
-    entries.find((entry) => entry.id === selectedId) ?? filtered[0] ?? entries[0] ?? null;
+  const selected = entries.find((entry) => entry.id === selectedId) ?? null;
   const technicalWeapon =
     selected?.category === "weapon"
       ? (technicalWeapons.find(
@@ -323,20 +329,20 @@ export function SoulsItemCompendium({
           )}
         </section>
       ) : (
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_24rem]">
+        <>
           <section className="surface-panel p-4 sm:p-5">
             {filtered.length ? (
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">
                 {filtered.map((entry) => (
                   <button
                     key={entry.id}
                     type="button"
                     onClick={() => setSelectedId(entry.id)}
-                    className={cn(
-                      "min-w-0 rounded-2xl border p-3 text-left transition hover:-translate-y-0.5 hover:border-gold/30",
-                      selected?.id === entry.id
-                        ? "border-gold/45 bg-gold/10"
-                        : "border-border bg-muted/10",
+                    className="group min-w-0 rounded-2xl border border-border bg-muted/10 p-3 text-left transition hover:-translate-y-0.5 hover:border-gold/40 hover:bg-gold/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/45"
+                    aria-label={copy(
+                      `Abrir detalhes de ${entry.name}`,
+                      `Open details for ${entry.name}`,
+                      `Abrir detalles de ${entry.name}`,
                     )}
                   >
                     <div className="mx-auto grid aspect-square max-w-24 place-items-center overflow-hidden rounded-xl border border-border bg-black/20">
@@ -344,7 +350,7 @@ export function SoulsItemCompendium({
                         src={entry.iconUrl}
                         alt=""
                         loading="lazy"
-                        className="h-full w-full object-contain p-2"
+                        className="h-full w-full object-contain p-2 transition-transform duration-200 group-hover:scale-105"
                       />
                     </div>
                     <p className="mt-3 line-clamp-2 text-xs font-bold leading-5 text-foreground">
@@ -367,76 +373,113 @@ export function SoulsItemCompendium({
             )}
           </section>
 
-          {selected ? (
-            <aside className="surface-panel self-start overflow-hidden xl:sticky xl:top-24">
-              <div className="border-b border-border p-5">
-                <div className="mx-auto grid size-36 place-items-center rounded-2xl border border-border bg-black/20">
-                  <img src={selected.iconUrl} alt="" className="size-full object-contain p-3" />
-                </div>
-                <p className="mt-4 text-[0.62rem] font-black uppercase tracking-[0.1em] text-gold-strong">
-                  {categoryLabel(selected.category)}
-                </p>
-                <h3 className="mt-1 font-display text-2xl font-bold text-foreground">
-                  {selected.name}
-                </h3>
-              </div>
+          <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setSelectedId(null)}>
+            <DialogContent className="max-h-[92vh] max-w-4xl overflow-y-auto data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95">
+              {selected ? (
+                <div className="min-w-0">
+                  <DialogHeader className="text-left">
+                    <div className="flex flex-col gap-4 pr-8 sm:flex-row sm:items-center">
+                      <div className="grid size-28 shrink-0 place-items-center rounded-2xl border border-border bg-black/20 p-3 shadow-lift">
+                        <img
+                          src={selected.iconUrl}
+                          alt=""
+                          className="size-full object-contain"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-gold-strong">
+                          {categoryLabel(selected.category)} · {gameName}
+                        </p>
+                        <DialogTitle className="mt-1 font-display text-2xl sm:text-3xl">
+                          {selected.name}
+                        </DialogTitle>
+                        <DialogDescription className="mt-2 text-left">
+                          {copy(
+                            "Requisitos, scaling, atributos técnicos e informações de referência.",
+                            "Requirements, scaling, technical stats and reference information.",
+                            "Requisitos, scaling, atributos técnicos e información de referencia.",
+                          )}
+                        </DialogDescription>
+                      </div>
+                    </div>
+                  </DialogHeader>
 
-              <div className="space-y-4 p-5">
-                {technicalWeapon ? (
-                  <WeaponTechnicalCard weapon={technicalWeapon} locale={locale} />
-                ) : null}
-                {technicalArmorEntry ? (
-                  <ArmorTechnicalCard armor={technicalArmorEntry} locale={locale} />
-                ) : null}
-                {technicalRingEffect ? (
-                  <RingEffectCard effect={technicalRingEffect} locale={locale} />
-                ) : null}
-                {selectedMetadata ? (
-                  <ItemMetadataCard metadata={selectedMetadata} locale={locale} />
-                ) : null}
-                {selectedSpellMetadata ? (
-                  <SpellMetadataCard metadata={selectedSpellMetadata} locale={locale} />
-                ) : null}
+                  <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]">
+                    <div className="space-y-4">
+                      {technicalWeapon ? (
+                        <WeaponTechnicalCard weapon={technicalWeapon} locale={locale} />
+                      ) : null}
+                      {technicalArmorEntry ? (
+                        <ArmorTechnicalCard armor={technicalArmorEntry} locale={locale} />
+                      ) : null}
+                      {technicalRingEffect ? (
+                        <RingEffectCard effect={technicalRingEffect} locale={locale} />
+                      ) : null}
+                      {selectedMetadata ? (
+                        <ItemMetadataCard metadata={selectedMetadata} locale={locale} />
+                      ) : null}
+                      {selectedSpellMetadata ? (
+                        <SpellMetadataCard metadata={selectedSpellMetadata} locale={locale} />
+                      ) : null}
 
-                <div>
-                  <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
-                    {copy(
-                      "Descrição de referência",
-                      "Reference description",
-                      "Descripción de referencia",
-                    )}
-                  </p>
-                  <p className="mt-2 whitespace-pre-line text-sm leading-6 text-muted-foreground">
-                    {selected.description ||
-                      copy(
-                        "Sem descrição na fonte.",
-                        "No source description.",
-                        "Sin descripción en la fuente.",
-                      )}
-                  </p>
-                </div>
+                      {!technicalWeapon &&
+                      !technicalArmorEntry &&
+                      !technicalRingEffect &&
+                      !selectedMetadata &&
+                      !selectedSpellMetadata ? (
+                        <div className="rounded-2xl border border-border bg-muted/10 p-4 text-sm leading-6 text-muted-foreground">
+                          {copy(
+                            "Este registro não possui dados técnicos adicionais na fonte atual.",
+                            "This entry has no additional technical data in the current source.",
+                            "Este registro no tiene datos técnicos adicionales en la fuente actual.",
+                          )}
+                        </div>
+                      ) : null}
+                    </div>
 
-                <div className="rounded-xl border border-amber-500/25 bg-amber-500/[0.06] p-3">
-                  <p className="text-xs font-bold text-foreground">
-                    {copy("Créditos e direitos", "Credits & rights", "Créditos y derechos")}
-                  </p>
-                  <p className="mt-1 text-[0.66rem] leading-5 text-muted-foreground">
-                    {SOULS_COMPENDIUM_SOURCE.rights}
-                  </p>
-                  <a
-                    href={SOULS_COMPENDIUM_SOURCE.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-2 inline-flex items-center gap-1 text-[0.68rem] font-bold text-gold-strong hover:underline"
-                  >
-                    {SOULS_COMPENDIUM_SOURCE.label}
-                    <ExternalLink className="size-3" />
-                  </a>
+                    <div className="space-y-4">
+                      <section className="rounded-2xl border border-border bg-muted/10 p-4">
+                        <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+                          {copy(
+                            "Descrição de referência",
+                            "Reference description",
+                            "Descripción de referencia",
+                          )}
+                        </p>
+                        <p className="mt-2 whitespace-pre-line text-sm leading-6 text-muted-foreground">
+                          {selected.description ||
+                            copy(
+                              "Sem descrição na fonte.",
+                              "No source description.",
+                              "Sin descripción en la fuente.",
+                            )}
+                        </p>
+                      </section>
+
+                      <section className="rounded-2xl border border-amber-500/25 bg-amber-500/[0.06] p-4">
+                        <p className="text-xs font-bold text-foreground">
+                          {copy("Créditos e direitos", "Credits & rights", "Créditos y derechos")}
+                        </p>
+                        <p className="mt-1 text-[0.66rem] leading-5 text-muted-foreground">
+                          {SOULS_COMPENDIUM_SOURCE.rights}
+                        </p>
+                        <a
+                          href={SOULS_COMPENDIUM_SOURCE.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-2 inline-flex items-center gap-1 text-[0.68rem] font-bold text-gold-strong hover:underline"
+                        >
+                          {SOULS_COMPENDIUM_SOURCE.label}
+                          <ExternalLink className="size-3" />
+                        </a>
+                      </section>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </aside>
-          ) : null}
-        </div>
+              ) : null}
+            </DialogContent>
+          </Dialog>
+        </>
       )}
     </div>
   );
@@ -511,19 +554,26 @@ function WeaponTechnicalCard({ weapon, locale }: { weapon: SoulsDpsWeapon; local
       </div>
 
       <p className="mt-4 text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
-        Scaling
+        {copy("Scaling por atributo", "Attribute scaling", "Scaling por atributo")}
       </p>
-      <div className="mt-2 flex flex-wrap gap-1.5">
+      <div className="mt-2 grid grid-cols-3 gap-1.5 sm:grid-cols-5">
         {stats.map(([stat, label]) => {
-          const grade = weapon.scalingLetters?.[stat];
-          if (!grade || grade === "-") return null;
+          const grade = weapon.scalingLetters?.[stat] || "-";
           return (
-            <span
+            <div
               key={stat}
-              className="rounded-lg border border-border bg-background/50 px-2 py-1 text-[0.66rem] font-black text-foreground"
+              className={cn(
+                "rounded-lg border px-2 py-2 text-center",
+                grade !== "-"
+                  ? "border-gold/30 bg-gold/[0.06]"
+                  : "border-border bg-background/35 opacity-65",
+              )}
             >
-              {label} · {grade}
-            </span>
+              <p className="text-[0.55rem] font-black uppercase tracking-[0.08em] text-muted-foreground">
+                {label}
+              </p>
+              <p className="mt-0.5 font-display text-base font-black text-foreground">{grade}</p>
+            </div>
           );
         })}
       </div>

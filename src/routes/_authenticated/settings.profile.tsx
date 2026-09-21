@@ -21,6 +21,7 @@ import {
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { ProfileIdentityStudio } from "@/components/profile/ProfileIdentityStudio";
+import { SteamFavoriteGameEditor } from "@/components/profile/SteamFavoriteGameEditor";
 import { getProfileBackground } from "@/config/profileBackgrounds";
 import { ACTIVE_GAMES } from "@/config/gameAvailability";
 import type { Json } from "@/integrations/supabase/types";
@@ -355,6 +356,8 @@ function SettingsProfilePage() {
             })}
           </div>
         </section>
+
+        <SteamFavoriteGameEditor userId={profile.id} locale={locale} />
 
         <section id="profile-info" className="surface-panel scroll-mt-24 rounded-2xl p-4 sm:p-6">
           <h2 className="font-display text-xl font-semibold">{copy("Informações do perfil", "Profile information", "Información del perfil")}</h2>

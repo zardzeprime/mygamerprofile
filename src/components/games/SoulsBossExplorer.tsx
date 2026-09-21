@@ -24,6 +24,7 @@ import {
   type SoulsGameSlug,
 } from "@/data/soulsBossResearch";
 import { getSoulsBossImage } from "@/data/soulsBossImages";
+import { getDs3BossEditorialSummary } from "@/data/soulsBossEditorialPolish";
 import {
   DS3_BOSS_DEFENSE_SOURCE,
   getDs3BossDefenseProfile,
@@ -157,7 +158,7 @@ export function SoulsBossExplorer({
                     src={selectedImage.url}
                     alt={selected.name}
                     className={cn(
-                      "h-full w-full transition-opacity group-hover:opacity-90",
+                      "h-full w-full brightness-110 transition-[filter,opacity] group-hover:opacity-95",
                       selectedImage.detailFit === "contain" ? "object-contain p-2" : "object-cover",
                     )}
                     style={{
@@ -274,12 +275,12 @@ export function SoulsBossExplorer({
                           alt=""
                           loading="lazy"
                           className={cn(
-                            "absolute inset-0 h-full w-full opacity-55 transition duration-300 group-hover:scale-105 group-hover:opacity-70",
+                            "absolute inset-0 h-full w-full opacity-80 brightness-110 transition duration-300 group-hover:scale-105 group-hover:opacity-95",
                             image.cardFit === "contain" ? "object-contain p-1" : "object-cover",
                           )}
                           style={{ objectPosition: image.cardObjectPosition }}
                         />
-                        <span className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/35 to-transparent" />
+                        <span className="absolute inset-0 bg-gradient-to-t from-background/75 via-background/20 to-transparent" />
                       </>
                     ) : null}
                     <span className="absolute right-4 top-3 grid size-9 place-items-center rounded-full border border-gold/20 bg-background/70 backdrop-blur">
@@ -305,7 +306,7 @@ export function SoulsBossExplorer({
                       <ChevronRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
                     </span>
                     <span className="mt-3 line-clamp-2 block text-sm leading-6 text-muted-foreground">
-                      {boss.shortContext[locale]}
+                      {gameSlug === "dark-souls-iii" ? getDs3BossEditorialSummary(boss.slug, locale) ?? boss.shortContext[locale] : boss.shortContext[locale]}
                     </span>
                     <span className="mt-3 block text-[0.67rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                       {image
@@ -435,7 +436,7 @@ function BossDetail({
 
       <div className="mt-7 grid gap-4 md:grid-cols-2">
         <InfoCard icon={BookOpen} title={copy("Contexto", "Context", "Contexto")}>
-          <p>{boss.shortContext[locale]}</p>
+          <p>{gameSlug === "dark-souls-iii" ? getDs3BossEditorialSummary(boss.slug, locale) ?? boss.shortContext[locale] : boss.shortContext[locale]}</p>
         </InfoCard>
         <InfoCard icon={Layers3} title={copy("Fases", "Phases", "Fases")}>
           <p>{boss.phases[locale]}</p>

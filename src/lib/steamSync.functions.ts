@@ -129,6 +129,21 @@ export type PublicSteamShowcase = {
   badgeCount: number | null;
   xp: number | null;
   inventoryItemCount: number | null;
+  favoriteGame?: {
+    appId: number;
+    name: string;
+    iconUrl: string | null;
+    playtimeMinutes: number | null;
+    startedYear: number | null;
+    startedOn: string | null;
+    achievements: Array<{
+      apiName: string;
+      name: string;
+      description: string | null;
+      unlockTime: string | null;
+      iconUrl: string | null;
+    }>;
+  } | null;
   inventoryItems?: Array<{
     appId: number;
     name: string | null;
