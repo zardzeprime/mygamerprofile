@@ -6,6 +6,12 @@ import type { Database } from "@/integrations/supabase/types";
 import { getSupabasePublic } from "./supabase.server";
 
 const LFG_STATUSES = ["open", "closed", "expired"] as const;
+const LFG_TTL_VALUES = [6, 12, 24, 48] as const;
+const lfgTtlSchema = z.number().int().refine(
+  (value): value is (typeof LFG_TTL_VALUES)[number] =>
+    LFG_TTL_VALUES.includes(value as (typeof LFG_TTL_VALUES)[number]),
+  { message: "invalid_lfg_ttl" },
+);
 
 const listLfgSchema = z.object({
   gameId: z.string().uuid().optional(),
@@ -31,7 +37,8 @@ const createLfgSchema = z
     mic_required: z.boolean().optional(),
     slots_total: z.number().int().min(2).max(99),
     scheduled_for: z.string().datetime().nullable().optional(),
-    expires_at: z.string().datetime().optional(),
+    group_ttl_hours: lfgTtlSchema.default(24),
+    chat_ttl_hours: lfgTtlSchema.default(24),
   })
   .refine(
     (data) =>
@@ -218,7 +225,8 @@ export const createLfgPost = createServerFn({ method: "POST" })
         slots_total: slotsTotal,
         slots_open: slotsOpen,
         scheduled_for: data.scheduled_for ?? null,
-        expires_at: data.expires_at ?? null,
+        group_ttl_hours: data.group_ttl_hours,
+        chat_ttl_hours: data.chat_ttl_hours,
       })
       .select(
         "*, game:games!lfg_posts_game_id_fkey(id, name, slug), author:profiles!lfg_posts_user_id_fkey(id, username, display_name, avatar_url)",
@@ -412,6 +420,19 @@ export const listLfgMessages = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => messageListSchema.parse(data))
   .handler(async ({ context, data }) => {
+    const { data: application, error: applicationError } = await context.supabase
+      .from("lfg_applications")
+      .select("id,status,chat_expires_at")
+      .eq("id", data.applicationId)
+      .maybeSingle();
+
+    if (applicationError || !application || application.status !== "accepted") {
+      throw new Error("LFG_MATCH_REQUIRED");
+    }
+    if (!application.chat_expires_at || new Date(application.chat_expires_at).getTime() <= Date.now()) {
+      throw new Error("LFG_CHAT_EXPIRED");
+    }
+
     const { data: rows, error } = await context.supabase
       .from("lfg_dm_messages")
       .select("*")
@@ -439,11 +460,14 @@ export const sendLfgMessage = createServerFn({ method: "POST" })
 
     const { data: application, error: appError } = await context.supabase
       .from("lfg_applications")
-      .select("id,lfg_post_id,applicant_user_id,status")
+      .select("id,lfg_post_id,applicant_user_id,status,chat_expires_at")
       .eq("id", data.applicationId)
       .maybeSingle();
     if (appError || !application || application.status !== "accepted") {
       throw new Error("LFG_MATCH_REQUIRED");
+    }
+    if (!application.chat_expires_at || new Date(application.chat_expires_at).getTime() <= Date.now()) {
+      throw new Error("LFG_CHAT_EXPIRED");
     }
 
     const { data: post, error: postError } = await context.supabase
