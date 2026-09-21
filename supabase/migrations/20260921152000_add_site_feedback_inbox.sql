@@ -66,3 +66,8 @@ create index if not exists site_feedback_user_created_idx
 
 create index if not exists site_feedback_status_created_idx
   on public.site_feedback (status, created_at desc);
+
+
+create index if not exists site_feedback_replied_by_idx
+  on public.site_feedback (replied_by)
+  where replied_by is not null;
