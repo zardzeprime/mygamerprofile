@@ -33,3 +33,8 @@ export const SUPPORT_METHODS: SupportMethod[] = [
     url: null,
   },
 ];
+
+
+export const SUPPORT_INSTAGRAM_HANDLE = "@zard.prime";
+export const SUPPORT_INSTAGRAM_URL = "https://www.instagram.com/zard.prime/";
+export const SUPPORT_EMAIL = "contato@mgprofile.online";

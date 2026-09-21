@@ -6,6 +6,8 @@ import {
   Copy,
   ExternalLink,
   HeartHandshake,
+  Instagram,
+  Mail,
   MessageSquareText,
   ServerCog,
   Share2,
@@ -16,7 +18,13 @@ import {
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
-import { SUPPORT_METHODS } from "@/config/support";
+import { SupportFeedbackDesk } from "@/components/support/SupportFeedbackDesk";
+import {
+  SUPPORT_EMAIL,
+  SUPPORT_INSTAGRAM_HANDLE,
+  SUPPORT_INSTAGRAM_URL,
+  SUPPORT_METHODS,
+} from "@/config/support";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
@@ -94,25 +102,87 @@ function SupportPage() {
             <p className="mt-2 font-display text-lg font-semibold text-foreground">ESDRAS, 22 anos</p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {copy(
-                "Graduando em uma área fora da programação, aprendendo desenvolvimento enquanto transforma uma ideia antiga em produto real.",
-                "A university student in a field outside programming, learning development while turning a long-held idea into a real product.",
-                "Estudiante universitario de un área fuera de programación, aprendiendo desarrollo mientras convierte una idea antigua en un producto real.",
+                "Graduando em uma área fora da programação, aprendendo desenvolvimento enquanto transforma algumas ideias antigas em um produto real e que possa fazer sentido para o público.",
+                "A university student in a field outside programming, learning development while turning some long-held ideas into a real product that can make sense to people.",
+                "Estudiante universitario de un área fuera de la programación, aprendiendo desarrollo mientras transforma algunas ideas antiguas en un producto real que pueda tener sentido para el público.",
               )}
             </p>
+            <a
+              href={SUPPORT_INSTAGRAM_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-gold-strong hover:underline"
+            >
+              <Instagram className="size-4" />
+              {SUPPORT_INSTAGRAM_HANDLE}
+              <ExternalLink className="size-3" />
+            </a>
           </aside>
         </div>
       </section>
 
-      <section className="mt-6 grid gap-4 lg:grid-cols-3">
-        <StoryCard
-          icon={Sparkles}
-          title={copy("Por que o MGP existe", "Why MGP exists", "Por qué existe MGP")}
-          body={copy(
-            "A ideia é criar uma identidade gamer de verdade: perfil, jogos favoritos, conquistas, comunidades, fóruns, LFG, guias, builds e tutoriais reunidos em uma experiência própria.",
-            "The goal is to build a real gamer identity: profile, favorite games, achievements, communities, forums, LFG, guides, builds and tutorials in one dedicated experience.",
-            "La idea es crear una identidad gamer real: perfil, juegos favoritos, logros, comunidades, foros, LFG, guías, builds y tutoriales en una experiencia propia.",
+      <section className="mt-6 surface-panel overflow-hidden p-5 sm:p-7">
+        <div className="flex items-center gap-2 text-gold-strong">
+          <Sparkles className="size-4" />
+          <span className="section-kicker">
+            {copy("POR QUE O MGP EXISTE", "WHY MGP EXISTS", "POR QUÉ EXISTE MGP")}
+          </span>
+        </div>
+        <h2 className="mt-3 max-w-3xl font-display text-2xl font-semibold leading-tight text-foreground sm:text-3xl">
+          {copy(
+            "Uma rede social gamer, mas também um lugar para entender melhor os jogos.",
+            "A gaming social network, but also a place to understand games better.",
+            "Una red social gamer, pero también un lugar para entender mejor los juegos.",
           )}
-        />
+        </h2>
+
+        <div className="mt-5 grid gap-5 text-sm leading-7 text-muted-foreground lg:grid-cols-2">
+          <div className="space-y-4">
+            <p>
+              {copy(
+                "A ideia do MG Profile é criar uma rede social em que você consiga conhecer pessoas para jogar, sem transformar isso em obrigação de manter contato o tempo todo. Tem gente que prefere jogar sozinha, gente que gosta de companhia, gente que entra em grupo só para uma sessão. O MGP foi pensado para caber nesses jeitos diferentes de viver os games.",
+                "MG Profile is meant to be a social network where you can meet people to play with without turning that into an obligation to stay in constant contact. Some people prefer playing alone, some like company, and some only want a group for one session. MGP is designed to fit those different ways of enjoying games.",
+                "MG Profile está pensado como una red social donde puedas conocer gente para jugar sin convertirlo en una obligación de mantener contacto constante. Hay quienes prefieren jugar solos, quienes disfrutan de compañía y quienes solo buscan grupo para una sesión. MGP fue pensado para encajar en esas distintas formas de vivir los videojuegos.",
+              )}
+            </p>
+            <p>
+              {copy(
+                "Ao mesmo tempo, o projeto não quer ser só uma comunidade. Cada jogo pode ter guias, builds, compêndios, ferramentas e formas interativas de aprender. A proposta é que você consiga entrar em um hub e encontrar contexto suficiente para entender melhor o jogo, se orientar e resolver dúvidas sem precisar abrir cinco lugares diferentes.",
+                "At the same time, the project is not meant to be only a community. Each game can have guides, builds, compendiums, tools and interactive ways to learn. The idea is that you can enter a hub and find enough context to understand the game better, get oriented and solve questions without opening five different places.",
+                "Al mismo tiempo, el proyecto no quiere ser solo una comunidad. Cada juego puede tener guías, builds, compendios, herramientas y formas interactivas de aprender. La idea es entrar a un hub y encontrar suficiente contexto para entender mejor el juego, orientarte y resolver dudas sin abrir cinco sitios distintos.",
+              )}
+            </p>
+          </div>
+          <div className="space-y-4">
+            <p>
+              {copy(
+                "Isso vem de experiência pessoal. Eu já passei pela dificuldade de montar build, descobrir o que fazer em cada parte, entender quem era cada boss, onde ficava cada mapa ou simplesmente saber qual caminho seguir. O MG Profile nasceu para juntar comunidades em um ambiente só, mas também para ajudar quem está chegando agora ou quem ainda tem dificuldade de entender certos conteúdos.",
+                "That comes from personal experience. I have dealt with the difficulty of making builds, figuring out what to do next, understanding who each boss was, where maps were or simply knowing which path to follow. MG Profile was born to bring communities together, but also to help newcomers and people who still struggle to understand certain game content.",
+                "Eso viene de experiencia personal. Yo también pasé por la dificultad de montar builds, descubrir qué hacer en cada parte, entender quién era cada boss, dónde estaba cada mapa o simplemente saber qué camino seguir. MG Profile nació para reunir comunidades, pero también para ayudar a quienes están empezando o todavía tienen dificultad con ciertos contenidos.",
+              )}
+            </p>
+            <p>
+              {copy(
+                "Também existe uma parte de identidade. Em outras redes, o perfil gira em torno do seu nome, suas fotos e sua rotina. O MGP é focado em jogos: uma foto jogando, uma conquista, um momento com amigos, namorado, noivo, família ou squad, um guia que você criou ou o jogo que marcou sua vida. A intenção é dar mais liberdade para expressar sua personalidade gamer em um lugar feito especificamente para isso.",
+                "There is also an identity side to it. On other networks, your profile revolves around your name, photos and daily life. MGP is focused on games: a screenshot while playing, an achievement, a moment with friends, a partner, family or squad, a guide you made or a game that marked your life. The goal is to give people more freedom to express their gaming identity in a place built specifically for it.",
+                "También hay una parte de identidad. En otras redes, el perfil gira alrededor de tu nombre, tus fotos y tu rutina. MGP está centrado en juegos: una foto jugando, un logro, un momento con amigos, pareja, familia o squad, una guía que creaste o el juego que marcó tu vida. La intención es dar más libertad para expresar tu identidad gamer en un espacio creado específicamente para eso.",
+              )}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-xl border border-gold/20 bg-gold/[0.04] p-4">
+          <p className="text-sm leading-6 text-foreground/90">
+            {copy(
+              "O objetivo final é simples de explicar, mesmo que seja difícil de construir: fazer o MG Profile virar um hub interativo em que comunidade, descoberta de pessoas, guias, conhecimento e identidade gamer convivam dentro da mesma plataforma. O projeto começou com quatro jogos e vai crescer aos poucos. Como hoje ele é tocado por uma equipe de uma pessoa só, esse crescimento precisa ser gradual, testado e guiado por quem realmente usa.",
+              "The final goal is simple to explain even if it is difficult to build: make MG Profile an interactive hub where community, finding people, guides, knowledge and gaming identity live on the same platform. The project started with four games and will expand gradually. Since it is currently run by a one-person team, that growth needs to be gradual, tested and guided by the people who actually use it.",
+              "El objetivo final es sencillo de explicar aunque sea difícil de construir: convertir MG Profile en un hub interactivo donde comunidad, descubrimiento de personas, guías, conocimiento e identidad gamer convivan en una misma plataforma. El proyecto comenzó con cuatro juegos y crecerá poco a poco. Como hoy lo lleva un equipo de una sola persona, ese crecimiento debe ser gradual, probado y guiado por quienes realmente lo usan.",
+            )}
+          </p>
+        </div>
+      </section>
+
+      <section className="mt-4 grid gap-4 md:grid-cols-2">
         <StoryCard
           icon={ServerCog}
           title={copy("Como está sendo feito", "How it is being built", "Cómo se está construyendo")}
@@ -234,9 +304,9 @@ function SupportPage() {
             icon={MessageSquareText}
             title={copy("Dar feedback", "Give feedback", "Dar feedback")}
             body={copy(
-              "Dizer o que está faltando, confuso ou interessante ajuda a decidir o que realmente merece prioridade.",
-              "Saying what is missing, confusing or useful helps decide what actually deserves priority.",
-              "Decir qué falta, qué confunde o qué funciona ayuda a decidir qué merece prioridad.",
+              "Dizer o que está faltando, confuso, interessante ou sugerir qual deveria ser o próximo jogo ajuda a decidir o que realmente merece prioridade.",
+              "Saying what is missing, confusing or interesting — or suggesting which game should come next — helps decide what actually deserves priority.",
+              "Decir qué falta, qué resulta confuso o interesante, o sugerir cuál debería ser el próximo juego, ayuda a decidir qué merece prioridad.",
             )}
           />
           <SmallHelp
@@ -251,11 +321,60 @@ function SupportPage() {
         </div>
       </section>
 
+      <section className="mt-8">
+        <p className="section-kicker">
+          {copy("FALE COM O PROJETO", "CONTACT THE PROJECT", "HABLA CON EL PROYECTO")}
+        </p>
+        <h2 className="mt-2 font-display text-2xl font-semibold text-foreground">
+          {copy(
+            "Feedback pode ficar dentro do próprio MGP.",
+            "Feedback can stay inside MGP itself.",
+            "El feedback puede quedarse dentro del propio MGP.",
+          )}
+        </h2>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+          {copy(
+            "Usuários logados podem mandar mensagem direto para a caixa administrativa e acompanhar a resposta na própria página. E-mail e Instagram continuam disponíveis para quem preferir falar por fora.",
+            "Signed-in users can message the admin inbox directly and track replies on this page. Email and Instagram remain available for anyone who prefers an external channel.",
+            "Los usuarios que hayan iniciado sesión pueden enviar mensajes directamente a la bandeja administrativa y seguir la respuesta en esta misma página. El correo e Instagram siguen disponibles para quien prefiera un canal externo.",
+          )}
+        </p>
+
+        <div className="mt-5">
+          <SupportFeedbackDesk />
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <a
+            href={"mailto:" + SUPPORT_EMAIL}
+            className="surface-panel flex items-center gap-3 p-4 transition hover:border-gold/30"
+          >
+            <Mail className="size-4 text-gold-strong" />
+            <span>
+              <span className="block text-sm font-semibold text-foreground">E-mail</span>
+              <span className="block text-xs text-muted-foreground">{SUPPORT_EMAIL}</span>
+            </span>
+          </a>
+          <a
+            href={SUPPORT_INSTAGRAM_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="surface-panel flex items-center gap-3 p-4 transition hover:border-gold/30"
+          >
+            <Instagram className="size-4 text-gold-strong" />
+            <span>
+              <span className="block text-sm font-semibold text-foreground">Instagram</span>
+              <span className="block text-xs text-muted-foreground">{SUPPORT_INSTAGRAM_HANDLE}</span>
+            </span>
+          </a>
+        </div>
+      </section>
+
       <div className="mt-8 flex flex-wrap gap-3">
         <Link to="/games" className="brand-button-secondary min-h-11">
           {copy("Continuar explorando o MGP", "Keep exploring MGP", "Seguir explorando MGP")}
         </Link>
-        <a href="mailto:contato@mgprofile.online" className="brand-button-secondary min-h-11">
+        <a href={"mailto:" + SUPPORT_EMAIL} className="brand-button-secondary min-h-11">
           {copy("Falar com o projeto", "Contact the project", "Contactar el proyecto")}
         </a>
       </div>

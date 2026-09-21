@@ -10,10 +10,14 @@ const TRUSTED_TEST_HOSTS = new Set([
   "mygamerprofile.lovable.app",
 ]);
 
+function isTrustedTestHost(hostname: string) {
+  return TRUSTED_TEST_HOSTS.has(hostname) || hostname.endsWith(".lovable.app");
+}
+
 export function getAppOrigin() {
   if (typeof window === "undefined") return PRODUCTION_SITE_URL;
 
-  if (TRUSTED_TEST_HOSTS.has(window.location.hostname)) {
+  if (isTrustedTestHost(window.location.hostname)) {
     return window.location.origin.replace(/\/$/, "");
   }
 
