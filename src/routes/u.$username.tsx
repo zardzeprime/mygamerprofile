@@ -232,6 +232,16 @@ function ProfilePage() {
                   <Link to="/settings/profile"><Edit3 className="mr-2 size-4" />{t("profile.editProfile")}</Link>
                 </Button>
               ) : null}
+              {isOwn ? (
+                <Button asChild className="flex-1 sm:flex-none">
+                  <a
+                    href={`/lfg?compose=1${gameHighlight ? `&game=steam:${gameHighlight.appId}` : ""}`}
+                  >
+                    <Gamepad2 className="mr-2 size-4" />
+                    {copy("Procurando por grupo", "Looking for group", "Buscando grupo")}
+                  </a>
+                </Button>
+              ) : null}
               {!isOwn && user ? (
                 <Button onClick={handleFollow} disabled={followBusy} variant={following ? "outline" : "default"} className="flex-1 sm:flex-none">
                   <UserRoundPlus className="mr-2 size-4" />
