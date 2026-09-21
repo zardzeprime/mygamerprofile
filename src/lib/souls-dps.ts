@@ -195,7 +195,7 @@ function requirementMet(
   req: SoulsRequirements,
   twoHanded: boolean,
 ) {
-  const effectiveStr = Math.min(99, stats.str * (twoHanded ? 1.5 : 1));
+  const effectiveStr = Math.min(99, Math.floor(stats.str * (twoHanded ? 1.5 : 1)));
   return (
     effectiveStr >= req.str &&
     stats.dex >= req.dex &&
@@ -611,7 +611,7 @@ export async function calculateDs3Ar(
   const saturations = await loadDs3Saturations();
   const effectiveStats = {
     ...stats,
-    str: Math.min(99, stats.str * (twoHanded ? 1.5 : 1)),
+    str: Math.min(99, Math.floor(stats.str * (twoHanded ? 1.5 : 1))),
   };
   const reqMet = requirementMet(stats, weapon.requirements, twoHanded);
   const scaling = weapon.scalingNumeric ?? { str: 0, dex: 0, int: 0, fth: 0, lck: 0 };
@@ -697,7 +697,7 @@ function casualRating(
 
   const effectiveStats = {
     ...stats,
-    str: Math.min(99, stats.str * (twoHanded ? 1.5 : 1)),
+    str: Math.min(99, Math.floor(stats.str * (twoHanded ? 1.5 : 1))),
   };
   const relevant: number[] = [];
 
@@ -731,7 +731,7 @@ export function calculateDs1Estimate(
   const reqMet = requirementMet(stats, weapon.requirements, twoHanded);
   const effectiveStats = {
     ...stats,
-    str: Math.min(99, stats.str * (twoHanded ? 1.5 : 1)),
+    str: Math.min(99, Math.floor(stats.str * (twoHanded ? 1.5 : 1))),
   };
   const safeUpgrade = Math.max(0, Math.min(weapon.maxUpgrade, upgrade));
   const upgradeRatio = weapon.maxUpgrade > 0 ? safeUpgrade / weapon.maxUpgrade : 0;
@@ -785,7 +785,7 @@ export function explainSoulsSynergy(
   twoHanded: boolean,
 ) {
   const notes: string[] = [];
-  const effectiveStr = Math.min(99, stats.str * (twoHanded ? 1.5 : 1));
+  const effectiveStr = Math.min(99, Math.floor(stats.str * (twoHanded ? 1.5 : 1)));
   const values: Array<[SoulsDpsStat, string]> = [
     ["str", "Força"],
     ["dex", "Destreza"],
