@@ -31,11 +31,8 @@ const createLfgSchema = z
     mic_required: z.boolean().optional(),
     slots_total: z.number().int().min(2).max(99),
     scheduled_for: z.string().datetime().nullable().optional(),
-    min_age: z.number().int().min(13).max(99),
-    max_age: z.number().int().min(13).max(99),
     expires_at: z.string().datetime().optional(),
   })
-  .refine((data) => data.min_age <= data.max_age, { message: "invalid_age_range" })
   .refine(
     (data) =>
       Boolean(
@@ -57,8 +54,6 @@ const updateLfgSchema = z.object({
   slots_total: z.number().int().min(2).max(99).optional(),
   slots_open: z.number().int().min(0).max(99).optional(),
   scheduled_for: z.string().datetime().nullable().optional(),
-  min_age: z.number().int().min(13).max(99).optional(),
-  max_age: z.number().int().min(13).max(99).optional(),
   expires_at: z.string().datetime().nullable().optional(),
 });
 
@@ -78,65 +73,62 @@ const sendMessageSchema = z.object({
   body: z.string().trim().min(1).max(2000),
 });
 
-async function readVerifiedAge(db: unknown, userId: string) {
+async function readDeclaredAge(db: unknown, userId: string) {
   const typedDb = db as {
-    from: (table: "account_age_verifications" | "account_age_data") => {
+    from: (table: "account_age_data") => {
       select: (columns: string) => {
         eq: (column: string, value: string) => {
-          maybeSingle: () => Promise<{ data: Record<string, unknown> | null; error: { message: string } | null }>;
+          maybeSingle: () => Promise<{
+            data: { birth_date: string; age_assurance_method: string } | null;
+            error: { message: string } | null;
+          }>;
         };
       };
     };
   };
 
-  const [verificationResult, ageResult] = await Promise.all([
-    typedDb
-      .from("account_age_verifications")
-      .select("status,verified_at,expires_at,provider_name")
-      .eq("user_id", userId)
-      .maybeSingle(),
-    typedDb
-      .from("account_age_data")
-      .select("birth_date,age_assurance_method")
-      .eq("user_id", userId)
-      .maybeSingle(),
-  ]);
+  const { data, error } = await typedDb
+    .from("account_age_data")
+    .select("birth_date,age_assurance_method")
+    .eq("user_id", userId)
+    .maybeSingle();
 
-  if (verificationResult.error || ageResult.error) {
-    throw new Error("LFG_VERIFICATION_LOOKUP_FAILED");
+  if (error) throw new Error("LFG_AGE_LOOKUP_FAILED");
+  if (!data?.birth_date) {
+    return { declared: false, age: null, assurance: null };
   }
 
-  const verification = verificationResult.data;
-  const ageData = ageResult.data;
-  const expiresAt =
-    typeof verification?.["expires_at"] === "string" ? new Date(verification["expires_at"]) : null;
-  const verified =
-    verification?.["status"] === "verified" &&
-    typeof verification?.["verified_at"] === "string" &&
-    (!expiresAt || expiresAt.getTime() > Date.now()) &&
-    ageData?.["age_assurance_method"] === "provider_assured";
-
-  const birthDate =
-    typeof ageData?.["birth_date"] === "string" ? new Date(ageData["birth_date"] + "T00:00:00Z") : null;
-  let age: number | null = null;
-  if (birthDate && Number.isFinite(birthDate.getTime())) {
-    const now = new Date();
-    age = now.getUTCFullYear() - birthDate.getUTCFullYear();
-    const birthdayPassed =
-      now.getUTCMonth() > birthDate.getUTCMonth() ||
-      (now.getUTCMonth() === birthDate.getUTCMonth() &&
-        now.getUTCDate() >= birthDate.getUTCDate());
-    if (!birthdayPassed) age -= 1;
+  const birthDate = new Date(data.birth_date + "T00:00:00Z");
+  if (!Number.isFinite(birthDate.getTime())) {
+    return { declared: false, age: null, assurance: data.age_assurance_method ?? null };
   }
+
+  const now = new Date();
+  let age = now.getUTCFullYear() - birthDate.getUTCFullYear();
+  const birthdayPassed =
+    now.getUTCMonth() > birthDate.getUTCMonth() ||
+    (now.getUTCMonth() === birthDate.getUTCMonth() &&
+      now.getUTCDate() >= birthDate.getUTCDate());
+  if (!birthdayPassed) age -= 1;
 
   return {
-    verified,
+    declared: age >= 13,
     age,
-    provider:
-      typeof verification?.["provider_name"] === "string"
-        ? verification["provider_name"]
-        : null,
+    assurance: data.age_assurance_method ?? "self_reported_birth_date",
   };
+}
+
+function applyLfgFilters<
+  T extends {
+    eq: (column: string, value: string) => T;
+  },
+>(query: T, data: z.infer<typeof listLfgSchema>) {
+  let next = query;
+  if (data.gameId) next = next.eq("game_id", data.gameId);
+  if (data.platform) next = next.eq("platform", data.platform);
+  if (data.language) next = next.eq("language", data.language);
+  if (data.status) next = next.eq("status", data.status);
+  return next;
 }
 
 export const listLfgPosts = createServerFn({ method: "GET" })
@@ -152,23 +144,59 @@ export const listLfgPosts = createServerFn({ method: "GET" })
       )
       .order("created_at", { ascending: false })
       .range(from, from + pageSize - 1);
-    if (data.gameId) query = query.eq("game_id", data.gameId);
-    if (data.platform) query = query.eq("platform", data.platform);
-    if (data.language) query = query.eq("language", data.language);
-    if (data.status) query = query.eq("status", data.status);
+
+    query = applyLfgFilters(query, data);
     const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
     return rows;
   });
 
-export const getLfgVerificationStatus = createServerFn({ method: "GET" })
+export const listLfgPostsForViewer = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => readVerifiedAge(context.supabase, context.userId));
+  .inputValidator((data) => listLfgSchema.parse(data ?? {}))
+  .handler(async ({ context, data }) => {
+    const ageState = await readDeclaredAge(context.supabase, context.userId);
+    if (!ageState.declared || ageState.age === null) return [];
+
+    const pageSize = 50;
+    const from = ((data.page ?? 1) - 1) * pageSize;
+    let query = context.supabase
+      .from("lfg_posts")
+      .select(
+        "*, game:games!lfg_posts_game_id_fkey(id, name, slug), author:profiles!lfg_posts_user_id_fkey(id, username, display_name, avatar_url)",
+      )
+      .lte("min_age", ageState.age)
+      .gte("max_age", ageState.age)
+      .order("created_at", { ascending: false })
+      .range(from, from + pageSize - 1);
+
+    query = applyLfgFilters(query, data);
+    const [{ data: rows, error }, { data: blocks, error: blocksError }] = await Promise.all([
+      query,
+      context.supabase
+        .from("user_blocks")
+        .select("blocked_user_id")
+        .eq("blocker_user_id", context.userId),
+    ]);
+
+    if (error) throw new Error(error.message);
+    if (blocksError) throw new Error(blocksError.message);
+
+    const blocked = new Set((blocks ?? []).map((row) => row.blocked_user_id));
+    return (rows ?? []).filter((row) => !blocked.has(row.user_id));
+  });
+
+export const getLfgAgeStatus = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => readDeclaredAge(context.supabase, context.userId));
 
 export const createLfgPost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => createLfgSchema.parse(data))
   .handler(async ({ context, data }) => {
+    const ageState = await readDeclaredAge(context.supabase, context.userId);
+    if (!ageState.declared) throw new Error("LFG_AGE_REQUIRED");
+
     const slotsTotal = data.slots_total;
     const slotsOpen = Math.max(0, slotsTotal - 1);
     const { data: post, error } = await context.supabase
@@ -190,8 +218,6 @@ export const createLfgPost = createServerFn({ method: "POST" })
         slots_total: slotsTotal,
         slots_open: slotsOpen,
         scheduled_for: data.scheduled_for ?? null,
-        min_age: data.min_age,
-        max_age: data.max_age,
         expires_at: data.expires_at ?? null,
       })
       .select(
@@ -214,13 +240,6 @@ export const updateLfgPost = createServerFn({ method: "POST" })
     ) {
       throw new Error("invalid_slot_count");
     }
-    if (
-      updates.min_age !== undefined &&
-      updates.max_age !== undefined &&
-      updates.min_age > updates.max_age
-    ) {
-      throw new Error("invalid_age_range");
-    }
 
     const updatePayload: Database["public"]["Tables"]["lfg_posts"]["Update"] = {
       updated_at: new Date().toISOString(),
@@ -235,8 +254,6 @@ export const updateLfgPost = createServerFn({ method: "POST" })
     if (updates.slots_total !== undefined) updatePayload.slots_total = updates.slots_total;
     if (updates.slots_open !== undefined) updatePayload.slots_open = updates.slots_open;
     if (updates.scheduled_for !== undefined) updatePayload.scheduled_for = updates.scheduled_for;
-    if (updates.min_age !== undefined) updatePayload.min_age = updates.min_age;
-    if (updates.max_age !== undefined) updatePayload.max_age = updates.max_age;
     if (updates.expires_at !== undefined) updatePayload.expires_at = updates.expires_at;
 
     const { data: post, error } = await context.supabase
@@ -269,10 +286,8 @@ export const requestLfgMatch = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => requestMatchSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const verification = await readVerifiedAge(context.supabase, context.userId);
-    if (!verification.verified || verification.age === null) {
-      throw new Error("LFG_VERIFICATION_REQUIRED");
-    }
+    const ageState = await readDeclaredAge(context.supabase, context.userId);
+    if (!ageState.declared || ageState.age === null) throw new Error("LFG_AGE_REQUIRED");
 
     const { data: post, error: postError } = await context.supabase
       .from("lfg_posts")
@@ -282,7 +297,7 @@ export const requestLfgMatch = createServerFn({ method: "POST" })
     if (postError || !post) throw new Error("LFG_POST_NOT_FOUND");
     if (post.user_id === context.userId) throw new Error("LFG_CANNOT_MATCH_OWN_GROUP");
     if (post.status !== "open" || post.slots_open <= 0) throw new Error("LFG_GROUP_UNAVAILABLE");
-    if (verification.age < post.min_age || verification.age > post.max_age) {
+    if (ageState.age < post.min_age || ageState.age > post.max_age) {
       throw new Error("LFG_AGE_MISMATCH");
     }
 
@@ -298,6 +313,7 @@ export const requestLfgMatch = createServerFn({ method: "POST" })
 
     if (error) {
       if (error.code === "23505") throw new Error("LFG_MATCH_ALREADY_REQUESTED");
+      if (error.message.includes("row-level security")) throw new Error("LFG_AGE_MISMATCH");
       throw new Error(error.message);
     }
     return application;
@@ -343,8 +359,8 @@ export const respondLfgApplication = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => respondMatchSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const verification = await readVerifiedAge(context.supabase, context.userId);
-    if (!verification.verified) throw new Error("LFG_VERIFICATION_REQUIRED");
+    const ageState = await readDeclaredAge(context.supabase, context.userId);
+    if (!ageState.declared) throw new Error("LFG_AGE_REQUIRED");
 
     const { data: application, error: appError } = await context.supabase
       .from("lfg_applications")
@@ -368,7 +384,11 @@ export const respondLfgApplication = createServerFn({ method: "POST" })
       .eq("id", data.applicationId)
       .select("*")
       .single();
-    if (error) throw new Error(error.message);
+    if (error) {
+      if (error.message.includes("LFG_AGE_MISMATCH")) throw new Error("LFG_AGE_MISMATCH");
+      if (error.message.includes("LFG_BLOCKED")) throw new Error("LFG_BLOCKED");
+      throw new Error(error.message);
+    }
     return updated;
   });
 
@@ -414,8 +434,8 @@ export const sendLfgMessage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => sendMessageSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const verification = await readVerifiedAge(context.supabase, context.userId);
-    if (!verification.verified) throw new Error("LFG_VERIFICATION_REQUIRED");
+    const ageState = await readDeclaredAge(context.supabase, context.userId);
+    if (!ageState.declared) throw new Error("LFG_AGE_REQUIRED");
 
     const { data: application, error: appError } = await context.supabase
       .from("lfg_applications")
@@ -452,6 +472,9 @@ export const sendLfgMessage = createServerFn({ method: "POST" })
       })
       .select("*")
       .single();
-    if (error) throw new Error(error.message);
+    if (error) {
+      if (error.message.includes("row-level security")) throw new Error("LFG_SAFETY_BLOCKED");
+      throw new Error(error.message);
+    }
     return message;
   });

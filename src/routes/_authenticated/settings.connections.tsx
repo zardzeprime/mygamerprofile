@@ -494,13 +494,13 @@ function SettingsConnectionsPage() {
               <div>
                 <p className="section-kicker">MGP / AGE ASSURANCE</p>
                 <h2 className="mt-1 font-display text-xl font-semibold text-foreground">
-                  {copy("Verificação de idade e identidade", "Age and identity verification", "Verificación de edad e identidad")}
+                  {copy("Verificação reforçada de idade · futura", "Stronger age verification · future", "Verificación reforzada de edad · futura")}
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
                   {copy(
-                    "A data de nascimento informada continua privada, mas recursos sociais sensíveis como match no LFG exigem confirmação de idade por um provedor externo. Para áreas 18+, o mesmo resultado também confirma se a conta é maior de idade.",
-                    "Your entered birth date stays private, but sensitive social features such as LFG matchmaking require age confirmation by an external provider. For 18+ areas, the same verdict also confirms whether the account is an adult.",
-                    "La fecha de nacimiento indicada sigue siendo privada, pero funciones sociales sensibles como el match del LFG exigen confirmar la edad mediante un proveedor externo. Para áreas 18+, el mismo resultado también confirma si la cuenta es adulta.",
+                    "Na beta pública, o LFG usa a data de nascimento informada no cadastro para aplicar faixas de segurança e mantém a data exata privada. Uma verificação externa mais forte poderá ser adicionada depois sem mudar o cadastro nem o sistema de match.",
+                    "During the public beta, LFG uses the birth date entered during signup to apply safety bands while keeping the exact date private. Stronger external verification can be added later without rebuilding signup or matchmaking.",
+                    "Durante la beta pública, el LFG usa la fecha de nacimiento indicada en el registro para aplicar rangos de seguridad y mantiene la fecha exacta privada. Más adelante se podrá añadir una verificación externa más fuerte sin rehacer el registro ni el sistema de match.",
                   )}
                 </p>
               </div>
@@ -540,9 +540,9 @@ function SettingsConnectionsPage() {
               </Button>
               <p className="mt-2 text-center text-[0.7rem] leading-4 text-muted-foreground">
                 {copy(
-                  "O LFG já está preparado para exigir essa verificação. O botão será ativado quando o provedor externo estiver configurado.",
-                  "LFG is already prepared to require this verification. The button will be enabled once the external provider is configured.",
-                  "El LFG ya está preparado para exigir esta verificación. El botón se activará cuando se configure el proveedor externo.",
+                  "Esse passo não é necessário para participar da beta atual. Ele ficará disponível quando o MGP puder contratar/configurar um provedor externo.",
+                  "This step is not required for the current beta. It will become available when MGP can configure an external provider.",
+                  "Este paso no es obligatorio para la beta actual. Estará disponible cuando MGP pueda configurar un proveedor externo.",
                 )}
               </p>
             </div>

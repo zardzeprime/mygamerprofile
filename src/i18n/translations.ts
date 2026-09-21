@@ -163,6 +163,8 @@ const ptBR = {
   "report.reasons.sexual_content": "Conteúdo sexual",
   "report.reasons.extreme_violence": "Violência extrema",
   "report.reasons.scam": "Golpe",
+  "report.reasons.age_misrepresentation": "Idade falsa ou suspeita",
+  "report.reasons.unsafe_contact": "Contato inadequado ou comportamento suspeito",
   "report.reasons.other": "Outro",
 
   "admin.title": "Fila de denúncias",
@@ -338,6 +340,8 @@ const en: Record<TranslationKey, string> = {
   "report.reasons.sexual_content": "Sexual content",
   "report.reasons.extreme_violence": "Extreme violence",
   "report.reasons.scam": "Scam",
+  "report.reasons.age_misrepresentation": "False or suspicious age",
+  "report.reasons.unsafe_contact": "Unsafe contact or suspicious behavior",
   "report.reasons.other": "Other",
 
   "admin.title": "Report queue",
@@ -511,6 +515,8 @@ const es: Record<TranslationKey, string> = {
   "report.reasons.sexual_content": "Contenido sexual",
   "report.reasons.extreme_violence": "Violencia extrema",
   "report.reasons.scam": "Estafa",
+  "report.reasons.age_misrepresentation": "Edad falsa o sospechosa",
+  "report.reasons.unsafe_contact": "Contacto inadecuado o comportamiento sospechoso",
   "report.reasons.other": "Otro",
 
   "admin.title": "Cola de denuncias",

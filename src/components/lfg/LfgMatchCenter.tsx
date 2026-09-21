@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Check, Clock3, MessageCircle, ShieldCheck, X } from "lucide-react";
+import { Ban, Check, Clock3, MessageCircle, ShieldCheck, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 
+import { ReportDialog } from "@/components/common/ReportDialog";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +22,7 @@ import {
   respondLfgApplication,
   sendLfgMessage,
 } from "@/lib/lfg.functions";
+import { blockUser } from "@/lib/reports.functions";
 
 type ProfileSummary = {
   id: string;
@@ -74,11 +76,11 @@ type MatchMessage = {
 
 export function LfgMatchCenter({
   userId,
-  verified,
+  ageDeclared,
   refreshToken = 0,
 }: {
   userId: string;
-  verified: boolean;
+  ageDeclared: boolean;
   refreshToken?: number;
 }) {
   const { locale } = useI18n();
@@ -136,23 +138,20 @@ export function LfgMatchCenter({
           </p>
         </div>
         <div className="flex items-center gap-2 rounded-full border border-border px-3 py-2 text-xs text-muted-foreground">
-          <ShieldCheck className={verified ? "size-4 text-emerald-400" : "size-4 text-amber-300"} />
-          {verified
-            ? copy("Idade verificada", "Age verified", "Edad verificada")
-            : copy("Verificação necessária", "Verification required", "Verificación necesaria")}
+          <ShieldCheck className={ageDeclared ? "size-4 text-gold-strong" : "size-4 text-amber-300"} />
+          {ageDeclared
+            ? copy("Idade declarada", "Declared age", "Edad declarada")
+            : copy("Idade necessária", "Age required", "Edad necesaria")}
         </div>
       </div>
 
-      {!verified ? (
+      {!ageDeclared ? (
         <div className="mt-4 rounded-xl border border-amber-500/25 bg-amber-500/[0.05] p-4 text-sm leading-6 text-muted-foreground">
           {copy(
-            "Para pedir match, aceitar pessoas ou mandar DM, sua idade precisa ser verificada por um provedor externo. Criar e publicar um grupo não exige a verificação.",
-            "To request a match, accept people or send DMs, your age must be verified by an external provider. Creating and publishing a group does not require verification.",
-            "Para pedir match, aceptar personas o enviar mensajes directos, tu edad debe verificarse mediante un proveedor externo. Crear y publicar un grupo no exige verificación.",
-          )}{" "}
-          <Link to="/settings/connections" className="font-semibold text-gold-strong hover:underline">
-            {copy("Ir para Conexões", "Go to Connections", "Ir a Conexiones")}
-          </Link>
+            "O LFG precisa da data de nascimento informada no cadastro para aplicar as faixas de segurança. A data exata não é mostrada aos outros usuários.",
+            "LFG needs the birth date entered during signup to apply safety ranges. Your exact birth date is never shown to other users.",
+            "El LFG necesita la fecha de nacimiento indicada en el registro para aplicar los rangos de seguridad. La fecha exacta no se muestra a otros usuarios.",
+          )}
         </div>
       ) : null}
 
@@ -323,10 +322,12 @@ function LfgTextChatDialog({
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const doListMessages = useServerFn(listLfgMessages);
   const doSendMessage = useServerFn(sendLfgMessage);
+  const doBlockUser = useServerFn(blockUser);
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<MatchMessage[]>([]);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
+  const [blocking, setBlocking] = useState(false);
 
   const loadMessages = async () => {
     try {
@@ -363,6 +364,19 @@ function LfgTextChatDialog({
     }
   };
 
+  const handleBlock = async () => {
+    if (blocking) return;
+    setBlocking(true);
+    try {
+      await doBlockUser({ data: { userId: otherUser.id } });
+      setOpen(false);
+    } catch (error) {
+      console.warn("[LFG] Could not block user", error);
+    } finally {
+      setBlocking(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -378,6 +392,31 @@ function LfgTextChatDialog({
             {otherUser.display_name}
           </DialogTitle>
         </DialogHeader>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <ReportDialog
+            targetType="profile"
+            targetId={otherUser.id}
+            username={otherUser.username}
+          />
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            disabled={blocking}
+            onClick={() => void handleBlock()}
+          >
+            <Ban className="mr-2 size-4" />
+            {copy("Bloquear usuário", "Block user", "Bloquear usuario")}
+          </Button>
+          <span className="text-[0.68rem] leading-5 text-muted-foreground">
+            {copy(
+              "Use “idade falsa ou suspeita” na denúncia quando houver inconsistência.",
+              "Use “false or suspicious age” in the report when ages do not seem consistent.",
+              "Usa “edad falsa o sospechosa” en la denuncia cuando haya inconsistencias.",
+            )}
+          </span>
+        </div>
 
         <div className="max-h-[22rem] space-y-2 overflow-y-auto rounded-xl border border-border bg-background/50 p-3">
           {messages.length ? (
