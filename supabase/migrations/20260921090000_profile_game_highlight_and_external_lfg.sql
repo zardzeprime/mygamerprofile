@@ -69,7 +69,7 @@ begin
     'lastSyncedAt', sp.last_synced_at,
     'games',
       case when sp.show_library then coalesce((
-        select jsonb_agg(to_jsonb(g) order by g.playtime_forever desc)
+        select jsonb_agg((to_jsonb(g) - 'sortPlaytime') order by g."sortPlaytime" desc)
         from (
           select
             sg.app_id as "appId",
@@ -89,7 +89,7 @@ begin
       ), '[]'::jsonb) else '[]'::jsonb end,
     'recentGames',
       case when sp.show_playtime then coalesce((
-        select jsonb_agg(to_jsonb(r) order by r.recent_rank asc)
+        select jsonb_agg((to_jsonb(r) - 'sortRank') order by r."sortRank" asc)
         from (
           select
             sg.app_id as "appId",
