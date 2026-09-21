@@ -31,8 +31,7 @@ import { PostCard } from "@/components/posts/PostCard";
 import { ReportDialog } from "@/components/common/ReportDialog";
 import { PublicProfileIdentity } from "@/components/profile/PublicProfileIdentity";
 import { SteamProfileShowcase } from "@/components/profile/SteamProfileShowcase";
-import { SteamFavoriteGameHighlight, type PublicSteamGameHighlight } from "@/components/profile/SteamFavoriteGameHighlight";
-import { supabase } from "@/integrations/supabase/client";
+import { SteamFavoriteGameHighlight } from "@/components/profile/SteamFavoriteGameHighlight";
 import { GAMES } from "@/config/games";
 import { getProfileBackground } from "@/config/profileBackgrounds";
 import { cn } from "@/lib/utils";
@@ -44,7 +43,7 @@ export const Route = createFileRoute("/u/$username")({
     const profile = await getProfileByUsername({ data: { username: params.username } });
     if (!profile) throw notFound();
 
-    const [posts, gameProfiles, steamShowcase, identityLoadout, gameHighlight] = await Promise.all([
+    const [posts, gameProfiles, steamShowcase, identityLoadout] = await Promise.all([
       listPosts({ data: { authorId: profile.id } }).catch((error) => {
         console.warn("[Profile] Could not load posts; rendering profile without activity.", error);
         return [];
@@ -61,19 +60,10 @@ export const Route = createFileRoute("/u/$username")({
         console.warn("[Profile] Could not load public identity loadout.", error);
         return null;
       }),
-      (async () => {
-        const { data, error } = await (supabase as any).rpc("get_public_steam_profile_highlight", {
-          target_user_id: profile.id,
-        });
-        if (error) {
-          console.warn("[Profile] Could not load Steam game highlight.", error);
-          return null;
-        }
-        return data as PublicSteamGameHighlight | null;
-      })(),
+
     ]);
 
-    return { profile, posts, gameProfiles, steamShowcase, identityLoadout, gameHighlight };
+    return { profile, posts, gameProfiles, steamShowcase, identityLoadout };
   },
   notFoundComponent: ProfileNotFound,
   head: ({ params }) => ({
@@ -105,7 +95,8 @@ function ProfileNotFound() {
 function ProfilePage() {
   const { locale, t } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const { profile, posts, gameProfiles, steamShowcase, identityLoadout, gameHighlight } = Route.useLoaderData();
+  const { profile, posts, gameProfiles, steamShowcase, identityLoadout } = Route.useLoaderData();
+  const gameHighlight = steamShowcase?.favoriteGame ?? null;
   const { user } = useAuth();
   const isOwn = user?.id === profile.id;
   const [following, setFollowing] = useState<boolean | null>(null);
