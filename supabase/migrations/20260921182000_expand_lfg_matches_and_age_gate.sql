@@ -265,7 +265,8 @@ create table if not exists public.lfg_dm_messages (
 alter table public.lfg_dm_messages enable row level security;
 
 revoke all on table public.lfg_dm_messages from anon;
-grant select, insert, update on table public.lfg_dm_messages to authenticated;
+grant select, insert on table public.lfg_dm_messages to authenticated;
+grant update(read_at) on table public.lfg_dm_messages to authenticated;
 grant all on table public.lfg_dm_messages to service_role;
 
 create policy "Matched users can read LFG DMs"
