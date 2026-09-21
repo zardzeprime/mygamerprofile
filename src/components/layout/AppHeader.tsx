@@ -189,7 +189,7 @@ export function AppHeader() {
           </span>
         </div>
 
-        <nav aria-label={t("navigation.menu")} className="hidden items-center gap-0.5 xl:flex">
+        <nav aria-label={t("navigation.menu")} className="hidden items-center gap-0.5 2xl:flex">
           {NAV.map((item) => (
             <Link
               key={item.key}
@@ -207,12 +207,12 @@ export function AppHeader() {
           <div className="hidden sm:block">
             <GlobalSearch />
           </div>
-          <div className="hidden items-center gap-2 xl:flex">
+          <div className="hidden items-center gap-2 2xl:flex">
             <LanguageSelector />
             <AppearanceQuickPanel />
           </div>
           <AudioControl />
-          <div className="hidden xl:block">
+          <div className="hidden 2xl:block">
             <AuthSection />
           </div>
           <button
@@ -222,7 +222,7 @@ export function AppHeader() {
             onClick={() => setOpen((value) => !value)}
             aria-expanded={open}
             aria-label={open ? t("navigation.closeMenu") : t("navigation.openMenu")}
-            className="mgp-icon-button inline-flex size-11 shrink-0 items-center justify-center text-foreground xl:hidden"
+            className="mgp-icon-button inline-flex size-11 shrink-0 items-center justify-center text-foreground 2xl:hidden"
           >
             {open ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
           </button>
@@ -230,7 +230,7 @@ export function AppHeader() {
       </div>
 
       {open ? (
-        <div id="site-mobile-navigation" className="mgp-mobile-panel max-h-[calc(100dvh-4.25rem)] overflow-y-auto border-t border-border bg-surface px-4 py-4 xl:hidden">
+        <div id="site-mobile-navigation" className="mgp-mobile-panel max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t border-border bg-surface px-4 py-4 2xl:hidden">
           <nav aria-label={t("navigation.menu")} className="flex flex-col gap-1">
             {NAV.map((item) => (
               <Link

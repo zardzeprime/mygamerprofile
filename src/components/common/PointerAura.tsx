@@ -27,21 +27,24 @@ export function PointerAura() {
     let currentX = targetX;
     let currentY = targetY;
     let frame = 0;
-    let running = true;
 
     const animate = () => {
-      if (!running) return;
       currentX += (targetX - currentX) * 0.22;
       currentY += (targetY - currentY) * 0.22;
       aura.style.transform =
         `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
-      frame = window.requestAnimationFrame(animate);
+      if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
+        frame = window.requestAnimationFrame(animate);
+      } else {
+        frame = 0;
+      }
     };
 
     const onPointerMove = (event: PointerEvent) => {
       targetX = event.clientX;
       targetY = event.clientY;
       aura.dataset["visible"] = "true";
+      if (frame === 0) frame = window.requestAnimationFrame(animate);
 
       const target = event.target;
       const interactive =
@@ -65,11 +68,9 @@ export function PointerAura() {
     window.addEventListener("pointerdown", onPointerDown, { passive: true });
     window.addEventListener("pointerup", onPointerUp, { passive: true });
     document.documentElement.addEventListener("mouseleave", onPointerLeave);
-    frame = window.requestAnimationFrame(animate);
 
     return () => {
-      running = false;
-      window.cancelAnimationFrame(frame);
+      if (frame !== 0) window.cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointerup", onPointerUp);

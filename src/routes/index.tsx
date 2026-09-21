@@ -86,7 +86,7 @@ function Home() {
               </div>
             </div>
             <CarouselContent>
-              {SORTED_GAMES.map(game => <CarouselItem key={game.slug} className="basis-[90%] sm:basis-1/2 xl:basis-1/3"><GameCard game={game} /></CarouselItem>)}
+              {SORTED_GAMES.map(game => <CarouselItem key={game.slug} className="basis-[88%] sm:basis-[68%] lg:basis-1/2"><GameCard game={game} /></CarouselItem>)}
             </CarouselContent>
           </Carousel>
         </TabsContent>

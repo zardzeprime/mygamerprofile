@@ -1,5 +1,12 @@
 # MGP v0.1 — Visual Foundation
 
+## Pre-launch polish — stage 1
+
+- [x] Lock the interface to dark mode while preserving accent-color personalization
+- [x] Remove light/system controls and safely migrate stored/account appearance preferences
+- [x] Harden the header, hub navigation, cards, touch targets and responsive framing
+- [ ] Validate desktop, tablet and mobile presentation, accessibility, lint, typecheck and build
+
 - [x] Extend the visual tokens, motion system, custom cursor, and accessibility fallbacks
 - [x] Add centralized local audio preferences and sound feedback
 - [x] Add organized original game assets and preview architecture

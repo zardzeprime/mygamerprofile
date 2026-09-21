@@ -187,8 +187,8 @@ function GameHub() {
       </section>
 
       <div className="mx-auto min-w-0 w-full max-w-7xl px-4 sm:px-6">
-        <div className="sticky top-16 z-30 -mx-2 py-2 md:hidden">
-          <div className="max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-2xl border border-border bg-background p-2 shadow-lift">
+        <div className="sticky top-[4.25rem] z-30 -mx-2 py-2 md:hidden">
+          <div className="max-h-[calc(100dvh-5.25rem)] overflow-y-auto overscroll-contain rounded-2xl border border-border bg-background/96 p-2 shadow-lift backdrop-blur-lg">
             <button
               type="button"
               aria-expanded={mobileMenuOpen}
@@ -291,7 +291,7 @@ function GameHub() {
         >
           <div
             key={active}
-            className="animate-in fade-in slide-in-from-bottom-2 duration-300 motion-reduce:animate-none"
+            className="animate-in fade-in slide-in-from-bottom-2 duration-200 motion-reduce:animate-none"
           >
             {active === "overview" ? (
               <div className="space-y-6">

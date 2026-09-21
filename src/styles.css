@@ -2,8 +2,6 @@
 @source "../src";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 /*
  * MGP — My Gamer Profile — design system.
  * Institutional identity: gold + sophisticated neutrals.
@@ -67,65 +65,13 @@
 }
 
 :root {
+  color-scheme: dark;
   --radius: 0.75rem;
   --motion-fast: 140ms;
   --motion-base: 220ms;
   --motion-slow: 420ms;
   --ease-mgp: cubic-bezier(0.16, 1, 0.3, 1);
 
-  --background: oklch(0.968 0.006 95);
-  --foreground: oklch(0.22 0.008 260);
-  --surface: oklch(1 0 0);
-  --surface-foreground: oklch(0.22 0.008 260);
-  --elevated: oklch(0.99 0.003 95);
-  --elevated-foreground: oklch(0.22 0.008 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.008 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.008 260);
-
-  --gold: oklch(0.62 0.12 88);
-  --gold-strong: oklch(0.53 0.11 86);
-  --gold-soft: oklch(0.93 0.05 92);
-  --gold-foreground: oklch(0.99 0.004 95);
-
-  --primary: var(--gold-strong);
-  --primary-foreground: oklch(0.99 0.004 95);
-
-  --secondary: oklch(0.93 0.006 95);
-  --secondary-foreground: oklch(0.28 0.008 260);
-  --muted: oklch(0.94 0.005 95);
-  --muted-foreground: oklch(0.48 0.01 260);
-  --accent: oklch(0.93 0.045 92);
-  --accent-foreground: oklch(0.3 0.05 80);
-
-  --destructive: oklch(0.53 0.2 27);
-  --destructive-foreground: oklch(0.99 0.004 95);
-  --success: oklch(0.52 0.12 150);
-  --success-foreground: oklch(0.99 0.004 95);
-
-  --border: oklch(0.89 0.006 95);
-  --border-strong: oklch(0.8 0.008 95);
-  --input: oklch(0.87 0.006 95);
-  --ring: oklch(0.62 0.12 88);
-
-  --ember: oklch(0.55 0.13 45);
-  --tactical: oklch(0.55 0.09 240);
-
-  --hero-foreground: oklch(0.98 0.004 95);
-  --hero-muted: oklch(0.83 0.01 95);
-  --hero-border: oklch(1 0 0 / 18%);
-  --hero-surface: oklch(0.15 0.01 260 / 68%);
-
-  --profile-hero-base: oklch(0.13 0.012 260);
-  --profile-hero-elevated: oklch(0.2 0.018 260);
-
-  --shadow-soft-value: 0 1px 2px oklch(0.22 0.01 260 / 0.06), 0 8px 24px oklch(0.22 0.01 260 / 0.06);
-  --shadow-lift-value: 0 2px 6px oklch(0.22 0.01 260 / 0.08), 0 18px 40px oklch(0.22 0.01 260 / 0.1);
-  --shadow-hero-value: 0 22px 60px oklch(0.12 0.01 260 / 0.28);
-}
-
-.dark {
   --background: oklch(0.165 0.008 262);
   --foreground: oklch(0.96 0.004 95);
   --surface: oklch(0.205 0.009 262);
@@ -170,6 +116,9 @@
   --hero-border: oklch(1 0 0 / 18%);
   --hero-surface: oklch(0.12 0.008 260 / 72%);
 
+  --profile-hero-base: oklch(0.13 0.012 260);
+  --profile-hero-elevated: oklch(0.2 0.018 260);
+
   --shadow-soft-value: 0 1px 2px oklch(0 0 0 / 0.4), 0 10px 30px oklch(0 0 0 / 0.35);
   --shadow-lift-value: 0 2px 8px oklch(0 0 0 / 0.5), 0 24px 60px oklch(0 0 0 / 0.45);
   --shadow-hero-value: 0 24px 70px oklch(0 0 0 / 0.5);
@@ -202,20 +151,15 @@
 }
 
 /* Native cursors keep text editing and disabled affordances predictable.
- * Cursor body follows the active theme (light on light, dark on dark).
+ * Cursor body is tuned for the permanent dark interface.
  * A neutral keyline plus the active MGP accent keeps it readable.
  * ThemeProvider may override the two CSS variables with accent-aware data URIs.
  */
 @media (hover: hover) and (pointer: fine) {
   html {
-    --mgp-cursor-default: url('/cursor-light.svg') 6 5;
-    --mgp-cursor-pointer: url('/cursor-pointer-light.svg') 20 20;
-    cursor: var(--mgp-cursor-default), default;
-  }
-
-  html.dark {
     --mgp-cursor-default: url('/cursor-dark.svg') 6 5;
     --mgp-cursor-pointer: url('/cursor-pointer-dark.svg') 20 20;
+    cursor: var(--mgp-cursor-default), default;
   }
 
   a,
@@ -266,7 +210,7 @@
   --accent-foreground: var(--foreground);
 }
 
-:root.dark[data-accent="custom"] {
+:root[data-accent="custom"] {
   --gold-strong: color-mix(in oklab, var(--mgp-user-accent) 82%, white 18%);
   --gold-soft: color-mix(in oklab, var(--mgp-user-accent) 20%, var(--surface));
   --accent: color-mix(in oklab, var(--mgp-user-accent) 18%, var(--surface));
@@ -293,21 +237,9 @@
 
 .appearance-preview { background: var(--mgp-personal-gradient); }
 ::selection { background: var(--gold-soft); color: var(--foreground); }
-/* Riot/VALORANT ability and role glyph assets are authored as light monochrome SVGs.
- * Give them explicit contrast in light mode while preserving their original look in dark mode.
- */
-:root:not(.dark) .mgp-adaptive-glyph {
-  filter: brightness(0) saturate(100%);
-  opacity: 0.82;
-}
-
-:root:not(.dark) .mgp-adaptive-glyph-strong {
-  filter: brightness(0) saturate(100%);
-  opacity: 0.95;
-}
-
-.dark .mgp-adaptive-glyph,
-.dark .mgp-adaptive-glyph-strong {
+/* Riot/VALORANT glyphs are authored for the permanent dark interface. */
+.mgp-adaptive-glyph,
+.mgp-adaptive-glyph-strong {
   filter: none;
   opacity: 1;
 }
@@ -682,6 +614,10 @@
 }
 
 .catalog-filter, .catalog-filter-active {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
   border-radius: 999px;
   padding: 0.45rem 0.75rem;
   transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease, transform 180ms ease;

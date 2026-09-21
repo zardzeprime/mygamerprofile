@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Check, Palette, Settings2 } from "lucide-react";
 
-import { ThemeSelector } from "@/components/common/ThemeSelector";
 import {
   Popover,
   PopoverContent,
@@ -75,16 +74,14 @@ export function AppearanceQuickPanel() {
           </h2>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
             {copy(
-              "Tema e cor são aplicados na hora. Logado, o estilo acompanha sua conta.",
-              "Theme and color apply instantly. When signed in, your style follows your account.",
-              "El tema y el color se aplican al instante. Con sesión iniciada, tu estilo sigue tu cuenta.",
+              "A cor é aplicada na hora. Logado, o estilo acompanha sua conta.",
+              "Color applies instantly. When signed in, your style follows your account.",
+              "El color se aplica al instante. Con sesión iniciada, tu estilo sigue tu cuenta.",
             )}
           </p>
         </div>
 
         <div className="space-y-4 p-4">
-          <ThemeSelector showLabels />
-
           <div>
             <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
               {copy("Sinais da interface", "Interface signal", "Señal de interfaz")}
