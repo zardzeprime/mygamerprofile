@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { listReports, updateReportStatus } from "@/lib/reports.functions";
 import { useI18n } from "@/i18n";
@@ -46,7 +46,12 @@ function AdminReportsPage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6">
-      <h1 className="mb-6 font-display text-2xl font-semibold">{t("admin.title")}</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-display text-2xl font-semibold">{t("admin.title")}</h1>
+        <Button variant="outline" asChild>
+          <Link to="/admin/feedback">Feedback do site</Link>
+        </Button>
+      </div>
       {reports.length === 0 ? (
         <p className="text-muted-foreground">{t("admin.noReports")}</p>
       ) : (
