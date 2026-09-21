@@ -169,9 +169,6 @@ export const createLfgPost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => createLfgSchema.parse(data))
   .handler(async ({ context, data }) => {
-    const verification = await readVerifiedAge(context.supabase, context.userId);
-    if (!verification.verified) throw new Error("LFG_VERIFICATION_REQUIRED");
-
     const slotsTotal = data.slots_total;
     const slotsOpen = Math.max(0, slotsTotal - 1);
     const { data: post, error } = await context.supabase
