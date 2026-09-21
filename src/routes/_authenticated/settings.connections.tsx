@@ -494,13 +494,13 @@ function SettingsConnectionsPage() {
               <div>
                 <p className="section-kicker">MGP / AGE ASSURANCE</p>
                 <h2 className="mt-1 font-display text-xl font-semibold text-foreground">
-                  {copy("Verificação para conteúdo 18+", "18+ content verification", "Verificación para contenido 18+")}
+                  {copy("Verificação de idade e identidade", "Age and identity verification", "Verificación de edad e identidad")}
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
                   {copy(
-                    "Sua data de nascimento organiza as faixas Livre, 12, 14 e 16. Para áreas realmente 18+, o MGP exigirá uma verificação mais forte de maioridade antes de liberar o conteúdo.",
-                    "Your birth date handles general, 12, 14 and 16 age bands. Truly 18+ areas will require stronger adult verification before access is unlocked.",
-                    "Tu fecha de nacimiento gestiona las franjas general, 12, 14 y 16. Las áreas realmente 18+ exigirán una verificación de mayoría de edad más fuerte.",
+                    "A data de nascimento informada continua privada, mas recursos sociais sensíveis como match no LFG exigem confirmação de idade por um provedor externo. Para áreas 18+, o mesmo resultado também confirma se a conta é maior de idade.",
+                    "Your entered birth date stays private, but sensitive social features such as LFG matchmaking require age confirmation by an external provider. For 18+ areas, the same verdict also confirms whether the account is an adult.",
+                    "La fecha de nacimiento indicada sigue siendo privada, pero funciones sociales sensibles como el match del LFG exigen confirmar la edad mediante un proveedor externo. Para áreas 18+, el mismo resultado también confirma si la cuenta es adulta.",
                   )}
                 </p>
               </div>
@@ -516,9 +516,9 @@ function SettingsConnectionsPage() {
                 </p>
                 <p className="mt-2">
                   {copy(
-                    "O fluxo será feito por um verificador seguro. O objetivo do MGP é receber e guardar apenas o resultado da checagem (18+ confirmado), referência do provedor e datas necessárias — não manter RG, CNH ou passaporte disponível no perfil ou no banco comum.",
-                    "The flow will use a secure verifier. MGP aims to retain only the verification result (18+ confirmed), provider reference and required dates — not keep an ID card, driver's license or passport in the normal profile/database.",
-                    "El flujo utilizará un verificador seguro. MGP busca conservar solo el resultado (18+ confirmado), la referencia del proveedor y las fechas necesarias, no el documento en el perfil o base común.",
+                    "O fluxo será feito por um provedor especializado. O MGP guarda apenas o resultado da checagem, a referência do provedor, a faixa/idade necessária para aplicar as regras e as datas de validade. RG, CNH, passaporte, selfie e biometria não devem ser armazenados no banco comum do MGP.",
+                    "The flow will use a specialized provider. MGP stores only the verification verdict, provider reference, the age/band needed to apply access rules and validity dates. ID documents, selfies and biometrics must not be stored in MGP's regular database.",
+                    "El flujo utilizará un proveedor especializado. MGP guarda solo el resultado, la referencia del proveedor, la edad/franja necesaria para aplicar las reglas y las fechas de validez. Documentos, selfies y biometría no deben almacenarse en la base común de MGP.",
                   )}
                 </p>
               </div>
@@ -530,19 +530,19 @@ function SettingsConnectionsPage() {
               </p>
               <ol className="mt-4 space-y-3 text-sm text-muted-foreground">
                 <FlowStep n="1" text={copy("Abrir verificação segura", "Open secure verification", "Abrir verificación segura")} />
-                <FlowStep n="2" text={copy("Comprovar 18+", "Prove 18+", "Comprobar 18+")} />
+                <FlowStep n="2" text={copy("Confirmar identidade e idade", "Confirm identity and age", "Confirmar identidad y edad")} />
                 <FlowStep n="3" text={copy("Receber apenas o resultado", "Receive verdict only", "Recibir solo el resultado")} />
-                <FlowStep n="4" text={copy("Liberar áreas 18+", "Unlock 18+ areas", "Desbloquear áreas 18+")} />
+                <FlowStep n="4" text={copy("Liberar match e regras por idade", "Unlock matching and age rules", "Habilitar match y reglas por edad")} />
               </ol>
               <Button className="mt-5 w-full" disabled>
                 <ShieldQuestion className="mr-2 size-4" />
-                {copy("Verificar 18+ com documento", "Verify 18+ with ID", "Verificar 18+ con documento")}
+                {copy("Verificar idade e identidade", "Verify age and identity", "Verificar edad e identidad")}
               </Button>
               <p className="mt-2 text-center text-[0.7rem] leading-4 text-muted-foreground">
                 {copy(
-                  "Será ativado após a escolha/configuração do provedor de aferição.",
-                  "Enabled after the age-assurance provider is configured.",
-                  "Se activará cuando configuremos el proveedor de verificación.",
+                  "O LFG já está preparado para exigir essa verificação. O botão será ativado quando o provedor externo estiver configurado.",
+                  "LFG is already prepared to require this verification. The button will be enabled once the external provider is configured.",
+                  "El LFG ya está preparado para exigir esta verificación. El botón se activará cuando se configure el proveedor externo.",
                 )}
               </p>
             </div>
@@ -881,7 +881,7 @@ function VerificationStatus({
     );
   }
 
-  const verified = verification?.status === "verified" && verification.verified_over_18;
+  const verified = verification?.status === "verified";
   const pending = verification?.status === "pending";
   const Icon = verified ? BadgeCheck : pending ? Clock3 : ShieldQuestion;
 
@@ -891,14 +891,18 @@ function VerificationStatus({
       <div>
         <p className="font-semibold text-foreground">
           {verified
-            ? copy("Maioridade verificada", "Adult status verified", "Mayoría de edad verificada")
+            ? verification?.verified_over_18
+              ? copy("Idade verificada · 18+", "Age verified · 18+", "Edad verificada · 18+")
+              : copy("Idade verificada", "Age verified", "Edad verificada")
             : pending
               ? copy("Verificação em andamento", "Verification pending", "Verificación en curso")
               : copy("18+ ainda não verificado", "18+ not yet verified", "18+ aún no verificado")}
         </p>
         <p className="mt-1 text-sm leading-5 text-muted-foreground">
           {verified
-            ? copy("Sua conta pode acessar áreas marcadas como 18+, respeitando as demais regras do MGP.", "Your account can access 18+ areas, subject to the rest of MGP rules.", "Tu cuenta puede acceder a áreas 18+, respetando las demás reglas de MGP.")
+            ? verification?.verified_over_18
+              ? copy("Sua idade foi confirmada e a conta também pode cumprir gates 18+, respeitando as demais regras do MGP.", "Your age is confirmed and the account can also satisfy 18+ gates, subject to the rest of MGP rules.", "Tu edad está confirmada y la cuenta también puede cumplir gates 18+, respetando las demás reglas de MGP.")
+              : copy("Sua idade foi confirmada. O MGP pode aplicar faixas etárias no LFG sem expor sua data de nascimento aos outros usuários.", "Your age is confirmed. MGP can enforce LFG age ranges without exposing your birth date to other users.", "Tu edad está confirmada. MGP puede aplicar rangos de edad en el LFG sin exponer tu fecha de nacimiento a otros usuarios.")
             : pending
               ? copy("A liberação só acontece quando o verificador concluir a checagem.", "Access unlocks only after the verifier completes the check.", "El acceso solo se libera cuando finalice la comprobación.")
               : copy("Conteúdo 18+ permanecerá bloqueado mesmo que a data de nascimento informada indique maioridade.", "18+ content remains blocked even if the entered birth date indicates adulthood.", "El contenido 18+ seguirá bloqueado aunque la fecha de nacimiento indique mayoría de edad.")}
