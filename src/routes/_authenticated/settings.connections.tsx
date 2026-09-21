@@ -23,6 +23,7 @@ import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { supabase } from "@/integrations/supabase/client";
 import { getRiotApiReadiness } from "@/lib/riot.functions";
+import { getAuthRedirectUrl } from "@/lib/siteUrl";
 import { getSteamApiReadiness } from "@/lib/steam.functions";
 import {
   getSteamSyncStatus,
@@ -167,6 +168,7 @@ function SettingsConnectionsPage() {
   const [apiReadiness, setApiReadiness] = useState<ApiReadiness>({ steam: null, riot: null });
   const [loading, setLoading] = useState(true);
   const [steamBusy, setSteamBusy] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
   const [connectionError, setConnectionError] = useState("");
   const [steamSyncStatus, setSteamSyncStatus] = useState<SteamSyncStatus | null>(null);
   const [steamSyncing, setSteamSyncing] = useState(false);
@@ -226,6 +228,97 @@ function SettingsConnectionsPage() {
     () => new Map(accounts.map((account) => [account.provider, account])),
     [accounts],
   );
+
+  const googleIdentity = useMemo(
+    () => user?.identities?.find((identity) => identity.provider === "google") ?? null,
+    [user?.identities],
+  );
+  const googleConnected = Boolean(googleIdentity);
+  const googleDisplayName =
+    (googleIdentity?.identity_data?.["full_name"] as string | undefined) ||
+    (googleIdentity?.identity_data?.["name"] as string | undefined) ||
+    (googleIdentity?.identity_data?.["email"] as string | undefined) ||
+    null;
+
+  const handleGoogleConnect = async () => {
+    if (googleBusy || googleConnected) return;
+    setGoogleBusy(true);
+    setConnectionError("");
+
+    try {
+      const { data, error } = await supabase.auth.linkIdentity({
+        provider: "google",
+        options: {
+          redirectTo: getAuthRedirectUrl("/settings/connections"),
+          scopes: "openid email profile",
+          queryParams: {
+            prompt: "select_account",
+          },
+        },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.assign(data.url);
+        return;
+      }
+
+      throw new Error("GOOGLE_IDENTITY_LINK_URL_MISSING");
+    } catch (error) {
+      console.error("[MGP Google] Could not link identity", error);
+      setGoogleBusy(false);
+      setConnectionError(
+        copy(
+          "Não foi possível vincular o Google agora. Tente novamente; se o erro continuar, o vínculo manual de identidades precisa ser habilitado no Supabase Auth.",
+          "Could not link Google right now. Try again; if it keeps failing, manual identity linking must be enabled in Supabase Auth.",
+          "No se pudo vincular Google ahora. Inténtalo de nuevo; si el error continúa, debe habilitarse la vinculación manual de identidades en Supabase Auth.",
+        ),
+      );
+    }
+  };
+
+  const handleGoogleDisconnect = async () => {
+    if (googleBusy || !googleIdentity) return;
+
+    const identityCount = user?.identities?.length ?? 0;
+    if (identityCount < 2) {
+      setConnectionError(
+        copy(
+          "Esta conta usa o Google como único método de acesso. Adicione outro método de login antes de desvincular o Google.",
+          "Google is this account's only sign-in method. Add another sign-in method before unlinking Google.",
+          "Google es el único método de acceso de esta cuenta. Añade otro método antes de desvincular Google.",
+        ),
+      );
+      return;
+    }
+
+    const confirmed = window.confirm(
+      copy(
+        "Desvincular sua identidade Google do MG Profile?",
+        "Unlink your Google identity from MG Profile?",
+        "¿Desvincular tu identidad de Google de MG Profile?",
+      ),
+    );
+    if (!confirmed) return;
+
+    setGoogleBusy(true);
+    setConnectionError("");
+    try {
+      const { error } = await supabase.auth.unlinkIdentity(googleIdentity);
+      if (error) throw error;
+      window.location.reload();
+    } catch (error) {
+      console.error("[MGP Google] Could not unlink identity", error);
+      setConnectionError(
+        copy(
+          "Não foi possível desvincular o Google agora. Tente novamente.",
+          "Could not unlink Google right now. Try again.",
+          "No se pudo desvincular Google ahora. Inténtalo de nuevo.",
+        ),
+      );
+      setGoogleBusy(false);
+    }
+  };
 
   const handleSteamConnect = async () => {
     if (steamBusy) return;
@@ -461,8 +554,13 @@ function SettingsConnectionsPage() {
                         : null
                   }
                   steamBusy={steamBusy}
+                  googleBusy={googleBusy}
+                  googleConnected={provider.key === "google" ? googleConnected : false}
+                  googleDisplayName={provider.key === "google" ? googleDisplayName : null}
                   onSteamConnect={handleSteamConnect}
                   onSteamDisconnect={handleSteamDisconnect}
+                  onGoogleConnect={handleGoogleConnect}
+                  onGoogleDisconnect={handleGoogleDisconnect}
                 />
               );
             })}
@@ -551,9 +649,9 @@ function SettingsConnectionsPage() {
 
         <div className="rounded-xl border border-dashed border-border px-4 py-3 text-xs leading-5 text-muted-foreground">
           {copy(
-            "Steam já pode ser vinculada pelo login oficial OpenID quando a Web API estiver disponível no servidor. Riot ainda depende da aprovação/RSO e Google depende da configuração OAuth do projeto.",
-            "Steam can now be linked through official OpenID when the Web API is available on the server. Riot still depends on approval/RSO and Google depends on the project OAuth configuration.",
-            "Steam ya puede vincularse mediante OpenID oficial cuando la Web API esté disponible en el servidor. Riot aún depende de aprobación/RSO y Google de la configuración OAuth del proyecto.",
+            "Steam e Google já usam login oficial. Riot continua dependendo da aprovação de produção e do RSO para vínculo de conta.",
+            "Steam and Google now use official sign-in. Riot still depends on production approval and RSO for account linking.",
+            "Steam y Google ya usan acceso oficial. Riot aún depende de la aprobación de producción y RSO para vincular cuentas.",
           )}{" "}
           <Link to="/privacy" className="font-semibold text-gold-strong hover:underline">
             {copy("Ver privacidade", "View privacy", "Ver privacidad")}
@@ -571,8 +669,13 @@ function ProviderCard({
   loading,
   readiness,
   steamBusy,
+  googleBusy,
+  googleConnected,
+  googleDisplayName,
   onSteamConnect,
   onSteamDisconnect,
+  onGoogleConnect,
+  onGoogleDisconnect,
 }: {
   provider: (typeof PROVIDERS)[number];
   account: ConnectedAccount | undefined;
@@ -583,12 +686,18 @@ function ProviderCard({
     | ApiReadiness["riot"]
     | null;
   steamBusy: boolean;
+  googleBusy: boolean;
+  googleConnected: boolean;
+  googleDisplayName: string | null;
   onSteamConnect: () => void;
   onSteamDisconnect: () => void;
+  onGoogleConnect: () => void;
+  onGoogleDisconnect: () => void;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const Icon = provider.icon;
-  const connected = account?.status === "connected";
+  const connected =
+    provider.key === "google" ? googleConnected : account?.status === "connected";
   const reauth = account?.status === "reauth_required";
 
   return (
@@ -614,6 +723,18 @@ function ProviderCard({
       <div className="mt-4 rounded-lg border border-border/70 bg-background/50 px-3 py-2 text-xs text-muted-foreground">
         <span className="font-semibold text-foreground">{provider.futureData[locale === "pt-BR" ? 0 : locale === "en" ? 1 : 2]}</span>
         {account?.display_name ? <span className="mt-1 block">{account.display_name}</span> : null}
+        {provider.key === "google" && googleDisplayName ? (
+          <span className="mt-1 block">{googleDisplayName}</span>
+        ) : null}
+        {provider.key === "google" ? (
+          <span className="mt-2 block font-semibold text-emerald-500">
+            {copy(
+              "Google OAuth pronto no Supabase",
+              "Google OAuth ready in Supabase",
+              "Google OAuth listo en Supabase",
+            )}
+          </span>
+        ) : null}
         {provider.key === "steam" && readiness && "configured" in readiness ? (
           <span className="mt-2 block space-y-1">
             <span className={`block font-semibold ${readiness.configured ? "text-emerald-500" : "text-amber-500"}`}>
@@ -670,12 +791,30 @@ function ProviderCard({
               ? copy("Desconectar Steam", "Disconnect Steam", "Desconectar Steam")
               : copy("Conectar Steam", "Connect Steam", "Conectar Steam")}
         </Button>
+      ) : provider.key === "google" ? (
+        <Button
+          variant={connected ? "outline" : "default"}
+          className="mt-4 w-full"
+          disabled={googleBusy}
+          onClick={connected ? onGoogleDisconnect : onGoogleConnect}
+        >
+          {googleBusy ? (
+            <RefreshCw className="mr-2 size-4 animate-spin" />
+          ) : connected ? (
+            <RefreshCw className="mr-2 size-4" />
+          ) : (
+            <Link2 className="mr-2 size-4" />
+          )}
+          {googleBusy
+            ? copy("Aguarde…", "Please wait…", "Espera…")
+            : connected
+              ? copy("Desvincular Google", "Unlink Google", "Desvincular Google")
+              : copy("Conectar Google", "Connect Google", "Conectar Google")}
+        </Button>
       ) : (
-        <Button variant={connected ? "outline" : "default"} className="mt-4 w-full" disabled={!connected}>
-          {connected ? <RefreshCw className="mr-2 size-4" /> : <Link2 className="mr-2 size-4" />}
-          {connected
-            ? copy("Gerenciar conexão", "Manage connection", "Gestionar conexión")
-            : copy("Conectar em breve", "Connect soon", "Conectar próximamente")}
+        <Button variant="default" className="mt-4 w-full" disabled>
+          <Link2 className="mr-2 size-4" />
+          {copy("Aguardando aprovação RSO", "Waiting for RSO approval", "Esperando aprobación RSO")}
         </Button>
       )}
     </article>
