@@ -52,6 +52,26 @@ const DS3_GUIDES: GuideEntry[] = [
       es: ["Ashes of Ariandel se accede desde Cathedral of the Deep.", "The Ringed City se puede acceder al final de Ariandel o cerca de Kiln of the First Flame.", "Los jefes de DLC están entre los encuentros más exigentes del juego."],
     },
   },
+  {
+    icon: WandSparkles,
+    title: { "pt-BR": "Weapon Arts, FP e Ashen Estus", en: "Weapon Arts, FP and Ashen Estus", es: "Weapon Arts, FP y Ashen Estus" },
+    description: { "pt-BR": "Como Skills de armas, Focus Points e o segundo Estus entram no ritmo de uma build.", en: "How weapon Skills, Focus Points and the second Estus flask shape a build.", es: "Cómo las Skills de armas, Focus Points y el segundo Estus influyen en una build." },
+    points: {
+      "pt-BR": ["Weapon Arts consomem FP em quantidades diferentes e algumas exigem stance ou duas mãos.", "Ashen Estus recupera FP e divide o total de cargas com a Estus comum.", "Attunement aumenta FP e slots de magia em faixas específicas."],
+      en: ["Weapon Arts consume different amounts of FP and some require a stance or two-handing.", "Ashen Estus restores FP and shares the total flask allocation with regular Estus.", "Attunement raises FP and spell slots at specific breakpoints."],
+      es: ["Las Weapon Arts consumen distintas cantidades de FP y algunas requieren stance o dos manos.", "Ashen Estus recupera FP y comparte el total de cargas con Estus normal.", "Attunement aumenta FP y slots de magia en ciertos puntos."],
+    },
+  },
+  {
+    icon: Sparkles,
+    title: { "pt-BR": "Titanite, armas especiais e transposição", en: "Titanite, special weapons and transposition", es: "Titanite, armas especiales y transposición" },
+    description: { "pt-BR": "A diferença entre armas normais +10, armas especiais +5 e equipamentos feitos com Boss Souls.", en: "The difference between normal +10 weapons, special +5 weapons and equipment made from Boss Souls.", es: "La diferencia entre armas normales +10, armas especiales +5 y equipo creado con Boss Souls." },
+    points: {
+      "pt-BR": ["Armas normais usam Titanite Shards, Large Shards, Chunks e Slab até +10.", "Armas especiais usam Twinkling Titanite ou Titanite Scale e normalmente terminam em +5.", "Ludleth permite transpor Boss Souls em armas, feitiços e anéis quando o jogador possui o Transposing Kiln."],
+      en: ["Normal weapons use Titanite Shards, Large Shards, Chunks and a Slab up to +10.", "Special weapons use Twinkling Titanite or Titanite Scale and normally end at +5.", "Ludleth can transpose Boss Souls into weapons, spells and rings once the player has the Transposing Kiln."],
+      es: ["Las armas normales usan Titanite Shards, Large Shards, Chunks y Slab hasta +10.", "Las armas especiales usan Twinkling Titanite o Titanite Scale y normalmente terminan en +5.", "Ludleth puede transponer Boss Souls en armas, hechizos y anillos cuando el jugador tiene el Transposing Kiln."],
+    },
+  },
 ];
 
 const ELDEN_GUIDES: GuideEntry[] = [
