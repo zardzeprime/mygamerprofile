@@ -8,39 +8,46 @@ type Block =
   | { type: "quote"; text: string }
   | { type: "code"; text: string };
 
-const TICK = String.fromCharCode(96);
-const FENCE = TICK.repeat(3);
+function normalizeMarkdown(content: string) {
+  return content
+    .replace(/\r\n?/g, "\n")
+    .replace(/\*{3}([^*\n]+)\*{3}/g, "**$1**")
+    .replace(/\*{3}([^*\n]+)\*{2}(?!\*)/g, "**$1**")
+    .replace(/(?<!\*)\*{2}([^*\n]+)\*{3}/g, "**$1**");
+}
+
+function cleanPlainText(value: string) {
+  return value
+    .replace(/\*{2,3}/g, "")
+    .replace(/_{2,3}/g, "");
+}
 
 function inlineMarkdown(value: string): ReactNode[] {
   const nodes: ReactNode[] = [];
-  const tokenPattern = /(\\*\\*[^*\\n]+\\*\\*|__[^_\\n]+__|\\x60[^\\x60\\n]+\\x60|\\*[^*\\n]+\\*)/g;
+  const tokenPattern = /(\*\*[^*\n]+\*\*|__[^_\n]+__|\x60[^\x60\n]+\x60)/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
   let key = 0;
 
   while ((match = tokenPattern.exec(value)) !== null) {
     if (match.index > lastIndex) {
-      nodes.push(
-        <Fragment key={"text-" + key++}>
-          {value.slice(lastIndex, match.index)}
-        </Fragment>,
-      );
+      const plain = cleanPlainText(value.slice(lastIndex, match.index));
+      if (plain) {
+        nodes.push(<Fragment key={"text-" + key++}>{plain}</Fragment>);
+      }
     }
 
     const token = match[0];
-    if (token.startsWith("**") && token.endsWith("**")) {
+    if (
+      (token.startsWith("**") && token.endsWith("**")) ||
+      (token.startsWith("__") && token.endsWith("__"))
+    ) {
       nodes.push(
         <strong key={"strong-" + key++} className="font-bold text-foreground">
           {token.slice(2, -2)}
         </strong>,
       );
-    } else if (token.startsWith("__") && token.endsWith("__")) {
-      nodes.push(
-        <strong key={"strong-" + key++} className="font-bold text-foreground">
-          {token.slice(2, -2)}
-        </strong>,
-      );
-    } else if (token.startsWith(TICK) && token.endsWith(TICK)) {
+    } else {
       nodes.push(
         <code
           key={"code-" + key++}
@@ -49,26 +56,24 @@ function inlineMarkdown(value: string): ReactNode[] {
           {token.slice(1, -1)}
         </code>,
       );
-    } else {
-      nodes.push(
-        <em key={"em-" + key++} className="italic">
-          {token.slice(1, -1)}
-        </em>,
-      );
     }
 
     lastIndex = match.index + token.length;
   }
 
   if (lastIndex < value.length) {
-    nodes.push(<Fragment key={"text-" + key++}>{value.slice(lastIndex)}</Fragment>);
+    const plain = cleanPlainText(value.slice(lastIndex));
+    if (plain) {
+      nodes.push(<Fragment key={"text-" + key++}>{plain}</Fragment>);
+    }
   }
 
   return nodes;
 }
 
-function parseBlocks(content: string): Block[] {
-  const lines = content.replace(/\\r\\n?/g, "\\n").split("\\n");
+function parseBlocks(rawContent: string): Block[] {
+  const content = normalizeMarkdown(rawContent);
+  const lines = content.split("\n");
   const blocks: Block[] = [];
   let index = 0;
 
@@ -78,38 +83,44 @@ function parseBlocks(content: string): Block[] {
   };
 
   while (index < lines.length) {
-    const raw = lines[index] ?? "";
-    const line = raw.trim();
+    const line = (lines[index] ?? "").trim();
 
     if (!line) {
       index += 1;
       continue;
     }
 
-    if (line.startsWith(FENCE)) {
+    if (line.startsWith("\x60\x60\x60")) {
       const code: string[] = [];
       index += 1;
-      while (index < lines.length && !(lines[index] ?? "").trim().startsWith(FENCE)) {
+      while (
+        index < lines.length &&
+        !(lines[index] ?? "").trim().startsWith("\x60\x60\x60")
+      ) {
         code.push(lines[index] ?? "");
         index += 1;
       }
       if (index < lines.length) index += 1;
-      blocks.push({ type: "code", text: code.join("\\n") });
+      blocks.push({ type: "code", text: code.join("\n") });
       continue;
     }
 
-    const heading = line.match(/^(#{1,4})\\s+(.+)$/);
+    const heading = line.match(/^(#{1,4})\s*(.+)$/);
     if (heading) {
-      blocks.push({ type: "heading", level: heading[1].length, text: heading[2] });
+      blocks.push({
+        type: "heading",
+        level: heading[1].length,
+        text: cleanPlainText(heading[2].trim()),
+      });
       index += 1;
       continue;
     }
 
-    if (/^[-+*]\\s+/.test(line)) {
+    if (/^[-+*]\s+/.test(line)) {
       const items: string[] = [];
       while (index < lines.length) {
         const current = (lines[index] ?? "").trim();
-        const item = current.match(/^[-+*]\\s+(.+)$/);
+        const item = current.match(/^[-+*]\s+(.+)$/);
         if (!item) break;
         items.push(item[1]);
         index += 1;
@@ -118,11 +129,11 @@ function parseBlocks(content: string): Block[] {
       continue;
     }
 
-    if (/^\\d+[.)]\\s+/.test(line)) {
+    if (/^\d+[.)]\s*/.test(line)) {
       const items: string[] = [];
       while (index < lines.length) {
         const current = (lines[index] ?? "").trim();
-        const item = current.match(/^\\d+[.)]\\s+(.+)$/);
+        const item = current.match(/^\d+[.)]\s*(.+)$/);
         if (!item) break;
         items.push(item[1]);
         index += 1;
@@ -136,7 +147,7 @@ function parseBlocks(content: string): Block[] {
       while (index < lines.length) {
         const current = (lines[index] ?? "").trim();
         if (!current.startsWith(">")) break;
-        parts.push(current.replace(/^>\\s?/, ""));
+        parts.push(current.replace(/^>\s?/, ""));
         index += 1;
       }
       blocks.push({ type: "quote", text: parts.join(" ") });
@@ -149,10 +160,10 @@ function parseBlocks(content: string): Block[] {
       const next = (lines[index] ?? "").trim();
       if (
         !next ||
-        next.startsWith(FENCE) ||
-        /^(#{1,4})\\s+/.test(next) ||
-        /^[-+*]\\s+/.test(next) ||
-        /^\\d+[.)]\\s+/.test(next) ||
+        next.startsWith("\x60\x60\x60") ||
+        /^(#{1,4})\s*/.test(next) ||
+        /^[-+*]\s+/.test(next) ||
+        /^\d+[.)]\s*/.test(next) ||
         next.startsWith(">")
       ) {
         break;
@@ -208,7 +219,10 @@ export function NexusMarkdown({ content }: { content: string }) {
 
         if (block.type === "quote") {
           return (
-            <blockquote key={key} className="border-l-2 border-gold/35 pl-3 text-muted-foreground">
+            <blockquote
+              key={key}
+              className="border-l-2 border-gold/35 pl-3 text-muted-foreground"
+            >
               {inlineMarkdown(block.text)}
             </blockquote>
           );
