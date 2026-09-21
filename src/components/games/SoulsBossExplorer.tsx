@@ -3,8 +3,10 @@ import {
   BookOpen,
   CheckCircle2,
   ChevronRight,
+  Coins,
   CircleDot,
   ExternalLink,
+  HeartPulse,
   Layers3,
   MapPin,
   Search,
@@ -28,6 +30,10 @@ import {
   type SoulsDamageChannel,
   type SoulsStatusChannel,
 } from "@/data/soulsBossDefenses";
+import {
+  DS3_BOSS_VITALS_SOURCE,
+  getDs3BossVitals,
+} from "@/data/soulsBossVitals";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
@@ -325,6 +331,8 @@ function BossDetail({
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const defenseProfile =
     gameSlug === "dark-souls-iii" ? getDs3BossDefenseProfile(boss.slug) : null;
+  const vitals =
+    gameSlug === "dark-souls-iii" ? getDs3BossVitals(boss.slug) : null;
   const systemTitle =
     gameSlug === "dark-souls-iii"
       ? copy(
@@ -357,6 +365,18 @@ function BossDetail({
             <MapPin className="size-4 text-gold-strong" />
             {boss.area}
           </p>
+          {vitals ? (
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/20 px-3 py-1.5 text-xs font-bold text-foreground">
+                <HeartPulse className="size-3.5 text-gold-strong" />
+                {copy("HP NG", "NG HP", "HP NG")}: {vitals.healthNg}
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/20 px-3 py-1.5 text-xs font-bold text-foreground">
+                <Coins className="size-3.5 text-gold-strong" />
+                {copy("Almas NG", "NG souls", "Almas NG")}: {vitals.soulsNg}
+              </span>
+            </div>
+          ) : null}
         </div>
         <a
           href={boss.sourceUrl}
@@ -368,6 +388,23 @@ function BossDetail({
           <ExternalLink className="size-3.5" />
         </a>
       </div>
+
+      {vitals?.note ? (
+        <p className="mt-4 rounded-xl border border-border bg-muted/15 p-3 text-xs leading-5 text-muted-foreground">
+          {vitals.note}
+        </p>
+      ) : null}
+      {vitals ? (
+        <a
+          href={DS3_BOSS_VITALS_SOURCE.url}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-2 inline-flex items-center gap-1.5 text-[0.66rem] font-bold text-gold-strong hover:underline"
+        >
+          {copy("Fonte de HP e recompensa", "HP and reward source", "Fuente de HP y recompensa")}
+          <ExternalLink className="size-3" />
+        </a>
+      ) : null}
 
       <div className="mt-7 grid gap-4 md:grid-cols-2">
         <InfoCard icon={BookOpen} title={copy("Contexto", "Context", "Contexto")}>
