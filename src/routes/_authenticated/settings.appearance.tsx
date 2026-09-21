@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, Palette, Volume2 } from "lucide-react";
+import { Check, Crosshair, Palette, Volume2 } from "lucide-react";
 import { DEFAULT_ACCENT_COLOR, useTheme } from "@/lib/theme";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_authenticated/settings/appearance")({
 
 function SettingsAppearancePage() {
   const { t, locale } = useI18n();
-  const { accentColor, setAccentColor, resetAccentColor } = useTheme();
+  const { accentColor, cursorStyle, setAccentColor, resetAccentColor, setCursorStyle } = useTheme();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const palettes = [
     { color: null, name: copy("Original", "Original", "Original") },
@@ -112,6 +112,15 @@ function SettingsAppearancePage() {
                 })}
               </div>
             </div>
+          </div>
+        </section>
+        <section className="surface-panel p-4 sm:p-6">
+          <h3 className="flex items-center gap-2 text-sm font-semibold"><Crosshair className="size-4 text-gold-strong" />{copy("Cursor", "Cursor", "Cursor")}</h3>
+          <p className="mt-1 text-xs text-muted-foreground">{copy("Escolha o cursor do MGP. A espada é o padrão; o machado foi preservado como cosmético.", "Choose your MGP cursor. The sword is the default; the axe is preserved as a cosmetic.", "Elige el cursor de MGP. La espada es el predeterminado; el hacha se conserva como cosmético.")}</p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-3">
+            {([["sword", copy("Espada", "Sword", "Espada")], ["axe", copy("Machado", "Axe", "Hacha")], ["reticle", copy("Mira", "Reticle", "Mira")]] as const).map(([value,label]) => (
+              <button key={value} type="button" aria-pressed={cursorStyle===value} onClick={()=>setCursorStyle(value)} className={`min-h-11 rounded-xl border px-4 py-3 text-left text-sm font-semibold transition-all hover:-translate-y-0.5 ${cursorStyle===value?"border-gold bg-gold-soft text-gold-strong":"border-border bg-surface hover:border-gold/40"}`}>{label}</button>
+            ))}
           </div>
         </section>
         <section className="surface-panel p-4 sm:p-6">
