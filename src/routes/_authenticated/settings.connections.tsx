@@ -742,9 +742,9 @@ function SteamDataPanel({
           </h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
-              "Importa biblioteca, tempo de jogo, jogos recentes, nível, insígnias, conquistas e inventários públicos suportados. Dados que a Steam mantiver privados continuam privados.",
-              "Imports library, playtime, recent games, level, badges, achievements and supported public inventories. Data Steam keeps private remains private.",
-              "Importa biblioteca, tiempo de juego, juegos recientes, nivel, insignias, logros e inventarios públicos compatibles. Los datos privados en Steam siguen privados.",
+              "Importa biblioteca, tempo de jogo, jogos recentes, nível, insígnias, conquistas desbloqueadas e inventários públicos suportados. O total de conquistas por jogo continua disponível sem armazenar cada conquista bloqueada.",
+              "Imports library, playtime, recent games, level, badges, unlocked achievements and supported public inventories. Per-game achievement totals remain available without storing every locked achievement.",
+              "Importa biblioteca, tiempo de juego, juegos recientes, nivel, insignias, logros desbloqueados e inventarios públicos compatibles. El total de logros por juego sigue disponible sin guardar cada logro bloqueado.",
             )}
           </p>
         </div>
@@ -758,7 +758,15 @@ function SteamDataPanel({
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <SteamMetric icon={Library} label={copy("Jogos", "Games", "Juegos")} value={counts.games} />
-        <SteamMetric icon={Trophy} label={copy("Conquistas", "Achievements", "Logros")} value={counts.achievements} />
+        <SteamMetric
+          icon={Trophy}
+          label={copy(
+            "Conquistas desbloqueadas",
+            "Unlocked achievements",
+            "Logros desbloqueados",
+          )}
+          value={counts.achievements}
+        />
         <SteamMetric icon={BadgeCheck} label={copy("Insígnias", "Badges", "Insignias")} value={counts.badges} />
         <SteamMetric icon={Package} label={copy("Itens públicos", "Public items", "Objetos públicos")} value={counts.inventoryItems} />
       </div>
