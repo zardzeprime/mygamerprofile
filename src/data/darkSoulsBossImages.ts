@@ -428,5 +428,14 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
 };
 
 export function getDarkSoulsBossImage(slug?: string) {
-  return slug ? DARK_SOULS_BOSS_IMAGES[slug] : undefined;
+  if (!slug) return undefined;
+  const asset = DARK_SOULS_BOSS_IMAGES[slug];
+  if (!asset) return undefined;
+
+  // Boss artwork is vendored under /public so cards and detail views never depend
+  // on a third-party hotlink at runtime. sourceUrl/sourceLabel stay intact for credit.
+  return {
+    ...asset,
+    url: `/assets/bosses/ds1/${slug}.jpg`,
+  };
 }
