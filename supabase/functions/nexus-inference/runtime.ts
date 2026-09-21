@@ -145,6 +145,65 @@ function compactChatHistory(
   return selected.reverse();
 }
 
+const SOULS_TRANSLATION_CACHE = new Map<string, { text: string; expiresAt: number }>();
+const SOULS_TRANSLATION_TTL_MS = 6 * 60 * 60 * 1000;
+
+function translationLanguage(locale: ReturnType<typeof normalizeLocale>) {
+  if (locale === "es") return "natural Latin American Spanish";
+  if (locale === "en") return "natural English";
+  return "natural Brazilian Portuguese";
+}
+
+export async function handleSoulsTranslate(raw: Record<string, unknown>) {
+  if (raw.scope !== "souls-compendium") throw new Error("NEXUS_TRANSLATION_SCOPE_INVALID");
+  const locale = normalizeLocale(raw.locale);
+  const source = requireMessage(raw.text, 5200);
+
+  if (locale === "en") {
+    return { text: source, locale, cached: true, provider: "source", model: "source" };
+  }
+  if (!aiReady()) throw new Error("NEXUS_NO_PROVIDER");
+
+  const cacheKey = `${locale}:${source}`;
+  const cached = SOULS_TRANSLATION_CACHE.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) {
+    return { text: cached.text, locale, cached: true, provider: "edge-cache", model: "edge-cache" };
+  }
+
+  const completion = await complete({
+    system: [
+      "You are the localization utility for MG Profile's Dark Souls compendium.",
+      `Translate the supplied English in-game item/equipment description into ${translationLanguage(locale)}.`,
+      "Return only the translated text. No notes, headings, markdown, quotation marks or commentary.",
+      "Preserve paragraph breaks and the meaning, tone and lore.",
+      "Keep proper nouns, named characters, locations and unique item names faithful to Dark Souls terminology.",
+      "Keep numbers, symbols and gameplay values unchanged.",
+      "Do not add mechanics, lore or facts that are not present in the source.",
+    ].join("\n"),
+    messages: [{ role: "user", content: source }],
+    effort: "low",
+    maxOutputTokens: 1500,
+    providerOrder: ["gemini", "openai", "groq", "anthropic", "openrouter"],
+    grounding: false,
+  });
+
+  const translated = completion.text.trim();
+  if (!translated) throw new Error("NEXUS_TRANSLATION_EMPTY");
+  SOULS_TRANSLATION_CACHE.set(cacheKey, {
+    text: translated,
+    expiresAt: Date.now() + SOULS_TRANSLATION_TTL_MS,
+  });
+
+  return {
+    text: translated,
+    locale,
+    cached: false,
+    provider: completion.provider,
+    model: completion.model,
+    latencyMs: completion.latencyMs,
+  };
+}
+
 export async function handleGuestStatus(raw: Record<string, unknown>) {
   const db = adminDb();
   const guest = await ensureGuest(db, raw.guestId);
