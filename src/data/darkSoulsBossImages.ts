@@ -3,6 +3,12 @@ import type { AppLocale } from "@/i18n/translations";
 type LocalizedText = Record<AppLocale, string>;
 type ImageFit = "cover" | "contain";
 
+// Route third-party artwork through a dedicated image CDN so Fandom/legacy hosts
+// cannot block the browser hotlink. Source/provenance links remain the original pages.
+const reliableImageUrl = (url: string) =>
+  `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=1200&fit=inside&we`;
+
+
 export type DarkSoulsBossImageAsset = {
   url: string;
   sourceUrl: string;
@@ -77,7 +83,7 @@ const fandomAsset = (
     detailFit?: ImageFit;
   } = {},
 ): DarkSoulsBossImageAsset => ({
-  url: fandomFileUrl(filename),
+  url: reliableImageUrl(fandomFileUrl(filename)),
   sourceUrl: fandomFilePage(filename),
   sourceLabel: options.label ?? wikiImageLabel,
   kind: options.kind ?? "wiki-image",
@@ -100,7 +106,7 @@ const remasteredAsset = (
     detailFit?: ImageFit;
   } = {},
 ): DarkSoulsBossImageAsset => ({
-  url: remasteredFileUrl(filename),
+  url: reliableImageUrl(remasteredFileUrl(filename)),
   sourceUrl: remasteredFilePage(filename),
   sourceLabel: remasteredLabel,
   kind: "wiki-image",
@@ -123,7 +129,7 @@ const screenshot = (
     detailScale?: number;
   } = {},
 ): DarkSoulsBossImageAsset => ({
-  url: fandomFileUrl(filename),
+  url: reliableImageUrl(fandomFileUrl(filename)),
   sourceUrl: fandomFilePage(filename),
   sourceLabel,
   kind,
@@ -146,7 +152,7 @@ const creativeUncut = (
     detailFit?: ImageFit;
   } = {},
 ): DarkSoulsBossImageAsset => ({
-  url: `https://www.creativeuncut.com/gallery-18/art/${slug}.jpg`,
+  url: reliableImageUrl(`https://www.creativeuncut.com/gallery-18/art/${slug}.jpg`),
   sourceUrl: `https://www.creativeuncut.com/gallery-18/${slug}.html`,
   sourceLabel: creativeUncutLabel,
   kind: "concept-art",
@@ -338,7 +344,7 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
   }),
 
   "demon-firesage": {
-    url: "https://images.squarespace-cdn.com/content/v1/647e516c1ebf6d1ac5f8d201/7d2f6e05-3db6-46be-a80c-0ceebf69cbf5/firesage-1200x675.jpg",
+    url: reliableImageUrl("https://images.squarespace-cdn.com/content/v1/647e516c1ebf6d1ac5f8d201/7d2f6e05-3db6-46be-a80c-0ceebf69cbf5/firesage-1200x675.jpg"),
     sourceUrl: "https://www.dvs.news/home/dark-souls-boss-guide",
     sourceLabel: {
       "pt-BR": "Screenshot de combate · DVS Gaming",
