@@ -424,6 +424,22 @@ export function SoulsDpsTest({
               <p className="mt-1 text-xs text-muted-foreground">{selectedWeapon.weaponClass}</p>
             ) : null}
 
+            {currentWeapon?.weaponSkill ? (
+              <div className="mt-3 rounded-xl border border-gold/25 bg-gold/[0.06] p-3">
+                <p className="text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+                  {copy("Skill / Weapon Art", "Skill / Weapon Art", "Skill / Weapon Art")}
+                </p>
+                <p className="mt-1 text-sm font-bold text-foreground">{currentWeapon.weaponSkill}</p>
+              </div>
+            ) : null}
+
+            {currentWeapon?.attackTypes?.length ? (
+              <p className="mt-3 text-[0.68rem] leading-5 text-muted-foreground">
+                <strong className="text-foreground">{copy("Tipos de ataque:", "Attack types:", "Tipos de ataque:")}</strong>{" "}
+                {currentWeapon.attackTypes.join(" · ")}
+              </p>
+            ) : null}
+
             <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
               <InfoCell label="STR" value={selectedWeapon.requirements.str} />
               <InfoCell label="DEX" value={selectedWeapon.requirements.dex} />
