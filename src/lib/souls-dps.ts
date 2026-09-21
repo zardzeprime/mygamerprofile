@@ -796,8 +796,8 @@ export function explainSoulsSynergy(
 
 export const SOULS_DPS_SOURCES = {
   ds1: {
-    label: "Dark Souls weapon dataset · BonsaiDen",
-    url: DS1_SOURCE_URL,
+    label: "Dark Souls weapon datasets · BonsaiDen + Sezergumus",
+    url: DS1_REINFORCEMENT_SOURCE,
   },
   ds3: {
     label: "DS3InventoryBuilder · Phil25",
