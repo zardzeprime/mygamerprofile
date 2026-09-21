@@ -87,10 +87,12 @@ export function AdReadyLayout({
   rail?: React.ReactNode;
   className?: string;
 }) {
+  const manualRailEnabled = Boolean(configuredAdUnit("rail"));
+
   return (
-    <div className={cn("mgp-ad-layout", className)}>
+    <div className={cn("mgp-ad-layout", !manualRailEnabled && "mgp-ad-layout--single", className)}>
       <div className="mgp-ad-layout__main">{children}</div>
-      {rail ? <div className="mgp-ad-layout__rail">{rail}</div> : null}
+      {rail && manualRailEnabled ? <div className="mgp-ad-layout__rail">{rail}</div> : null}
     </div>
   );
 }
