@@ -31,8 +31,13 @@ import {
 } from "@/lib/souls-compendium";
 import { cn } from "@/lib/utils";
 import {
+  DS1_UPGRADE_PATHS,
+  getDs1UpgradePathOptions,
   loadDs1Weapons,
+  loadDs3WeaponLevel,
   loadDs3Weapons,
+  type Ds1UpgradePath,
+  type Ds3WeaponLevel,
   type SoulsDpsStat,
   type SoulsDpsWeapon,
 } from "@/lib/souls-dps";
@@ -407,7 +412,7 @@ export function SoulsItemCompendium({
                   <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]">
                     <div className="space-y-4">
                       {technicalWeapon ? (
-                        <WeaponTechnicalCard weapon={technicalWeapon} locale={locale} />
+                        <WeaponTechnicalCard weapon={technicalWeapon} gameSlug={gameSlug} locale={locale} />
                       ) : null}
                       {technicalArmorEntry ? (
                         <ArmorTechnicalCard armor={technicalArmorEntry} locale={locale} />
@@ -485,8 +490,17 @@ export function SoulsItemCompendium({
   );
 }
 
-function WeaponTechnicalCard({ weapon, locale }: { weapon: SoulsDpsWeapon; locale: Locale }) {
+function WeaponTechnicalCard({
+  weapon,
+  gameSlug,
+  locale,
+}: {
+  weapon: SoulsDpsWeapon;
+  gameSlug: SoulsCompendiumGame;
+  locale: Locale;
+}) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const isDs3 = gameSlug === "dark-souls-iii";
   const stats: Array<[SoulsDpsStat, string]> = [
     ["str", "STR"],
     ["dex", "DEX"],
@@ -494,13 +508,91 @@ function WeaponTechnicalCard({ weapon, locale }: { weapon: SoulsDpsWeapon; local
     ["fth", "FTH"],
     ["lck", "LCK"],
   ];
+
+  const ds1Paths = useMemo(() => getDs1UpgradePathOptions(weapon), [weapon]);
+  const [ds1Path, setDs1Path] = useState<Ds1UpgradePath>("regular");
+  const [infusion, setInfusion] = useState("-");
+  const [upgrade, setUpgrade] = useState(0);
+  const [focusStat, setFocusStat] = useState<SoulsDpsStat>("str");
+  const [ds3Level, setDs3Level] = useState<Ds3WeaponLevel | null>(null);
+  const [levelLoading, setLevelLoading] = useState(false);
+  const [levelFailed, setLevelFailed] = useState(false);
+
+  useEffect(() => {
+    const nextInfusion = weapon.infusions?.includes("-")
+      ? "-"
+      : (weapon.infusions?.[0] ?? "-");
+    setInfusion(nextInfusion);
+    setDs1Path("regular");
+    setUpgrade(0);
+    const preferred = (["str", "dex", "int", "fth", "lck"] as SoulsDpsStat[]).find((stat) => {
+      const grade = weapon.scalingLetters?.[stat];
+      return Boolean(grade && grade !== "-");
+    });
+    setFocusStat(preferred ?? "str");
+  }, [weapon]);
+
+  const maxUpgrade = isDs3
+    ? weapon.maxUpgrade
+    : ds1Path === "regular"
+      ? weapon.maxUpgrade
+      : DS1_UPGRADE_PATHS[ds1Path].maxUpgrade;
+
+  useEffect(() => {
+    setUpgrade((current) => Math.min(current, maxUpgrade));
+  }, [maxUpgrade]);
+
+  useEffect(() => {
+    let active = true;
+    if (!isDs3) {
+      setDs3Level(null);
+      setLevelFailed(false);
+      return;
+    }
+
+    setLevelLoading(true);
+    setLevelFailed(false);
+    void loadDs3WeaponLevel(weapon.name, infusion, upgrade)
+      .then((entry) => {
+        if (!active) return;
+        setDs3Level(entry);
+        setLevelFailed(!entry);
+      })
+      .catch((error) => {
+        console.warn("[SoulsItemCompendium] DS3 weapon level unavailable", error);
+        if (active) {
+          setDs3Level(null);
+          setLevelFailed(true);
+        }
+      })
+      .finally(() => {
+        if (active) setLevelLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [infusion, isDs3, upgrade, weapon.name]);
+
+  const currentWeapon = isDs3 && ds3Level ? ds3Level : weapon;
+  const requirements = currentWeapon.requirements;
+  const scaling = isDs3
+    ? (currentWeapon.scalingLetters ?? weapon.scalingLetters ?? {})
+    : ds1ScalingForPath(weapon, ds1Path);
+  const damageSource =
+    isDs3
+      ? currentWeapon.baseDamage
+      : ds1Path === "regular"
+        ? ds1RegularDamageAtUpgrade(weapon, upgrade)
+        : weapon.baseDamage;
   const damage = [
-    ["PHY", weapon.baseDamage.physical],
-    ["MAG", weapon.baseDamage.magic],
-    ["FIRE", weapon.baseDamage.fire],
-    ["LIGHT", weapon.baseDamage.lightning],
-    ["DARK", weapon.baseDamage.dark],
+    ["PHY", damageSource.physical],
+    ["MAG", damageSource.magic],
+    ["FIRE", damageSource.fire],
+    ["LIGHT", damageSource.lightning],
+    ["DARK", damageSource.dark],
   ].filter(([, value]) => Number(value) > 0);
+  const focusGrade = scaling[focusStat] || "-";
 
   return (
     <div className="rounded-2xl border border-gold/25 bg-gold/[0.05] p-4">
@@ -532,41 +624,70 @@ function WeaponTechnicalCard({ weapon, locale }: { weapon: SoulsDpsWeapon; local
           />
         ) : null}
         <TechCell
-          label={copy("Upgrade", "Upgrade", "Mejora")}
-          value={`+0 → +${weapon.maxUpgrade}`}
+          label={copy("Estado simulado", "Simulated state", "Estado simulado")}
+          value={`+${upgrade}`}
         />
-        {weapon.infusions?.length ? (
-          <TechCell
-            label={copy("Infusões", "Infusions", "Infusiones")}
-            value={String(weapon.infusions.length)}
-          />
-        ) : null}
+        <TechCell
+          label={copy("Modificação", "Modification", "Modificación")}
+          value={
+            isDs3
+              ? ds3InfusionLabel(infusion)
+              : DS1_UPGRADE_PATHS[ds1Path].label
+          }
+        />
       </div>
 
       <p className="mt-4 text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
         {copy("Requisitos", "Requirements", "Requisitos")}
       </p>
       <div className="mt-2 grid grid-cols-4 gap-1.5">
-        <TechCell label="STR" value={weapon.requirements.str} compact />
-        <TechCell label="DEX" value={weapon.requirements.dex} compact />
-        <TechCell label="INT" value={weapon.requirements.int} compact />
-        <TechCell label="FTH" value={weapon.requirements.fth} compact />
+        <TechCell label="STR" value={requirements.str} compact />
+        <TechCell label="DEX" value={requirements.dex} compact />
+        <TechCell label="INT" value={requirements.int} compact />
+        <TechCell label="FTH" value={requirements.fth} compact />
       </div>
 
-      <p className="mt-4 text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
-        {copy("Scaling por atributo", "Attribute scaling", "Scaling por atributo")}
-      </p>
+      <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+            {copy("Scaling por atributo", "Attribute scaling", "Scaling por atributo")}
+          </p>
+          <p className="mt-1 text-[0.64rem] text-muted-foreground">
+            {copy(
+              "Selecione um atributo para destacar abaixo.",
+              "Select an attribute to highlight below.",
+              "Selecciona un atributo para destacarlo abajo.",
+            )}
+          </p>
+        </div>
+        <label className="block">
+          <span className="sr-only">{copy("Atributo em foco", "Focused attribute", "Atributo destacado")}</span>
+          <select
+            value={focusStat}
+            onChange={(event) => setFocusStat(event.target.value as SoulsDpsStat)}
+            className="h-9 rounded-lg border border-border bg-background px-2 text-xs font-bold text-foreground outline-none focus:border-gold/50"
+          >
+            {stats.map(([stat, label]) => (
+              <option key={stat} value={stat}>{label}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+
       <div className="mt-2 grid grid-cols-3 gap-1.5 sm:grid-cols-5">
         {stats.map(([stat, label]) => {
-          const grade = weapon.scalingLetters?.[stat] || "-";
+          const grade = scaling[stat] || "-";
+          const active = stat === focusStat;
           return (
             <div
               key={stat}
               className={cn(
-                "rounded-lg border px-2 py-2 text-center",
-                grade !== "-"
-                  ? "border-gold/30 bg-gold/[0.06]"
-                  : "border-border bg-background/35 opacity-65",
+                "rounded-lg border px-2 py-2 text-center transition",
+                active
+                  ? "border-gold/60 bg-gold/[0.12] ring-1 ring-gold/20"
+                  : grade !== "-"
+                    ? "border-gold/30 bg-gold/[0.06]"
+                    : "border-border bg-background/35 opacity-65",
               )}
             >
               <p className="text-[0.55rem] font-black uppercase tracking-[0.08em] text-muted-foreground">
@@ -577,11 +698,19 @@ function WeaponTechnicalCard({ weapon, locale }: { weapon: SoulsDpsWeapon; local
           );
         })}
       </div>
+      <p className="mt-2 text-[0.64rem] leading-5 text-muted-foreground">
+        {copy("Atributo em foco", "Focused attribute", "Atributo destacado")}:{" "}
+        <strong className="text-foreground">{focusStat.toUpperCase()} · {focusGrade}</strong>
+      </p>
 
       {damage.length ? (
         <>
           <p className="mt-4 text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
-            {copy("Dano base de referência", "Reference base damage", "Daño base de referencia")}
+            {copy(
+              isDs3 ? "Dano base no estado selecionado" : "Dano base de referência",
+              isDs3 ? "Base damage at selected state" : "Reference base damage",
+              isDs3 ? "Daño base en el estado seleccionado" : "Daño base de referencia",
+            )}
           </p>
           <div className="mt-2 grid grid-cols-2 gap-1.5">
             {damage.map(([label, value]) => (
@@ -595,6 +724,106 @@ function WeaponTechnicalCard({ weapon, locale }: { weapon: SoulsDpsWeapon; local
           </div>
         </>
       ) : null}
+
+      <section className="mt-5 rounded-2xl border border-border bg-background/45 p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-gold-strong">
+              {copy("Simular reforço", "Upgrade simulator", "Simular mejora")}
+            </p>
+            <p className="mt-1 text-[0.66rem] leading-5 text-muted-foreground">
+              {copy(
+                "Troque a modificação da arma e mova a barra até o nível que você quer conferir.",
+                "Change the weapon modification and move the bar to the level you want to inspect.",
+                "Cambia la modificación del arma y mueve la barra al nivel que quieras revisar.",
+              )}
+            </p>
+          </div>
+          {levelLoading ? <Loader2 className="size-4 animate-spin text-gold-strong" /> : null}
+        </div>
+
+        <label className="mt-4 block">
+          <span className="text-[0.58rem] font-black uppercase tracking-[0.09em] text-muted-foreground">
+            {isDs3
+              ? copy("Infusão / gema", "Infusion / gem", "Infusión / gema")
+              : copy("Caminho / atributo", "Upgrade path / affinity", "Ruta / afinidad")}
+          </span>
+          {isDs3 ? (
+            <select
+              value={infusion}
+              onChange={(event) => {
+                setInfusion(event.target.value);
+                setUpgrade(0);
+              }}
+              className="mt-2 h-10 w-full rounded-xl border border-border bg-background px-3 text-sm font-semibold text-foreground outline-none focus:border-gold/50"
+            >
+              {(weapon.infusions?.length ? weapon.infusions : ["-"]).map((value) => (
+                <option key={value} value={value}>
+                  {ds3InfusionLabel(value)}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <select
+              value={ds1Path}
+              onChange={(event) => {
+                setDs1Path(event.target.value as Ds1UpgradePath);
+                setUpgrade(0);
+              }}
+              className="mt-2 h-10 w-full rounded-xl border border-border bg-background px-3 text-sm font-semibold text-foreground outline-none focus:border-gold/50"
+            >
+              {ds1Paths.map((value) => (
+                <option key={value} value={value}>
+                  {DS1_UPGRADE_PATHS[value].label}
+                </option>
+              ))}
+            </select>
+          )}
+        </label>
+
+        <div className="mt-4">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[0.58rem] font-black uppercase tracking-[0.09em] text-muted-foreground">
+              {copy("Nível da arma", "Weapon level", "Nivel del arma")}
+            </span>
+            <span className="rounded-lg border border-gold/25 bg-gold/10 px-2 py-1 text-xs font-black text-gold-strong">
+              +{upgrade}
+            </span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={maxUpgrade}
+            value={upgrade}
+            onChange={(event) => setUpgrade(Number(event.target.value))}
+            className="mt-3 w-full accent-[hsl(var(--gold))]"
+          />
+          <div className="mt-1 flex justify-between text-[0.62rem] text-muted-foreground">
+            <span>+0</span>
+            <span>+{maxUpgrade}</span>
+          </div>
+        </div>
+
+        {!isDs3 && ds1Path !== "regular" ? (
+          <p className="mt-3 rounded-xl border border-amber-500/20 bg-amber-500/[0.05] p-3 text-[0.66rem] leading-5 text-muted-foreground">
+            {copy(
+              `Rota ${DS1_UPGRADE_PATHS[ds1Path].label}: ${DS1_UPGRADE_PATHS[ds1Path].description} Quando a fonte não fornece letra exata por arma nessa rota, o MGP mostra o foco do scaling sem inventar uma graduação.`,
+              `${DS1_UPGRADE_PATHS[ds1Path].label} path: ${DS1_UPGRADE_PATHS[ds1Path].description} When the source does not provide an exact per-weapon letter for this path, MGP shows the scaling focus without inventing a grade.`,
+              `Ruta ${DS1_UPGRADE_PATHS[ds1Path].label}: ${DS1_UPGRADE_PATHS[ds1Path].description} Cuando la fuente no ofrece una letra exacta por arma en esta ruta, MGP muestra el enfoque del scaling sin inventar una graduación.`,
+            )}
+          </p>
+        ) : null}
+
+        {isDs3 && levelFailed ? (
+          <p className="mt-3 text-[0.66rem] leading-5 text-amber-300/85">
+            {copy(
+              "Essa combinação de infusão e nível não respondeu na fonte técnica; mantive os dados-base da arma.",
+              "This infusion/level combination did not resolve in the technical source; base weapon data is shown instead.",
+              "Esta combinación de infusión y nivel no respondió en la fuente técnica; se muestran los datos base.",
+            )}
+          </p>
+        ) : null}
+      </section>
 
       {weapon.attackTypes?.length ? (
         <p className="mt-3 text-[0.66rem] leading-5 text-muted-foreground">
@@ -612,6 +841,61 @@ function WeaponTechnicalCard({ weapon, locale }: { weapon: SoulsDpsWeapon; local
       ) : null}
     </div>
   );
+}
+
+function ds1RegularDamageAtUpgrade(weapon: SoulsDpsWeapon, upgrade: number) {
+  const ratio = weapon.maxUpgrade > 0 ? Math.min(1, Math.max(0, upgrade) / weapon.maxUpgrade) : 0;
+  const end = weapon.maxDamage ?? weapon.baseDamage;
+  return {
+    physical: weapon.baseDamage.physical + (end.physical - weapon.baseDamage.physical) * ratio,
+    magic: weapon.baseDamage.magic + (end.magic - weapon.baseDamage.magic) * ratio,
+    fire: weapon.baseDamage.fire + (end.fire - weapon.baseDamage.fire) * ratio,
+    lightning: weapon.baseDamage.lightning + (end.lightning - weapon.baseDamage.lightning) * ratio,
+    dark: weapon.baseDamage.dark + (end.dark - weapon.baseDamage.dark) * ratio,
+  };
+}
+
+function ds1ScalingForPath(
+  weapon: SoulsDpsWeapon,
+  path: Ds1UpgradePath,
+): Partial<Record<SoulsDpsStat, string>> {
+  const base = weapon.scalingLetters ?? {};
+  if (path === "regular" || path === "crystal") return base;
+  if (path === "magic") return { int: "FOCO" };
+  if (path === "enchanted") return { int: "FOCO+" };
+  if (path === "divine") return { fth: "FOCO" };
+  if (path === "occult") return { fth: "FOCO+" };
+  if (path === "raw") {
+    return Object.fromEntries(
+      Object.entries(base)
+        .filter(([, grade]) => Boolean(grade) && grade !== "-")
+        .map(([stat]) => [stat, "RED."]),
+    ) as Partial<Record<SoulsDpsStat, string>>;
+  }
+  return {};
+}
+
+function ds3InfusionLabel(value: string) {
+  if (!value || value === "-") return "Sem infusão";
+  const normalized = value.trim().toLowerCase();
+  const gemByInfusion: Record<string, string> = {
+    heavy: "Heavy · Heavy Gem",
+    sharp: "Sharp · Sharp Gem",
+    refined: "Refined · Refined Gem",
+    raw: "Raw · Raw Gem",
+    crystal: "Crystal · Crystal Gem",
+    simple: "Simple · Simple Gem",
+    fire: "Fire · Fire Gem",
+    chaos: "Chaos · Chaos Gem",
+    lightning: "Lightning · Lightning Gem",
+    blessed: "Blessed · Blessed Gem",
+    deep: "Deep · Deep Gem",
+    dark: "Dark · Dark Gem",
+    blood: "Blood · Blood Gem",
+    poison: "Poison · Poison Gem",
+    hollow: "Hollow · Hollow Gem",
+  };
+  return gemByInfusion[normalized] ?? value;
 }
 
 function SpellMetadataCard({ metadata, locale }: { metadata: SoulsSpellMetadata; locale: Locale }) {
