@@ -10,6 +10,7 @@ import {
   handleMemberSend,
   handleMemberStatus,
   handleMemberThreads,
+  handleSoulsTranslate,
 } from "./runtime.ts";
 
 const RATE_BUCKETS = new Map<string, { count: number; resetAt: number }>();
@@ -58,6 +59,7 @@ function clientIp(req: Request) {
 
 function rateLimitForAction(action: string) {
   if (action === "guest.send" || action === "member.send") return { bucket: "send", limit: 20 };
+  if (action === "translate.souls") return { bucket: "translation", limit: 24 };
   if (action === "health") return { bucket: "health", limit: 180 };
   return { bucket: "read", limit: 120 };
 }
@@ -112,6 +114,7 @@ Deno.serve(async (req: Request) => {
       });
     }
 
+    if (action === "translate.souls") return reply(await handleSoulsTranslate(raw));
     if (action === "guest.status") return reply(await handleGuestStatus(raw));
     if (action === "guest.send") return reply(await handleGuestSend(raw));
     if (action === "member.bootstrap") return reply(await handleMemberBootstrap(req));
@@ -133,7 +136,9 @@ Deno.serve(async (req: Request) => {
       code === "NEXUS_RATE_LIMIT" || code === "NEXUS_GUEST_RATE_LIMIT" ? 429 :
       code === "NEXUS_NO_PROVIDER" || code === "NEXUS_ALL_PROVIDERS_FAILED" ? 503 :
       code === "NEXUS_GUEST_LIMIT_REACHED" ? 402 :
-      code === "NEXUS_INVALID_MESSAGE" || code === "NEXUS_THREAD_INVALID" ? 400 : 502;
+      code === "NEXUS_INVALID_MESSAGE" ||
+      code === "NEXUS_THREAD_INVALID" ||
+      code === "NEXUS_TRANSLATION_SCOPE_INVALID" ? 400 : 502;
 
     return reply(
       {
