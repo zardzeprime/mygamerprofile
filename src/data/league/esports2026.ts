@@ -531,7 +531,9 @@ export const LEAGUE_ESPORTS_TEAMS: EsportsTeam[] = TEAMS.map((team) => ({
   shortName: team.shortName,
   countryCode: team.countryCode,
   region: team.region,
-  ...(team.logoDomain ? { logoUrl: leagueLogo(team.logoDomain) } : {}),
+  ...(team.logoDomain
+    ? { logoUrl: `https://www.google.com/s2/favicons?domain_url=https://${team.logoDomain}&sz=128` }
+    : {}),
   playerIds: team.players.map((player) => playerId(team.id, player.handle)),
   sources: [source(team)],
 }));

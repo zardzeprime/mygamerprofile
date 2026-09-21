@@ -547,7 +547,7 @@ async function loadDs3LevelRows(level: number) {
 
 async function loadDs3UpgradeLimits() {
   if (ds3UniqueCache) return ds3UniqueCache;
-    const request = fetch(`${DS3_BASE}/uniqueness.tsv`)
+  const request = fetch(`${DS3_BASE}/uniqueness.tsv`)
     .then(async (response) => {
       if (!response.ok) return new Map<string, number>();
       const text = await response.text();
@@ -557,13 +557,15 @@ async function loadDs3UpgradeLimits() {
         if (!fullName) return;
         const match = fullName.match(/^(.*?)\s*\+(\d+)\s*$/);
         if (!match) return;
-        map.set(match[1].trim(), Number(match[2]) || 10);
+        const weaponName = match[1];
+        if (!weaponName) return;
+        map.set(weaponName.trim(), Number(match[2]) || 10);
       });
       return map;
     })
     .catch(() => new Map<string, number>());
-    ds3UniqueCache = request;
-    return request;
+  ds3UniqueCache = request;
+  return request;
 }
 
 export async function loadDs3Weapons() {
