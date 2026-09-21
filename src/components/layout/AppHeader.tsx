@@ -37,21 +37,24 @@ export function AppHeader() {
   useEffect(() => {
     if (!open) return;
     const close = (event: KeyboardEvent) => {
-      if (event.key === "Escape") { setOpen(false); menuButtonRef.current?.focus(); }
+      if (event.key === "Escape") {
+        setOpen(false);
+        menuButtonRef.current?.focus();
+      }
     };
     const outside = (event: PointerEvent) => {
       const target = event.target;
-      if (
-        target instanceof Element &&
-        target.closest('[data-mgp-header-overlay="true"]')
-      ) {
+      if (target instanceof Element && target.closest('[data-mgp-header-overlay="true"]')) {
         return;
       }
       if (!headerRef.current?.contains(target as Node)) setOpen(false);
     };
     document.addEventListener("keydown", close);
     document.addEventListener("pointerdown", outside);
-    return () => { document.removeEventListener("keydown", close); document.removeEventListener("pointerdown", outside); };
+    return () => {
+      document.removeEventListener("keydown", close);
+      document.removeEventListener("pointerdown", outside);
+    };
   }, [open]);
   const [profileUsername, setProfileUsername] = useState<string | null>(null);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -109,8 +112,14 @@ export function AppHeader() {
     }
   };
 
-  const profileLabel = locale === "pt-BR" ? "Ver meu perfil" : locale === "es" ? "Ver mi perfil" : "View my profile";
-  const profileUnavailableLabel = locale === "pt-BR" ? "Perfil indisponível" : locale === "es" ? "Perfil no disponible" : "Profile unavailable";
+  const profileLabel =
+    locale === "pt-BR" ? "Ver meu perfil" : locale === "es" ? "Ver mi perfil" : "View my profile";
+  const profileUnavailableLabel =
+    locale === "pt-BR"
+      ? "Perfil indisponível"
+      : locale === "es"
+        ? "Perfil no disponible"
+        : "Profile unavailable";
 
   const AuthSection = () => {
     if (loading) return null;
@@ -123,10 +132,24 @@ export function AppHeader() {
             size="sm"
             onClick={() => void handleGoogleSignIn()}
             disabled={googleLoading}
-            aria-label={locale === "pt-BR" ? "Entrar com Google" : locale === "es" ? "Entrar con Google" : "Sign in with Google"}
-            title={locale === "pt-BR" ? "Entrar com Google" : locale === "es" ? "Entrar con Google" : "Sign in with Google"}
+            aria-label={
+              locale === "pt-BR"
+                ? "Entrar com Google"
+                : locale === "es"
+                  ? "Entrar con Google"
+                  : "Sign in with Google"
+            }
+            title={
+              locale === "pt-BR"
+                ? "Entrar com Google"
+                : locale === "es"
+                  ? "Entrar con Google"
+                  : "Sign in with Google"
+            }
           >
-            <span className="grid size-4 place-items-center rounded-full text-[11px] font-black">G</span>
+            <span className="grid size-4 place-items-center rounded-full text-[11px] font-black">
+              G
+            </span>
             <span className="hidden 2xl:inline">Google</span>
           </Button>
           <Button variant="ghost" size="sm" asChild>
@@ -152,7 +175,11 @@ export function AppHeader() {
         <DropdownMenuContent align="end">
           {profileUsername ? (
             <DropdownMenuItem asChild>
-              <Link to="/u/$username" params={{ username: profileUsername }} className="flex items-center gap-2">
+              <Link
+                to="/u/$username"
+                params={{ username: profileUsername }}
+                className="flex items-center gap-2"
+              >
                 <UserRound className="size-4" />
                 {profileLabel}
               </Link>
@@ -180,7 +207,10 @@ export function AppHeader() {
   };
 
   return (
-    <header ref={headerRef} className="mgp-header sticky top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-xl">
+    <header
+      ref={headerRef}
+      className="mgp-header sticky top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-xl"
+    >
       <div className="mx-auto grid h-[4.25rem] w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 sm:px-6">
         <div className="flex min-w-0 items-center gap-2">
           <BrandLogoPlaceholder />
@@ -224,13 +254,20 @@ export function AppHeader() {
             aria-label={open ? t("navigation.closeMenu") : t("navigation.openMenu")}
             className="mgp-icon-button inline-flex size-11 shrink-0 items-center justify-center text-foreground 2xl:hidden"
           >
-            {open ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
+            {open ? (
+              <X aria-hidden="true" className="size-4" />
+            ) : (
+              <Menu aria-hidden="true" className="size-4" />
+            )}
           </button>
         </div>
       </div>
 
       {open ? (
-        <div id="site-mobile-navigation" className="mgp-mobile-panel max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t border-border bg-surface px-4 py-4 2xl:hidden">
+        <div
+          id="site-mobile-navigation"
+          className="mgp-mobile-panel max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t border-border bg-surface px-4 py-4 2xl:hidden"
+        >
           <nav aria-label={t("navigation.menu")} className="flex flex-col gap-1">
             {NAV.map((item) => (
               <Link
@@ -260,7 +297,9 @@ export function AppHeader() {
                   onClick={() => void handleGoogleSignIn()}
                   disabled={googleLoading}
                 >
-                  <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-black">G</span>
+                  <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-black">
+                    G
+                  </span>
                   {googleLoading
                     ? t("common.loading")
                     : locale === "pt-BR"
@@ -269,15 +308,27 @@ export function AppHeader() {
                         ? "Continuar con Google"
                         : "Continue with Google"}
                 </Button>
-                <Button asChild><Link to="/register" onClick={() => setOpen(false)}>{t("auth.register")}</Link></Button>
-                <Button variant="outline" asChild><Link to="/login" onClick={() => setOpen(false)}>{t("auth.login")}</Link></Button>
+                <Button asChild>
+                  <Link to="/register" onClick={() => setOpen(false)}>
+                    {t("auth.register")}
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/login" onClick={() => setOpen(false)}>
+                    {t("auth.login")}
+                  </Link>
+                </Button>
               </div>
             ) : null}
             {!loading && user ? (
               <div className="flex flex-col gap-2">
                 {profileUsername ? (
                   <Button variant="outline" asChild>
-                    <Link to="/u/$username" params={{ username: profileUsername }} onClick={() => setOpen(false)}>
+                    <Link
+                      to="/u/$username"
+                      params={{ username: profileUsername }}
+                      onClick={() => setOpen(false)}
+                    >
                       <UserRound className="mr-2 size-4" />
                       {profileLabel}
                     </Link>
@@ -294,7 +345,13 @@ export function AppHeader() {
                     {t("navigation.settings")}
                   </Link>
                 </Button>
-                <Button variant="destructive" onClick={() => { void signOut(); setOpen(false); }}>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    void signOut();
+                    setOpen(false);
+                  }}
+                >
                   <LogOut className="mr-2 size-4" />
                   {t("auth.logout")}
                 </Button>
@@ -306,4 +363,3 @@ export function AppHeader() {
     </header>
   );
 }
-

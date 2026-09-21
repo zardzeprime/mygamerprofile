@@ -1,17 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { Check, Palette, Settings2 } from "lucide-react";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
-import {
-  DEFAULT_ACCENT_COLOR,
-  useTheme,
-} from "@/lib/theme";
+import { DEFAULT_ACCENT_COLOR, useTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const QUICK_PALETTES = [
@@ -26,8 +19,7 @@ const QUICK_PALETTES = [
 export function AppearanceQuickPanel() {
   const { locale } = useI18n();
   const { accentColor, setAccentColor, resetAccentColor } = useTheme();
-  const copy = (pt: string, en: string, es: string) =>
-    localeCopy(locale, pt, en, es);
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
 
   return (
     <Popover>
@@ -40,11 +32,7 @@ export function AppearanceQuickPanel() {
             "Customize appearance",
             "Personalizar apariencia",
           )}
-          title={copy(
-            "Personalizar aparência",
-            "Customize appearance",
-            "Personalizar apariencia",
-          )}
+          title={copy("Personalizar aparência", "Customize appearance", "Personalizar apariencia")}
         >
           <Palette className="size-4" aria-hidden="true" />
           <span
@@ -117,8 +105,7 @@ export function AppearanceQuickPanel() {
                     <span
                       className="size-5 rounded-full border border-black/10 shadow-sm"
                       style={{
-                        backgroundColor:
-                          palette.color ?? DEFAULT_ACCENT_COLOR,
+                        backgroundColor: palette.color ?? DEFAULT_ACCENT_COLOR,
                       }}
                       aria-hidden="true"
                     />

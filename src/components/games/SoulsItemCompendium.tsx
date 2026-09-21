@@ -86,8 +86,7 @@ export function SoulsItemCompendium({
 
   useEffect(() => {
     let active = true;
-    const technicalLoader =
-      gameSlug === "dark-souls-iii" ? loadDs3Weapons() : loadDs1Weapons();
+    const technicalLoader = gameSlug === "dark-souls-iii" ? loadDs3Weapons() : loadDs1Weapons();
 
     void technicalLoader
       .then((data) => {
@@ -200,9 +199,7 @@ export function SoulsItemCompendium({
     return entries.filter((entry) => {
       if (category !== "all" && entry.category !== category) return false;
       if (!normalized) return true;
-      return `${entry.name} ${entry.description}`
-        .toLocaleLowerCase(locale)
-        .includes(normalized);
+      return `${entry.name} ${entry.description}`.toLocaleLowerCase(locale).includes(normalized);
     });
   }, [category, entries, locale, query]);
 
@@ -210,29 +207,26 @@ export function SoulsItemCompendium({
     entries.find((entry) => entry.id === selectedId) ?? filtered[0] ?? entries[0] ?? null;
   const technicalWeapon =
     selected?.category === "weapon"
-      ? technicalWeapons.find(
+      ? (technicalWeapons.find(
           (weapon) =>
-            normalizeSoulsEquipmentName(weapon.name) ===
-            normalizeSoulsEquipmentName(selected.name),
-        ) ?? null
+            normalizeSoulsEquipmentName(weapon.name) === normalizeSoulsEquipmentName(selected.name),
+        ) ?? null)
       : null;
   const technicalArmorEntry =
     selected?.category === "armor"
-      ? technicalArmor.find(
+      ? (technicalArmor.find(
           (armor) =>
-            normalizeSoulsEquipmentName(armor.name) ===
-            normalizeSoulsEquipmentName(selected.name),
-        ) ?? null
+            normalizeSoulsEquipmentName(armor.name) === normalizeSoulsEquipmentName(selected.name),
+        ) ?? null)
       : null;
   const technicalRingEffect =
     selected?.category === "ring" ? findSoulsRingEffect(ringEffects, selected.name) : null;
   const selectedMetadata = selected ? findSoulsItemMetadata(itemMetadata, selected.name) : null;
   const selectedSpellMetadata =
-    selected?.category === "magic"
-      ? findSoulsSpellMetadata(spellMetadata, selected.name)
-      : null;
+    selected?.category === "magic" ? findSoulsSpellMetadata(spellMetadata, selected.name) : null;
 
-  const gameName = gameSlug === "dark-souls-remastered" ? "Dark Souls Remastered" : "Dark Souls III";
+  const gameName =
+    gameSlug === "dark-souls-remastered" ? "Dark Souls Remastered" : "Dark Souls III";
 
   const categoryLabel = (value: "all" | SoulsCompendiumCategory) => {
     const labels = {
@@ -255,11 +249,7 @@ export function SoulsItemCompendium({
             <span className="section-kicker">MGP · SOULS COMPENDIUM</span>
           </div>
           <h2 className="mt-3 font-display text-3xl font-bold text-foreground">
-            {copy(
-              `Compêndio de ${gameName}`,
-              `${gameName} compendium`,
-              `Compendio de ${gameName}`,
-            )}
+            {copy(`Compêndio de ${gameName}`, `${gameName} compendium`, `Compendio de ${gameName}`)}
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
@@ -368,7 +358,11 @@ export function SoulsItemCompendium({
               </div>
             ) : (
               <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-                {copy("Nenhum resultado encontrado.", "No results found.", "No se encontraron resultados.")}
+                {copy(
+                  "Nenhum resultado encontrado.",
+                  "No results found.",
+                  "No se encontraron resultados.",
+                )}
               </div>
             )}
           </section>
@@ -406,10 +400,19 @@ export function SoulsItemCompendium({
 
                 <div>
                   <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
-                    {copy("Descrição de referência", "Reference description", "Descripción de referencia")}
+                    {copy(
+                      "Descrição de referência",
+                      "Reference description",
+                      "Descripción de referencia",
+                    )}
                   </p>
                   <p className="mt-2 whitespace-pre-line text-sm leading-6 text-muted-foreground">
-                    {selected.description || copy("Sem descrição na fonte.", "No source description.", "Sin descripción en la fuente.")}
+                    {selected.description ||
+                      copy(
+                        "Sem descrição na fonte.",
+                        "No source description.",
+                        "Sin descripción en la fuente.",
+                      )}
                   </p>
                 </div>
 
@@ -439,13 +442,7 @@ export function SoulsItemCompendium({
   );
 }
 
-function WeaponTechnicalCard({
-  weapon,
-  locale,
-}: {
-  weapon: SoulsDpsWeapon;
-  locale: Locale;
-}) {
+function WeaponTechnicalCard({ weapon, locale }: { weapon: SoulsDpsWeapon; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const stats: Array<[SoulsDpsStat, string]> = [
     ["str", "STR"],
@@ -476,7 +473,10 @@ function WeaponTechnicalCard({
           <TechCell label={copy("Peso", "Weight", "Peso")} value={weapon.weight} />
         ) : null}
         {weapon.durability != null ? (
-          <TechCell label={copy("Durabilidade", "Durability", "Durabilidad")} value={weapon.durability} />
+          <TechCell
+            label={copy("Durabilidade", "Durability", "Durabilidad")}
+            value={weapon.durability}
+          />
         ) : null}
         {weapon.enchantable != null ? (
           <TechCell
@@ -488,7 +488,10 @@ function WeaponTechnicalCard({
             }
           />
         ) : null}
-        <TechCell label={copy("Upgrade", "Upgrade", "Mejora")} value={`+0 → +${weapon.maxUpgrade}`} />
+        <TechCell
+          label={copy("Upgrade", "Upgrade", "Mejora")}
+          value={`+0 → +${weapon.maxUpgrade}`}
+        />
         {weapon.infusions?.length ? (
           <TechCell
             label={copy("Infusões", "Infusions", "Infusiones")}
@@ -532,7 +535,12 @@ function WeaponTechnicalCard({
           </p>
           <div className="mt-2 grid grid-cols-2 gap-1.5">
             {damage.map(([label, value]) => (
-              <TechCell key={String(label)} label={String(label)} value={Math.round(Number(value))} compact />
+              <TechCell
+                key={String(label)}
+                label={String(label)}
+                value={Math.round(Number(value))}
+                compact
+              />
             ))}
           </div>
         </>
@@ -546,7 +554,9 @@ function WeaponTechnicalCard({
       ) : null}
       {weapon.obtained?.length ? (
         <p className="mt-2 text-[0.66rem] leading-5 text-muted-foreground">
-          <strong className="text-foreground">{copy("Obtenção:", "Obtained:", "Obtención:")}</strong>{" "}
+          <strong className="text-foreground">
+            {copy("Obtenção:", "Obtained:", "Obtención:")}
+          </strong>{" "}
           {weapon.obtained.join(" · ")}
         </p>
       ) : null}
@@ -554,13 +564,7 @@ function WeaponTechnicalCard({
   );
 }
 
-function SpellMetadataCard({
-  metadata,
-  locale,
-}: {
-  metadata: SoulsSpellMetadata;
-  locale: Locale;
-}) {
+function SpellMetadataCard({ metadata, locale }: { metadata: SoulsSpellMetadata; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const labels: Record<SoulsSpellSchool, string> = {
     sorcery: copy("Feitiçaria", "Sorcery", "Hechicería"),
@@ -593,13 +597,7 @@ function SpellMetadataCard({
   );
 }
 
-function ItemMetadataCard({
-  metadata,
-  locale,
-}: {
-  metadata: SoulsItemMetadata;
-  locale: Locale;
-}) {
+function ItemMetadataCard({ metadata, locale }: { metadata: SoulsItemMetadata; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
 
   return (
@@ -635,13 +633,7 @@ function ItemMetadataCard({
   );
 }
 
-function RingEffectCard({
-  effect,
-  locale,
-}: {
-  effect: SoulsRingEffect;
-  locale: Locale;
-}) {
+function RingEffectCard({ effect, locale }: { effect: SoulsRingEffect; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
 
   return (
@@ -672,13 +664,7 @@ function RingEffectCard({
   );
 }
 
-function ArmorTechnicalCard({
-  armor,
-  locale,
-}: {
-  armor: SoulsArmorTechnical;
-  locale: Locale;
-}) {
+function ArmorTechnicalCard({ armor, locale }: { armor: SoulsArmorTechnical; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const slotLabels: Record<SoulsArmorSlot, string> = {
     head: copy("Cabeça", "Head", "Cabeza"),
@@ -688,34 +674,38 @@ function ArmorTechnicalCard({
     unknown: copy("Peça", "Piece", "Pieza"),
   };
 
-  const defenseRows = ([
-    [copy("Físico", "Physical", "Físico"), armor.defense.physical],
-    [copy("Impacto", "Strike", "Golpe"), armor.defense.strike],
-    [copy("Corte", "Slash", "Corte"), armor.defense.slash],
-    [copy("Perfuração", "Thrust", "Perforación"), armor.defense.thrust],
-    [copy("Magia", "Magic", "Magia"), armor.defense.magic],
-    [copy("Fogo", "Fire", "Fuego"), armor.defense.fire],
-    [copy("Raio", "Lightning", "Rayo"), armor.defense.lightning],
-    ["Dark", armor.defense.dark],
-  ] satisfies Array<[string, number | undefined]>).filter(
-    (entry): entry is [string, number] => typeof entry[1] === "number",
-  );
+  const defenseRows = (
+    [
+      [copy("Físico", "Physical", "Físico"), armor.defense.physical],
+      [copy("Impacto", "Strike", "Golpe"), armor.defense.strike],
+      [copy("Corte", "Slash", "Corte"), armor.defense.slash],
+      [copy("Perfuração", "Thrust", "Perforación"), armor.defense.thrust],
+      [copy("Magia", "Magic", "Magia"), armor.defense.magic],
+      [copy("Fogo", "Fire", "Fuego"), armor.defense.fire],
+      [copy("Raio", "Lightning", "Rayo"), armor.defense.lightning],
+      ["Dark", armor.defense.dark],
+    ] satisfies Array<[string, number | undefined]>
+  ).filter((entry): entry is [string, number] => typeof entry[1] === "number");
 
-  const resistanceRows = ([
-    [copy("Sangramento", "Bleed", "Sangrado"), armor.resistance.bleed],
-    [copy("Veneno", "Poison", "Veneno"), armor.resistance.poison],
-    [copy("Gelo", "Frost", "Hielo"), armor.resistance.frost],
-    [copy("Maldição", "Curse", "Maldición"), armor.resistance.curse],
-  ] satisfies Array<[string, number | undefined]>).filter(
-    (entry): entry is [string, number] => typeof entry[1] === "number",
-  );
+  const resistanceRows = (
+    [
+      [copy("Sangramento", "Bleed", "Sangrado"), armor.resistance.bleed],
+      [copy("Veneno", "Poison", "Veneno"), armor.resistance.poison],
+      [copy("Gelo", "Frost", "Hielo"), armor.resistance.frost],
+      [copy("Maldição", "Curse", "Maldición"), armor.resistance.curse],
+    ] satisfies Array<[string, number | undefined]>
+  ).filter((entry): entry is [string, number] => typeof entry[1] === "number");
 
   return (
     <div className="rounded-2xl border border-gold/25 bg-gold/[0.05] p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-gold-strong">
-            {copy("Características da armadura", "Armor characteristics", "Características de armadura")}
+            {copy(
+              "Características da armadura",
+              "Armor characteristics",
+              "Características de armadura",
+            )}
           </p>
           <p className="mt-1 text-[0.66rem] leading-5 text-muted-foreground">
             {armor.game === "dark-souls-iii"
@@ -788,9 +778,7 @@ function ArmorTechnicalCard({
         {armor.source.label}
         <ExternalLink className="size-3" />
       </a>
-      <p className="mt-1 text-[0.6rem] leading-4 text-muted-foreground">
-        {armor.source.note}
-      </p>
+      <p className="mt-1 text-[0.6rem] leading-4 text-muted-foreground">{armor.source.note}</p>
     </div>
   );
 }
@@ -805,9 +793,15 @@ function TechCell({
   compact?: boolean;
 }) {
   return (
-    <div className={cn("rounded-lg border border-border bg-background/45", compact ? "p-2" : "p-2.5")}>
-      <p className="text-[0.52rem] font-black uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
-      <p className={cn("mt-0.5 font-black text-foreground", compact ? "text-xs" : "text-sm")}>{value}</p>
+    <div
+      className={cn("rounded-lg border border-border bg-background/45", compact ? "p-2" : "p-2.5")}
+    >
+      <p className="text-[0.52rem] font-black uppercase tracking-[0.08em] text-muted-foreground">
+        {label}
+      </p>
+      <p className={cn("mt-0.5 font-black text-foreground", compact ? "text-xs" : "text-sm")}>
+        {value}
+      </p>
     </div>
   );
 }

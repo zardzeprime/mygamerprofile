@@ -31,8 +31,7 @@ export function PointerAura() {
     const animate = () => {
       currentX += (targetX - currentX) * 0.22;
       currentY += (targetY - currentY) * 0.22;
-      aura.style.transform =
-        `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
+      aura.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
       if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
         frame = window.requestAnimationFrame(animate);
       } else {
