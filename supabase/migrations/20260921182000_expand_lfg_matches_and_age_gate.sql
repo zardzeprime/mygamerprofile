@@ -319,3 +319,7 @@ create index if not exists lfg_dm_messages_application_created_idx
 create index if not exists lfg_dm_messages_recipient_unread_idx
   on public.lfg_dm_messages(recipient_user_id, read_at)
   where read_at is null;
+
+
+create index if not exists lfg_dm_messages_sender_idx
+  on public.lfg_dm_messages(sender_user_id, created_at desc);
