@@ -61,7 +61,6 @@ const updateLfgSchema = z.object({
   slots_total: z.number().int().min(2).max(99).optional(),
   slots_open: z.number().int().min(0).max(99).optional(),
   scheduled_for: z.string().datetime().nullable().optional(),
-  expires_at: z.string().datetime().nullable().optional(),
 });
 
 const closeLfgSchema = z.object({ id: z.string().uuid() });
@@ -155,7 +154,10 @@ export const listLfgPosts = createServerFn({ method: "GET" })
     query = applyLfgFilters(query, data);
     const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
-    return rows;
+    const now = Date.now();
+    return (rows ?? []).filter(
+      (row) => !row.expires_at || new Date(row.expires_at).getTime() > now,
+    );
   });
 
 export const listLfgPostsForViewer = createServerFn({ method: "GET" })
@@ -190,7 +192,12 @@ export const listLfgPostsForViewer = createServerFn({ method: "GET" })
     if (blocksError) throw new Error(blocksError.message);
 
     const blocked = new Set((blocks ?? []).map((row) => row.blocked_user_id));
-    return (rows ?? []).filter((row) => !blocked.has(row.user_id));
+    const now = Date.now();
+    return (rows ?? []).filter(
+      (row) =>
+        !blocked.has(row.user_id) &&
+        (!row.expires_at || new Date(row.expires_at).getTime() > now),
+    );
   });
 
 export const getLfgAgeStatus = createServerFn({ method: "GET" })
@@ -262,7 +269,6 @@ export const updateLfgPost = createServerFn({ method: "POST" })
     if (updates.slots_total !== undefined) updatePayload.slots_total = updates.slots_total;
     if (updates.slots_open !== undefined) updatePayload.slots_open = updates.slots_open;
     if (updates.scheduled_for !== undefined) updatePayload.scheduled_for = updates.scheduled_for;
-    if (updates.expires_at !== undefined) updatePayload.expires_at = updates.expires_at;
 
     const { data: post, error } = await context.supabase
       .from("lfg_posts")
