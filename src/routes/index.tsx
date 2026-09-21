@@ -8,6 +8,7 @@ import {
   HeartHandshake,
 } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
+import { AdReadyLayout, AdSlot } from "@/components/common/AdSlot";
 import { GameCard } from "@/components/games/GameCard";
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { ACTIVE_GAMES } from "@/config/gameAvailability";
@@ -160,7 +161,8 @@ function Home() {
           </div>
         </div>
       </section>
-      <Tabs defaultValue="games" className="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 sm:pt-8">
+      <AdReadyLayout className="mx-auto w-full max-w-[92rem] px-4 pt-6 sm:px-6 sm:pt-8" rail={<AdSlot id="home-rail" format="rail" />}>
+      <Tabs defaultValue="games" className="w-full">
         <TabsList
           className="grid h-auto w-full grid-cols-3 gap-1 rounded-2xl p-1.5 sm:max-w-lg"
           aria-label={copy("Explore o MG Profile", "Explore MG Profile", "Explora MG Profile")}
@@ -275,6 +277,8 @@ function Home() {
           </div>
         </TabsContent>
       </Tabs>
+      <AdSlot id="home-after-explore" format="leaderboard" className="mt-8" />
+      </AdReadyLayout>
 
       <section className="mx-auto mt-10 w-full max-w-7xl px-4 sm:px-6">
         <div className="flex flex-col gap-4 rounded-[1.15rem_1.15rem_0.5rem_1.15rem] border border-border bg-muted/15 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
