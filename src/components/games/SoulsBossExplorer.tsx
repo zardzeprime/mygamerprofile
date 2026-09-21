@@ -24,6 +24,7 @@ import {
   type SoulsGameSlug,
 } from "@/data/soulsBossResearch";
 import { getSoulsBossImage } from "@/data/soulsBossImages";
+import { getDs3BossEditorialSummary } from "@/data/soulsBossEditorialPolish";
 import {
   DS3_BOSS_DEFENSE_SOURCE,
   getDs3BossDefenseProfile,
@@ -305,7 +306,7 @@ export function SoulsBossExplorer({
                       <ChevronRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
                     </span>
                     <span className="mt-3 line-clamp-2 block text-sm leading-6 text-muted-foreground">
-                      {boss.shortContext[locale]}
+                      {gameSlug === "dark-souls-iii" ? getDs3BossEditorialSummary(boss.slug, locale) ?? boss.shortContext[locale] : boss.shortContext[locale]}
                     </span>
                     <span className="mt-3 block text-[0.67rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                       {image
@@ -435,7 +436,7 @@ function BossDetail({
 
       <div className="mt-7 grid gap-4 md:grid-cols-2">
         <InfoCard icon={BookOpen} title={copy("Contexto", "Context", "Contexto")}>
-          <p>{boss.shortContext[locale]}</p>
+          <p>{gameSlug === "dark-souls-iii" ? getDs3BossEditorialSummary(boss.slug, locale) ?? boss.shortContext[locale] : boss.shortContext[locale]}</p>
         </InfoCard>
         <InfoCard icon={Layers3} title={copy("Fases", "Phases", "Fases")}>
           <p>{boss.phases[locale]}</p>
