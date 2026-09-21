@@ -26,9 +26,7 @@ type LeagueTeamSeed = {
 };
 
 const leagueLogo = (domain?: string) =>
-  domain
-    ? `https://www.google.com/s2/favicons?domain_url=https://${domain}&sz=128`
-    : undefined;
+  domain ? `https://www.google.com/s2/favicons?domain_url=https://${domain}&sz=128` : undefined;
 
 const LCK_SOURCE = "https://liquipedia.net/leagueoflegends/LCK/2026";
 const LEC_SOURCE = "https://liquipedia.net/leagueoflegends/LEC/2026/Summer";
@@ -509,7 +507,10 @@ function source(team: LeagueTeamSeed): EsportsSource {
 }
 
 function playerId(teamId: string, handle: string) {
-  return `${teamId}-${handle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+  return `${teamId}-${handle
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")}`;
 }
 
 export const LEAGUE_ESPORTS_PLAYERS: EsportsPlayer[] = TEAMS.flatMap((team) =>
@@ -531,7 +532,9 @@ export const LEAGUE_ESPORTS_TEAMS: EsportsTeam[] = TEAMS.map((team) => ({
   shortName: team.shortName,
   countryCode: team.countryCode,
   region: team.region,
-  ...(team.logoDomain ? { logoUrl: leagueLogo(team.logoDomain) } : {}),
+  ...(team.logoDomain
+    ? { logoUrl: `https://www.google.com/s2/favicons?domain_url=https://${team.logoDomain}&sz=128` }
+    : {}),
   playerIds: team.players.map((player) => playerId(team.id, player.handle)),
   sources: [source(team)],
 }));

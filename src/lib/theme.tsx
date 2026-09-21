@@ -12,17 +12,12 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
-export type ThemePreference = "light" | "dark" | "system";
-
 export const THEME_STORAGE_KEY = "mgp-theme";
 export const ACCENT_STORAGE_KEY = "mgp-accent-color";
 export const DEFAULT_ACCENT_COLOR = "#c9a95d";
 
 type ThemeContextValue = {
-  preference: ThemePreference;
-  resolved: "light" | "dark";
   accentColor: string | null;
-  setPreference: (value: ThemePreference) => void;
   setAccentColor: (value: string) => void;
   resetAccentColor: () => void;
 };
@@ -36,10 +31,6 @@ type ProfileAppearanceUpdate = Database["public"]["Tables"]["profiles"]["Update"
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
-
-function isThemePreference(value: string | null): value is ThemePreference {
-  return value === "light" || value === "dark" || value === "system";
-}
 
 function isHexColor(value: string | null): value is string {
   return typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
@@ -63,20 +54,17 @@ function applyCursorAppearance() {
   if (typeof document === "undefined") return;
 
   const root = document.documentElement;
-  const dark = root.classList.contains("dark");
   const inlineAccent = root.style.getPropertyValue("--mgp-user-accent").trim();
   const accent =
     root.dataset["accent"] === "custom" && isHexColor(inlineAccent)
       ? inlineAccent
       : DEFAULT_ACCENT_COLOR;
 
-  // Match the cursor body to the active theme. Contrast comes from a slim
-  // neutral outer keyline instead of inverting the entire cursor.
-  const bodyTop = dark ? "#252a32" : "#ffffff";
-  const bodyBottom = dark ? "#101318" : "#e9e3d8";
-  const neutralOutline = dark ? "#f2eee5" : "#24272d";
-  const highlight = dark ? "#59616d" : "#ffffff";
-  const shadow = dark ? "#000000" : "#202329";
+  const bodyTop = "#252a32";
+  const bodyBottom = "#101318";
+  const neutralOutline = "#f2eee5";
+  const highlight = "#59616d";
+  const shadow = "#000000";
 
   const arrowPath = "M6.2 4.6 27.1 17.1 18.3 19.2 14.2 29.3 10.4 27.5 13.9 18.5 6.2 15.9Z";
 
@@ -155,7 +143,7 @@ function persist(key: string, value: string | null) {
 }
 
 async function persistAccountPreference(patch: {
-  theme_preference?: ThemePreference;
+  theme_preference?: "dark";
   accent_color?: string | null;
 }) {
   try {
@@ -177,42 +165,22 @@ async function persistAccountPreference(patch: {
   }
 }
 
-/** Apply local preferences before first paint; account sync follows after hydration. */
-export const themeBootstrapScript = `(function(){var p="system",c=null;try{p=localStorage.getItem("mgp-theme")||"system";c=localStorage.getItem("mgp-accent-color");}catch(e){}var m=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;var d=p==="dark"||(p!=="light"&&p!=="dark"&&m);var r=document.documentElement;r.classList.toggle("dark",!!d);r.style.colorScheme=d?"dark":"light";if(c&&/^#[0-9a-f]{6}$/i.test(c)){var h=c.slice(1),R=parseInt(h.slice(0,2),16)/255,G=parseInt(h.slice(2,4),16)/255,B=parseInt(h.slice(4,6),16)/255,L=function(x){return x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2.4)},Y=.2126*L(R)+.7152*L(G)+.0722*L(B);r.style.setProperty("--mgp-user-accent",c);r.style.setProperty("--mgp-user-accent-foreground",Y>.42?"#111318":"#ffffff");r.dataset.accent="custom";}})();`;
-
-function systemPrefersDark(): boolean {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
-}
-
-function applyTheme(preference: ThemePreference): "light" | "dark" {
-  const dark = preference === "dark" || (preference === "system" && systemPrefersDark());
-  if (typeof document !== "undefined") {
-    document.documentElement.classList.toggle("dark", dark);
-    document.documentElement.style.colorScheme = dark ? "dark" : "light";
-    applyCursorAppearance();
-  }
-  return dark ? "dark" : "light";
-}
+/** Lock dark mode before first paint and preserve the independent accent preference. */
+export const themeBootstrapScript = `(function(){var c=null;try{localStorage.setItem("mgp-theme","dark");c=localStorage.getItem("mgp-accent-color");}catch(e){}var r=document.documentElement;r.classList.add("dark");r.style.colorScheme="dark";if(c&&/^#[0-9a-f]{6}$/i.test(c)){var h=c.slice(1),R=parseInt(h.slice(0,2),16)/255,G=parseInt(h.slice(2,4),16)/255,B=parseInt(h.slice(4,6),16)/255,L=function(x){return x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2.4)},Y=.2126*L(R)+.7152*L(G)+.0722*L(B);r.style.setProperty("--mgp-user-accent",c);r.style.setProperty("--mgp-user-accent-foreground",Y>.42?"#111318":"#ffffff");r.dataset.accent="custom";}})();`;
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [preference, setPreferenceState] = useState<ThemePreference>("system");
-  const [resolved, setResolved] = useState<"light" | "dark">("light");
   const [accentColor, setAccentColorState] = useState<string | null>(null);
   const userChangeRevision = useRef(0);
 
   useEffect(() => {
     let active = true;
 
-    const storedTheme = readStored(THEME_STORAGE_KEY);
-    const initialPreference: ThemePreference = isThemePreference(storedTheme)
-      ? storedTheme
-      : "system";
     const storedAccent = readStored(ACCENT_STORAGE_KEY);
     const initialAccent = isHexColor(storedAccent) ? storedAccent.toLowerCase() : null;
 
-    setPreferenceState(initialPreference);
-    setResolved(applyTheme(initialPreference));
+    document.documentElement.classList.add("dark");
+    document.documentElement.style.colorScheme = "dark";
+    persist(THEME_STORAGE_KEY, "dark");
     setAccentColorState(initialAccent);
     applyAccentColor(initialAccent);
 
@@ -227,19 +195,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
       if (!active || error || !profile) return;
 
-      // A late account fetch must never undo a color/theme the user just picked.
+      // A late account fetch must never undo a color the user just picked.
       if (userChangeRevision.current !== revisionAtStart) return;
 
-      const accountTheme = isThemePreference(profile.theme_preference)
-        ? profile.theme_preference
-        : null;
       const rawAccountAccent = profile.accent_color ?? null;
       const accountAccent = isHexColor(rawAccountAccent) ? rawAccountAccent.toLowerCase() : null;
 
-      if (accountTheme) {
-        setPreferenceState(accountTheme);
-        persist(THEME_STORAGE_KEY, accountTheme);
-        setResolved(applyTheme(accountTheme));
+      if (profile.theme_preference !== "dark") {
+        void persistAccountPreference({ theme_preference: "dark" });
       }
 
       if (accountAccent) {
@@ -272,24 +235,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (!window.matchMedia) return;
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () => {
-      if (preference === "system") setResolved(applyTheme("system"));
-    };
-    media.addEventListener("change", onChange);
-    return () => media.removeEventListener("change", onChange);
-  }, [preference]);
-
-  const setPreference = useCallback((value: ThemePreference) => {
-    userChangeRevision.current += 1;
-    setPreferenceState(value);
-    persist(THEME_STORAGE_KEY, value);
-    setResolved(applyTheme(value));
-    void persistAccountPreference({ theme_preference: value });
-  }, []);
-
   const setAccentColor = useCallback((value: string) => {
     if (!isHexColor(value)) return;
     userChangeRevision.current += 1;
@@ -310,14 +255,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
-      preference,
-      resolved,
       accentColor,
-      setPreference,
       setAccentColor,
       resetAccentColor,
     }),
-    [preference, resolved, accentColor, setPreference, setAccentColor, resetAccentColor],
+    [accentColor, setAccentColor, resetAccentColor],
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

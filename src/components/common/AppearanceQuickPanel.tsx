@@ -1,18 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { Check, Palette, Settings2 } from "lucide-react";
 
-import { ThemeSelector } from "@/components/common/ThemeSelector";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
-import {
-  DEFAULT_ACCENT_COLOR,
-  useTheme,
-} from "@/lib/theme";
+import { DEFAULT_ACCENT_COLOR, useTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const QUICK_PALETTES = [
@@ -27,8 +19,7 @@ const QUICK_PALETTES = [
 export function AppearanceQuickPanel() {
   const { locale } = useI18n();
   const { accentColor, setAccentColor, resetAccentColor } = useTheme();
-  const copy = (pt: string, en: string, es: string) =>
-    localeCopy(locale, pt, en, es);
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
 
   return (
     <Popover>
@@ -41,11 +32,7 @@ export function AppearanceQuickPanel() {
             "Customize appearance",
             "Personalizar apariencia",
           )}
-          title={copy(
-            "Personalizar aparência",
-            "Customize appearance",
-            "Personalizar apariencia",
-          )}
+          title={copy("Personalizar aparência", "Customize appearance", "Personalizar apariencia")}
         >
           <Palette className="size-4" aria-hidden="true" />
           <span
@@ -75,16 +62,14 @@ export function AppearanceQuickPanel() {
           </h2>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
             {copy(
-              "Tema e cor são aplicados na hora. Logado, o estilo acompanha sua conta.",
-              "Theme and color apply instantly. When signed in, your style follows your account.",
-              "El tema y el color se aplican al instante. Con sesión iniciada, tu estilo sigue tu cuenta.",
+              "A cor é aplicada na hora. Logado, o estilo acompanha sua conta.",
+              "Color applies instantly. When signed in, your style follows your account.",
+              "El color se aplica al instante. Con sesión iniciada, tu estilo sigue tu cuenta.",
             )}
           </p>
         </div>
 
         <div className="space-y-4 p-4">
-          <ThemeSelector showLabels />
-
           <div>
             <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
               {copy("Sinais da interface", "Interface signal", "Señal de interfaz")}
@@ -120,8 +105,7 @@ export function AppearanceQuickPanel() {
                     <span
                       className="size-5 rounded-full border border-black/10 shadow-sm"
                       style={{
-                        backgroundColor:
-                          palette.color ?? DEFAULT_ACCENT_COLOR,
+                        backgroundColor: palette.color ?? DEFAULT_ACCENT_COLOR,
                       }}
                       aria-hidden="true"
                     />

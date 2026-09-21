@@ -37,23 +37,23 @@ export type SoulsDpsWeapon = {
   id: string;
   game: SoulsDpsGame;
   name: string;
-  weaponClass?: string;
-  iconUrl?: string;
-  weight?: number;
+  weaponClass?: string | undefined;
+  iconUrl?: string | undefined;
+  weight?: number | undefined;
   requirements: SoulsRequirements;
   baseDamage: SoulsDamage;
-  maxDamage?: SoulsDamage;
-  durability?: number;
-  enchantable?: boolean;
-  scalingLetters?: Partial<Record<SoulsDpsStat, string | null>>;
-  scalingNumeric?: SoulsScaling;
-  infusions?: string[];
+  maxDamage?: SoulsDamage | undefined;
+  durability?: number | undefined;
+  enchantable?: boolean | undefined;
+  scalingLetters?: Partial<Record<SoulsDpsStat, string | null>> | undefined;
+  scalingNumeric?: SoulsScaling | undefined;
+  infusions?: string[] | undefined;
   maxUpgrade: number;
   sourceUrl: string;
-  obtained?: string[];
-  attackTypes?: string[];
-  description?: string;
-  weaponSkill?: string;
+  obtained?: string[] | undefined;
+  attackTypes?: string[] | undefined;
+  description?: string | undefined;
+  weaponSkill?: string | undefined;
 };
 
 export type Ds3WeaponLevel = SoulsDpsWeapon & {
@@ -88,8 +88,7 @@ const DS1_WEAPONS_URL =
 const DS1_SOURCE_URL = "https://gist.github.com/BonsaiDen/4096890";
 const DS1_REINFORCEMENT_URL =
   "https://raw.githubusercontent.com/Sezergumus/Dark-Souls-API/main/src/weapons.json";
-const DS1_REINFORCEMENT_SOURCE =
-  "https://github.com/Sezergumus/Dark-Souls-API";
+const DS1_REINFORCEMENT_SOURCE = "https://github.com/Sezergumus/Dark-Souls-API";
 const DS3_BASE =
   "https://raw.githubusercontent.com/Phil25/DS3InventoryBuilder/master/DataGenerator/Raw";
 const DS3_SOURCE_URL = "https://github.com/Phil25/DS3InventoryBuilder";
@@ -271,24 +270,17 @@ export const SOULS_RATING_COLORS = [
 
 function ds1StatCurve(stat: number) {
   const value = clampStat(stat);
-  if (value <= 10) return value / 10 * 0.2;
+  if (value <= 10) return (value / 10) * 0.2;
   if (value <= 20) return 0.2 + ((value - 10) / 10) * 0.25;
   if (value <= 40) return 0.45 + ((value - 20) / 20) * 0.4;
   if (value <= 60) return 0.85 + ((value - 40) / 20) * 0.1;
   return 0.95 + ((value - 60) / 39) * 0.05;
 }
 
-function requirementMet(
-  stats: SoulsStats,
-  req: SoulsRequirements,
-  twoHanded: boolean,
-) {
+function requirementMet(stats: SoulsStats, req: SoulsRequirements, twoHanded: boolean) {
   const effectiveStr = Math.min(99, Math.floor(stats.str * (twoHanded ? 1.5 : 1)));
   return (
-    effectiveStr >= req.str &&
-    stats.dex >= req.dex &&
-    stats.int >= req.int &&
-    stats.fth >= req.fth
+    effectiveStr >= req.str && stats.dex >= req.dex && stats.int >= req.int && stats.fth >= req.fth
   );
 }
 
@@ -345,14 +337,18 @@ function flattenDs1ReinforcementRows(payload: unknown) {
   const rows: Array<Ds1ReinforcementRow & { category?: string }> = [];
   payload.forEach((group) => {
     if (!group || typeof group !== "object") return;
-    const category = typeof (group as { category?: unknown }).category === "string"
-      ? (group as { category: string }).category
-      : undefined;
+    const category =
+      typeof (group as { category?: unknown }).category === "string"
+        ? (group as { category: string }).category
+        : undefined;
     Object.entries(group as Record<string, unknown>).forEach(([key, value]) => {
       if (key === "category" || !Array.isArray(value)) return;
       value.forEach((entry) => {
         if (entry && typeof entry === "object") {
-          rows.push({ ...(entry as Ds1ReinforcementRow), category });
+          rows.push({
+            ...(entry as Ds1ReinforcementRow),
+            ...(category ? { category } : {}),
+          });
         }
       });
     });
@@ -456,8 +452,10 @@ export async function loadDs1Weapons() {
           sourceUrl: endpoint ? DS1_REINFORCEMENT_SOURCE : DS1_SOURCE_URL,
           obtained: weapon.obtained,
           attackTypes:
-            supplemental?.attack_type?.split("/").map((entry) => entry.trim()).filter(Boolean) ??
-            weapon.attackTypes,
+            supplemental?.attack_type
+              ?.split("/")
+              .map((entry) => entry.trim())
+              .filter(Boolean) ?? weapon.attackTypes,
           description: compendiumByName.get(weapon.name.toLocaleLowerCase())?.description,
         };
       });
@@ -529,22 +527,21 @@ async function loadDs3LevelRows(level: number) {
   const normalized = Math.max(0, Math.min(10, Math.round(level)));
   const existing = ds3LevelCache.get(normalized);
   if (existing) return existing;
-  const promise = fetch(`${DS3_BASE}/weapons_${normalized}.csv`)
-    .then(async (response) => {
-      if (!response.ok) throw new Error("DS3_WEAPONS_UNAVAILABLE");
-      const text = await response.text();
-      return text
-        .split(/\r?\n/)
-        .filter(Boolean)
-        .map((line) => parseDs3Row(parseCsvLine(line)));
-    });
+  const promise = fetch(`${DS3_BASE}/weapons_${normalized}.csv`).then(async (response) => {
+    if (!response.ok) throw new Error("DS3_WEAPONS_UNAVAILABLE");
+    const text = await response.text();
+    return text
+      .split(/\r?\n/)
+      .filter(Boolean)
+      .map((line) => parseDs3Row(parseCsvLine(line)));
+  });
   ds3LevelCache.set(normalized, promise);
   return promise;
 }
 
 async function loadDs3UpgradeLimits() {
   if (ds3UniqueCache) return ds3UniqueCache;
-  ds3UniqueCache = fetch(`${DS3_BASE}/uniqueness.tsv`)
+  const request = fetch(`${DS3_BASE}/uniqueness.tsv`)
     .then(async (response) => {
       if (!response.ok) return new Map<string, number>();
       const text = await response.text();
@@ -554,17 +551,20 @@ async function loadDs3UpgradeLimits() {
         if (!fullName) return;
         const match = fullName.match(/^(.*?)\s*\+(\d+)\s*$/);
         if (!match) return;
-        map.set(match[1].trim(), Number(match[2]) || 10);
+        const weaponName = match[1];
+        if (!weaponName) return;
+        map.set(weaponName.trim(), Number(match[2]) || 10);
       });
       return map;
     })
     .catch(() => new Map<string, number>());
-  return ds3UniqueCache;
+  ds3UniqueCache = request;
+  return request;
 }
 
 export async function loadDs3Weapons() {
   if (ds3CatalogCache) return ds3CatalogCache;
-  ds3CatalogCache = Promise.all([
+  const request = Promise.all([
     loadDs3LevelRows(0),
     loadDs3UpgradeLimits(),
     fetch(`${DS3_BASE}/order.json`).then(async (response) => {
@@ -595,8 +595,9 @@ export async function loadDs3Weapons() {
         const variants = byName.get(name);
         if (!variants?.length) return null;
         const base = variants.find((row) => row.infusion === "-") ?? variants[0];
+        if (!base) return null;
         const infusions = variants.map((row) => row.infusion);
-        return {
+        const entry: SoulsDpsWeapon = {
           id: `ds3:${name}`,
           game: "dark-souls-iii" as const,
           name,
@@ -620,16 +621,18 @@ export async function loadDs3Weapons() {
           weaponSkill: extractDs3WeaponSkill(
             compendiumByName.get(name.toLocaleLowerCase())?.description,
           ),
-        } satisfies SoulsDpsWeapon;
+        };
+        return entry;
       })
-      .filter((entry): entry is SoulsDpsWeapon => Boolean(entry));
+      .filter((entry): entry is SoulsDpsWeapon => entry !== null);
   });
-  return ds3CatalogCache;
+  ds3CatalogCache = request;
+  return request;
 }
 
 async function loadDs3Saturations() {
   if (saturationCache) return saturationCache;
-  saturationCache = fetch(`${DS3_BASE}/saturations.csv`).then(async (response) => {
+  const request = fetch(`${DS3_BASE}/saturations.csv`).then(async (response) => {
     if (!response.ok) throw new Error("DS3_SATURATIONS_UNAVAILABLE");
     const text = await response.text();
     const rows = text.split(/\r?\n/).filter(Boolean).map(parseCsvLine);
@@ -644,7 +647,8 @@ async function loadDs3Saturations() {
     }
     return output;
   });
-  return saturationCache;
+  saturationCache = request;
+  return request;
 }
 
 export async function loadDs3WeaponLevel(
@@ -652,17 +656,10 @@ export async function loadDs3WeaponLevel(
   infusion: string,
   level: number,
 ): Promise<Ds3WeaponLevel | null> {
-  const [rows, catalog] = await Promise.all([
-    loadDs3LevelRows(level),
-    loadDs3Weapons(),
-  ]);
-  const baseRow = rows.find(
-    (row) => row.infusion === "-" && row.displayName === name,
-  );
+  const [rows, catalog] = await Promise.all([loadDs3LevelRows(level), loadDs3Weapons()]);
+  const baseRow = rows.find((row) => row.infusion === "-" && row.displayName === name);
   const selected = baseRow
-    ? rows.find(
-        (row) => row.groupId === baseRow.groupId && row.infusion === infusion,
-      )
+    ? rows.find((row) => row.groupId === baseRow.groupId && row.infusion === infusion)
     : null;
   const weapon = catalog.find((entry) => entry.name === name);
   if (!selected || !weapon) return null;
@@ -706,11 +703,7 @@ export async function calculateDs3Ar(
   const sat = weapon.saturation;
   const base = weapon.baseDamage;
 
-  const scaleValue = (
-    stat: SoulsDpsStat,
-    curveIndex: number,
-    damageBase: number,
-  ) =>
+  const scaleValue = (stat: SoulsDpsStat, curveIndex: number, damageBase: number) =>
     damageBase *
     ((scaling[stat] ?? 0) / 100) *
     (ds3Sat(saturations, curveIndex, effectiveStats[stat]) / 100);
@@ -724,43 +717,25 @@ export async function calculateDs3Ar(
           scaleValue("dex", sat.physical, 1) +
           scaleValue("lck", sat.physical, 1)
         : 0.6),
-    magic:
-      base.magic *
-      (reqMet ? 1 + scaleValue("int", sat.magic, 1) : 0.6),
+    magic: base.magic * (reqMet ? 1 + scaleValue("int", sat.magic, 1) : 0.6),
     fire:
       base.fire *
-      (reqMet
-        ? 1 +
-          scaleValue("int", sat.fire, 1) +
-          scaleValue("fth", sat.fire, 1)
-        : 0.6),
-    lightning:
-      base.lightning *
-      (reqMet ? 1 + scaleValue("fth", sat.lightning, 1) : 0.6),
+      (reqMet ? 1 + scaleValue("int", sat.fire, 1) + scaleValue("fth", sat.fire, 1) : 0.6),
+    lightning: base.lightning * (reqMet ? 1 + scaleValue("fth", sat.lightning, 1) : 0.6),
     dark:
       base.dark *
-      (reqMet
-        ? 1 +
-          scaleValue("int", sat.dark, 1) +
-          scaleValue("fth", sat.dark, 1)
-        : 0.6),
+      (reqMet ? 1 + scaleValue("int", sat.dark, 1) + scaleValue("fth", sat.dark, 1) : 0.6),
   };
 
   const totalAr = Object.values(damage).reduce((sum, value) => sum + value, 0);
-  const rating = casualRating(
-    weapon,
-    stats,
-    weapon.level,
-    weapon.maxUpgrade,
-    twoHanded,
-  );
+  const rating = casualRating(weapon, stats, weapon.level, weapon.maxUpgrade, twoHanded);
 
   return {
     damage,
     totalAr,
     requirementsMet: reqMet,
     rating,
-    ratingLabel: SOULS_RATING_LABELS[rating - 1],
+    ratingLabel: SOULS_RATING_LABELS[rating - 1] ?? SOULS_RATING_LABELS[0] ?? "Em revisão",
     scalingGrades: {
       str: scalingLetterFromCoefficient(scaling.str),
       dex: scalingLetterFromCoefficient(scaling.dex),
@@ -824,11 +799,9 @@ export function calculateDs1Estimate(
     str: Math.min(99, Math.floor(stats.str * (twoHanded ? 1.5 : 1))),
   };
   const pathProfile = DS1_UPGRADE_PATHS[path];
-  const effectiveMaxUpgrade =
-    path === "regular" ? weapon.maxUpgrade : pathProfile.maxUpgrade;
+  const effectiveMaxUpgrade = path === "regular" ? weapon.maxUpgrade : pathProfile.maxUpgrade;
   const safeUpgrade = Math.max(0, Math.min(effectiveMaxUpgrade, upgrade));
-  const upgradeRatio =
-    effectiveMaxUpgrade > 0 ? safeUpgrade / effectiveMaxUpgrade : 0;
+  const upgradeRatio = effectiveMaxUpgrade > 0 ? safeUpgrade / effectiveMaxUpgrade : 0;
   const scaling = weapon.scalingLetters ?? {};
 
   if (path !== "regular") {
@@ -879,15 +852,13 @@ export function calculateDs1Estimate(
       totalAr: 0,
       requirementsMet: reqMet,
       rating,
-      ratingLabel: SOULS_RATING_LABELS[rating - 1],
+      ratingLabel: SOULS_RATING_LABELS[rating - 1] ?? SOULS_RATING_LABELS[0] ?? "Em revisão",
       scalingGrades: pathScaling,
       numericAvailable: false,
       notes: [
         `Rota ${pathProfile.label}: ${pathProfile.description}`,
         "No beta, as rotas especiais do DS1 usam leitura qualitativa de scaling/upgrade. O MGP não inventa um AR exato sem uma curva por arma validada.",
-        ...(path === "chaos"
-          ? [`Humanidade considerada: ${humanityValue}/10.`]
-          : []),
+        ...(path === "chaos" ? [`Humanidade considerada: ${humanityValue}/10.`] : []),
         ...(reqMet
           ? []
           : ["Você ainda não cumpre todos os requisitos da arma; o desempenho cai drasticamente."]),
@@ -922,7 +893,7 @@ export function calculateDs1Estimate(
     totalAr,
     requirementsMet: reqMet,
     rating,
-    ratingLabel: SOULS_RATING_LABELS[rating - 1],
+    ratingLabel: SOULS_RATING_LABELS[rating - 1] ?? SOULS_RATING_LABELS[0] ?? "Em revisão",
     scalingGrades: Object.fromEntries(
       Object.entries(scaling)
         .filter(([, grade]) => Boolean(grade))
@@ -938,11 +909,7 @@ export function calculateDs1Estimate(
   };
 }
 
-export function explainSoulsSynergy(
-  weapon: SoulsDpsWeapon,
-  stats: SoulsStats,
-  twoHanded: boolean,
-) {
+export function explainSoulsSynergy(weapon: SoulsDpsWeapon, stats: SoulsStats, twoHanded: boolean) {
   const notes: string[] = [];
   const effectiveStr = Math.min(99, Math.floor(stats.str * (twoHanded ? 1.5 : 1)));
   const values: Array<[SoulsDpsStat, string]> = [

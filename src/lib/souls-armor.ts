@@ -49,11 +49,9 @@ const DS1_ARMOR_BASE_URL =
   "https://raw.githubusercontent.com/cosmcbun/Dark-Souls-Armor-Optimizer/master/stats%20backup/darksouls-armor-stats-0.csv";
 const DS1_ARMOR_MAX_URL =
   "https://raw.githubusercontent.com/cosmcbun/Dark-Souls-Armor-Optimizer/master/stats%20backup/darksouls-armor-stats-10.csv";
-const DS1_SOURCE_URL =
-  "https://github.com/cosmcbun/Dark-Souls-Armor-Optimizer";
+const DS1_SOURCE_URL = "https://github.com/cosmcbun/Dark-Souls-Armor-Optimizer";
 
-const DS3_ARMOR_URL =
-  "https://raw.githubusercontent.com/pisto/ds3armor/master/main.cpp";
+const DS3_ARMOR_URL = "https://raw.githubusercontent.com/pisto/ds3armor/master/main.cpp";
 const DS3_SOURCE_URL = "https://github.com/pisto/ds3armor";
 
 function parseCsv(text: string) {
@@ -196,8 +194,7 @@ async function loadDs1Armor() {
         source: {
           label: "Dark Souls Armor Optimizer · community dataset",
           url: DS1_SOURCE_URL,
-          note:
-            "Base and reinforced armor values are read from the optimizer dataset; original game names and equipment remain property of their respective rights holders.",
+          note: "Base and reinforced armor values are read from the optimizer dataset; original game names and equipment remain property of their respective rights holders.",
         },
       };
     });
@@ -225,8 +222,11 @@ async function loadDs3Armor() {
     const match = line.match(/^\s*\{\s*\d+\s*,\s*"([^"]+)"\s*,\s*([^}]+)\}\s*,?/);
     if (!match) continue;
 
-    const name = match[1].trim();
-    const parts = match[2].split(",").map((part) => part.trim());
+    const rawName = match[1];
+    const rawParts = match[2];
+    if (!rawName || !rawParts) continue;
+    const name = rawName.trim();
+    const parts = rawParts.split(",").map((part) => part.trim());
     if (parts.length < 14) continue;
 
     const [
@@ -273,8 +273,7 @@ async function loadDs3Armor() {
       source: {
         label: "ds3armor · technical community dataset",
         url: DS3_SOURCE_URL,
-        note:
-          "Armor absorption, resistance, weight and poise are read from the ds3armor dataset (credited there to community calculator data). Original game equipment remains property of its respective rights holders.",
+        note: "Armor absorption, resistance, weight and poise are read from the ds3armor dataset (credited there to community calculator data). Original game equipment remains property of its respective rights holders.",
       },
     });
   }

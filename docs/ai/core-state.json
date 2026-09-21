@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-19",
+  "updatedAt": "2026-09-21",
   "cores": {
     "nexus": {
       "name": "NEXUS",
@@ -271,11 +271,10 @@
         "Added the League Builds hub with verified primary/alternative paths, 1- or 2-core custom build composition, situational slots, source cross-check links and contextual NEXUS guidance.",
         "Added a Dark Souls Remastered Build Lab with three PvE starter presets—Quality Claymore, Strength Great Club and Dexterity + Pyromancy—plus a custom core/variant builder.",
         "Opened previously locked/placeholder game modules: incomplete areas now render explicit in-development panels instead of padlocks, while completed DS1/DS3 builds/guides route to functional modules.",
-        "Dark Souls Remastered and Dark Souls III boss pages now intentionally omit external boss artwork and label the visual area as MGP gameplay screenshots in development."
+        "Dark Souls Remastered and Dark Souls III boss pages now intentionally omit external boss artwork and label the visual area as MGP gameplay screenshots in development.",
+        "Completed pre-launch polish stage 1: locked MGP to dark-only, preserved accent personalization, hardened header/hub responsive framing and touch targets, and stopped the pointer aura animation loop when idle."
       ],
-      "inProgress": [
-        "Run page-by-page rendered art-direction QA after Visual System v2 is visible in Lovable, focusing on home, game catalog, communities, profiles, NEXUS and game hubs at mobile and desktop widths."
-      ],
+      "inProgress": [],
       "next": [
         "Review external boss-art delivery for image weight, caching and layout stability after visual approval.",
         "Profile Nexus latency and provider failure rates before adding parallel council inference.",

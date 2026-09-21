@@ -13,8 +13,7 @@ export type SoulsItemMetadata = {
   };
 };
 
-const ROOT =
-  "https://raw.githubusercontent.com/ephemer1s/Dark-Souls-Items-Dataset/main";
+const ROOT = "https://raw.githubusercontent.com/ephemer1s/Dark-Souls-Items-Dataset/main";
 const SOURCE = "https://github.com/ephemer1s/Dark-Souls-Items-Dataset";
 
 function parseTsv(text: string) {
@@ -67,7 +66,7 @@ function extractSkill(description: string) {
   const match = cleaned.match(/\bSkill:\s*([^.!?]+?)(?=(?:\s{2,}|Repel|Raise|Assume|Without|$))/i);
   if (match?.[1]?.trim()) return match[1].trim();
 
-  const simpler = cleaned.match(/\bSkill:\s*([A-Za-z][A-Za-z '\-]+)/i);
+  const simpler = cleaned.match(/\bSkill:\s*([A-Za-z][A-Za-z '-]+)/i);
   return simpler?.[1]?.trim();
 }
 
@@ -81,17 +80,20 @@ async function fetchMetadataFile(path: string, label: string) {
     if (!name) return [];
 
     const description = row.slice(4).join("\t").trim();
-    return [{
-      name,
-      category: row[2]?.trim() || label,
-      subcategory: row[3]?.trim() || label,
-      referenceDescription: description,
-      skill: extractSkill(description),
-      source: {
-        label: `Dark Souls Items Dataset · ${label}`,
-        url: SOURCE,
-      },
-    }];
+    const skill = extractSkill(description);
+    return [
+      {
+        name,
+        category: row[2]?.trim() || label,
+        subcategory: row[3]?.trim() || label,
+        referenceDescription: description,
+        ...(skill ? { skill } : {}),
+        source: {
+          label: `Dark Souls Items Dataset · ${label}`,
+          url: SOURCE,
+        },
+      } satisfies SoulsItemMetadata,
+    ];
   });
 }
 
@@ -100,29 +102,28 @@ let ds3Promise: Promise<SoulsItemMetadata[]> | null = null;
 
 export function loadSoulsItemMetadata(game: SoulsCompendiumGame) {
   if (game === "dark-souls-remastered") {
-    ds1Promise ??= Promise.all([
-      fetchMetadataFile("data/shield/darksouls1_shield.tsv", "Shields"),
-      fetchMetadataFile("data/ring/darksouls1_ring.tsv", "Rings"),
-    ]).then((groups) => groups.flat());
-    return ds1Promise;
+    const request =
+      ds1Promise ??
+      Promise.all([
+        fetchMetadataFile("data/shield/darksouls1_shield.tsv", "Shields"),
+        fetchMetadataFile("data/ring/darksouls1_ring.tsv", "Rings"),
+      ]).then((groups) => groups.flat());
+    ds1Promise = request;
+    return request;
   }
 
-  ds3Promise ??= Promise.all([
-    fetchMetadataFile("data/shield/darksouls3_shield.tsv", "Shields"),
-    fetchMetadataFile("data/ring/darksouls3_ring.tsv", "Rings"),
-    fetchMetadataFile("data/item/darksouls3_item.tsv", "Items"),
-  ]).then((groups) => groups.flat());
-  return ds3Promise;
+  const request =
+    ds3Promise ??
+    Promise.all([
+      fetchMetadataFile("data/shield/darksouls3_shield.tsv", "Shields"),
+      fetchMetadataFile("data/ring/darksouls3_ring.tsv", "Rings"),
+      fetchMetadataFile("data/item/darksouls3_item.tsv", "Items"),
+    ]).then((groups) => groups.flat());
+  ds3Promise = request;
+  return request;
 }
 
-export function findSoulsItemMetadata(
-  metadata: SoulsItemMetadata[],
-  name: string,
-) {
+export function findSoulsItemMetadata(metadata: SoulsItemMetadata[], name: string) {
   const target = normalizeSoulsEquipmentName(name);
-  return (
-    metadata.find(
-      (entry) => normalizeSoulsEquipmentName(entry.name) === target,
-    ) ?? null
-  );
+  return metadata.find((entry) => normalizeSoulsEquipmentName(entry.name) === target) ?? null;
 }

@@ -1,12 +1,5 @@
 export type SoulsDamageChannel =
-  | "physical"
-  | "strike"
-  | "slash"
-  | "thrust"
-  | "magic"
-  | "fire"
-  | "lightning"
-  | "dark";
+  "physical" | "strike" | "slash" | "thrust" | "magic" | "fire" | "lightning" | "dark";
 
 export type SoulsStatusChannel = "bleed" | "poison" | "frost";
 
@@ -25,8 +18,7 @@ export type SoulsBossDefenseProfile = {
 export const DS3_BOSS_DEFENSE_SOURCE = {
   label: "DS3 Boss Defenses · community technical sheet",
   url: "https://docs.google.com/spreadsheets/d/1TI7Hi3IcBSiSJ5RjIEvaTX8t70Q5HaNY-TxOoR_4qOQ/edit",
-  note:
-    "Absorption values and status thresholds are a technical community reference. Negative absorption indicates a damage vulnerability; immunity is shown explicitly instead of being converted into a fake numeric score.",
+  note: "Absorption values and status thresholds are a technical community reference. Negative absorption indicates a damage vulnerability; immunity is shown explicitly instead of being converted into a fake numeric score.",
 };
 
 const base = (
@@ -34,16 +26,41 @@ const base = (
   status?: SoulsBossDefenseVariant["status"],
   note?: string,
 ): SoulsBossDefenseProfile => ({
-  variants: [{ label: "Boss", absorption, status, note }],
+  variants: [
+    {
+      label: "Boss",
+      absorption,
+      ...(status ? { status } : {}),
+      ...(note ? { note } : {}),
+    },
+  ],
 });
 
 export const DARK_SOULS_III_BOSS_DEFENSES: Record<string, SoulsBossDefenseProfile> = {
   "iudex-gundyr": base(
-    { physical: 15, strike: 12, slash: 18, thrust: 16, magic: 5, fire: 2, lightning: -14, dark: 38 },
+    {
+      physical: 15,
+      strike: 12,
+      slash: 18,
+      thrust: 16,
+      magic: 5,
+      fire: 2,
+      lightning: -14,
+      dark: 38,
+    },
     { bleed: 239, poison: "immune", frost: 75 },
   ),
   "vordt-of-the-boreal-valley": base(
-    { physical: 35, strike: 18, slash: 38, thrust: 36, magic: 24, fire: 18, lightning: 15, dark: -27 },
+    {
+      physical: 35,
+      strike: 18,
+      slash: 38,
+      thrust: 36,
+      magic: 24,
+      fire: 18,
+      lightning: 15,
+      dark: -27,
+    },
     { bleed: "immune", poison: "immune", frost: "immune" },
   ),
   "curse-rotted-greatwood": {
@@ -58,19 +75,55 @@ export const DARK_SOULS_III_BOSS_DEFENSES: Record<string, SoulsBossDefenseProfil
     note: "Boss com hitzones muito diferentes. O MGP evita exibir um único número global que esconderia a mecânica do encontro.",
   },
   "crystal-sage": base(
-    { physical: -20, strike: -19, slash: -22, thrust: -20, magic: 40, fire: 0, lightning: 2, dark: 0 },
+    {
+      physical: -20,
+      strike: -19,
+      slash: -22,
+      thrust: -20,
+      magic: 40,
+      fire: 0,
+      lightning: 2,
+      dark: 0,
+    },
     { bleed: 137, poison: 102, frost: 188 },
   ),
   "deacons-of-the-deep": base(
-    { physical: -20, strike: -19, slash: -23, thrust: -21, magic: 46, fire: 0, lightning: -2, dark: 44 },
+    {
+      physical: -20,
+      strike: -19,
+      slash: -23,
+      thrust: -21,
+      magic: 46,
+      fire: 0,
+      lightning: -2,
+      dark: 44,
+    },
     { bleed: 137, poison: 137, frost: 137 },
   ),
   "abyss-watchers": base(
-    { physical: 15, strike: 14, slash: 18, thrust: 16, magic: 10, fire: 8, lightning: -12, dark: 35 },
+    {
+      physical: 15,
+      strike: 14,
+      slash: 18,
+      thrust: 16,
+      magic: 10,
+      fire: 8,
+      lightning: -12,
+      dark: 35,
+    },
     { bleed: 673, poison: "immune", frost: 139 },
   ),
   "high-lord-wolnir": base(
-    { physical: 32, strike: 9, slash: 34, thrust: 36, magic: 24, fire: 28, lightning: 40, dark: 70 },
+    {
+      physical: 32,
+      strike: 9,
+      slash: 34,
+      thrust: 36,
+      magic: 24,
+      fire: 28,
+      lightning: 40,
+      dark: 70,
+    },
     { bleed: "immune", poison: "immune", frost: "immune" },
     "Os braceletes são o alvo central da mecânica; a leitura de absorção não substitui essa prioridade.",
   ),
@@ -115,31 +168,85 @@ export const DARK_SOULS_III_BOSS_DEFENSES: Record<string, SoulsBossDefenseProfil
     ],
   },
   "dancer-of-the-boreal-valley": base(
-    { physical: 20, strike: 19, slash: 22, thrust: 20, magic: 19, fire: 18, lightning: 17, dark: -26 },
+    {
+      physical: 20,
+      strike: 19,
+      slash: 22,
+      thrust: 20,
+      magic: 19,
+      fire: 18,
+      lightning: 17,
+      dark: -26,
+    },
     { bleed: 324, poison: "immune", frost: "immune" },
   ),
   "dragonslayer-armour": base(
-    { physical: 32, strike: 25, slash: 35, thrust: 35, magic: 24, fire: 20, lightning: 72, dark: 68 },
+    {
+      physical: 32,
+      strike: 25,
+      slash: 35,
+      thrust: 35,
+      magic: 24,
+      fire: 20,
+      lightning: 72,
+      dark: 68,
+    },
     { bleed: "immune", poison: "immune", frost: 110 },
   ),
   "oceiros-the-consumed-king": base(
-    { physical: 20, strike: 18, slash: 22, thrust: 15, magic: 40, fire: 20, lightning: -40, dark: 22 },
+    {
+      physical: 20,
+      strike: 18,
+      slash: 22,
+      thrust: 15,
+      magic: 40,
+      fire: 20,
+      lightning: -40,
+      dark: 22,
+    },
     { bleed: 331, poison: "immune", frost: 137 },
   ),
   "champion-gundyr": base(
-    { physical: 18, strike: 15, slash: 21, thrust: 19, magic: 12, fire: 10, lightning: -12, dark: 5 },
+    {
+      physical: 18,
+      strike: 15,
+      slash: 21,
+      thrust: 19,
+      magic: 12,
+      fire: 10,
+      lightning: -12,
+      dark: 5,
+    },
     { bleed: 328, poison: 328, frost: 148 },
   ),
   "lothric-younger-prince-and-lorian-elder-prince": {
     variants: [
       {
         label: "Lorian",
-        absorption: { physical: 20, strike: 18, slash: 22, thrust: 20, magic: 5, fire: 2, lightning: -20, dark: 70 },
+        absorption: {
+          physical: 20,
+          strike: 18,
+          slash: 22,
+          thrust: 20,
+          magic: 5,
+          fire: 2,
+          lightning: -20,
+          dark: 70,
+        },
         status: { bleed: 333, poison: "immune", frost: 111 },
       },
       {
         label: "Lothric",
-        absorption: { physical: -20, strike: -18, slash: -22, thrust: -20, magic: 47, fire: 2, lightning: 4, dark: 73 },
+        absorption: {
+          physical: -20,
+          strike: -18,
+          slash: -22,
+          thrust: -20,
+          magic: 47,
+          fire: 2,
+          lightning: 4,
+          dark: 73,
+        },
         status: { bleed: 333, poison: "immune", frost: 333 },
       },
     ],
@@ -164,25 +271,61 @@ export const DARK_SOULS_III_BOSS_DEFENSES: Record<string, SoulsBossDefenseProfil
       },
       {
         label: "Nameless King",
-        absorption: { physical: 21, strike: 19, slash: 22, thrust: 20, magic: 24, fire: 23, lightning: 83, dark: -8 },
+        absorption: {
+          physical: 21,
+          strike: 19,
+          slash: 22,
+          thrust: 20,
+          magic: 24,
+          fire: 23,
+          lightning: 83,
+          dark: -8,
+        },
         status: { bleed: 336, poison: "immune", frost: 336 },
       },
     ],
   },
   "soul-of-cinder": base(
-    { physical: 15, strike: 12, slash: 17, thrust: 17, magic: 19, fire: 35, lightning: 5, dark: 15 },
+    {
+      physical: 15,
+      strike: 12,
+      slash: 17,
+      thrust: 17,
+      magic: 19,
+      fire: 35,
+      lightning: 5,
+      dark: 15,
+    },
     { bleed: 337, poison: "immune", frost: 725 },
   ),
   "champion-s-gravetender-and-gravetender-greatwolf": {
     variants: [
       {
         label: "Champion's Gravetender",
-        absorption: { physical: 42.4, strike: 38.85, slash: 43.52, thrust: 41.14, magic: 42.52, fire: 40.65, lightning: 38.83, dark: 42.96 },
+        absorption: {
+          physical: 42.4,
+          strike: 38.85,
+          slash: 43.52,
+          thrust: 41.14,
+          magic: 42.52,
+          fire: 40.65,
+          lightning: 38.83,
+          dark: 42.96,
+        },
         status: { bleed: 317, poison: 305, frost: 318 },
       },
       {
         label: "Gravetender Greatwolf",
-        absorption: { physical: 5, strike: 10, slash: 2, thrust: -2, magic: 5, fire: -16, lightning: 7, dark: 7 },
+        absorption: {
+          physical: 5,
+          strike: 10,
+          slash: 2,
+          thrust: -2,
+          magic: 5,
+          fire: -16,
+          lightning: 7,
+          dark: 7,
+        },
         status: { bleed: 149, poison: 205, frost: 336 },
       },
     ],
@@ -191,12 +334,30 @@ export const DARK_SOULS_III_BOSS_DEFENSES: Record<string, SoulsBossDefenseProfil
     variants: [
       {
         label: "Sister Friede",
-        absorption: { physical: -5, strike: -2, slash: -8, thrust: -8, magic: 39, fire: 16, lightning: 3, dark: 5 },
+        absorption: {
+          physical: -5,
+          strike: -2,
+          slash: -8,
+          thrust: -8,
+          magic: 39,
+          fire: 16,
+          lightning: 3,
+          dark: 5,
+        },
         status: { bleed: 336, poison: 723, frost: "immune" },
       },
       {
         label: "Father Ariandel",
-        absorption: { physical: -28, strike: -26, slash: -30, thrust: -34, magic: 2, fire: -19, lightning: -27, dark: -27 },
+        absorption: {
+          physical: -28,
+          strike: -26,
+          slash: -30,
+          thrust: -34,
+          magic: 2,
+          fire: -19,
+          lightning: -27,
+          dark: -27,
+        },
         status: { bleed: 205, poison: 149, frost: 205 },
       },
     ],
@@ -205,30 +366,75 @@ export const DARK_SOULS_III_BOSS_DEFENSES: Record<string, SoulsBossDefenseProfil
     variants: [
       {
         label: "Demon in Pain / Demon from Below",
-        absorption: { physical: 0, strike: 1, slash: -18, thrust: -2, magic: 20, fire: 78, lightning: 22, dark: 17 },
+        absorption: {
+          physical: 0,
+          strike: 1,
+          slash: -18,
+          thrust: -2,
+          magic: 20,
+          fire: 78,
+          lightning: 22,
+          dark: 17,
+        },
         status: { bleed: 349, poison: "immune", frost: "immune" },
       },
       {
         label: "Demon Prince",
-        absorption: { physical: 53, strike: 53.47, slash: 44.54, thrust: 52.06, magic: 62, fire: 89.66, lightning: 63.34, dark: 61 },
+        absorption: {
+          physical: 53,
+          strike: 53.47,
+          slash: 44.54,
+          thrust: 52.06,
+          magic: 62,
+          fire: 89.66,
+          lightning: 63.34,
+          dark: 61,
+        },
         status: { bleed: 349, poison: "immune", frost: "immune" },
       },
     ],
   },
   "halflight-spear-of-the-church": base(
-    { physical: 31.15, strike: 30.58, slash: 30.22, thrust: 30, magic: 39.03, fire: 37.59, lightning: 38.55, dark: 38.69 },
+    {
+      physical: 31.15,
+      strike: 30.58,
+      slash: 30.22,
+      thrust: 30,
+      magic: 39.03,
+      fire: 37.59,
+      lightning: 38.55,
+      dark: 38.69,
+    },
     { bleed: 301, poison: 285, frost: 301 },
   ),
   "darkeater-midir": {
     variants: [
       {
         label: "Cabeça",
-        absorption: { physical: 4, strike: 4, slash: 6, thrust: -10, magic: 50, fire: 52, lightning: 22, dark: 78 },
+        absorption: {
+          physical: 4,
+          strike: 4,
+          slash: 6,
+          thrust: -10,
+          magic: 50,
+          fire: 52,
+          lightning: 22,
+          dark: 78,
+        },
         status: { bleed: "immune", poison: "immune", frost: "immune" },
       },
       {
         label: "Garras / corpo",
-        absorption: { physical: 52, strike: 52, slash: 53, thrust: 45, magic: 75, fire: 76, lightning: 61, dark: 89 },
+        absorption: {
+          physical: 52,
+          strike: 52,
+          slash: 53,
+          thrust: 45,
+          magic: 75,
+          fire: 76,
+          lightning: 61,
+          dark: 89,
+        },
         status: { bleed: "immune", poison: "immune", frost: "immune" },
         note: "A cabeça é a hitzone preferencial; atacar corpo e garras sofre absorção muito maior.",
       },
@@ -238,12 +444,30 @@ export const DARK_SOULS_III_BOSS_DEFENSES: Record<string, SoulsBossDefenseProfil
     variants: [
       {
         label: "Fase 1",
-        absorption: { physical: 35, strike: 34, slash: 38, thrust: 34, magic: 44, fire: 42, lightning: 41, dark: 46 },
+        absorption: {
+          physical: 35,
+          strike: 34,
+          slash: 38,
+          thrust: 34,
+          magic: 44,
+          fire: 42,
+          lightning: 41,
+          dark: 46,
+        },
         status: { bleed: 366, poison: 366, frost: 224 },
       },
       {
         label: "Fases 2–3",
-        absorption: { physical: 35, strike: 34, slash: 38, thrust: 34, magic: 44, fire: 42, lightning: 41, dark: 72 },
+        absorption: {
+          physical: 35,
+          strike: 34,
+          slash: 38,
+          thrust: 34,
+          magic: 44,
+          fire: 42,
+          lightning: 41,
+          dark: 72,
+        },
         status: { bleed: 366, poison: 366, frost: 224 },
       },
     ],
