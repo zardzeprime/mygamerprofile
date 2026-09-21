@@ -724,14 +724,18 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
           .eq("app_id", appId);
         if (deleteError) throw deleteError;
 
-        if (result.achievementRows.length > 0) {
-          const rows = result.achievementRows.map((achievement) => ({
+        const unlockedAchievementRows = result.achievementRows.filter(
+          (achievement) => achievement.achieved,
+        );
+
+        if (unlockedAchievementRows.length > 0) {
+          const rows = unlockedAchievementRows.map((achievement) => ({
             user_id: userId,
             app_id: appId,
             api_name: achievement.apiName,
             display_name: achievement.displayName,
             description: achievement.description,
-            achieved: achievement.achieved,
+            achieved: true,
             unlock_time: achievement.unlockTime,
             icon_url: achievement.iconUrl,
             icon_gray_url: achievement.iconGrayUrl,
@@ -741,9 +745,7 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
           if (insertError) throw insertError;
         }
 
-        const gameUnlocked = result.achievementRows.filter(
-          (achievement) => achievement.achieved,
-        ).length;
+        const gameUnlocked = unlockedAchievementRows.length;
         const gameTotal = result.achievementRows.length;
         unlocked += gameUnlocked;
         total += gameTotal;
@@ -798,7 +800,8 @@ export const getSteamSyncStatus = createServerFn({ method: "POST" })
         db
           .from("steam_achievements")
           .select("id", { count: "exact", head: true })
-          .eq("user_id", userId),
+          .eq("user_id", userId)
+          .eq("achieved", true),
         db.from("steam_badges").select("id", { count: "exact", head: true }).eq("user_id", userId),
         db
           .from("steam_inventory_items")
