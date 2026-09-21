@@ -1,13 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { LfgMatchCenter } from "@/components/lfg/LfgMatchCenter";
+import { ReportDialog } from "@/components/common/ReportDialog";
 import { getGameConfig } from "@/config/games";
 import { getGames } from "@/lib/games.functions";
 import {
   closeLfgPost,
   createLfgPost,
-  getLfgVerificationStatus,
+  getLfgAgeStatus,
   listLfgPosts,
+  listLfgPostsForViewer,
   requestLfgMatch,
 } from "@/lib/lfg.functions";
 import { useI18n, type TranslationKey } from "@/i18n";
@@ -65,10 +67,10 @@ type LfgGameOption = {
   imageUrl: string | null;
 };
 
-type LfgVerification = {
-  verified: boolean;
+type LfgAgeStatus = {
+  declared: boolean;
   age: number | null;
-  provider: string | null;
+  assurance: string | null;
 };
 
 type LfgStatus = (typeof STATUSES)[number];
@@ -111,14 +113,15 @@ function LfgPage() {
   const [steamGames, setSteamGames] = useState<SteamLfgGame[]>([]);
   const [selectedGameKey, setSelectedGameKey] = useState(search.game || "");
   const [steamLoading, setSteamLoading] = useState(false);
-  const [verification, setVerification] = useState<LfgVerification | null>(null);
+  const [ageStatus, setAgeStatus] = useState<LfgAgeStatus | null>(null);
   const [requestedPostIds, setRequestedPostIds] = useState<Set<string>>(new Set());
   const [matchRefreshToken, setMatchRefreshToken] = useState(0);
 
   const doList = useServerFn(listLfgPosts);
+  const doListForViewer = useServerFn(listLfgPostsForViewer);
   const doCreate = useServerFn(createLfgPost);
   const doClose = useServerFn(closeLfgPost);
-  const doVerification = useServerFn(getLfgVerificationStatus);
+  const doAgeStatus = useServerFn(getLfgAgeStatus);
   const doRequestMatch = useServerFn(requestLfgMatch);
 
   useEffect(() => {
@@ -156,23 +159,32 @@ function LfgPage() {
   useEffect(() => {
     let active = true;
     if (!userId) {
-      setVerification(null);
+      setAgeStatus(null);
+      setPosts(initialPosts);
       return;
     }
 
-    void doVerification()
-      .then((result) => {
-        if (active) setVerification(result);
+    void Promise.all([
+      doAgeStatus(),
+      doListForViewer({ data: { status: "open" } }),
+    ])
+      .then(([status, safePosts]) => {
+        if (!active) return;
+        setAgeStatus(status);
+        setPosts(safePosts);
       })
       .catch((error) => {
-        console.warn("[LFG] Could not read verification state.", error);
-        if (active) setVerification({ verified: false, age: null, provider: null });
+        console.warn("[LFG] Could not load age-aware LFG state.", error);
+        if (active) {
+          setAgeStatus({ declared: false, age: null, assurance: null });
+          setPosts([]);
+        }
       });
 
     return () => {
       active = false;
     };
-  }, [doVerification, userId]);
+  }, [doAgeStatus, doListForViewer, initialPosts, userId]);
 
   const gameOptions = useMemo<LfgGameOption[]>(() => {
     const catalog = games.map((game) => {
@@ -234,7 +246,9 @@ function LfgPage() {
   const applyFilters = async () => {
     setActionError("");
     try {
-      const rows = await doList({ data: filters });
+      const rows = userId
+        ? await doListForViewer({ data: filters })
+        : await doList({ data: filters });
       setPosts(rows);
     } catch {
       setActionError(t("common.error"));
@@ -269,8 +283,6 @@ function LfgPage() {
           scheduled_for: String(formData.get("scheduled_for") ?? "").trim()
             ? new Date(String(formData.get("scheduled_for"))).toISOString()
             : null,
-          min_age: Number(formData.get("min_age") ?? 13),
-          max_age: Number(formData.get("max_age") ?? 99),
         },
       });
       setPosts((previous) => [post, ...previous]);
@@ -330,15 +342,13 @@ function LfgPage() {
               <DialogHeader>
                 <DialogTitle>{t("lfg.create")}</DialogTitle>
               </DialogHeader>
-              {!verification?.verified ? (
-                <p className="rounded-lg border border-amber-500/20 bg-amber-500/[0.05] px-3 py-2 text-xs leading-5 text-muted-foreground">
-                  {copy(
-                    "Você pode publicar o grupo agora. Para aceitar um match e liberar a DM, sua idade precisará estar verificada.",
-                    "You can publish the group now. To accept a match and unlock DMs, your age will need to be verified.",
-                    "Puedes publicar el grupo ahora. Para aceptar un match y habilitar los mensajes directos, tu edad deberá estar verificada.",
-                  )}
-                </p>
-              ) : null}
+              <p className="rounded-lg border border-gold/20 bg-gold/[0.04] px-3 py-2 text-xs leading-5 text-muted-foreground">
+                {copy(
+                  "A faixa etária do grupo é definida automaticamente pela idade informada no cadastro. Ela não pode ser ampliada manualmente.",
+                  "The group's age range is automatically defined from the birth date entered during signup. It cannot be widened manually.",
+                  "El rango de edad del grupo se define automáticamente a partir de la fecha de nacimiento indicada en el registro. No puede ampliarse manualmente.",
+                )}
+              </p>
               <form onSubmit={handleCreate} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="title">{copy("Título do grupo", "Group title", "Título del grupo")}</Label>
@@ -443,23 +453,6 @@ function LfgPage() {
                   </Label>
                   <Input id="scheduled_for" name="scheduled_for" type="datetime-local" />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="min_age">{copy("Idade mínima", "Minimum age", "Edad mínima")}</Label>
-                    <Input id="min_age" name="min_age" type="number" min={13} max={99} defaultValue={13} required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="max_age">{copy("Idade máxima", "Maximum age", "Edad máxima")}</Label>
-                    <Input id="max_age" name="max_age" type="number" min={13} max={99} defaultValue={99} required />
-                  </div>
-                </div>
-                <p className="text-[0.68rem] leading-5 text-muted-foreground">
-                  {copy(
-                    "O match só é permitido quando a idade verificada do participante estiver dentro desta faixa.",
-                    "A match is only allowed when the participant's verified age falls inside this range.",
-                    "El match solo se permite cuando la edad verificada del participante está dentro de este rango.",
-                  )}
-                </p>
                 <div className="flex items-center gap-2">
                   <Switch name="mic_required" id="mic_required" />
                   <Label htmlFor="mic_required">{t("lfg.micRequired")}</Label>
@@ -485,6 +478,14 @@ function LfgPage() {
             </DialogContent>
             </Dialog>
         ) : null}
+      </div>
+
+      <div className="mb-5 rounded-xl border border-amber-500/20 bg-amber-500/[0.04] p-4 text-xs leading-5 text-muted-foreground">
+        {copy(
+          "Beta pública: as faixas de segurança usam a data de nascimento informada no cadastro; isso ainda não é verificação documental. Se alguém aparentar ter falsificado a idade ou agir de forma inadequada, denuncie e bloqueie.",
+          "Public beta: safety ranges use the birth date entered during signup; this is not document verification yet. If someone appears to have falsified their age or behaves unsafely, report and block them.",
+          "Beta pública: los rangos de seguridad usan la fecha de nacimiento indicada en el registro; todavía no es una verificación documental. Si alguien parece haber falseado su edad o se comporta de forma inadecuada, denúncialo y bloquéalo.",
+        )}
       </div>
 
       <section className="surface-panel mb-7 p-4" aria-label={t("lfg.title")}>
@@ -656,7 +657,7 @@ function LfgPage() {
                         {post.slots_open}/{Math.max(0, post.slots_total - 1)} {copy("vagas", "spots", "plazas")}
                       </span>
                       <span className="rounded-md bg-muted px-2 py-1">
-                        {post.min_age}–{post.max_age} {copy("anos", "years", "años")}
+                        {post.max_age >= 99 ? `${post.min_age}+` : `${post.min_age}–${post.max_age}`} {copy("anos", "years", "años")}
                       </span>
                       {post.scheduled_for ? (
                         <span className="rounded-md bg-muted px-2 py-1">
@@ -676,7 +677,7 @@ function LfgPage() {
                       </Button>
 
                       {!isOwner && user && post.status === "open" && post.slots_open > 0 ? (
-                        verification?.verified ? (
+                        ageStatus?.declared ? (
                           <Button
                             size="sm"
                             disabled={requested}
@@ -688,11 +689,19 @@ function LfgPage() {
                           </Button>
                         ) : (
                           <Button size="sm" variant="outline" asChild>
-                            <Link to="/settings/connections">
-                              {copy("Verificar para dar match", "Verify to match", "Verificar para hacer match")}
+                            <Link to="/settings/profile">
+                              {copy("Complete a idade do cadastro", "Complete your signup age", "Completa la edad del registro")}
                             </Link>
                           </Button>
                         )
+                      ) : null}
+
+                      {!isOwner && user ? (
+                        <ReportDialog
+                          targetType="lfg"
+                          targetId={post.id}
+                          username={post.author?.username ?? undefined}
+                        />
                       ) : null}
 
                       {isOwner && post.status === "open" ? (
@@ -712,7 +721,7 @@ function LfgPage() {
       {user ? (
         <LfgMatchCenter
           userId={user.id}
-          verified={verification?.verified ?? false}
+          ageDeclared={ageStatus?.declared ?? false}
           refreshToken={matchRefreshToken}
         />
       ) : null}
@@ -723,20 +732,20 @@ function LfgPage() {
 
 function lfgErrorMessage(error: unknown, locale: "pt-BR" | "en" | "es") {
   const message = error instanceof Error ? error.message : String(error);
-  if (message.includes("LFG_VERIFICATION_REQUIRED")) {
+  if (message.includes("LFG_AGE_REQUIRED")) {
     return localeCopy(
       locale,
-      "Você precisa verificar sua idade antes de usar o sistema de match.",
-      "You need to verify your age before using matchmaking.",
-      "Debes verificar tu edad antes de usar el sistema de match.",
+      "Sua conta precisa ter uma data de nascimento válida para usar o LFG.",
+      "Your account needs a valid birth date to use LFG.",
+      "Tu cuenta necesita una fecha de nacimiento válida para usar el LFG.",
     );
   }
   if (message.includes("LFG_AGE_MISMATCH")) {
     return localeCopy(
       locale,
-      "Sua idade verificada não está dentro da faixa definida por esse grupo.",
-      "Your verified age is outside this group's age range.",
-      "Tu edad verificada está fuera del rango definido por este grupo.",
+      "A idade informada no seu cadastro não é compatível com a faixa de segurança deste grupo.",
+      "The age entered in your account is not compatible with this group's safety range.",
+      "La edad indicada en tu cuenta no es compatible con el rango de seguridad de este grupo.",
     );
   }
   if (message.includes("LFG_MATCH_ALREADY_REQUESTED")) {
