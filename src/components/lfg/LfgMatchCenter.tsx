@@ -60,6 +60,7 @@ type MatchApplication = {
   note: string | null;
   created_at: string;
   updated_at: string;
+  chat_expires_at: string | null;
   applicant: ProfileSummary | null;
   post: MatchPost | null;
 };
@@ -240,6 +241,10 @@ function MatchRow({
   if (!post) return null;
   const otherUser = direction === "incoming" ? application.applicant : post.author;
   const gameName = post.game?.name ?? post.external_game_name ?? copy("Jogo", "Game", "Juego");
+  const chatExpired =
+    application.status === "accepted" &&
+    (!application.chat_expires_at ||
+      new Date(application.chat_expires_at).getTime() <= Date.now());
 
   return (
     <article className="rounded-xl border border-border bg-background/45 p-3">
@@ -278,8 +283,30 @@ function MatchRow({
       ) : null}
 
       {application.status === "accepted" && otherUser ? (
-        <div className="mt-3">
-          <LfgTextChatDialog application={application} userId={userId} otherUser={otherUser} />
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          {chatExpired ? (
+            <Button size="sm" variant="outline" disabled>
+              <Clock3 className="mr-1 size-3.5" />
+              {copy("DM expirada", "DM expired", "DM expirada")}
+            </Button>
+          ) : (
+            <LfgTextChatDialog application={application} userId={userId} otherUser={otherUser} />
+          )}
+          {application.chat_expires_at ? (
+            <span className="text-[0.65rem] text-muted-foreground">
+              {chatExpired
+                ? copy(
+                    "As mensagens temporárias são removidas automaticamente.",
+                    "Temporary messages are removed automatically.",
+                    "Los mensajes temporales se eliminan automáticamente.",
+                  )
+                : copy("DM até ", "DM until ", "DM hasta ") +
+                  new Date(application.chat_expires_at).toLocaleString(locale, {
+                    dateStyle: "short",
+                    timeStyle: "short",
+                  })}
+            </span>
+          ) : null}
         </div>
       ) : null}
     </article>
@@ -328,6 +355,7 @@ function LfgTextChatDialog({
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [blocking, setBlocking] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
 
   const loadMessages = async () => {
     try {
@@ -341,8 +369,12 @@ function LfgTextChatDialog({
   useEffect(() => {
     if (!open) return;
     void loadMessages();
-    const timer = window.setInterval(() => void loadMessages(), 5000);
-    return () => window.clearInterval(timer);
+    const messageTimer = window.setInterval(() => void loadMessages(), 5000);
+    const clockTimer = window.setInterval(() => setNow(Date.now()), 30_000);
+    return () => {
+      window.clearInterval(messageTimer);
+      window.clearInterval(clockTimer);
+    };
   }, [open, application.id]);
 
   const send = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -377,6 +409,12 @@ function LfgTextChatDialog({
     }
   };
 
+  const expiresAt = application.chat_expires_at
+    ? new Date(application.chat_expires_at).getTime()
+    : 0;
+  const expired = !expiresAt || expiresAt <= now;
+  const remainingMinutes = expired ? 0 : Math.max(1, Math.ceil((expiresAt - now) / 60_000));
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -392,6 +430,26 @@ function LfgTextChatDialog({
             {otherUser.display_name}
           </DialogTitle>
         </DialogHeader>
+
+        <div className="rounded-lg border border-gold/20 bg-gold/[0.04] px-3 py-2 text-xs leading-5 text-muted-foreground">
+          {expired
+            ? copy(
+                "Esta DM expirou. As mensagens temporárias serão removidas pelo ciclo de limpeza.",
+                "This DM has expired. Temporary messages will be removed by the cleanup cycle.",
+                "Este DM expiró. Los mensajes temporales serán eliminados por el ciclo de limpieza.",
+              )
+            : remainingMinutes < 60
+              ? copy(
+                  `Esta DM expira em cerca de ${remainingMinutes} min.`,
+                  `This DM expires in about ${remainingMinutes} min.`,
+                  `Este DM expira en unos ${remainingMinutes} min.`,
+                )
+              : copy(
+                  `Esta DM expira em cerca de ${Math.ceil(remainingMinutes / 60)}h.`,
+                  `This DM expires in about ${Math.ceil(remainingMinutes / 60)}h.`,
+                  `Este DM expira en unas ${Math.ceil(remainingMinutes / 60)}h.`,
+                )}
+        </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <ReportDialog
@@ -428,12 +486,22 @@ function LfgTextChatDialog({
                   className={own ? "ml-auto max-w-[82%] rounded-xl bg-gold-soft px-3 py-2 text-sm" : "mr-auto max-w-[82%] rounded-xl bg-muted px-3 py-2 text-sm"}
                 >
                   <p className="whitespace-pre-wrap break-words">{message.body}</p>
-                  <p className="mt-1 text-[0.6rem] text-muted-foreground">
-                    {new Date(message.created_at).toLocaleTimeString(locale, {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
+                  <div className="mt-1 flex items-center justify-between gap-2">
+                    <p className="text-[0.6rem] text-muted-foreground">
+                      {new Date(message.created_at).toLocaleTimeString(locale, {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                    {!own ? (
+                      <ReportDialog
+                        targetType="lfg_message"
+                        targetId={message.id}
+                        username={otherUser.username}
+                        compact
+                      />
+                    ) : null}
+                  </div>
                 </div>
               );
             })
@@ -450,9 +518,14 @@ function LfgTextChatDialog({
             onChange={(event) => setBody(event.target.value.slice(0, 2000))}
             rows={2}
             maxLength={2000}
-            placeholder={copy("Digite uma mensagem…", "Type a message…", "Escribe un mensaje…")}
+            disabled={expired}
+            placeholder={
+              expired
+                ? copy("DM expirada", "DM expired", "DM expirada")
+                : copy("Digite uma mensagem…", "Type a message…", "Escribe un mensaje…")
+            }
           />
-          <Button type="submit" disabled={sending || !body.trim()} className="self-end">
+          <Button type="submit" disabled={expired || sending || !body.trim()} className="self-end">
             {sending ? <Clock3 className="size-4 animate-pulse" /> : <MessageCircle className="size-4" />}
           </Button>
         </form>
