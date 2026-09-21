@@ -75,8 +75,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Sem summon NPC", "No NPC summon", "Sin invocación de PNJ"),
       text("Frostbite relevante", "Frostbite is relevant", "Frostbite relevante"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Vordt+of+the+Boreal+Valley",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:vordt-of-the-boreal-valley",
+    researchStatus: "reviewed",
   },
   {
     slug: "curse-rotted-greatwood",
@@ -103,8 +103,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Encontro opcional", "Optional encounter", "Encuentro opcional"),
       text("Sem summon NPC", "No NPC summon", "Sin invocación de PNJ"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Curse-Rotted+Greatwood",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:curse-rotted-greatwood",
+    researchStatus: "reviewed",
   },
   {
     slug: "crystal-sage",
@@ -131,8 +131,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Sem summon NPC", "No NPC summon", "Sin invocación de PNJ"),
       text("Dano mágico relevante", "Magic damage is relevant", "Daño mágico relevante"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Crystal+Sage",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:crystal-sage",
+    researchStatus: "reviewed",
   },
   {
     slug: "deacons-of-the-deep",
@@ -159,8 +159,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Summons NPC disponíveis", "NPC summons available", "Invocaciones de PNJ disponibles"),
       text("Curse na etapa final", "Curse na etapa final", "Curse na etapa final"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Deacons+of+the+Deep",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:deacons-of-the-deep",
+    researchStatus: "reviewed",
   },
   {
     slug: "abyss-watchers",
@@ -220,8 +220,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Sem summon NPC", "No NPC summon", "Sin invocación de PNJ"),
       text("Névoa abissal perigosa", "Névoa abissal perigosa", "Névoa abissal perigosa"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/High+Lord+Wolnir",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:high-lord-wolnir",
+    researchStatus: "reviewed",
   },
   {
     slug: "old-demon-king",
@@ -248,8 +248,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Summon NPC disponível", "NPC summon available", "Invocación de PNJ disponible"),
       text("Fogo relevante", "Fire is relevant", "Fuego relevante"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Old+Demon+King",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:old-demon-king",
+    researchStatus: "reviewed",
   },
   {
     slug: "pontiff-sulyvahn",
@@ -414,8 +414,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Summons NPC disponíveis", "NPC summons available", "Invocaciones de PNJ disponibles"),
       text("Stagger qualitativo", "Stagger qualitativo", "Stagger qualitativo"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Dragonslayer+Armour",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:dragonslayer-armour",
+    researchStatus: "reviewed",
   },
   {
     slug: "oceiros-the-consumed-king",
@@ -442,8 +442,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Summon NPC disponível", "NPC summon available", "Invocación de PNJ disponible"),
       text("Encontro opcional", "Optional encounter", "Encuentro opcional"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Oceiros,+the+Consumed+King",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:oceiros-the-consumed-king",
+    researchStatus: "reviewed",
   },
   {
     slug: "champion-gundyr",
@@ -474,8 +474,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       ),
       text("Summon NPC disponível", "NPC summon available", "Invocación de PNJ disponible"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Champion+Gundyr",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:champion-gundyr",
+    researchStatus: "reviewed",
   },
   {
     slug: "lothric-younger-prince-and-lorian-elder-prince",
@@ -502,9 +502,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Summons NPC disponíveis", "NPC summons available", "Invocaciones de PNJ disponibles"),
       text("Alvo traseiro prioritário", "Alvo traseiro prioritário", "Alvo traseiro prioritário"),
     ],
-    sourceUrl:
-      "https://darksouls3.wiki.fextralife.com/Lothric,+Younger+Prince+%26+Lorian,+Elder+Prince",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:the-twin-princes",
+    researchStatus: "reviewed",
   },
   {
     slug: "ancient-wyvern",
@@ -527,8 +526,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Gimmick fight", "Gimmick fight", "Combate de mecánica especial"),
       text("Sem summon NPC", "No NPC summon", "Sin invocación de PNJ"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Ancient+Wyvern",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:ancient-wyvern",
+    researchStatus: "reviewed",
   },
   {
     slug: "the-nameless-king",
@@ -616,9 +615,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Sem summon NPC", "No NPC summon", "Sin invocación de PNJ"),
       text("Frostbite relevante", "Frostbite is relevant", "Frostbite relevante"),
     ],
-    sourceUrl:
-      "https://darksouls3.wiki.fextralife.com/Champion's+Gravetender+%26+Gravetender+Greatwolf",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:champion-s-gravetender-gravetender-greatwolf",
+    researchStatus: "reviewed",
   },
   {
     slug: "sister-friede-and-father-ariandel",
@@ -678,9 +676,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Summons NPC disponíveis", "NPC summons available", "Invocaciones de PNJ disponibles"),
       text("Riposte após stagger", "Riposte after a stagger", "Riposte tras romper postura"),
     ],
-    sourceUrl:
-      "https://darksouls3.wiki.fextralife.com/Demon+in+Pain,+Demon+from+Below+%26+Demon+Prince",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:the-demon-prince",
+    researchStatus: "reviewed",
   },
   {
     slug: "halflight-spear-of-the-church",
@@ -703,8 +700,8 @@ export const DARK_SOULS_III_BOSSES: SoulsBossResearch[] = [
       text("Summon NPC disponível", "NPC summon available", "Invocación de PNJ disponible"),
       text("Gimmick online/offline", "Gimmick online/offline", "Gimmick online/offline"),
     ],
-    sourceUrl: "https://darksouls3.wiki.fextralife.com/Halflight,+Spear+of+the+Church",
-    researchStatus: "seed",
+    sourceUrl: "https://darksouls3.wikidot.com/bosses:spear-of-the-church",
+    researchStatus: "reviewed",
   },
   {
     slug: "darkeater-midir",
