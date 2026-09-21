@@ -280,10 +280,11 @@ const sections: LegalSection[] = [
           corretamente.
         </p>
         <p>
-          Na data desta versão, o MGP não integra o Google AdSense. Se a
-          publicidade for ativada, esta Política e os controles de consentimento
-          serão atualizados antes da veiculação. O MGP não usará dados de
-          aferição de idade para criar perfis publicitários.
+          O MGP possui integração técnica preparada com o Google AdSense,
+          incluindo código de verificação/carregamento necessário ao serviço.
+          A exibição efetiva de anúncios e eventual personalização dependem da
+          aprovação, configuração e consentimentos aplicáveis. O MGP não usa
+          dados de idade do cadastro para criar perfis publicitários.
         </p>
         <p>
           Crianças e adolescentes não receberão publicidade comercial baseada
@@ -310,11 +311,15 @@ const sections: LegalSection[] = [
         <p>
           Mantemos dados enquanto a conta estiver ativa e pelo período
           necessário para prestar o serviço, cumprir obrigações, prevenir
-          fraude, resolver disputas e exercer direitos. Dados de idade devem ser
-          reduzidos ao necessário e não reutilizados para finalidades
-          incompatíveis. Conteúdo excluído pode permanecer temporariamente em
-          cópias de segurança e registros técnicos até a rotação segura desses
-          sistemas.
+          fraude, resolver disputas e exercer direitos. No LFG, anúncios e DMs
+          podem ter duração curta escolhida dentro das opções oferecidas pela
+          plataforma. Mensagens temporárias expiradas são removidas
+          automaticamente, salvo quando precisarem ser preservadas por uma
+          denúncia pendente/em análise ou outra necessidade legítima de
+          segurança e exercício de direitos. Dados de idade são reduzidos ao
+          necessário e não reutilizados para finalidades incompatíveis.
+          Conteúdo excluído pode permanecer temporariamente em cópias de
+          segurança e registros técnicos até a rotação segura desses sistemas.
         </p>
         <p>
           Adotamos controles técnicos e organizacionais compatíveis com o porte
@@ -381,19 +386,20 @@ const sections: LegalSection[] = [
       <>
         <p>
           O MGP não permite criação de conta por menores de 13 anos. Usuários
-          de 13 a 17 anos são tratados como contas de adolescentes para fins de
-          segurança. O MGP adota como política própria a necessidade de ciência
-          e assistência de responsável nessa faixa, além das exigências
-          específicas previstas pelo ECA Digital (Lei nº 15.211/2025) e demais
-          normas aplicáveis.
+          de 13 a 17 anos são tratados como adolescentes para fins de segurança.
+          Na beta pública, a data de nascimento informada no onboarding é usada
+          para aplicar faixas automáticas de compatibilidade no LFG e reduzir
+          interações entre faixas etárias consideradas inadequadas pelo desenho
+          de segurança do produto.
         </p>
         <p>
-          Para contas de usuários de até 16 anos, recursos sociais podem ficar
-          restritos até que exista vínculo ou confirmação do responsável em
-          nível compatível com a obrigação aplicável. A simples informação da
-          data de nascimento funciona como sinal de idade e não é apresentada
-          como verificação forte para acesso a conteúdo que a lei proíba a
-          menores.
+          Essa data é uma informação declarada pelo usuário e não equivale a
+          verificação documental ou biométrica. O MGP poderá adicionar
+          mecanismos mais fortes de aferição, supervisão ou participação de
+          responsável quando isso for necessário pelo risco da funcionalidade,
+          pela evolução do produto ou pela legislação aplicável. As faixas do
+          LFG são uma camada de segurança do produto e não substituem eventual
+          obrigação legal de verificação ou consentimento.
         </p>
         <p>
           O MGP proíbe conteúdo sexual explícito/pornográfico e gore gratuito
