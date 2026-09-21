@@ -6,6 +6,12 @@ import type { Database } from "@/integrations/supabase/types";
 import { getSupabasePublic } from "./supabase.server";
 
 const LFG_STATUSES = ["open", "closed", "expired"] as const;
+const LFG_TTL_VALUES = [6, 12, 24, 48] as const;
+const lfgTtlSchema = z.number().int().refine(
+  (value): value is (typeof LFG_TTL_VALUES)[number] =>
+    LFG_TTL_VALUES.includes(value as (typeof LFG_TTL_VALUES)[number]),
+  { message: "invalid_lfg_ttl" },
+);
 
 const listLfgSchema = z.object({
   gameId: z.string().uuid().optional(),
@@ -31,7 +37,8 @@ const createLfgSchema = z
     mic_required: z.boolean().optional(),
     slots_total: z.number().int().min(2).max(99),
     scheduled_for: z.string().datetime().nullable().optional(),
-    expires_at: z.string().datetime().optional(),
+    group_ttl_hours: lfgTtlSchema.default(24),
+    chat_ttl_hours: lfgTtlSchema.default(24),
   })
   .refine(
     (data) =>
@@ -54,7 +61,6 @@ const updateLfgSchema = z.object({
   slots_total: z.number().int().min(2).max(99).optional(),
   slots_open: z.number().int().min(0).max(99).optional(),
   scheduled_for: z.string().datetime().nullable().optional(),
-  expires_at: z.string().datetime().nullable().optional(),
 });
 
 const closeLfgSchema = z.object({ id: z.string().uuid() });
@@ -148,7 +154,10 @@ export const listLfgPosts = createServerFn({ method: "GET" })
     query = applyLfgFilters(query, data);
     const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
-    return rows;
+    const now = Date.now();
+    return (rows ?? []).filter(
+      (row) => !row.expires_at || new Date(row.expires_at).getTime() > now,
+    );
   });
 
 export const listLfgPostsForViewer = createServerFn({ method: "GET" })
@@ -183,7 +192,12 @@ export const listLfgPostsForViewer = createServerFn({ method: "GET" })
     if (blocksError) throw new Error(blocksError.message);
 
     const blocked = new Set((blocks ?? []).map((row) => row.blocked_user_id));
-    return (rows ?? []).filter((row) => !blocked.has(row.user_id));
+    const now = Date.now();
+    return (rows ?? []).filter(
+      (row) =>
+        !blocked.has(row.user_id) &&
+        (!row.expires_at || new Date(row.expires_at).getTime() > now),
+    );
   });
 
 export const getLfgAgeStatus = createServerFn({ method: "GET" })
@@ -218,7 +232,8 @@ export const createLfgPost = createServerFn({ method: "POST" })
         slots_total: slotsTotal,
         slots_open: slotsOpen,
         scheduled_for: data.scheduled_for ?? null,
-        expires_at: data.expires_at ?? null,
+        group_ttl_hours: data.group_ttl_hours,
+        chat_ttl_hours: data.chat_ttl_hours,
       })
       .select(
         "*, game:games!lfg_posts_game_id_fkey(id, name, slug), author:profiles!lfg_posts_user_id_fkey(id, username, display_name, avatar_url)",
@@ -254,7 +269,6 @@ export const updateLfgPost = createServerFn({ method: "POST" })
     if (updates.slots_total !== undefined) updatePayload.slots_total = updates.slots_total;
     if (updates.slots_open !== undefined) updatePayload.slots_open = updates.slots_open;
     if (updates.scheduled_for !== undefined) updatePayload.scheduled_for = updates.scheduled_for;
-    if (updates.expires_at !== undefined) updatePayload.expires_at = updates.expires_at;
 
     const { data: post, error } = await context.supabase
       .from("lfg_posts")
@@ -291,12 +305,19 @@ export const requestLfgMatch = createServerFn({ method: "POST" })
 
     const { data: post, error: postError } = await context.supabase
       .from("lfg_posts")
-      .select("id,user_id,status,slots_open,min_age,max_age")
+      .select("id,user_id,status,slots_open,min_age,max_age,expires_at")
       .eq("id", data.postId)
       .maybeSingle();
     if (postError || !post) throw new Error("LFG_POST_NOT_FOUND");
     if (post.user_id === context.userId) throw new Error("LFG_CANNOT_MATCH_OWN_GROUP");
-    if (post.status !== "open" || post.slots_open <= 0) throw new Error("LFG_GROUP_UNAVAILABLE");
+    if (
+      post.status !== "open" ||
+      post.slots_open <= 0 ||
+      !post.expires_at ||
+      new Date(post.expires_at).getTime() <= Date.now()
+    ) {
+      throw new Error("LFG_GROUP_UNAVAILABLE");
+    }
     if (ageState.age < post.min_age || ageState.age > post.max_age) {
       throw new Error("LFG_AGE_MISMATCH");
     }
@@ -412,6 +433,19 @@ export const listLfgMessages = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data) => messageListSchema.parse(data))
   .handler(async ({ context, data }) => {
+    const { data: application, error: applicationError } = await context.supabase
+      .from("lfg_applications")
+      .select("id,status,chat_expires_at")
+      .eq("id", data.applicationId)
+      .maybeSingle();
+
+    if (applicationError || !application || application.status !== "accepted") {
+      throw new Error("LFG_MATCH_REQUIRED");
+    }
+    if (!application.chat_expires_at || new Date(application.chat_expires_at).getTime() <= Date.now()) {
+      throw new Error("LFG_CHAT_EXPIRED");
+    }
+
     const { data: rows, error } = await context.supabase
       .from("lfg_dm_messages")
       .select("*")
@@ -439,11 +473,14 @@ export const sendLfgMessage = createServerFn({ method: "POST" })
 
     const { data: application, error: appError } = await context.supabase
       .from("lfg_applications")
-      .select("id,lfg_post_id,applicant_user_id,status")
+      .select("id,lfg_post_id,applicant_user_id,status,chat_expires_at")
       .eq("id", data.applicationId)
       .maybeSingle();
     if (appError || !application || application.status !== "accepted") {
       throw new Error("LFG_MATCH_REQUIRED");
+    }
+    if (!application.chat_expires_at || new Date(application.chat_expires_at).getTime() <= Date.now()) {
+      throw new Error("LFG_CHAT_EXPIRED");
     }
 
     const { data: post, error: postError } = await context.supabase

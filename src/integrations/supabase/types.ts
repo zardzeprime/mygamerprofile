@@ -430,6 +430,7 @@ export type Database = {
       lfg_applications: {
         Row: {
           applicant_user_id: string
+          chat_expires_at: string | null
           created_at: string
           id: string
           lfg_post_id: string
@@ -440,6 +441,7 @@ export type Database = {
         }
         Insert: {
           applicant_user_id: string
+          chat_expires_at?: string | null
           created_at?: string
           id?: string
           lfg_post_id: string
@@ -450,6 +452,7 @@ export type Database = {
         }
         Update: {
           applicant_user_id?: string
+          chat_expires_at?: string | null
           created_at?: string
           id?: string
           lfg_post_id?: string
@@ -529,6 +532,7 @@ export type Database = {
       }
       lfg_posts: {
         Row: {
+          chat_ttl_hours: number
           created_at: string
           description: string
           expires_at: string | null
@@ -537,6 +541,7 @@ export type Database = {
           external_game_name: string | null
           external_game_source: string | null
           game_id: string | null
+          group_ttl_hours: number
           id: string
           language: string | null
           max_age: number
@@ -554,6 +559,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          chat_ttl_hours?: number
           created_at?: string
           description: string
           expires_at?: string | null
@@ -562,6 +568,7 @@ export type Database = {
           external_game_name?: string | null
           external_game_source?: string | null
           game_id?: string | null
+          group_ttl_hours?: number
           id?: string
           language?: string | null
           max_age?: number
@@ -579,6 +586,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          chat_ttl_hours?: number
           created_at?: string
           description?: string
           expires_at?: string | null
@@ -587,6 +595,7 @@ export type Database = {
           external_game_name?: string | null
           external_game_source?: string | null
           game_id?: string | null
+          group_ttl_hours?: number
           id?: string
           language?: string | null
           max_age?: number
@@ -1904,6 +1913,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_expired_lfg_data: { Args: never; Returns: Json }
       complete_mgp_onboarding_v1: {
         Args: {
           p_birth_date: string

@@ -42,6 +42,7 @@ import { supabase } from "@/integrations/supabase/client";
 const PLATFORMS = ["PC", "PlayStation", "Xbox", "Nintendo Switch"] as const;
 const LANGUAGES = ["pt-BR", "en", "es", "fr"] as const;
 const STATUSES = ["open", "closed", "expired"] as const;
+const LFG_TTL_OPTIONS = [6, 12, 24, 48] as const;
 const ALL_FILTER = "__all__";
 
 const RIOT_EXTERNAL_GAMES = [
@@ -283,6 +284,8 @@ function LfgPage() {
           scheduled_for: String(formData.get("scheduled_for") ?? "").trim()
             ? new Date(String(formData.get("scheduled_for"))).toISOString()
             : null,
+          group_ttl_hours: Number(formData.get("group_ttl_hours") ?? 24),
+          chat_ttl_hours: Number(formData.get("chat_ttl_hours") ?? 24),
         },
       });
       setPosts((previous) => [post, ...previous]);
@@ -453,6 +456,49 @@ function LfgPage() {
                   </Label>
                   <Input id="scheduled_for" name="scheduled_for" type="datetime-local" />
                 </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="group_ttl_hours">
+                      {copy("Quanto tempo o grupo fica aberto", "How long the group stays open", "Cuánto tiempo queda abierto el grupo")}
+                    </Label>
+                    <Select name="group_ttl_hours" defaultValue="24">
+                      <SelectTrigger id="group_ttl_hours">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {LFG_TTL_OPTIONS.map((hours) => (
+                          <SelectItem key={hours} value={String(hours)}>
+                            {hours}h
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="chat_ttl_hours">
+                      {copy("Duração da DM após o match", "DM duration after a match", "Duración del DM después del match")}
+                    </Label>
+                    <Select name="chat_ttl_hours" defaultValue="24">
+                      <SelectTrigger id="chat_ttl_hours">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {LFG_TTL_OPTIONS.map((hours) => (
+                          <SelectItem key={hours} value={String(hours)}>
+                            {hours}h
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <p className="text-[0.68rem] leading-5 text-muted-foreground">
+                  {copy(
+                    "A DM é temporária e começa a contar quando o match é aceito. Depois do prazo, as mensagens são removidas automaticamente, salvo quando houver denúncia em análise.",
+                    "The DM is temporary and starts counting when the match is accepted. After the deadline, messages are automatically removed unless a report is under review.",
+                    "El DM es temporal y empieza a contar cuando se acepta el match. Después del plazo, los mensajes se eliminan automáticamente, salvo si existe una denuncia en revisión.",
+                  )}
+                </p>
                 <div className="flex items-center gap-2">
                   <Switch name="mic_required" id="mic_required" />
                   <Label htmlFor="mic_required">{t("lfg.micRequired")}</Label>
@@ -667,6 +713,18 @@ function LfgPage() {
                           })}
                         </span>
                       ) : null}
+                      {post.expires_at ? (
+                        <span className="rounded-md bg-muted px-2 py-1">
+                          {copy("Grupo até", "Group until", "Grupo hasta")}{" "}
+                          {new Date(post.expires_at).toLocaleString(locale, {
+                            dateStyle: "short",
+                            timeStyle: "short",
+                          })}
+                        </span>
+                      ) : null}
+                      <span className="rounded-md bg-muted px-2 py-1">
+                        DM {post.chat_ttl_hours ?? 24}h
+                      </span>
                     </div>
 
                     <div className="mt-4 flex flex-wrap gap-2">
