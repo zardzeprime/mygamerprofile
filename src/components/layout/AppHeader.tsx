@@ -182,7 +182,12 @@ export function AppHeader() {
   return (
     <header ref={headerRef} className="mgp-header sticky top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-xl">
       <div className="mx-auto grid h-[4.25rem] w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 sm:px-6">
-        <BrandLogoPlaceholder />
+        <div className="flex min-w-0 items-center gap-2">
+          <BrandLogoPlaceholder />
+          <span className="hidden rounded-full border border-gold/30 bg-gold/[0.08] px-2 py-1 text-[0.56rem] font-black uppercase tracking-[0.1em] text-gold-strong sm:inline-flex">
+            {locale === "pt-BR" ? "Beta público" : locale === "es" ? "Beta público" : "Public beta"}
+          </span>
+        </div>
 
         <nav aria-label={t("navigation.menu")} className="hidden items-center gap-0.5 xl:flex">
           {NAV.map((item) => (
