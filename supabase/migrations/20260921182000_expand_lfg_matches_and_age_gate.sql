@@ -123,7 +123,7 @@ create table if not exists public.lfg_applications (
 
 alter table public.lfg_applications enable row level security;
 
-revoke all on table public.lfg_applications from anon;
+revoke all on table public.lfg_applications from anon, authenticated;
 grant select, insert, update on table public.lfg_applications to authenticated;
 grant all on table public.lfg_applications to service_role;
 
@@ -264,7 +264,7 @@ create table if not exists public.lfg_dm_messages (
 
 alter table public.lfg_dm_messages enable row level security;
 
-revoke all on table public.lfg_dm_messages from anon;
+revoke all on table public.lfg_dm_messages from anon, authenticated;
 grant select, insert on table public.lfg_dm_messages to authenticated;
 grant update(read_at) on table public.lfg_dm_messages to authenticated;
 grant all on table public.lfg_dm_messages to service_role;
