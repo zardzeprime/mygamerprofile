@@ -75,9 +75,11 @@ type MatchMessage = {
 export function LfgMatchCenter({
   userId,
   verified,
+  refreshToken = 0,
 }: {
   userId: string;
   verified: boolean;
+  refreshToken?: number;
 }) {
   const { locale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
@@ -103,7 +105,7 @@ export function LfgMatchCenter({
 
   useEffect(() => {
     void load();
-  }, [userId]);
+  }, [userId, refreshToken]);
 
   const respond = async (applicationId: string, status: "accepted" | "rejected") => {
     setBusyId(applicationId);
