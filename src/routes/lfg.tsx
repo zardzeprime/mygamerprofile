@@ -78,7 +78,7 @@ export const Route = createFileRoute("/lfg")({
 function LfgPage() {
   const { t, locale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const { user } = useAuth();
+  const { user } = useAuth();\n  const userId = user?.id ?? null;
   const { games, posts: initialPosts } = Route.useLoaderData();
   const search = Route.useSearch();
   const [posts, setPosts] = useState(initialPosts);
@@ -100,16 +100,16 @@ function LfgPage() {
 
   useEffect(() => {
     let active = true;
-    if (!user) {
+    if (!userId) {
       setSteamGames([]);
       return;
     }
 
     setSteamLoading(true);
-    void (supabase as any)
+    void supabase
       .from("steam_games")
       .select("app_id,name,icon_url,playtime_forever")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .eq("owned", true)
       .order("playtime_forever", { ascending: false })
       .limit(300)
@@ -128,7 +128,7 @@ function LfgPage() {
     return () => {
       active = false;
     };
-  }, [user?.id]);
+  }, [userId]);
 
   const gameOptions = useMemo<LfgGameOption[]>(() => {
     const catalog = games.map((game) => ({
