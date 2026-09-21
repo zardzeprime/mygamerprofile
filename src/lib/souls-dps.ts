@@ -31,6 +31,9 @@ export type SoulsDpsWeapon = {
   weight?: number;
   requirements: SoulsRequirements;
   baseDamage: SoulsDamage;
+  maxDamage?: SoulsDamage;
+  durability?: number;
+  enchantable?: boolean;
   scalingLetters?: Partial<Record<SoulsDpsStat, string | null>>;
   scalingNumeric?: SoulsScaling;
   infusions?: string[];
@@ -69,6 +72,10 @@ export type SoulsDpsResult = {
 const DS1_WEAPONS_URL =
   "https://gist.githubusercontent.com/BonsaiDen/4096890/raw/DarkSoulsWeapons.js";
 const DS1_SOURCE_URL = "https://gist.github.com/BonsaiDen/4096890";
+const DS1_REINFORCEMENT_URL =
+  "https://raw.githubusercontent.com/Sezergumus/Dark-Souls-API/main/src/weapons.json";
+const DS1_REINFORCEMENT_SOURCE =
+  "https://github.com/Sezergumus/Dark-Souls-API";
 const DS3_BASE =
   "https://raw.githubusercontent.com/Phil25/DS3InventoryBuilder/master/DataGenerator/Raw";
 const DS3_SOURCE_URL = "https://github.com/Phil25/DS3InventoryBuilder";
@@ -214,6 +221,75 @@ type Ds1RawWeapon = {
   aotaOnly?: boolean;
 };
 
+type Ds1ReinforcementRow = {
+  name?: string;
+  weight?: number;
+  durability?: number;
+  attack_type?: string;
+  enchantable?: boolean;
+  requirements?: { str?: number; dex?: number; int?: number; faith?: number };
+  regular_phy_dmg?: number;
+  regular_magic_dmg?: number;
+  regular_fire_dmg?: number;
+  regular_lightning_dmg?: number;
+  regular15_phy_dmg?: number;
+  regular15_magic_dmg?: number;
+  regular15_fire_dmg?: number;
+  regular15_lightning_dmg?: number;
+  regular5_phy_dmg?: number;
+  regular5_magic_dmg?: number;
+  regular5_fire_dmg?: number;
+  regular5_lightning_dmg?: number;
+};
+
+function flattenDs1ReinforcementRows(payload: unknown) {
+  if (!Array.isArray(payload)) return [] as Array<Ds1ReinforcementRow & { category?: string }>;
+  const rows: Array<Ds1ReinforcementRow & { category?: string }> = [];
+  payload.forEach((group) => {
+    if (!group || typeof group !== "object") return;
+    const category = typeof (group as { category?: unknown }).category === "string"
+      ? (group as { category: string }).category
+      : undefined;
+    Object.entries(group as Record<string, unknown>).forEach(([key, value]) => {
+      if (key === "category" || !Array.isArray(value)) return;
+      value.forEach((entry) => {
+        if (entry && typeof entry === "object") {
+          rows.push({ ...(entry as Ds1ReinforcementRow), category });
+        }
+      });
+    });
+  });
+  return rows;
+}
+
+function ds1Endpoint(row?: Ds1ReinforcementRow) {
+  if (!row) return null;
+  const maxUpgrade =
+    row.regular15_phy_dmg != null ||
+    row.regular15_magic_dmg != null ||
+    row.regular15_fire_dmg != null ||
+    row.regular15_lightning_dmg != null
+      ? 15
+      : row.regular5_phy_dmg != null ||
+          row.regular5_magic_dmg != null ||
+          row.regular5_fire_dmg != null ||
+          row.regular5_lightning_dmg != null
+        ? 5
+        : 0;
+  if (!maxUpgrade) return null;
+  const prefix = maxUpgrade === 15 ? "regular15" : "regular5";
+  return {
+    maxUpgrade,
+    damage: {
+      physical: Number(row[`${prefix}_phy_dmg` as keyof Ds1ReinforcementRow]) || 0,
+      magic: Number(row[`${prefix}_magic_dmg` as keyof Ds1ReinforcementRow]) || 0,
+      fire: Number(row[`${prefix}_fire_dmg` as keyof Ds1ReinforcementRow]) || 0,
+      lightning: Number(row[`${prefix}_lightning_dmg` as keyof Ds1ReinforcementRow]) || 0,
+      dark: 0,
+    } satisfies SoulsDamage,
+  };
+}
+
 let ds1Cache: Promise<SoulsDpsWeapon[]> | null = null;
 
 export async function loadDs1Weapons() {
@@ -224,41 +300,65 @@ export async function loadDs1Weapons() {
       return (await response.json()) as Ds1RawWeapon[];
     }),
     loadSoulsCompendiumCategory("dark-souls-remastered", "weapon").catch(() => []),
-  ]).then(([weapons, icons]) => {
+    fetch(DS1_REINFORCEMENT_URL)
+      .then(async (response) => {
+        if (!response.ok) return [] as Array<Ds1ReinforcementRow & { category?: string }>;
+        return flattenDs1ReinforcementRows(await response.json());
+      })
+      .catch(() => [] as Array<Ds1ReinforcementRow & { category?: string }>),
+  ]).then(([weapons, icons, reinforcementRows]) => {
     const iconByName = new Map(
       icons.map((entry) => [entry.name.toLocaleLowerCase(), entry.iconUrl]),
     );
-    return weapons.map<SoulsDpsWeapon>((weapon) => ({
-      id: `ds1:${weapon.name}`,
-      game: "dark-souls-remastered",
-      name: weapon.name,
-      iconUrl: iconByName.get(weapon.name.toLocaleLowerCase()),
-      weight: weapon.weight,
-      requirements: {
-        str: weapon.req.strength ?? 0,
-        dex: weapon.req.dexterity ?? 0,
-        int: weapon.req.intelligence ?? 0,
-        fth: weapon.req.faith ?? 0,
-      },
-      baseDamage: {
-        physical: weapon.atk.physical ?? 0,
-        magic: weapon.atk.magic ?? 0,
-        fire: weapon.atk.fire ?? 0,
-        lightning: weapon.atk.lightning ?? 0,
-        dark: 0,
-      },
-      scalingLetters: {
-        str: weapon.scale.strength,
-        dex: weapon.scale.dexterity,
-        int: weapon.scale.intelligence,
-        fth: weapon.scale.faith,
-        lck: null,
-      },
-      maxUpgrade: 15,
-      sourceUrl: DS1_SOURCE_URL,
-      obtained: weapon.obtained,
-      attackTypes: weapon.attackTypes,
-    }));
+    const reinforcementByName = new Map(
+      reinforcementRows
+        .filter((row) => row.name)
+        .map((row) => [row.name!.toLocaleLowerCase(), row] as const),
+    );
+
+    return weapons
+      .filter((weapon) => weapon.atk && weapon.req && weapon.scale)
+      .map<SoulsDpsWeapon>((weapon) => {
+        const supplemental = reinforcementByName.get(weapon.name.toLocaleLowerCase());
+        const endpoint = ds1Endpoint(supplemental);
+        return {
+          id: `ds1:${weapon.name}`,
+          game: "dark-souls-remastered",
+          name: weapon.name,
+          weaponClass: supplemental?.category,
+          iconUrl: iconByName.get(weapon.name.toLocaleLowerCase()),
+          weight: supplemental?.weight ?? weapon.weight,
+          durability: supplemental?.durability ?? weapon.durability,
+          enchantable: supplemental?.enchantable,
+          requirements: {
+            str: supplemental?.requirements?.str ?? weapon.req.strength ?? 0,
+            dex: supplemental?.requirements?.dex ?? weapon.req.dexterity ?? 0,
+            int: supplemental?.requirements?.int ?? weapon.req.intelligence ?? 0,
+            fth: supplemental?.requirements?.faith ?? weapon.req.faith ?? 0,
+          },
+          baseDamage: {
+            physical: supplemental?.regular_phy_dmg ?? weapon.atk.physical ?? 0,
+            magic: supplemental?.regular_magic_dmg ?? weapon.atk.magic ?? 0,
+            fire: supplemental?.regular_fire_dmg ?? weapon.atk.fire ?? 0,
+            lightning: supplemental?.regular_lightning_dmg ?? weapon.atk.lightning ?? 0,
+            dark: 0,
+          },
+          maxDamage: endpoint?.damage,
+          scalingLetters: {
+            str: weapon.scale.strength,
+            dex: weapon.scale.dexterity,
+            int: weapon.scale.intelligence,
+            fth: weapon.scale.faith,
+            lck: null,
+          },
+          maxUpgrade: endpoint?.maxUpgrade ?? 15,
+          sourceUrl: endpoint ? DS1_REINFORCEMENT_SOURCE : DS1_SOURCE_URL,
+          obtained: weapon.obtained,
+          attackTypes:
+            supplemental?.attack_type?.split("/").map((entry) => entry.trim()).filter(Boolean) ??
+            weapon.attackTypes,
+        };
+      });
   });
   return ds1Cache;
 }
@@ -611,7 +711,8 @@ export function calculateDs1Estimate(
     ...stats,
     str: Math.min(99, stats.str * (twoHanded ? 1.5 : 1)),
   };
-  const upgradeFactor = 1 + Math.max(0, Math.min(15, upgrade)) * 0.1;
+  const safeUpgrade = Math.max(0, Math.min(weapon.maxUpgrade, upgrade));
+  const upgradeRatio = weapon.maxUpgrade > 0 ? safeUpgrade / weapon.maxUpgrade : 0;
   const scaling = weapon.scalingLetters ?? {};
   const statsByDamage: Array<[keyof SoulsDamage, SoulsDpsStat[]]> = [
     ["physical", ["str", "dex"]],
@@ -623,7 +724,9 @@ export function calculateDs1Estimate(
 
   const damage = emptyDamage();
   statsByDamage.forEach(([damageType, contributors]) => {
-    const base = weapon.baseDamage[damageType] * upgradeFactor;
+    const start = weapon.baseDamage[damageType];
+    const end = weapon.maxDamage?.[damageType] ?? start * (1 + weapon.maxUpgrade * 0.1);
+    const base = start + (end - start) * upgradeRatio;
     const bonus = contributors.reduce((sum, stat) => {
       const grade = scaling[stat];
       return sum + base * gradeWeight(grade) * ds1StatCurve(effectiveStats[stat]) * 0.55;
