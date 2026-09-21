@@ -4,6 +4,12 @@ import type { SoulsGameSlug } from "@/data/soulsBossResearch";
 type LocalizedText = Record<Locale, string>;
 type ImageFit = "cover" | "contain";
 
+// Route third-party artwork through a dedicated image CDN so Fandom/legacy hosts
+// cannot block the browser hotlink. Source/provenance links remain the original pages.
+const reliableImageUrl = (url: string) =>
+  `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=1200&fit=inside&we`;
+
+
 export type SoulsBossImageAsset = {
   url: string;
   sourceUrl: string;
@@ -42,7 +48,7 @@ const ds3 = (
   detailScale = 1,
   detailFit: ImageFit = "contain",
 ): SoulsBossImageAsset => ({
-  url: fandomFileUrl(filename),
+  url: reliableImageUrl(fandomFileUrl(filename)),
   sourceUrl: fandomFilePage(filename),
   sourceLabel: fandomLabel,
   cardObjectPosition,
@@ -64,7 +70,7 @@ const creativeUncut = (
     detailFit?: ImageFit;
   } = {},
 ): SoulsBossImageAsset => ({
-  url: `https://www.creativeuncut.com/gallery-30/art/${slug}.jpg`,
+  url: reliableImageUrl(`https://www.creativeuncut.com/gallery-30/art/${slug}.jpg`),
   sourceUrl: `https://www.creativeuncut.com/gallery-30/${slug}.html`,
   sourceLabel: creativeUncutLabel,
   cardObjectPosition: options.cardObjectPosition ?? "50% 32%",
@@ -130,7 +136,7 @@ export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
     detailScale: 1.08,
   }),
   "champion-s-gravetender-and-gravetender-greatwolf": {
-    url: "https://i.imgur.com/XW5GFIp.jpg",
+    url: reliableImageUrl("https://i.imgur.com/XW5GFIp.jpg"),
     sourceUrl: "https://darksouls3.wikidot.com/bosses:champion-s-gravetender-gravetender-greatwolf",
     sourceLabel: {
       "pt-BR": "Screenshot do encontro · Dark Souls III Wikidot",
