@@ -42,7 +42,7 @@ export function SteamFavoriteGameEditor({
   locale: Locale;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const db = supabase as any;
+  const db = supabase;
   const [games, setGames] = useState<SteamGame[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [selectedAppId, setSelectedAppId] = useState<number | null>(null);
