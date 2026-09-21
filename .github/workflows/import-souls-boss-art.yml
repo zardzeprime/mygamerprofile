@@ -1,0 +1,96 @@
+name: Import Souls boss artwork
+
+on:
+  push:
+    paths:
+      - ".github/workflows/import-souls-boss-art.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-art:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download boss artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/assets/bosses/ds1 public/assets/bosses/ds3
+          download() {
+            local out="$1"; local url="$2"
+            echo "Downloading $out"
+            curl --fail --location --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 120               -A "Mozilla/5.0 MGP/1.0" "$url" -o "$out"
+            test -s "$out"
+          }
+          fandom() { python3 -c 'import urllib.parse,sys; print("https://darksouls.fandom.com/wiki/Special:Redirect/file/"+urllib.parse.quote(sys.argv[1]))' "$1"; }
+          remastered() { python3 -c 'import urllib.parse,sys; print("https://dark-souls-remastered.fandom.com/wiki/Special:Redirect/file/"+urllib.parse.quote(sys.argv[1]))' "$1"; }
+
+          # Dark Souls 1
+          download public/assets/bosses/ds1/asylum-demon.png "$(fandom 'Asylum Demon.png')"
+          download public/assets/bosses/ds1/taurus-demon.jpg "$(fandom 'DS1 promotional screenshot (Taurus Demon co-op).jpg')"
+          download public/assets/bosses/ds1/bell-gargoyles.jpg "$(fandom 'DS1 Promotional screenshot (Bell Gargoyle).jpg')"
+          download public/assets/bosses/ds1/capra-demon.jpg "$(fandom 'Capra Demon 01.jpg')"
+          download public/assets/bosses/ds1/gaping-dragon.jpg "$(fandom 'DS1 promotional screenshot (Gaping Dragon co-op).jpg')"
+          download public/assets/bosses/ds1/chaos-witch-quelaag.jpg "$(fandom 'Quelaag 01.jpg')"
+          download public/assets/bosses/ds1/moonlight-butterfly.jpg "$(remastered 'MLBF.jpg')"
+          download public/assets/bosses/ds1/great-grey-wolf-sif.jpg "$(fandom 'DS1 promotional screenshot (Great Grey Wolf Sif).jpg')"
+          download public/assets/bosses/ds1/iron-golem.jpg "$(fandom 'Iron Golem concept art.jpg')"
+          download public/assets/bosses/ds1/ornstein-and-smough.jpg "$(remastered 'Ornstein+smough.jpg')"
+          download public/assets/bosses/ds1/dark-sun-gwyndolin.jpg "$(fandom 'Gywndolin concept art.jpg')"
+          download public/assets/bosses/ds1/crossbreed-priscilla.jpg "$(fandom 'Crossbreed.jpg')"
+          download public/assets/bosses/ds1/stray-demon.jpg "$(fandom 'DS1 promotional screenshot (Stray Demon).jpg')"
+          download public/assets/bosses/ds1/pinwheel.jpg "$(remastered 'Concept of pinwheel.jpg')"
+          download public/assets/bosses/ds1/gravelord-nito.jpg "https://www.creativeuncut.com/gallery-18/art/ds-nito.jpg"
+          download public/assets/bosses/ds1/seath-the-scaleless.jpg "https://www.creativeuncut.com/gallery-18/art/ds-crystal-dragon.jpg"
+          download public/assets/bosses/ds1/four-kings.jpg "$(fandom 'Four kings.jpg')"
+          download public/assets/bosses/ds1/ceaseless-discharge.jpg "$(fandom 'Ceaseless Discharge 01.jpg')"
+          download public/assets/bosses/ds1/demon-firesage.jpg "https://images.squarespace-cdn.com/content/v1/647e516c1ebf6d1ac5f8d201/7d2f6e05-3db6-46be-a80c-0ceebf69cbf5/firesage-1200x675.jpg"
+          download public/assets/bosses/ds1/centipede-demon.jpg "$(fandom 'Centipede Demon.jpg')"
+          download public/assets/bosses/ds1/bed-of-chaos.jpg "$(fandom 'Bed of Chaos.jpg')"
+          download public/assets/bosses/ds1/gwyn-lord-of-cinder.jpg "$(fandom 'Gwyn, Lord of Cinder concept art.jpg')"
+          download public/assets/bosses/ds1/sanctuary-guardian.jpg "$(remastered 'Sanctuary Guardian.jpg')"
+          download public/assets/bosses/ds1/artorias-the-abysswalker.jpg "https://www.creativeuncut.com/gallery-18/art/ds-artorias-the-abysswalker2.jpg"
+          download public/assets/bosses/ds1/black-dragon-kalameet.jpg "https://www.creativeuncut.com/gallery-18/art/ds-dragon.jpg"
+          download public/assets/bosses/ds1/manus-father-of-the-abyss.jpg "$(fandom 'DS1 PtDE screenshot (Manus).jpg')"
+
+          # Dark Souls 3
+          download public/assets/bosses/ds3/iudex-gundyr.png "$(fandom 'Gundyr concept.png')"
+          download public/assets/bosses/ds3/vordt-of-the-boreal-valley.png "$(fandom 'Vordt concept.png')"
+          download public/assets/bosses/ds3/curse-rotted-greatwood.png "$(fandom 'Curse rotted greatwood concept.png')"
+          download public/assets/bosses/ds3/crystal-sage.png "$(fandom 'Crystal sage concept.png')"
+          download public/assets/bosses/ds3/deacons-of-the-deep.png "$(fandom 'Deacons concept.png')"
+          download public/assets/bosses/ds3/abyss-watchers.png "$(fandom 'Abyss Watcher (DS3 Design Works).png')"
+          download public/assets/bosses/ds3/high-lord-wolnir.png "$(fandom 'Wolnir concept.png')"
+          download public/assets/bosses/ds3/old-demon-king.png "$(fandom 'Old demon king concept.png')"
+          download public/assets/bosses/ds3/pontiff-sulyvahn.png "$(fandom 'Pontiff sulyvahn concept.png')"
+          download public/assets/bosses/ds3/aldrich-devourer-of-gods.png "$(fandom 'Aldrich concept art.png')"
+          download public/assets/bosses/ds3/yhorm-the-giant.png "$(fandom 'Yhorm concept.png')"
+          download public/assets/bosses/ds3/dancer-of-the-boreal-valley.jpg "https://www.creativeuncut.com/gallery-30/art/ds3-dancer-of-the-boreal-valley.jpg"
+          download public/assets/bosses/ds3/oceiros-the-consumed-king.png "$(fandom 'Oceiros concept.png')"
+          cp public/assets/bosses/ds3/iudex-gundyr.png public/assets/bosses/ds3/champion-gundyr.png
+          download public/assets/bosses/ds3/dragonslayer-armour.png "$(fandom 'Dragonslayer armour concept.png')"
+          download public/assets/bosses/ds3/twin-princes.png "$(fandom 'Twin princes concept.png')"
+          download public/assets/bosses/ds3/ancient-wyvern.png "$(fandom 'Ancient wyvern concept.png')"
+          download public/assets/bosses/ds3/the-nameless-king.png "$(fandom 'Nameless king concept.png')"
+          download public/assets/bosses/ds3/soul-of-cinder.jpg "https://www.creativeuncut.com/gallery-30/art/ds3-soul-of-cinder.jpg"
+          download public/assets/bosses/ds3/sister-friede.png "$(fandom 'Friede concept.png')"
+          download public/assets/bosses/ds3/demon-prince.png "$(fandom 'Demon Prince artwork.png')"
+          download public/assets/bosses/ds3/halflight-spear-of-the-church.png "$(fandom 'Halflight concept.png')"
+          download public/assets/bosses/ds3/darkeater-midir.png "$(fandom 'MidirConcept.png')"
+          download public/assets/bosses/ds3/slave-knight-gael.png "$(fandom 'Gael phase1 concept.png')"
+
+      - name: Commit imported artwork
+        shell: bash
+        run: |
+          git config user.name "mgp-asset-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/assets/bosses
+          if git diff --cached --quiet; then
+            echo "No artwork changes."
+          else
+            git commit -m "assets(souls): import boss artwork locally"
+            git push
+          fi
