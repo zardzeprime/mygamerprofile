@@ -29,6 +29,16 @@ export const Route = createFileRoute("/register")({
   }),
 });
 
+function isStrongPassword(value: string) {
+  return (
+    value.length >= 10 &&
+    /[a-z]/.test(value) &&
+    /[A-Z]/.test(value) &&
+    /\d/.test(value) &&
+    /[^A-Za-z0-9]/.test(value)
+  );
+}
+
 function RegisterPage() {
   const { t, locale } = useI18n();
   const copy = (pt: string, en: string, es: string) =>
@@ -86,8 +96,14 @@ function RegisterPage() {
       );
       return;
     }
-    if (password.length < 6) {
-      setError(t("auth.errors.weakPassword"));
+    if (!isStrongPassword(password)) {
+      setError(
+        copy(
+          "Use pelo menos 10 caracteres com maiúscula, minúscula, número e símbolo.",
+          "Use at least 10 characters with uppercase, lowercase, a number and a symbol.",
+          "Usa al menos 10 caracteres con mayúscula, minúscula, número y símbolo.",
+        ),
+      );
       return;
     }
     if (password !== confirm) {
@@ -217,8 +233,16 @@ function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={10}
                 autoComplete="new-password"
               />
+              <p className="text-[0.68rem] leading-5 text-muted-foreground">
+                {copy(
+                  "Mínimo de 10 caracteres com maiúscula, minúscula, número e símbolo.",
+                  "Minimum 10 characters with uppercase, lowercase, a number and a symbol.",
+                  "Mínimo de 10 caracteres con mayúscula, minúscula, número y símbolo.",
+                )}
+              </p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm">{t("auth.confirmPassword")}</Label>
