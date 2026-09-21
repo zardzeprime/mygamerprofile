@@ -265,8 +265,8 @@ export async function loadDs1Weapons() {
 
 type Ds3ParsedRow = {
   id: number;
+  groupId: number;
   displayName: string;
-  baseName: string;
   weaponClass: string;
   infusion: string;
   buffable: boolean;
@@ -280,9 +280,9 @@ type Ds3ParsedRow = {
 function parseDs3Row(row: string[]): Ds3ParsedRow {
   return {
     id: numberAt(row, 0),
+    groupId: Math.floor(numberAt(row, 0) / 10000),
     displayName: row[1] ?? "",
-    baseName: row[2] ?? row[1] ?? "",
-    weaponClass: row[2] && row[2] !== row[1] ? row[2] : row[2] ?? "",
+    weaponClass: row[2] ?? "",
     infusion: row[3] || "-",
     buffable: (row[4] ?? "") === "TRUE",
     weight: numberAt(row, 7),
@@ -370,17 +370,23 @@ export async function loadDs3Weapons() {
       return (await response.json()) as string[];
     }),
   ]).then(([rows, limits, order]) => {
-    const grouped = new Map<string, Ds3ParsedRow[]>();
+    const grouped = new Map<number, Ds3ParsedRow[]>();
     rows.forEach((row) => {
-      const list = grouped.get(row.baseName) ?? [];
+      const list = grouped.get(row.groupId) ?? [];
       list.push(row);
-      grouped.set(row.baseName, list);
+      grouped.set(row.groupId, list);
     });
 
-    const names = order.length ? order : Array.from(grouped.keys());
+    const byName = new Map<string, Ds3ParsedRow[]>();
+    grouped.forEach((variants) => {
+      const base = variants.find((row) => row.infusion === "-") ?? variants[0];
+      if (base?.displayName) byName.set(base.displayName, variants);
+    });
+
+    const names = order.length ? order : Array.from(byName.keys());
     return names
       .map((name) => {
-        const variants = grouped.get(name);
+        const variants = byName.get(name);
         if (!variants?.length) return null;
         const base = variants.find((row) => row.infusion === "-") ?? variants[0];
         const infusions = variants.map((row) => row.infusion);
@@ -440,9 +446,14 @@ export async function loadDs3WeaponLevel(
     loadDs3LevelRows(level),
     loadDs3Weapons(),
   ]);
-  const selected = rows.find(
-    (row) => row.baseName === name && row.infusion === infusion,
+  const baseRow = rows.find(
+    (row) => row.infusion === "-" && row.displayName === name,
   );
+  const selected = baseRow
+    ? rows.find(
+        (row) => row.groupId === baseRow.groupId && row.infusion === infusion,
+      )
+    : null;
   const weapon = catalog.find((entry) => entry.name === name);
   if (!selected || !weapon) return null;
   return {
