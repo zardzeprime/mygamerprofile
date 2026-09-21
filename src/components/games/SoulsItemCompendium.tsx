@@ -23,6 +23,12 @@ import {
   type SoulsCompendiumGame,
 } from "@/lib/souls-compendium";
 import { cn } from "@/lib/utils";
+import {
+  loadDs1Weapons,
+  loadDs3Weapons,
+  type SoulsDpsStat,
+  type SoulsDpsWeapon,
+} from "@/lib/souls-dps";
 
 const CATEGORIES: Array<{
   key: "all" | SoulsCompendiumCategory;
@@ -50,6 +56,26 @@ export function SoulsItemCompendium({
   const [category, setCategory] = useState<"all" | SoulsCompendiumCategory>("all");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [technicalWeapons, setTechnicalWeapons] = useState<SoulsDpsWeapon[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    const technicalLoader =
+      gameSlug === "dark-souls-iii" ? loadDs3Weapons() : loadDs1Weapons();
+
+    void technicalLoader
+      .then((data) => {
+        if (active) setTechnicalWeapons(data);
+      })
+      .catch((error) => {
+        console.warn("[SoulsItemCompendium] technical weapon data unavailable", error);
+        if (active) setTechnicalWeapons([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [gameSlug]);
 
   useEffect(() => {
     let active = true;
@@ -88,6 +114,13 @@ export function SoulsItemCompendium({
 
   const selected =
     entries.find((entry) => entry.id === selectedId) ?? filtered[0] ?? entries[0] ?? null;
+  const technicalWeapon =
+    selected?.category === "weapon"
+      ? technicalWeapons.find(
+          (weapon) =>
+            weapon.name.toLocaleLowerCase() === selected.name.toLocaleLowerCase(),
+        ) ?? null
+      : null;
 
   const gameName = gameSlug === "dark-souls-remastered" ? "Dark Souls Remastered" : "Dark Souls III";
 
@@ -245,6 +278,10 @@ export function SoulsItemCompendium({
               </div>
 
               <div className="space-y-4 p-5">
+                {technicalWeapon ? (
+                  <WeaponTechnicalCard weapon={technicalWeapon} locale={locale} />
+                ) : null}
+
                 <div>
                   <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
                     {copy("Descrição de referência", "Reference description", "Descripción de referencia")}
@@ -276,6 +313,125 @@ export function SoulsItemCompendium({
           ) : null}
         </div>
       )}
+    </div>
+  );
+}
+
+function WeaponTechnicalCard({
+  weapon,
+  locale,
+}: {
+  weapon: SoulsDpsWeapon;
+  locale: Locale;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const stats: Array<[SoulsDpsStat, string]> = [
+    ["str", "STR"],
+    ["dex", "DEX"],
+    ["int", "INT"],
+    ["fth", "FTH"],
+    ["lck", "LCK"],
+  ];
+  const damage = [
+    ["PHY", weapon.baseDamage.physical],
+    ["MAG", weapon.baseDamage.magic],
+    ["FIRE", weapon.baseDamage.fire],
+    ["LIGHT", weapon.baseDamage.lightning],
+    ["DARK", weapon.baseDamage.dark],
+  ].filter(([, value]) => Number(value) > 0);
+
+  return (
+    <div className="rounded-2xl border border-gold/25 bg-gold/[0.05] p-4">
+      <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-gold-strong">
+        {copy("Características técnicas", "Technical characteristics", "Características técnicas")}
+      </p>
+
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        {weapon.weaponClass ? (
+          <TechCell label={copy("Classe", "Class", "Clase")} value={weapon.weaponClass} />
+        ) : null}
+        {weapon.weight != null ? (
+          <TechCell label={copy("Peso", "Weight", "Peso")} value={weapon.weight} />
+        ) : null}
+        <TechCell label={copy("Upgrade", "Upgrade", "Mejora")} value={`+0 → +${weapon.maxUpgrade}`} />
+        {weapon.infusions?.length ? (
+          <TechCell
+            label={copy("Infusões", "Infusions", "Infusiones")}
+            value={String(weapon.infusions.length)}
+          />
+        ) : null}
+      </div>
+
+      <p className="mt-4 text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+        {copy("Requisitos", "Requirements", "Requisitos")}
+      </p>
+      <div className="mt-2 grid grid-cols-4 gap-1.5">
+        <TechCell label="STR" value={weapon.requirements.str} compact />
+        <TechCell label="DEX" value={weapon.requirements.dex} compact />
+        <TechCell label="INT" value={weapon.requirements.int} compact />
+        <TechCell label="FTH" value={weapon.requirements.fth} compact />
+      </div>
+
+      <p className="mt-4 text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+        Scaling
+      </p>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {stats.map(([stat, label]) => {
+          const grade = weapon.scalingLetters?.[stat];
+          if (!grade || grade === "-") return null;
+          return (
+            <span
+              key={stat}
+              className="rounded-lg border border-border bg-background/50 px-2 py-1 text-[0.66rem] font-black text-foreground"
+            >
+              {label} · {grade}
+            </span>
+          );
+        })}
+      </div>
+
+      {damage.length ? (
+        <>
+          <p className="mt-4 text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+            {copy("Dano base de referência", "Reference base damage", "Daño base de referencia")}
+          </p>
+          <div className="mt-2 grid grid-cols-2 gap-1.5">
+            {damage.map(([label, value]) => (
+              <TechCell key={String(label)} label={String(label)} value={Math.round(Number(value))} compact />
+            ))}
+          </div>
+        </>
+      ) : null}
+
+      {weapon.attackTypes?.length ? (
+        <p className="mt-3 text-[0.66rem] leading-5 text-muted-foreground">
+          <strong className="text-foreground">{copy("Ataques:", "Attacks:", "Ataques:")}</strong>{" "}
+          {weapon.attackTypes.join(" · ")}
+        </p>
+      ) : null}
+      {weapon.obtained?.length ? (
+        <p className="mt-2 text-[0.66rem] leading-5 text-muted-foreground">
+          <strong className="text-foreground">{copy("Obtenção:", "Obtained:", "Obtención:")}</strong>{" "}
+          {weapon.obtained.join(" · ")}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function TechCell({
+  label,
+  value,
+  compact = false,
+}: {
+  label: string;
+  value: string | number;
+  compact?: boolean;
+}) {
+  return (
+    <div className={cn("rounded-lg border border-border bg-background/45", compact ? "p-2" : "p-2.5")}>
+      <p className="text-[0.52rem] font-black uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
+      <p className={cn("mt-0.5 font-black text-foreground", compact ? "text-xs" : "text-sm")}>{value}</p>
     </div>
   );
 }
