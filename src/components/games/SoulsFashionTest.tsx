@@ -291,7 +291,7 @@ export function SoulsFashionTest({
       frost: ["Gelo", "Frost", "Hielo"],
       curse: ["Maldição", "Curse", "Maldición"],
     };
-    return localeCopy(locale, ...(labels[key] ?? [key, key, key]));
+    const localized = labels[key] ?? ([key, key, key] as [string, string, string]);\n    return localeCopy(locale, localized[0], localized[1], localized[2]);
   };
 
   return (
