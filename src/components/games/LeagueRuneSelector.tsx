@@ -1,7 +1,6 @@
 import { Loader2, ShieldCheck, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
-import { LeagueRuneTreeWheel } from "@/components/games/LeagueRuneTreeWheel";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import {
@@ -280,13 +279,6 @@ export function LeagueRuneSelector({
           ))}
         </div>
       </div>
-
-      <LeagueRuneTreeWheel
-        locale={locale}
-        styles={styles}
-        activeStyle={primary}
-        onSelect={choosePrimaryStyle}
-      />
     </div>
   );
 }

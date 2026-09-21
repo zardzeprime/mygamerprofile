@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Code2, Download, Gamepad2, Loader2, LockKeyhole, Plus, Send, Trash2, X } from "lucide-react";
 
 import { NexusMark } from "@/components/nexus/NexusMark";
+import { NexusMarkdown } from "@/components/nexus/NexusMarkdown";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/i18n";
@@ -500,7 +501,11 @@ export function NexusChat() {
                         NEXUS
                       </div>
                     ) : null}
-                    <p className="whitespace-pre-wrap">{message.content}</p>
+                    {message.role === "assistant" ? (
+                      <NexusMarkdown content={message.content} />
+                    ) : (
+                      <p className="whitespace-pre-wrap">{message.content}</p>
+                    )}
                     {message.role === "assistant" && (message.model || message.provider) ? (
                       <p className="mt-2 text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
                         {[message.provider, message.model].filter(Boolean).join(" · ")}
