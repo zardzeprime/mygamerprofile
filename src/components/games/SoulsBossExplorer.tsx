@@ -158,7 +158,7 @@ export function SoulsBossExplorer({
                     src={selectedImage.url}
                     alt={selected.name}
                     className={cn(
-                      "h-full w-full brightness-110 saturate-105 transition-[filter,opacity] group-hover:brightness-115 group-hover:opacity-95",
+                      "h-full w-full brightness-110 transition-[filter,opacity] group-hover:opacity-95",
                       selectedImage.detailFit === "contain" ? "object-contain p-2" : "object-cover",
                     )}
                     style={{
@@ -275,12 +275,12 @@ export function SoulsBossExplorer({
                           alt=""
                           loading="lazy"
                           className={cn(
-                            "absolute inset-0 h-full w-full opacity-78 brightness-110 saturate-110 transition duration-300 group-hover:scale-105 group-hover:opacity-95",
+                            "absolute inset-0 h-full w-full opacity-80 brightness-110 transition duration-300 group-hover:scale-105 group-hover:opacity-95",
                             image.cardFit === "contain" ? "object-contain p-1" : "object-cover",
                           )}
                           style={{ objectPosition: image.cardObjectPosition }}
                         />
-                        <span className="absolute inset-0 bg-gradient-to-t from-background/76 via-background/15 to-transparent" />
+                        <span className="absolute inset-0 bg-gradient-to-t from-background/75 via-background/20 to-transparent" />
                       </>
                     ) : null}
                     <span className="absolute right-4 top-3 grid size-9 place-items-center rounded-full border border-gold/20 bg-background/70 backdrop-blur">
