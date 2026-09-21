@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Axe, Check, Crosshair, Palette, Sword, Volume2 } from "lucide-react";
+import { Axe, Check, Crosshair, MousePointer2, Palette, Sword, Volume2 } from "lucide-react";
 import { DEFAULT_ACCENT_COLOR, useTheme } from "@/lib/theme";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
@@ -126,8 +126,9 @@ function SettingsAppearancePage() {
               "Cursores más compactos y limpios. Siguen tu color principal sin cubrir el contenido de la pantalla.",
             )}
           </p>
-          <div className="mt-4 grid gap-2 sm:grid-cols-3">
+          <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
             {([
+              ["classic", copy("MGP padrão", "MGP default", "MGP estándar"), MousePointer2],
               ["sword", copy("Espada", "Sword", "Espada"), Sword],
               ["axe", copy("Machado", "Axe", "Hacha"), Axe],
               ["reticle", copy("Mira", "Reticle", "Mira"), Crosshair],
@@ -149,9 +150,11 @@ function SettingsAppearancePage() {
                 <span>
                   <span className="block">{label}</span>
                   <span className="mt-0.5 block text-[0.65rem] font-medium text-muted-foreground">
-                    {value === "reticle"
-                      ? copy("Precisão central", "Centered precision", "Precisión central")
-                      : copy("Ponta no hotspot", "Tip-aligned hotspot", "Punta alineada")}
+                    {value === "classic"
+                      ? copy("Cursor normal customizado", "Customized normal cursor", "Cursor normal personalizado")
+                      : value === "reticle"
+                        ? copy("Precisão central", "Centered precision", "Precisión central")
+                        : copy("Cosmético alternativo", "Alternative cosmetic", "Cosmético alternativo")}
                   </span>
                 </span>
               </button>
