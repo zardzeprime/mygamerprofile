@@ -221,7 +221,7 @@ begin
       select 1
       from public.reports r
       join public.lfg_dm_messages flagged
-        on flagged.id::text = r.target_id
+        on flagged.id = r.target_id
       where flagged.application_id = m.application_id
         and r.target_type = 'lfg_message'
         and r.status in ('pending','reviewing')
