@@ -9,6 +9,8 @@ import { DarkSoulsBossWiki } from "@/components/games/DarkSoulsBossWiki";
 import { DarkSoulsGuides } from "@/components/games/DarkSoulsGuides";
 import { DarkSoulsBuildLab } from "@/components/games/DarkSoulsBuildLab";
 import { DarkSouls3BuildLab } from "@/components/games/DarkSouls3BuildLab";
+import { SoulsItemCompendium } from "@/components/games/SoulsItemCompendium";
+import { SoulsDpsTest } from "@/components/games/SoulsDpsTest";
 import { ValorantAgents } from "@/components/games/ValorantAgents";
 import { ValorantMaps } from "@/components/games/ValorantMaps";
 import { ValorantNews } from "@/components/games/ValorantNews";
@@ -37,6 +39,8 @@ export function FutureCollection({
 }) {
   if (gameSlug === "dark-souls-remastered") {
     if (moduleKey === "builds") return <DarkSoulsBuildLab locale={locale} />;
+    if (moduleKey === "dps-test") return <SoulsDpsTest gameSlug="dark-souls-remastered" locale={locale} />;
+    if (moduleKey === "items") return <SoulsItemCompendium gameSlug="dark-souls-remastered" locale={locale} />;
     if (moduleKey === "bosses") return <DarkSoulsBossWiki locale={locale} />;
     if (moduleKey === "guides") return <DarkSoulsGuides locale={locale} />;
   }
@@ -44,6 +48,12 @@ export function FutureCollection({
   if (gameSlug === "dark-souls-iii" || gameSlug === "elden-ring") {
     if (gameSlug === "dark-souls-iii" && moduleKey === "builds") {
       return <DarkSouls3BuildLab locale={locale} />;
+    }
+    if (gameSlug === "dark-souls-iii" && moduleKey === "dps-test") {
+      return <SoulsDpsTest gameSlug="dark-souls-iii" locale={locale} />;
+    }
+    if (gameSlug === "dark-souls-iii" && moduleKey === "items") {
+      return <SoulsItemCompendium gameSlug="dark-souls-iii" locale={locale} />;
     }
     if (moduleKey === "bosses") return <SoulsBossExplorer gameSlug={gameSlug} locale={locale} />;
     if (moduleKey === "guides") return <SoulsGameGuides gameSlug={gameSlug} locale={locale} />;
@@ -129,6 +139,10 @@ export function FutureCollection({
     lineups: [
       copy("Biblioteca de lineups", "Lineup library", "Biblioteca de lineups"),
       copy("Setups, utilitários e jogadas da comunidade serão publicados com autoria e procedência.", "Setups, utility and community plays will be published with authorship and provenance.", "Setups, utilidades y jugadas de la comunidad se publicarán con autoría y procedencia."),
+    ],
+    "dps-test": [
+      copy("DPS Test", "DPS Test", "DPS Test"),
+      copy("Teste armas, upgrades e atributos em modo Casual ou Avançado.", "Test weapons, upgrades and attributes in Casual or Advanced mode.", "Prueba armas, mejoras y atributos en modo Casual o Avanzado."),
     ],
     builds: [
       copy("Laboratório de builds", "Build laboratory", "Laboratorio de builds"),
