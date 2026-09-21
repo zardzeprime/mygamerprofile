@@ -8,10 +8,11 @@ const TRUSTED_TEST_HOSTS = new Set([
   "localhost",
   "127.0.0.1",
   "mygamerprofile.lovable.app",
+  "id-preview--95c5a73d-d8d1-4747-85d3-6194f336fae8.lovable.app",
 ]);
 
 function isTrustedTestHost(hostname: string) {
-  return TRUSTED_TEST_HOSTS.has(hostname) || hostname.endsWith(".lovable.app");
+  return TRUSTED_TEST_HOSTS.has(hostname);
 }
 
 export function getAppOrigin() {
