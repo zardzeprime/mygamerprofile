@@ -200,6 +200,7 @@ declare
   v_expired_groups integer := 0;
   v_deleted_messages integer := 0;
   v_deleted_applications integer := 0;
+  v_deleted_posts integer := 0;
 begin
   update public.lfg_posts
   set status = 'expired',
@@ -234,6 +235,16 @@ begin
       and la.updated_at <= now() - interval '7 days'
     )
     or (
+      la.status = 'pending'
+      and la.updated_at <= now() - interval '7 days'
+      and exists (
+        select 1
+        from public.lfg_posts lp
+        where lp.id = la.lfg_post_id
+          and (lp.status <> 'open' or lp.expires_at <= now())
+      )
+    )
+    or (
       la.status = 'accepted'
       and la.chat_expires_at is not null
       and la.chat_expires_at <= now() - interval '7 days'
@@ -246,10 +257,29 @@ begin
 
   get diagnostics v_deleted_applications = row_count;
 
+  delete from public.lfg_posts lp
+  where lp.status in ('expired','closed')
+    and lp.updated_at <= now() - interval '7 days'
+    and not exists (
+      select 1
+      from public.lfg_applications la
+      where la.lfg_post_id = lp.id
+    )
+    and not exists (
+      select 1
+      from public.reports r
+      where r.target_type = 'lfg'
+        and r.target_id = lp.id
+        and r.status in ('pending','reviewing')
+    );
+
+  get diagnostics v_deleted_posts = row_count;
+
   return jsonb_build_object(
     'expired_groups', v_expired_groups,
     'deleted_messages', v_deleted_messages,
-    'deleted_applications', v_deleted_applications
+    'deleted_applications', v_deleted_applications,
+    'deleted_posts', v_deleted_posts
   );
 end;
 $$;
