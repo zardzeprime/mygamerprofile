@@ -41,6 +41,8 @@ export type SoulsDpsWeapon = {
   sourceUrl: string;
   obtained?: string[];
   attackTypes?: string[];
+  description?: string;
+  weaponSkill?: string;
 };
 
 export type Ds3WeaponLevel = SoulsDpsWeapon & {
@@ -79,6 +81,14 @@ const DS1_REINFORCEMENT_SOURCE =
 const DS3_BASE =
   "https://raw.githubusercontent.com/Phil25/DS3InventoryBuilder/master/DataGenerator/Raw";
 const DS3_SOURCE_URL = "https://github.com/Phil25/DS3InventoryBuilder";
+
+function extractDs3WeaponSkill(description?: string) {
+  if (!description) return undefined;
+  const lineMatch = description.match(/(?:^|\n)\s*Skill:\s*([^\n]+)/i);
+  const inlineMatch = description.match(/\bSkill:\s*([^.!?\n]+)/i);
+  const value = (lineMatch?.[1] ?? inlineMatch?.[1])?.trim();
+  return value || undefined;
+}
 
 const emptyDamage = (): SoulsDamage => ({
   physical: 0,
@@ -310,6 +320,9 @@ export async function loadDs1Weapons() {
     const iconByName = new Map(
       icons.map((entry) => [entry.name.toLocaleLowerCase(), entry.iconUrl]),
     );
+    const compendiumByName = new Map(
+      icons.map((entry) => [entry.name.toLocaleLowerCase(), entry] as const),
+    );
     const reinforcementByName = new Map(
       reinforcementRows
         .filter((row) => row.name)
@@ -357,6 +370,7 @@ export async function loadDs1Weapons() {
           attackTypes:
             supplemental?.attack_type?.split("/").map((entry) => entry.trim()).filter(Boolean) ??
             weapon.attackTypes,
+          description: compendiumByName.get(weapon.name.toLocaleLowerCase())?.description,
         };
       });
   });
@@ -469,7 +483,8 @@ export async function loadDs3Weapons() {
       if (!response.ok) return [] as string[];
       return (await response.json()) as string[];
     }),
-  ]).then(([rows, limits, order]) => {
+    loadSoulsCompendiumCategory("dark-souls-iii", "weapon").catch(() => []),
+  ]).then(([rows, limits, order, compendium]) => {
     const grouped = new Map<number, Ds3ParsedRow[]>();
     rows.forEach((row) => {
       const list = grouped.get(row.groupId) ?? [];
@@ -484,6 +499,9 @@ export async function loadDs3Weapons() {
     });
 
     const names = order.length ? order : Array.from(byName.keys());
+    const compendiumByName = new Map(
+      compendium.map((entry) => [entry.name.toLocaleLowerCase(), entry] as const),
+    );
     return names
       .map((name) => {
         const variants = byName.get(name);
@@ -510,6 +528,10 @@ export async function loadDs3Weapons() {
           infusions,
           maxUpgrade: limits.get(name) ?? 10,
           sourceUrl: DS3_SOURCE_URL,
+          description: compendiumByName.get(name.toLocaleLowerCase())?.description,
+          weaponSkill: extractDs3WeaponSkill(
+            compendiumByName.get(name.toLocaleLowerCase())?.description,
+          ),
         } satisfies SoulsDpsWeapon;
       })
       .filter((entry): entry is SoulsDpsWeapon => Boolean(entry));
