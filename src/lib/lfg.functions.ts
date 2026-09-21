@@ -6,7 +6,6 @@ import type { Database } from "@/integrations/supabase/types";
 import { getSupabasePublic } from "./supabase.server";
 
 const LFG_STATUSES = ["open", "closed", "expired"] as const;
-const LFG_APPLICATION_STATUSES = ["pending", "accepted", "rejected", "cancelled"] as const;
 
 const listLfgSchema = z.object({
   gameId: z.string().uuid().optional(),
@@ -79,14 +78,7 @@ const sendMessageSchema = z.object({
   body: z.string().trim().min(1).max(2000),
 });
 
-type UserDb = Parameters<typeof readVerifiedAge>[0];
-
-async function readVerifiedAge(
-  db: {
-    from: (table: string) => unknown;
-  },
-  userId: string,
-) {
+async function readVerifiedAge(db: unknown, userId: string) {
   const typedDb = db as {
     from: (table: "account_age_verifications" | "account_age_data") => {
       select: (columns: string) => {
