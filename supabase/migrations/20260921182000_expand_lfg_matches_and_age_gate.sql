@@ -97,13 +97,11 @@ revoke all on function private.lfg_age_matches_post(uuid, uuid) from public, ano
 grant execute on function private.lfg_age_matches_post(uuid, uuid) to authenticated;
 
 drop policy if exists "Users can create LFG posts" on public.lfg_posts;
-create policy "Verified users can create LFG posts"
+drop policy if exists "Verified users can create LFG posts" on public.lfg_posts;
+create policy "Users can create LFG posts"
 on public.lfg_posts for insert
 to authenticated
-with check (
-  (select auth.uid()) = user_id
-  and private.is_provider_age_verified(user_id)
-);
+with check ((select auth.uid()) = user_id);
 
 create table if not exists public.lfg_applications (
   id uuid primary key default gen_random_uuid(),
@@ -213,6 +211,10 @@ begin
 
     if not private.is_provider_age_verified(owner_id) then
       raise exception 'LFG_OWNER_VERIFICATION_REQUIRED';
+    end if;
+
+    if not private.lfg_age_matches_post(owner_id, new.lfg_post_id) then
+      raise exception 'LFG_OWNER_AGE_MISMATCH';
     end if;
 
     new.responded_at := now();

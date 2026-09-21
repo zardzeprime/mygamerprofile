@@ -146,9 +146,9 @@ export function LfgMatchCenter({
       {!verified ? (
         <div className="mt-4 rounded-xl border border-amber-500/25 bg-amber-500/[0.05] p-4 text-sm leading-6 text-muted-foreground">
           {copy(
-            "Para criar grupo, pedir match, aceitar pessoas ou mandar DM, sua idade precisa ser verificada por um provedor externo.",
-            "To create a group, request a match, accept people or send DMs, your age must be verified by an external provider.",
-            "Para crear un grupo, pedir match, aceptar personas o enviar mensajes directos, tu edad debe verificarse mediante un proveedor externo.",
+            "Para pedir match, aceitar pessoas ou mandar DM, sua idade precisa ser verificada por um provedor externo. Criar e publicar um grupo não exige a verificação.",
+            "To request a match, accept people or send DMs, your age must be verified by an external provider. Creating and publishing a group does not require verification.",
+            "Para pedir match, aceptar personas o enviar mensajes directos, tu edad debe verificarse mediante un proveedor externo. Crear y publicar un grupo no exige verificación.",
           )}{" "}
           <Link to="/settings/connections" className="font-semibold text-gold-strong hover:underline">
             {copy("Ir para Conexões", "Go to Connections", "Ir a Conexiones")}
