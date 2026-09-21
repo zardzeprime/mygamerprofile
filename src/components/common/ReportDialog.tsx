@@ -37,9 +37,10 @@ interface ReportDialogProps {
   targetType: "profile" | "post" | "comment" | "lfg" | "lfg_message";
   targetId: string;
   username?: string;
+  compact?: boolean;
 }
 
-export function ReportDialog({ targetType, targetId, username }: ReportDialogProps) {
+export function ReportDialog({ targetType, targetId, username, compact = false }: ReportDialogProps) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState<(typeof REASONS)[number] | "">("");
@@ -60,9 +61,14 @@ export function ReportDialog({ targetType, targetId, username }: ReportDialogPro
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Flag className="mr-2 size-4" />
-          {t("profile.report")}
+        <Button
+          variant="outline"
+          size={compact ? "icon" : "sm"}
+          aria-label={compact ? t("profile.report") : undefined}
+          title={compact ? t("profile.report") : undefined}
+        >
+          <Flag className={compact ? "size-3.5" : "mr-2 size-4"} />
+          {compact ? null : t("profile.report")}
         </Button>
       </DialogTrigger>
       <DialogContent>
