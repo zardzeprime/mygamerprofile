@@ -11,6 +11,38 @@ export type BossWikiEntry = {
   notes?: LocalizedText[];
 };
 
+
+export const DARK_SOULS_BOSS_REVIEWED_AT = "2026-09-21";
+
+export const DARK_SOULS_BOSS_SOURCES: Record<string, string> = {
+  "asylum-demon": "https://darksouls.wikidot.com/asylum-demon",
+  "taurus-demon": "https://darksouls.wikidot.com/taurus-demon",
+  "bell-gargoyles": "https://darksouls.wikidot.com/bell-gargoyles",
+  "capra-demon": "https://darksouls.wikidot.com/capra-demon",
+  "gaping-dragon": "https://darksouls.wikidot.com/gaping-dragon",
+  "chaos-witch-quelaag": "https://darksouls.wikidot.com/chaos-witch-quelaag",
+  "moonlight-butterfly": "https://darksouls.wikidot.com/moonlight-butterfly",
+  "great-grey-wolf-sif": "https://darksouls.wikidot.com/great-grey-wolf-sif",
+  "iron-golem": "https://darksouls.wikidot.com/iron-golem",
+  "ornstein-and-smough": "https://darksouls.wikidot.com/dragon-slayer-ornstein-executioner-smough",
+  "dark-sun-gwyndolin": "https://darksouls.wikidot.com/dark-sun-gwyndolin",
+  "crossbreed-priscilla": "https://darksouls.wikidot.com/crossbreed-priscilla",
+  "stray-demon": "https://darksouls.wikidot.com/stray-demon",
+  "pinwheel": "https://darksouls.wikidot.com/pinwheel",
+  "gravelord-nito": "https://darksouls.wikidot.com/gravelord-nito",
+  "seath-the-scaleless": "https://darksouls.wikidot.com/seath-the-scaleless",
+  "four-kings": "https://darksouls.wikidot.com/four-kings",
+  "ceaseless-discharge": "https://darksouls.wikidot.com/ceaseless-discharge",
+  "demon-firesage": "https://darksouls.wikidot.com/demon-firesage",
+  "centipede-demon": "https://darksouls.wikidot.com/centipede-demon",
+  "bed-of-chaos": "https://darksouls.wikidot.com/bed-of-chaos",
+  "gwyn-lord-of-cinder": "https://darksouls.wikidot.com/gwyn-lord-of-cinder",
+  "sanctuary-guardian": "https://darksouls.wikidot.com/sanctuary-guardian",
+  "artorias-the-abysswalker": "https://darksouls.wikidot.com/knight-artorias",
+  "black-dragon-kalameet": "https://darksouls.wikidot.com/black-dragon-kalameet",
+  "manus-father-of-the-abyss": "https://darksouls.wikidot.com/manus-father-of-the-abyss",
+};
+
 /**
  * MGP editorial copy for Dark Souls Remastered.
  * Facts are synthesized from in-game descriptions and established community references;
