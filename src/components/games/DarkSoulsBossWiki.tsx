@@ -6,6 +6,7 @@ import {
   Eye,
   EyeOff,
   Gift,
+  HeartPulse,
   ExternalLink,
   MapPin,
   Search,
@@ -339,14 +340,27 @@ function BossDetail({
         </div>
         <div className="flex flex-col items-end gap-2">
           {wiki ? (
-            <div className="rounded-xl border border-border bg-muted/30 px-4 py-3 text-right">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                {copy("Recompensa NG", "NG reward", "Recompensa NG")}
-              </p>
-              <p className="mt-1 flex items-center justify-end gap-1.5 font-display text-xl font-bold text-foreground">
-                <Coins className="size-4 text-gold-strong" />
-                {wiki.souls.toLocaleString(locale)}
-              </p>
+            <div className="grid gap-2 text-right sm:grid-cols-2">
+              {wiki.healthNg ? (
+                <div className="rounded-xl border border-border bg-muted/30 px-4 py-3">
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                    {copy("HP no NG", "NG HP", "HP en NG")}
+                  </p>
+                  <p className="mt-1 flex items-center justify-end gap-1.5 font-display text-base font-bold text-foreground">
+                    <HeartPulse className="size-4 text-gold-strong" />
+                    {wiki.healthNg}
+                  </p>
+                </div>
+              ) : null}
+              <div className="rounded-xl border border-border bg-muted/30 px-4 py-3">
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                  {copy("Recompensa NG", "NG reward", "Recompensa NG")}
+                </p>
+                <p className="mt-1 flex items-center justify-end gap-1.5 font-display text-xl font-bold text-foreground">
+                  <Coins className="size-4 text-gold-strong" />
+                  {wiki.souls.toLocaleString(locale)}
+                </p>
+              </div>
             </div>
           ) : null}
           {DARK_SOULS_BOSS_SOURCES[boss.slug] ? (
