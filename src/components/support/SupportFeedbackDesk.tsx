@@ -7,7 +7,7 @@ import {
   Send,
   ShieldCheck,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/i18n";
@@ -34,16 +34,13 @@ export function SupportFeedbackDesk() {
   const [sent, setSent] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const categoryLabels = useMemo<Record<FeedbackCategory, string>>(
-    () => ({
-      bug: copy("Bug", "Bug", "Error"),
-      idea: copy("Ideia", "Idea", "Idea"),
-      content: copy("Conteúdo / guia", "Content / guide", "Contenido / guía"),
-      next_game: copy("Próximo jogo", "Next game", "Próximo juego"),
-      other: copy("Outro", "Other", "Otro"),
-    }),
-    [locale],
-  );
+  const categoryLabels: Record<FeedbackCategory, string> = {
+    bug: copy("Bug", "Bug", "Error"),
+    idea: copy("Ideia", "Idea", "Idea"),
+    content: copy("Conteúdo / guia", "Content / guide", "Contenido / guía"),
+    next_game: copy("Próximo jogo", "Next game", "Próximo juego"),
+    other: copy("Outro", "Other", "Otro"),
+  };
 
   const statusLabel = (status: string) => {
     if (status === "answered") return copy("Respondido", "Answered", "Respondido");
@@ -84,7 +81,7 @@ export function SupportFeedbackDesk() {
     return () => {
       active = false;
     };
-  }, [user?.id]);
+  }, [user]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
