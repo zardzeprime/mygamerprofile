@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getGames } from "@/lib/games.functions";
 import { listLfgPosts, createLfgPost, closeLfgPost } from "@/lib/lfg.functions";
 import { useI18n, type TranslationKey } from "@/i18n";
@@ -27,15 +27,40 @@ import {
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { EmptyState } from "@/components/common/EmptyState";
 import { useServerFn } from "@tanstack/react-start";
+import { supabase } from "@/integrations/supabase/client";
 
 const PLATFORMS = ["PC", "PlayStation", "Xbox", "Nintendo Switch"] as const;
 const LANGUAGES = ["pt-BR", "en", "es", "fr"] as const;
 const STATUSES = ["open", "closed", "expired"] as const;
 const ALL_FILTER = "__all__";
 
+const RIOT_EXTERNAL_GAMES = [
+  { id: "teamfight-tactics", name: "Teamfight Tactics" },
+  { id: "wild-rift", name: "League of Legends: Wild Rift" },
+  { id: "legends-of-runeterra", name: "Legends of Runeterra" },
+] as const;
+
+type SteamLfgGame = {
+  app_id: number;
+  name: string;
+  icon_url: string | null;
+  playtime_forever: number;
+};
+
+type LfgGameOption = {
+  key: string;
+  name: string;
+  source: "catalog" | "steam" | "riot";
+  id: string;
+};
+
 type LfgStatus = (typeof STATUSES)[number];
 
 export const Route = createFileRoute("/lfg")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    compose: search["compose"] === true || search["compose"] === "1" || search["compose"] === "true",
+    game: typeof search["game"] === "string" ? search["game"] : "",
+  }),
   loader: async () => {
     const games = await getGames();
     const posts = await listLfgPosts({ data: { status: "open" } });
@@ -55,6 +80,7 @@ function LfgPage() {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const { user } = useAuth();
   const { games, posts: initialPosts } = Route.useLoaderData();
+  const search = Route.useSearch();
   const [posts, setPosts] = useState(initialPosts);
   const [filters, setFilters] = useState({
     gameId: "",
@@ -62,12 +88,94 @@ function LfgPage() {
     language: "",
     status: "open" as LfgStatus,
   });
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(Boolean(search.compose));
   const [actionError, setActionError] = useState("");
+  const [steamGames, setSteamGames] = useState<SteamLfgGame[]>([]);
+  const [selectedGameKey, setSelectedGameKey] = useState(search.game || "");
+  const [steamLoading, setSteamLoading] = useState(false);
 
   const doList = useServerFn(listLfgPosts);
   const doCreate = useServerFn(createLfgPost);
   const doClose = useServerFn(closeLfgPost);
+
+  useEffect(() => {
+    let active = true;
+    if (!user) {
+      setSteamGames([]);
+      return;
+    }
+
+    setSteamLoading(true);
+    void (supabase as any)
+      .from("steam_games")
+      .select("app_id,name,icon_url,playtime_forever")
+      .eq("user_id", user.id)
+      .eq("owned", true)
+      .order("playtime_forever", { ascending: false })
+      .limit(300)
+      .then(({ data, error }: { data: SteamLfgGame[] | null; error: unknown }) => {
+        if (!active) return;
+        if (error) throw error;
+        setSteamGames(data ?? []);
+      })
+      .catch((error: unknown) => {
+        console.warn("[LFG] Could not load connected Steam library.", error);
+      })
+      .finally(() => {
+        if (active) setSteamLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
+
+  const gameOptions = useMemo<LfgGameOption[]>(() => {
+    const catalog = games.map((game) => ({
+      key: `catalog:${game.id}`,
+      name: game.name,
+      source: "catalog" as const,
+      id: game.id,
+    }));
+    const riotNames = new Set(catalog.map((game) => game.name.toLocaleLowerCase()));
+    const riot = RIOT_EXTERNAL_GAMES.filter(
+      (game) => !riotNames.has(game.name.toLocaleLowerCase()),
+    ).map((game) => ({
+      key: `riot:${game.id}`,
+      name: game.name,
+      source: "riot" as const,
+      id: game.id,
+    }));
+    const catalogNames = new Set([...catalog, ...riot].map((game) => game.name.toLocaleLowerCase()));
+    const steam = steamGames
+      .filter((game) => !catalogNames.has(game.name.toLocaleLowerCase()))
+      .map((game) => ({
+        key: `steam:${game.app_id}`,
+        name: game.name,
+        source: "steam" as const,
+        id: String(game.app_id),
+      }));
+    return [...catalog, ...riot, ...steam];
+  }, [games, steamGames]);
+
+  useEffect(() => {
+    if (selectedGameKey && gameOptions.some((game) => game.key === selectedGameKey)) return;
+    if (search.game && gameOptions.some((game) => game.key === search.game)) {
+      setSelectedGameKey(search.game);
+      return;
+    }
+    if (!selectedGameKey && gameOptions[0]) setSelectedGameKey(gameOptions[0].key);
+  }, [gameOptions, search.game, selectedGameKey]);
+
+  const selectedGame = gameOptions.find((game) => game.key === selectedGameKey) ?? null;
+  const maxPartySize = (() => {
+    const name = selectedGame?.name.toLocaleLowerCase() ?? "";
+    if (name.includes("valorant") || name.includes("league of legends")) return 5;
+    if (name.includes("dark souls")) return 4;
+    if (name.includes("teamfight tactics")) return 8;
+    return 8;
+  })();
+  const partySizes = Array.from({ length: Math.max(1, maxPartySize - 1) }, (_, index) => index + 2);
 
   const applyFilters = async () => {
     setActionError("");
@@ -87,9 +195,14 @@ function LfgPage() {
 
     try {
       const slotsTotal = Number(formData.get("slots_total"));
+      const game = gameOptions.find((option) => option.key === selectedGameKey);
+      if (!game) throw new Error("game_reference_required");
       const post = await doCreate({
         data: {
-          game_id: String(formData.get("game_id")),
+          game_id: game.source === "catalog" ? game.id : null,
+          external_game_source: game.source === "catalog" ? null : game.source,
+          external_game_id: game.source === "catalog" ? null : game.id,
+          external_game_name: game.source === "catalog" ? null : game.name,
           platform: String(formData.get("platform")),
           region: String(formData.get("region") ?? ""),
           language: String(formData.get("language") ?? ""),
@@ -148,19 +261,24 @@ function LfgPage() {
               </DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="game_id">{t("lfg.filter.game")}</Label>
-                  <Select name="game_id" required>
-                    <SelectTrigger id="game_id">
-                      <SelectValue />
+                  <Label htmlFor="game_ref">{t("lfg.filter.game")}</Label>
+                  <Select value={selectedGameKey} onValueChange={setSelectedGameKey} required>
+                    <SelectTrigger id="game_ref">
+                      <SelectValue placeholder={copy("Escolha um jogo", "Choose a game", "Elige un juego")} />
                     </SelectTrigger>
-                    <SelectContent>
-                      {games.map((game) => (
-                        <SelectItem key={game.id} value={game.id}>
-                          {game.name}
+                    <SelectContent className="max-h-80">
+                      {gameOptions.map((game) => (
+                        <SelectItem key={game.key} value={game.key}>
+                          {game.name}{game.source === "steam" ? " · Steam" : game.source === "riot" ? " · Riot" : ""}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  {steamLoading ? (
+                    <p className="text-[0.68rem] text-muted-foreground">
+                      {copy("Carregando sua biblioteca Steam…", "Loading your Steam library…", "Cargando tu biblioteca Steam…")}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
@@ -205,8 +323,28 @@ function LfgPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="slots_total">{t("lfg.slots")}</Label>
-                  <Input id="slots_total" name="slots_total" type="number" min={1} max={99} defaultValue={4} required />
+                  <Label htmlFor="slots_total">
+                    {copy("Tamanho do grupo", "Group size", "Tamaño del grupo")}
+                  </Label>
+                  <Select name="slots_total" defaultValue={String(Math.min(4, maxPartySize))} key={selectedGameKey}>
+                    <SelectTrigger id="slots_total">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {partySizes.map((size) => (
+                        <SelectItem key={size} value={String(size)}>
+                          {size} {copy("pessoas", "players", "personas")}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-[0.68rem] leading-5 text-muted-foreground">
+                    {copy(
+                      "O limite sugerido se adapta ao jogo; jogos Steam genéricos permitem grupos de até 8.",
+                      "The suggested limit adapts to the game; generic Steam games allow groups up to 8.",
+                      "El límite sugerido se adapta al juego; los juegos genéricos de Steam permiten grupos de hasta 8.",
+                    )}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Switch name="mic_required" id="mic_required" />
@@ -320,7 +458,7 @@ function LfgPage() {
                   <div>
                     <p className="font-semibold">{post.author?.display_name}</p>
                     <p className="text-xs text-muted-foreground">
-                      @{post.author?.username} · {post.game?.name}
+                      @{post.author?.username} · {post.game?.name ?? post.external_game_name ?? copy("Jogo externo", "External game", "Juego externo")}
                     </p>
                   </div>
                 </div>
