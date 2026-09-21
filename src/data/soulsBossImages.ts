@@ -14,6 +14,8 @@ export type SoulsBossImageAsset = {
   url: string;
   sourceUrl: string;
   sourceLabel: LocalizedText;
+  assetSourceUrl?: string;
+  assetSourceLabel?: LocalizedText;
   cardObjectPosition?: string;
   detailObjectPosition?: string;
   cardScale?: number;
@@ -170,6 +172,12 @@ export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
   // sources currently wired into MGP. Its game-cover fallback is intentionally kept.
 };
 
+const localMirrorLabel: LocalizedText = {
+  "pt-BR": "Fonte técnica do arquivo local",
+  en: "Technical source for local file",
+  es: "Fuente técnica del archivo local",
+};
+
 const DARK_SOULS_III_LOCAL_IMAGE_SLUGS: Record<string, string> = {
   "nameless-king": "the-nameless-king",
   "twin-princes": "lothric-younger-prince-and-lorian-elder-prince",
@@ -179,16 +187,48 @@ const DARK_SOULS_III_LOCAL_IMAGE_SLUGS: Record<string, string> = {
   "demon-prince": "demon-in-pain-demon-from-below-and-demon-prince",
 };
 
+const DS3_MIRROR_FILENAMES: Record<string, string> = {
+  "vordt-of-the-boreal-valley": "vordt.jpg",
+  "curse-rotted-greatwood": "greatwood.jpg",
+  "deacons-of-the-deep": "deacons.jpg",
+  "high-lord-wolnir": "wolnir.jpg",
+  "pontiff-sulyvahn": "pontiff.jpg",
+  "aldrich-devourer-of-gods": "aldrich.jpg",
+  "dancer-of-the-boreal-valley": "dancer.jpg",
+  "dragonslayer-armour": "dragonslayer.jpg",
+  "lothric-younger-prince-and-lorian-elder-prince": "lothric.jpg",
+  "the-nameless-king": "nameless_king.jpg",
+  "champion-s-gravetender-and-gravetender-greatwolf": "champions_gravetender.jpg",
+  "sister-friede-and-father-ariandel": "sister_friede.jpg",
+  "demon-in-pain-demon-from-below-and-demon-prince": "demon_prince.jpg",
+  "halflight-spear-of-the-church": "halflight.jpg",
+  "darkeater-midir": "midir.jpg",
+  "slave-knight-gael": "gael.jpg",
+};
+
+function getDs3MirrorSourceUrl(bossSlug: string) {
+  const canonicalSlug = DARK_SOULS_III_LOCAL_IMAGE_SLUGS[bossSlug] ?? bossSlug;
+  if (canonicalSlug === "soul-of-cinder") {
+    return "https://github.com/lcasort/DEWS_LCO/blob/master/DarkSouls/public/img/bosses/soul-of-cinder.jpg";
+  }
+
+  const filename =
+    DS3_MIRROR_FILENAMES[canonicalSlug] ?? `${canonicalSlug.replaceAll("-", "_")}.jpg`;
+  return `https://github.com/joshuamooredev/boss-tracker-collection/blob/main/src/assets/images/DarkSoulsIII/${filename}`;
+}
+
 export function getSoulsBossImage(gameSlug: SoulsGameSlug, bossSlug?: string) {
   if (!bossSlug || gameSlug !== "dark-souls-iii") return undefined;
   const asset = DARK_SOULS_III_BOSS_IMAGES[bossSlug];
   if (!asset) return undefined;
 
-  // Keep every DS3 boss card/detail on a first-party static path. Alias slugs resolve
-  // to the canonical vendored file while sourceUrl/sourceLabel remain available.
+  // Keep every DS3 boss card/detail on a first-party static path. The binary mirror
+  // provenance is kept separate from the original reference/rights link.
   const localSlug = DARK_SOULS_III_LOCAL_IMAGE_SLUGS[bossSlug] ?? bossSlug;
   return {
     ...asset,
     url: `/assets/bosses/ds3/${localSlug}.jpg`,
+    assetSourceUrl: getDs3MirrorSourceUrl(bossSlug),
+    assetSourceLabel: localMirrorLabel,
   };
 }
