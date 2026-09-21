@@ -25,7 +25,7 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 50% 42%, rgba(212, 167, 44, 0.11), transparent 28rem),
+    radial-gradient(circle at 50% 42%, color-mix(in oklab, var(--mgp-user-accent) 11%, transparent), transparent 28rem),
     linear-gradient(180deg, rgba(7, 8, 11, 0.9), rgba(7, 8, 11, 0.96));
   backdrop-filter: blur(15px) saturate(0.78);
 }
@@ -88,7 +88,7 @@
   height: 3.75rem;
   place-items: center;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(212, 167, 44, 0.16), transparent 68%);
+  background: radial-gradient(circle, color-mix(in oklab, var(--mgp-user-accent) 16%, transparent), transparent 68%);
 }
 
 .mgp-route-loader__logo-wrap::before,
@@ -96,7 +96,7 @@
   content: "";
   position: absolute;
   inset: -0.3rem;
-  border: 1px solid rgba(212, 167, 44, 0.28);
+  border: 1px solid color-mix(in oklab, var(--mgp-user-accent) 28%, transparent);
   border-radius: inherit;
   animation: mgp-logo-ring 1.6s infinite ease-out;
 }
@@ -111,7 +111,7 @@
   width: 3.2rem;
   height: 3.2rem;
   object-fit: contain;
-  filter: drop-shadow(0 0 18px rgba(212, 167, 44, 0.2));
+  filter: drop-shadow(0 0 18px color-mix(in oklab, var(--mgp-user-accent) 20%, transparent));
   animation: mgp-logo-breathe 1.7s infinite ease-in-out;
 }
 
@@ -130,7 +130,13 @@
   left: -42%;
   width: 42%;
   border-radius: inherit;
-  background: linear-gradient(90deg, transparent, #d4a72c 32%, #f0ca62 68%, transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--mgp-user-accent) 32%,
+    color-mix(in oklab, var(--mgp-user-accent) 72%, white 28%) 68%,
+    transparent
+  );
   animation: mgp-loader-scan 1.15s infinite cubic-bezier(.45, 0, .55, 1);
 }
 
@@ -145,9 +151,9 @@
   24% {
     opacity: 1;
     transform: translateY(-0.22rem) scale(1.04);
-    border-color: rgba(212, 167, 44, 0.5);
-    color: #e0b847;
-    box-shadow: 0 0 24px rgba(212, 167, 44, 0.14);
+    border-color: color-mix(in oklab, var(--mgp-user-accent) 50%, transparent);
+    color: color-mix(in oklab, var(--mgp-user-accent) 82%, white 18%);
+    box-shadow: 0 0 24px color-mix(in oklab, var(--mgp-user-accent) 14%, transparent);
   }
   46% {
     opacity: 0.52;
