@@ -45,6 +45,12 @@ import {
   loadSoulsItemMetadata,
   type SoulsItemMetadata,
 } from "@/lib/souls-item-metadata";
+import {
+  findSoulsSpellMetadata,
+  loadSoulsSpellMetadata,
+  type SoulsSpellMetadata,
+  type SoulsSpellSchool,
+} from "@/lib/souls-spell-metadata";
 
 const CATEGORIES: Array<{
   key: "all" | SoulsCompendiumCategory;
@@ -76,6 +82,7 @@ export function SoulsItemCompendium({
   const [technicalArmor, setTechnicalArmor] = useState<SoulsArmorTechnical[]>([]);
   const [ringEffects, setRingEffects] = useState<SoulsRingEffect[]>([]);
   const [itemMetadata, setItemMetadata] = useState<SoulsItemMetadata[]>([]);
+  const [spellMetadata, setSpellMetadata] = useState<SoulsSpellMetadata[]>([]);
 
   useEffect(() => {
     let active = true;
@@ -149,6 +156,23 @@ export function SoulsItemCompendium({
 
   useEffect(() => {
     let active = true;
+
+    void loadSoulsSpellMetadata(gameSlug)
+      .then((data) => {
+        if (active) setSpellMetadata(data);
+      })
+      .catch((error) => {
+        console.warn("[SoulsItemCompendium] spell metadata unavailable", error);
+        if (active) setSpellMetadata([]);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [gameSlug]);
+
+  useEffect(() => {
+    let active = true;
     setLoading(true);
     setFailed(false);
 
@@ -203,6 +227,10 @@ export function SoulsItemCompendium({
   const technicalRingEffect =
     selected?.category === "ring" ? findSoulsRingEffect(ringEffects, selected.name) : null;
   const selectedMetadata = selected ? findSoulsItemMetadata(itemMetadata, selected.name) : null;
+  const selectedSpellMetadata =
+    selected?.category === "magic"
+      ? findSoulsSpellMetadata(spellMetadata, selected.name)
+      : null;
 
   const gameName = gameSlug === "dark-souls-remastered" ? "Dark Souls Remastered" : "Dark Souls III";
 
@@ -372,6 +400,9 @@ export function SoulsItemCompendium({
                 {selectedMetadata ? (
                   <ItemMetadataCard metadata={selectedMetadata} locale={locale} />
                 ) : null}
+                {selectedSpellMetadata ? (
+                  <SpellMetadataCard metadata={selectedSpellMetadata} locale={locale} />
+                ) : null}
 
                 <div>
                   <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
@@ -519,6 +550,45 @@ function WeaponTechnicalCard({
           {weapon.obtained.join(" · ")}
         </p>
       ) : null}
+    </div>
+  );
+}
+
+function SpellMetadataCard({
+  metadata,
+  locale,
+}: {
+  metadata: SoulsSpellMetadata;
+  locale: Locale;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const labels: Record<SoulsSpellSchool, string> = {
+    sorcery: copy("Feitiçaria", "Sorcery", "Hechicería"),
+    pyromancy: copy("Piromancia", "Pyromancy", "Piromancia"),
+    miracle: copy("Milagre", "Miracle", "Milagro"),
+    unknown: copy("Magia", "Magic", "Magia"),
+  };
+
+  return (
+    <div className="rounded-2xl border border-border bg-muted/10 p-4">
+      <div className="flex items-center gap-2">
+        <Sparkles className="size-4 text-gold-strong" />
+        <div>
+          <p className="text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+            {copy("Escola de magia", "Magic school", "Escuela de magia")}
+          </p>
+          <p className="mt-0.5 text-sm font-bold text-foreground">{labels[metadata.school]}</p>
+        </div>
+      </div>
+      <a
+        href={metadata.source.url}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-3 inline-flex items-center gap-1 text-[0.66rem] font-bold text-gold-strong hover:underline"
+      >
+        {metadata.source.label}
+        <ExternalLink className="size-3" />
+      </a>
     </div>
   );
 }
