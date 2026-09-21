@@ -137,7 +137,10 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                   <img
                     src={selectedImage.url}
                     alt={selected?.name ?? ""}
-                    className="h-full w-full object-cover"
+                    className={cn(
+                      "h-full w-full",
+                      selectedImage.detailFit === "contain" ? "object-contain p-2" : "object-cover",
+                    )}
                     style={{
                       objectPosition: selectedImage.detailObjectPosition,
                       transform: `scale(${selectedImage.detailScale ?? 1})`,
