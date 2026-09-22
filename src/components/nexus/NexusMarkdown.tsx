@@ -107,10 +107,16 @@ function parseBlocks(rawContent: string): Block[] {
 
     const heading = line.match(/^(#{1,4})\s*(.+)$/);
     if (heading) {
+      const marker = heading[1];
+      const content = heading[2];
+      if (!marker || !content) {
+        index += 1;
+        continue;
+      }
       blocks.push({
         type: "heading",
-        level: heading[1].length,
-        text: cleanPlainText(heading[2].trim()),
+        level: marker.length,
+        text: cleanPlainText(content.trim()),
       });
       index += 1;
       continue;
@@ -122,7 +128,7 @@ function parseBlocks(rawContent: string): Block[] {
         const current = (lines[index] ?? "").trim();
         const item = current.match(/^[-+*]\s+(.+)$/);
         if (!item) break;
-        items.push(item[1]);
+        items.push(item[1] ?? "");
         index += 1;
       }
       blocks.push({ type: "unordered", items });
@@ -135,7 +141,7 @@ function parseBlocks(rawContent: string): Block[] {
         const current = (lines[index] ?? "").trim();
         const item = current.match(/^\d+[.)]\s*(.+)$/);
         if (!item) break;
-        items.push(item[1]);
+        items.push(item[1] ?? "");
         index += 1;
       }
       blocks.push({ type: "ordered", items });

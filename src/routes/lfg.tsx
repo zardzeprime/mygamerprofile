@@ -133,24 +133,25 @@ function LfgPage() {
     }
 
     setSteamLoading(true);
-    void supabase
-      .from("steam_games")
-      .select("app_id,name,icon_url,playtime_forever")
-      .eq("user_id", userId)
-      .eq("owned", true)
-      .order("playtime_forever", { ascending: false })
-      .limit(300)
-      .then(({ data, error }: { data: SteamLfgGame[] | null; error: unknown }) => {
+    const loadSteamGames = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("steam_games")
+          .select("app_id,name,icon_url,playtime_forever")
+          .eq("user_id", userId)
+          .eq("owned", true)
+          .order("playtime_forever", { ascending: false })
+          .limit(300);
         if (!active) return;
         if (error) throw error;
         setSteamGames(data ?? []);
-      })
-      .catch((error: unknown) => {
+      } catch (error) {
         console.warn("[LFG] Could not load connected Steam library.", error);
-      })
-      .finally(() => {
+      } finally {
         if (active) setSteamLoading(false);
-      });
+      }
+    };
+    void loadSteamGames();
 
     return () => {
       active = false;

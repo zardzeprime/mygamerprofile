@@ -47,7 +47,9 @@ function CommunitiesCatalog() {
                 game={game}
                 variant="card"
                 className="h-full w-full transition-transform duration-500 group-hover:scale-[1.025]"
-                imageClassName={game.slug === "league-of-legends" ? "!p-[8%] !opacity-100" : undefined}
+                {...(game.slug === "league-of-legends"
+                  ? { imageClassName: "!p-[8%] !opacity-100" }
+                  : {})}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5">

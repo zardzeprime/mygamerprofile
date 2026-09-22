@@ -115,25 +115,26 @@ export function SteamFavoriteGameEditor({
     if (!selectedAppId) return;
 
     setAchievementLoading(true);
-    void db
-      .from("steam_achievements")
-      .select("api_name,display_name,description,unlock_time,icon_url")
-      .eq("user_id", userId)
-      .eq("app_id", selectedAppId)
-      .eq("achieved", true)
-      .order("unlock_time", { ascending: false })
-      .limit(200)
-      .then(({ data, error }: { data: Achievement[] | null; error: unknown }) => {
+    const loadAchievements = async () => {
+      try {
+        const { data, error } = await db
+          .from("steam_achievements")
+          .select("api_name,display_name,description,unlock_time,icon_url")
+          .eq("user_id", userId)
+          .eq("app_id", selectedAppId)
+          .eq("achieved", true)
+          .order("unlock_time", { ascending: false })
+          .limit(200);
         if (!active) return;
         if (error) throw error;
         setAchievements(data ?? []);
-      })
-      .catch((error: unknown) => {
+      } catch (error) {
         console.warn("[SteamFavoriteGameEditor] achievements failed", error);
-      })
-      .finally(() => {
+      } finally {
         if (active) setAchievementLoading(false);
-      });
+      }
+    };
+    void loadAchievements();
 
     return () => {
       active = false;

@@ -21,7 +21,7 @@ type ProfileAppearanceUpdate = Database["public"]["Tables"]["profiles"]["Update"
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 const isHexColor=(v:string|null):v is string=>typeof v==="string"&&/^#[0-9a-f]{6}$/i.test(v);
 const isCursor=(v:string|null):v is CursorStyle=>v==="classic"||v==="sword"||v==="axe"||v==="reticle";
-function readableForeground(v:string):"#111318"|"#ffffff"{const x=[1,3,5].map(i=>Number.parseInt(v.slice(i,i+2),16)/255).map(c=>c<=.04045?c/12.92:((c+.055)/1.055)**2.4);return .2126*x[0]+.7152*x[1]+.0722*x[2]>.42?"#111318":"#ffffff"}
+function readableForeground(v:string):"#111318"|"#ffffff"{const x=[1,3,5].map(i=>Number.parseInt(v.slice(i,i+2),16)/255).map(c=>c<=.04045?c/12.92:((c+.055)/1.055)**2.4);const [red=0,green=0,blue=0]=x;return .2126*red+.7152*green+.0722*blue>.42?"#111318":"#ffffff"}
 const uri = (svg: string) => `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 
 function classicCursor(accent: string, active: boolean) {
@@ -70,7 +70,7 @@ function applyCursor(style: CursorStyle) {
   const root = document.documentElement;
   const customAccent = root.style.getPropertyValue("--mgp-user-accent").trim();
   const accent =
-    root.dataset.accent === "custom" && isHexColor(customAccent)
+    root.dataset["accent"] === "custom" && isHexColor(customAccent)
       ? customAccent
       : DEFAULT_ACCENT_COLOR;
 
@@ -96,7 +96,7 @@ function applyCursor(style: CursorStyle) {
   root.style.setProperty("--mgp-cursor-pointer", `${uri(activeSvg)} ${hotSpot}`);
 }
 
-function applyAccent(v:string|null, cursor:CursorStyle){if(typeof document==="undefined")return;const r=document.documentElement;r.style.removeProperty("--mgp-user-accent-foreground");if(isHexColor(v)){r.style.setProperty("--mgp-user-accent",v);r.style.setProperty("--mgp-user-accent-foreground",readableForeground(v));r.dataset.accent="custom"}else{r.style.removeProperty("--mgp-user-accent");delete r.dataset.accent}applyCursor(cursor)}
+function applyAccent(v:string|null, cursor:CursorStyle){if(typeof document==="undefined")return;const r=document.documentElement;r.style.removeProperty("--mgp-user-accent-foreground");if(isHexColor(v)){r.style.setProperty("--mgp-user-accent",v);r.style.setProperty("--mgp-user-accent-foreground",readableForeground(v));r.dataset["accent"]="custom"}else{r.style.removeProperty("--mgp-user-accent");delete r.dataset["accent"]}applyCursor(cursor)}
 function read(key: string) {
   try {
     return localStorage.getItem(key);

@@ -925,7 +925,11 @@ function ds1ScalingForPath(
   weapon: SoulsDpsWeapon,
   path: Ds1UpgradePath,
 ): Partial<Record<SoulsDpsStat, string>> {
-  const base = weapon.scalingLetters ?? {};
+  const base = Object.fromEntries(
+    Object.entries(weapon.scalingLetters ?? {}).filter(
+      (entry): entry is [string, string] => entry[1] !== null,
+    ),
+  ) as Partial<Record<SoulsDpsStat, string>>;
   if (path === "regular" || path === "crystal") return base;
   if (path === "magic") return { int: "FOCO" };
   if (path === "enchanted") return { int: "FOCO+" };
