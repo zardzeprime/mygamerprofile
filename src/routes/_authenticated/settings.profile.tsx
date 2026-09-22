@@ -191,6 +191,9 @@ function SettingsProfilePage() {
         if (favoriteError) throw favoriteError;
       }
 
+      // Keep the persistent header in sync with the MGP profile avatar/name.
+      // Google metadata remains only as a fallback when no MGP avatar is configured.
+      window.dispatchEvent(new Event("mgp:profile-updated"));
       setLocale(language);
       setSaved(true);
       window.setTimeout(() => setSaved(false), 2200);
