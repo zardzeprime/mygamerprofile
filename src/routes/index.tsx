@@ -161,124 +161,131 @@ function Home() {
           </div>
         </div>
       </section>
-      <AdReadyLayout className="mx-auto w-full max-w-[92rem] px-4 pt-6 sm:px-6 sm:pt-8" rail={<AdSlot id="home-rail" format="rail" />}>
-      <Tabs defaultValue="games" className="w-full">
-        <TabsList
-          className="grid h-auto w-full grid-cols-3 gap-1 rounded-2xl p-1.5 sm:max-w-lg"
-          aria-label={copy("Explore o MG Profile", "Explore MG Profile", "Explora MG Profile")}
-        >
-          <TabsTrigger value="games" className="min-h-11 gap-2">
-            <Gamepad2 className="hidden size-4 sm:block" aria-hidden="true" />
-            {t("navigation.games")}
-          </TabsTrigger>
-          <TabsTrigger value="community" className="min-h-11 gap-2">
-            <MessagesSquare className="hidden size-4 sm:block" aria-hidden="true" />
-            {copy("Comunidade", "Community", "Comunidad")}
-          </TabsTrigger>
-          <TabsTrigger value="discover" className="min-h-11 gap-2">
-            <Compass className="hidden size-4 sm:block" aria-hidden="true" />
-            {copy("Descobrir", "Discover", "Descubrir")}
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value="games" className="pt-6 motion-safe:animate-fade-in">
-          <Carousel
-            opts={{ align: "start", containScroll: "trimSnaps", loop: false, slidesToScroll: 1 }}
-            aria-label={t("home.featured.title")}
+      <AdReadyLayout
+        className="mx-auto w-full max-w-[92rem] px-4 pt-6 sm:px-6 sm:pt-8"
+        rail={<AdSlot id="home-rail" format="rail" />}
+      >
+        <Tabs defaultValue="games" className="w-full">
+          <TabsList
+            className="grid h-auto w-full grid-cols-3 gap-1 rounded-2xl p-1.5 sm:max-w-lg"
+            aria-label={copy("Explore o MG Profile", "Explore MG Profile", "Explora MG Profile")}
           >
-            <div className="mb-5 flex items-center justify-between gap-3">
-              <h2 className="font-display text-xl font-semibold sm:text-2xl">
-                {t("home.featured.title")}
-              </h2>
-              <div className="flex shrink-0 gap-2">
-                <CarouselPrevious
-                  aria-label={copy("Jogo anterior", "Previous game", "Juego anterior")}
-                  className="static size-11 translate-y-0"
-                />
-                <CarouselNext
-                  aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")}
-                  className="static size-11 translate-y-0"
-                />
-              </div>
-            </div>
-            <CarouselContent>
-              {SORTED_GAMES.map((game) => (
-                <CarouselItem key={game.slug} className="basis-[88%] sm:basis-[68%] lg:basis-1/2">
-                  <GameCard game={game} />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
-        </TabsContent>
-        <TabsContent value="community" className="pt-6 motion-safe:animate-fade-in">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
-            <section className="space-y-4" aria-label={t("home.activity.title")}>
-              <h2 className="font-display text-xl font-semibold">{t("home.activity.title")}</h2>
-              {user && <PostComposer onCreated={(post) => setPosts((prev) => [post, ...prev])} />}
-              {posts.length === 0 ? (
-                <EmptyState title={t("home.activity.empty")} />
-              ) : (
-                posts.slice(0, visiblePosts).map((post) => <PostCard key={post.id} post={post} />)
-              )}
-              {visiblePosts < posts.length && (
-                <button
-                  type="button"
-                  className="brand-button-secondary min-h-11"
-                  onClick={() => setVisiblePosts((n) => n + 6)}
-                >
-                  {copy("Mostrar mais publicações", "Show more posts", "Mostrar más publicaciones")}
-                </button>
-              )}
-            </section>
-            <aside className="surface-panel h-fit p-5">
-              <UsersRound className="size-5 text-gold-strong" aria-hidden="true" />
-              <h2 className="mt-3 font-semibold">
-                {copy(
-                  "Falta alguém no grupo?",
-                  "Need one more player?",
-                  "¿Falta alguien en el equipo?",
-                )}
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {destinations[2]?.body}
-              </p>
-              <Link
-                to="/lfg"
-                search={{ compose: false, game: "" }}
-                className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-gold-strong"
-              >
-                {copy("Buscar grupo", "Find a group", "Buscar grupo")}
-                <ArrowRight className="size-4" />
-              </Link>
-            </aside>
-          </div>
-        </TabsContent>
-        <TabsContent value="discover" className="pt-6 motion-safe:animate-fade-in">
-          <h2 className="font-display text-xl font-semibold">
-            {copy("Qual é o próximo passo?", "Where to next?", "¿Cuál es el siguiente paso?")}
-          </h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
-            {destinations.map(({ to, icon: Icon, title, body }, i) => (
-              <Link
-                key={to}
-                to={to}
-                className="surface-panel group p-6 transition-colors hover:border-gold/50"
-              >
-                <div className="flex items-center justify-between">
-                  <Icon className="size-6 text-gold-strong" aria-hidden="true" />
-                  <span className="font-mono text-xs text-muted-foreground">0{i + 1}</span>
+            <TabsTrigger value="games" className="min-h-11 gap-2">
+              <Gamepad2 className="hidden size-4 sm:block" aria-hidden="true" />
+              {t("navigation.games")}
+            </TabsTrigger>
+            <TabsTrigger value="community" className="min-h-11 gap-2">
+              <MessagesSquare className="hidden size-4 sm:block" aria-hidden="true" />
+              {copy("Comunidade", "Community", "Comunidad")}
+            </TabsTrigger>
+            <TabsTrigger value="discover" className="min-h-11 gap-2">
+              <Compass className="hidden size-4 sm:block" aria-hidden="true" />
+              {copy("Descobrir", "Discover", "Descubrir")}
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="games" className="pt-6 motion-safe:animate-fade-in">
+            <Carousel
+              opts={{ align: "start", containScroll: "trimSnaps", loop: false, slidesToScroll: 1 }}
+              aria-label={t("home.featured.title")}
+            >
+              <div className="mb-5 flex items-center justify-between gap-3">
+                <h2 className="font-display text-xl font-semibold sm:text-2xl">
+                  {t("home.featured.title")}
+                </h2>
+                <div className="flex shrink-0 gap-2">
+                  <CarouselPrevious
+                    aria-label={copy("Jogo anterior", "Previous game", "Juego anterior")}
+                    className="static size-11 translate-y-0"
+                  />
+                  <CarouselNext
+                    aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")}
+                    className="static size-11 translate-y-0"
+                  />
                 </div>
-                <h3 className="mt-5 font-display text-lg font-semibold">{title}</h3>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
-                <ArrowRight
-                  className="mt-5 size-5 text-gold-strong motion-safe:transition-transform motion-safe:group-hover:translate-x-1"
-                  aria-hidden="true"
-                />
-              </Link>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
-      <AdSlot id="home-after-explore" format="leaderboard" className="mt-8" />
+              </div>
+              <CarouselContent>
+                {SORTED_GAMES.map((game) => (
+                  <CarouselItem key={game.slug} className="basis-[88%] sm:basis-[68%] lg:basis-1/2">
+                    <GameCard game={game} />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          </TabsContent>
+          <TabsContent value="community" className="pt-6 motion-safe:animate-fade-in">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
+              <section className="space-y-4" aria-label={t("home.activity.title")}>
+                <h2 className="font-display text-xl font-semibold">{t("home.activity.title")}</h2>
+                {user && <PostComposer onCreated={(post) => setPosts((prev) => [post, ...prev])} />}
+                {posts.length === 0 ? (
+                  <EmptyState title={t("home.activity.empty")} />
+                ) : (
+                  posts.slice(0, visiblePosts).map((post) => <PostCard key={post.id} post={post} />)
+                )}
+                {visiblePosts < posts.length && (
+                  <button
+                    type="button"
+                    className="brand-button-secondary min-h-11"
+                    onClick={() => setVisiblePosts((n) => n + 6)}
+                  >
+                    {copy(
+                      "Mostrar mais publicações",
+                      "Show more posts",
+                      "Mostrar más publicaciones",
+                    )}
+                  </button>
+                )}
+              </section>
+              <aside className="surface-panel h-fit p-5">
+                <UsersRound className="size-5 text-gold-strong" aria-hidden="true" />
+                <h2 className="mt-3 font-semibold">
+                  {copy(
+                    "Falta alguém no grupo?",
+                    "Need one more player?",
+                    "¿Falta alguien en el equipo?",
+                  )}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {destinations[2]?.body}
+                </p>
+                <Link
+                  to="/lfg"
+                  search={{ compose: false, game: "" }}
+                  className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-gold-strong"
+                >
+                  {copy("Buscar grupo", "Find a group", "Buscar grupo")}
+                  <ArrowRight className="size-4" />
+                </Link>
+              </aside>
+            </div>
+          </TabsContent>
+          <TabsContent value="discover" className="pt-6 motion-safe:animate-fade-in">
+            <h2 className="font-display text-xl font-semibold">
+              {copy("Qual é o próximo passo?", "Where to next?", "¿Cuál es el siguiente paso?")}
+            </h2>
+            <div className="mt-5 grid gap-4 md:grid-cols-3">
+              {destinations.map(({ to, icon: Icon, title, body }, i) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className="surface-panel group p-6 transition-colors hover:border-gold/50"
+                >
+                  <div className="flex items-center justify-between">
+                    <Icon className="size-6 text-gold-strong" aria-hidden="true" />
+                    <span className="font-mono text-xs text-muted-foreground">0{i + 1}</span>
+                  </div>
+                  <h3 className="mt-5 font-display text-lg font-semibold">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
+                  <ArrowRight
+                    className="mt-5 size-5 text-gold-strong motion-safe:transition-transform motion-safe:group-hover:translate-x-1"
+                    aria-hidden="true"
+                  />
+                </Link>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+        <AdSlot id="home-after-explore" format="leaderboard" className="mt-8" />
       </AdReadyLayout>
 
       <section className="mx-auto mt-10 w-full max-w-7xl px-4 sm:px-6">

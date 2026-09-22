@@ -34,13 +34,7 @@ type Preference = {
   proud_achievement_api_names: string[];
 };
 
-export function SteamFavoriteGameEditor({
-  userId,
-  locale,
-}: {
-  userId: string;
-  locale: Locale;
-}) {
+export function SteamFavoriteGameEditor({ userId, locale }: { userId: string; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const db = supabase;
   const [games, setGames] = useState<SteamGame[]>([]);
@@ -70,9 +64,7 @@ export function SteamFavoriteGameEditor({
         .maybeSingle(),
       db
         .from("steam_games")
-        .select(
-          "app_id,name,icon_url,playtime_forever,achievements_unlocked,achievements_total",
-        )
+        .select("app_id,name,icon_url,playtime_forever,achievements_unlocked,achievements_total")
         .eq("user_id", userId)
         .eq("owned", true)
         .order("playtime_forever", { ascending: false })
@@ -89,7 +81,9 @@ export function SteamFavoriteGameEditor({
         const preference = profileResult.data as Preference | null;
         const nextAppId = preference?.favorite_app_id ?? nextGames[0]?.app_id ?? null;
         setSelectedAppId(nextAppId);
-        setStartedYear(preference?.favorite_started_year ? String(preference.favorite_started_year) : "");
+        setStartedYear(
+          preference?.favorite_started_year ? String(preference.favorite_started_year) : "",
+        );
         setStartedOn(preference?.favorite_started_on ?? "");
         setShowPlaytime(preference?.favorite_show_playtime !== false);
         setProud(
@@ -173,7 +167,10 @@ export function SteamFavoriteGameEditor({
     setMessage("");
     try {
       const parsedYear = startedYear.trim() ? Number(startedYear) : null;
-      if (parsedYear !== null && (!Number.isInteger(parsedYear) || parsedYear < 1970 || parsedYear > 2100)) {
+      if (
+        parsedYear !== null &&
+        (!Number.isInteger(parsedYear) || parsedYear < 1970 || parsedYear > 2100)
+      ) {
         throw new Error("invalid_year");
       }
       const exactYear = startedOn ? Number(startedOn.slice(0, 4)) : parsedYear;
@@ -210,7 +207,11 @@ export function SteamFavoriteGameEditor({
       <section className="surface-panel rounded-2xl p-5">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin text-gold-strong" />
-          {copy("Lendo sua biblioteca Steam…", "Reading your Steam library…", "Leyendo tu biblioteca de Steam…")}
+          {copy(
+            "Lendo sua biblioteca Steam…",
+            "Reading your Steam library…",
+            "Leyendo tu biblioteca de Steam…",
+          )}
         </div>
       </section>
     );
@@ -222,7 +223,11 @@ export function SteamFavoriteGameEditor({
         <div className="flex items-center gap-2">
           <Gamepad2 className="size-4 text-gold-strong" />
           <h2 className="font-display text-lg font-semibold">
-            {copy("Destaque da biblioteca Steam", "Steam library highlight", "Destacado de la biblioteca Steam")}
+            {copy(
+              "Destaque da biblioteca Steam",
+              "Steam library highlight",
+              "Destacado de la biblioteca Steam",
+            )}
           </h2>
         </div>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
@@ -268,7 +273,11 @@ export function SteamFavoriteGameEditor({
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0"
-          placeholder={copy("Buscar na sua biblioteca", "Search your library", "Buscar en tu biblioteca")}
+          placeholder={copy(
+            "Buscar na sua biblioteca",
+            "Search your library",
+            "Buscar en tu biblioteca",
+          )}
         />
       </label>
 
@@ -288,17 +297,23 @@ export function SteamFavoriteGameEditor({
               )}
             >
               {game.icon_url ? (
-                <img src={game.icon_url} alt="" className="size-12 shrink-0 rounded-lg object-cover" />
+                <img
+                  src={game.icon_url}
+                  alt=""
+                  className="size-12 shrink-0 rounded-lg object-cover"
+                />
               ) : (
                 <span className="grid size-12 shrink-0 place-items-center rounded-lg border border-border bg-background">
                   <Gamepad2 className="size-5 text-muted-foreground" />
                 </span>
               )}
               <span className="min-w-0">
-                <span className="block line-clamp-2 text-sm font-bold text-foreground">{game.name}</span>
+                <span className="block line-clamp-2 text-sm font-bold text-foreground">
+                  {game.name}
+                </span>
                 <span className="mt-1 block text-[0.66rem] text-muted-foreground">
-                  {Math.round(game.playtime_forever / 60)}h · {game.achievements_unlocked}/{game.achievements_total}{" "}
-                  {copy("conquistas", "achievements", "logros")}
+                  {Math.round(game.playtime_forever / 60)}h · {game.achievements_unlocked}/
+                  {game.achievements_total} {copy("conquistas", "achievements", "logros")}
                 </span>
               </span>
             </button>
@@ -347,7 +362,8 @@ export function SteamFavoriteGameEditor({
                     {copy("Mostrar tempo de jogo", "Show playtime", "Mostrar tiempo de juego")}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {Math.round(selectedGame.playtime_forever / 60)}h {copy("sincronizadas", "synced", "sincronizadas")}
+                    {Math.round(selectedGame.playtime_forever / 60)}h{" "}
+                    {copy("sincronizadas", "synced", "sincronizadas")}
                   </p>
                 </div>
                 <Switch checked={showPlaytime} onCheckedChange={setShowPlaytime} />
@@ -360,7 +376,11 @@ export function SteamFavoriteGameEditor({
               <div className="flex items-center gap-2">
                 <Award className="size-4 text-gold-strong" />
                 <h3 className="font-display text-base font-semibold">
-                  {copy("Conquistas que você se orgulha", "Achievements you're proud of", "Logros de los que te enorgulleces")}
+                  {copy(
+                    "Conquistas que você se orgulha",
+                    "Achievements you're proud of",
+                    "Logros de los que te enorgulleces",
+                  )}
                 </h3>
               </div>
               <span className="text-xs font-bold text-muted-foreground">{proud.length}/3</span>
@@ -389,7 +409,11 @@ export function SteamFavoriteGameEditor({
                       )}
                     >
                       {achievement.icon_url ? (
-                        <img src={achievement.icon_url} alt="" className="size-10 shrink-0 rounded-md object-cover" />
+                        <img
+                          src={achievement.icon_url}
+                          alt=""
+                          className="size-10 shrink-0 rounded-md object-cover"
+                        />
                       ) : (
                         <span className="grid size-10 shrink-0 place-items-center rounded-md border border-border">
                           <Award className="size-4 text-muted-foreground" />
@@ -422,7 +446,11 @@ export function SteamFavoriteGameEditor({
 
           <div className="flex flex-wrap items-center gap-3">
             <Button type="button" onClick={() => void save()} disabled={saving || migrationMissing}>
-              {saving ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Star className="mr-2 size-4" />}
+              {saving ? (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              ) : (
+                <Star className="mr-2 size-4" />
+              )}
               {copy("Salvar destaque", "Save highlight", "Guardar destacado")}
             </Button>
             {message ? <p className="text-xs text-muted-foreground">{message}</p> : null}

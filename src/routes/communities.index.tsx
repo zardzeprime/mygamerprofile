@@ -11,7 +11,8 @@ export const Route = createFileRoute("/communities/")({
       { title: "Comunidades — MGP" },
       {
         name: "description",
-        content: "Espaços sociais do MGP para posts, discussões, criadores e conteúdo da comunidade.",
+        content:
+          "Espaços sociais do MGP para posts, discussões, criadores e conteúdo da comunidade.",
       },
       { property: "og:title", content: "Comunidades — MGP" },
     ],
@@ -41,7 +42,10 @@ function CommunitiesCatalog() {
 
       <div className="mt-9 grid gap-6 md:grid-cols-2">
         {ACTIVE_GAMES.map((game) => (
-          <article key={game.slug} className="surface-panel group overflow-hidden rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-gold/30 hover:shadow-soft">
+          <article
+            key={game.slug}
+            className="surface-panel group overflow-hidden rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-gold/30 hover:shadow-soft"
+          >
             <div className="relative h-48 overflow-hidden border-b border-border">
               <GameArtwork
                 game={game}
@@ -86,7 +90,9 @@ function CommunitiesCatalog() {
                 params={{ slug: game.slug }}
                 className="mt-5 inline-flex w-full items-center justify-between rounded-xl border border-border bg-muted/20 px-4 py-3 text-sm font-semibold text-foreground transition hover:border-gold/35 hover:bg-gold/5"
               >
-                <span>{copy("Entrar na comunidade", "Enter community", "Entrar en la comunidad")}</span>
+                <span>
+                  {copy("Entrar na comunidade", "Enter community", "Entrar en la comunidad")}
+                </span>
                 <ArrowRight className="size-4 text-gold-strong transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>

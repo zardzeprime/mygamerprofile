@@ -78,7 +78,8 @@ type LfgStatus = (typeof STATUSES)[number];
 
 export const Route = createFileRoute("/lfg")({
   validateSearch: (search: Record<string, unknown>) => ({
-    compose: search["compose"] === true || search["compose"] === "1" || search["compose"] === "true",
+    compose:
+      search["compose"] === true || search["compose"] === "1" || search["compose"] === "true",
     game: typeof search["game"] === "string" ? search["game"] : "",
   }),
   loader: async () => {
@@ -166,10 +167,7 @@ function LfgPage() {
       return;
     }
 
-    void Promise.all([
-      doAgeStatus(),
-      doListForViewer({ data: { status: "open" } }),
-    ])
+    void Promise.all([doAgeStatus(), doListForViewer({ data: { status: "open" } })])
       .then(([status, safePosts]) => {
         if (!active) return;
         setAgeStatus(status);
@@ -211,7 +209,9 @@ function LfgPage() {
       slug: null,
       imageUrl: null,
     }));
-    const catalogNames = new Set([...catalog, ...riot].map((game) => game.name.toLocaleLowerCase()));
+    const catalogNames = new Set(
+      [...catalog, ...riot].map((game) => game.name.toLocaleLowerCase()),
+    );
     const steam = steamGames
       .filter((game) => !catalogNames.has(game.name.toLocaleLowerCase()))
       .map((game) => ({
@@ -237,7 +237,8 @@ function LfgPage() {
   const selectedGame = gameOptions.find((game) => game.key === selectedGameKey) ?? null;
   const maxPartySize = (() => {
     const name = selectedGame?.name.toLocaleLowerCase() ?? "";
-    if (name.includes("valorant") || name === "league of legends" || name.includes("wild rift")) return 5;
+    if (name.includes("valorant") || name === "league of legends" || name.includes("wild rift"))
+      return 5;
     if (name.includes("dark souls")) return 4;
     if (name.includes("teamfight tactics")) return 8;
     if (name.includes("legends of runeterra") || name.includes("2xko")) return 2;
@@ -320,8 +321,7 @@ function LfgPage() {
     }
   };
 
-  const statusLabel = (status: string) =>
-    t(`lfg.status.${status}` as TranslationKey);
+  const statusLabel = (status: string) => t(`lfg.status.${status}` as TranslationKey);
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
@@ -339,9 +339,9 @@ function LfgPage() {
         </div>
         {user ? (
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>{t("lfg.create")}</Button>
-              </DialogTrigger>
+            <DialogTrigger asChild>
+              <Button>{t("lfg.create")}</Button>
+            </DialogTrigger>
             <DialogContent className="max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{t("lfg.create")}</DialogTitle>
@@ -355,33 +355,50 @@ function LfgPage() {
               </p>
               <form onSubmit={handleCreate} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="title">{copy("Título do grupo", "Group title", "Título del grupo")}</Label>
+                  <Label htmlFor="title">
+                    {copy("Título do grupo", "Group title", "Título del grupo")}
+                  </Label>
                   <Input
                     id="title"
                     name="title"
                     required
                     minLength={3}
                     maxLength={120}
-                    placeholder={copy("Ex.: Ranked às 21h", "E.g. Ranked at 9 PM", "Ej.: Ranked a las 21h")}
+                    placeholder={copy(
+                      "Ex.: Ranked às 21h",
+                      "E.g. Ranked at 9 PM",
+                      "Ej.: Ranked a las 21h",
+                    )}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="game_ref">{t("lfg.filter.game")}</Label>
                   <Select value={selectedGameKey} onValueChange={setSelectedGameKey} required>
                     <SelectTrigger id="game_ref">
-                      <SelectValue placeholder={copy("Escolha um jogo", "Choose a game", "Elige un juego")} />
+                      <SelectValue
+                        placeholder={copy("Escolha um jogo", "Choose a game", "Elige un juego")}
+                      />
                     </SelectTrigger>
                     <SelectContent className="max-h-80">
                       {gameOptions.map((game) => (
                         <SelectItem key={game.key} value={game.key}>
-                          {game.name}{game.source === "steam" ? " · Steam" : game.source === "riot" ? " · Riot" : ""}
+                          {game.name}
+                          {game.source === "steam"
+                            ? " · Steam"
+                            : game.source === "riot"
+                              ? " · Riot"
+                              : ""}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                   {steamLoading ? (
                     <p className="text-[0.68rem] text-muted-foreground">
-                      {copy("Carregando sua biblioteca Steam…", "Loading your Steam library…", "Cargando tu biblioteca Steam…")}
+                      {copy(
+                        "Carregando sua biblioteca Steam…",
+                        "Loading your Steam library…",
+                        "Cargando tu biblioteca Steam…",
+                      )}
                     </p>
                   ) : null}
                 </div>
@@ -431,7 +448,11 @@ function LfgPage() {
                   <Label htmlFor="slots_total">
                     {copy("Tamanho do grupo", "Group size", "Tamaño del grupo")}
                   </Label>
-                  <Select name="slots_total" defaultValue={String(Math.min(4, maxPartySize))} key={selectedGameKey}>
+                  <Select
+                    name="slots_total"
+                    defaultValue={String(Math.min(4, maxPartySize))}
+                    key={selectedGameKey}
+                  >
                     <SelectTrigger id="slots_total">
                       <SelectValue />
                     </SelectTrigger>
@@ -460,7 +481,11 @@ function LfgPage() {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="group_ttl_hours">
-                      {copy("Quanto tempo o grupo fica aberto", "How long the group stays open", "Cuánto tiempo queda abierto el grupo")}
+                      {copy(
+                        "Quanto tempo o grupo fica aberto",
+                        "How long the group stays open",
+                        "Cuánto tiempo queda abierto el grupo",
+                      )}
                     </Label>
                     <Select name="group_ttl_hours" defaultValue="24">
                       <SelectTrigger id="group_ttl_hours">
@@ -477,7 +502,11 @@ function LfgPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="chat_ttl_hours">
-                      {copy("Duração da DM após o match", "DM duration after a match", "Duración del DM después del match")}
+                      {copy(
+                        "Duração da DM após o match",
+                        "DM duration after a match",
+                        "Duración del DM después del match",
+                      )}
                     </Label>
                     <Select name="chat_ttl_hours" defaultValue="24">
                       <SelectTrigger id="chat_ttl_hours">
@@ -523,7 +552,7 @@ function LfgPage() {
                 </Button>
               </form>
             </DialogContent>
-            </Dialog>
+          </Dialog>
         ) : null}
       </div>
 
@@ -663,7 +692,10 @@ function LfgPage() {
                           {!post.title ? post.author?.display_name : ""}
                         </h2>
                         <div className="mt-2 flex items-center gap-2">
-                          <Link to="/u/$username" params={{ username: post.author?.username ?? "" }}>
+                          <Link
+                            to="/u/$username"
+                            params={{ username: post.author?.username ?? "" }}
+                          >
                             <UserAvatar
                               src={post.author?.avatar_url}
                               name={post.author?.display_name}
@@ -696,15 +728,27 @@ function LfgPage() {
 
                     <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
                       <span className="rounded-md bg-muted px-2 py-1">{post.platform}</span>
-                      {post.region ? <span className="rounded-md bg-muted px-2 py-1">{post.region}</span> : null}
-                      {post.mode ? <span className="rounded-md bg-muted px-2 py-1">{post.mode}</span> : null}
-                      {post.language ? <span className="rounded-md bg-muted px-2 py-1">{post.language}</span> : null}
-                      {post.mic_required ? <span className="rounded-md bg-muted px-2 py-1">Mic</span> : null}
+                      {post.region ? (
+                        <span className="rounded-md bg-muted px-2 py-1">{post.region}</span>
+                      ) : null}
+                      {post.mode ? (
+                        <span className="rounded-md bg-muted px-2 py-1">{post.mode}</span>
+                      ) : null}
+                      {post.language ? (
+                        <span className="rounded-md bg-muted px-2 py-1">{post.language}</span>
+                      ) : null}
+                      {post.mic_required ? (
+                        <span className="rounded-md bg-muted px-2 py-1">Mic</span>
+                      ) : null}
                       <span className="rounded-md bg-muted px-2 py-1">
-                        {post.slots_open}/{Math.max(0, post.slots_total - 1)} {copy("vagas", "spots", "plazas")}
+                        {post.slots_open}/{Math.max(0, post.slots_total - 1)}{" "}
+                        {copy("vagas", "spots", "plazas")}
                       </span>
                       <span className="rounded-md bg-muted px-2 py-1">
-                        {post.max_age >= 99 ? `${post.min_age}+` : `${post.min_age}–${post.max_age}`} {copy("anos", "years", "años")}
+                        {post.max_age >= 99
+                          ? `${post.min_age}+`
+                          : `${post.min_age}–${post.max_age}`}{" "}
+                        {copy("anos", "years", "años")}
                       </span>
                       {post.scheduled_for ? (
                         <span className="rounded-md bg-muted px-2 py-1">
@@ -749,7 +793,11 @@ function LfgPage() {
                         ) : (
                           <Button size="sm" variant="outline" asChild>
                             <Link to="/settings/profile">
-                              {copy("Complete a idade do cadastro", "Complete your signup age", "Completa la edad del registro")}
+                              {copy(
+                                "Complete a idade do cadastro",
+                                "Complete your signup age",
+                                "Completa la edad del registro",
+                              )}
                             </Link>
                           </Button>
                         )
@@ -764,7 +812,11 @@ function LfgPage() {
                       ) : null}
 
                       {isOwner && post.status === "open" ? (
-                        <Button variant="destructive" size="sm" onClick={() => void handleClose(post.id)}>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => void handleClose(post.id)}
+                        >
                           {t("lfg.close")}
                         </Button>
                       ) : null}
@@ -787,7 +839,6 @@ function LfgPage() {
     </main>
   );
 }
-
 
 function lfgErrorMessage(error: unknown, locale: "pt-BR" | "en" | "es") {
   const message = error instanceof Error ? error.message : String(error);

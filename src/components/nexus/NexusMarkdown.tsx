@@ -17,9 +17,7 @@ function normalizeMarkdown(content: string) {
 }
 
 function cleanPlainText(value: string) {
-  return value
-    .replace(/\*{2,3}/g, "")
-    .replace(/_{2,3}/g, "");
+  return value.replace(/\*{2,3}/g, "").replace(/_{2,3}/g, "");
 }
 
 function inlineMarkdown(value: string): ReactNode[] {
@@ -93,10 +91,7 @@ function parseBlocks(rawContent: string): Block[] {
     if (line.startsWith("\x60\x60\x60")) {
       const code: string[] = [];
       index += 1;
-      while (
-        index < lines.length &&
-        !(lines[index] ?? "").trim().startsWith("\x60\x60\x60")
-      ) {
+      while (index < lines.length && !(lines[index] ?? "").trim().startsWith("\x60\x60\x60")) {
         code.push(lines[index] ?? "");
         index += 1;
       }
@@ -225,10 +220,7 @@ export function NexusMarkdown({ content }: { content: string }) {
 
         if (block.type === "quote") {
           return (
-            <blockquote
-              key={key}
-              className="border-l-2 border-gold/35 pl-3 text-muted-foreground"
-            >
+            <blockquote key={key} className="border-l-2 border-gold/35 pl-3 text-muted-foreground">
               {inlineMarkdown(block.text)}
             </blockquote>
           );
