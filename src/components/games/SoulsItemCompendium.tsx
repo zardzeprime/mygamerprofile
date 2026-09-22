@@ -431,11 +431,7 @@ export function SoulsItemCompendium({
                   <DialogHeader className="text-left">
                     <div className="flex flex-col gap-4 pr-8 sm:flex-row sm:items-center">
                       <div className="grid size-28 shrink-0 place-items-center rounded-2xl border border-border bg-black/20 p-3 shadow-lift">
-                        <img
-                          src={selected.iconUrl}
-                          alt=""
-                          className="size-full object-contain"
-                        />
+                        <img src={selected.iconUrl} alt="" className="size-full object-contain" />
                       </div>
                       <div className="min-w-0">
                         <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-gold-strong">
@@ -458,7 +454,11 @@ export function SoulsItemCompendium({
                   <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.8fr)]">
                     <div className="space-y-4">
                       {technicalWeapon ? (
-                        <WeaponTechnicalCard weapon={technicalWeapon} gameSlug={gameSlug} locale={locale} />
+                        <WeaponTechnicalCard
+                          weapon={technicalWeapon}
+                          gameSlug={gameSlug}
+                          locale={locale}
+                        />
                       ) : null}
                       {technicalArmorEntry ? (
                         <ArmorTechnicalCard armor={technicalArmorEntry} locale={locale} />
@@ -585,9 +585,7 @@ function WeaponTechnicalCard({
   const [levelFailed, setLevelFailed] = useState(false);
 
   useEffect(() => {
-    const nextInfusion = weapon.infusions?.includes("-")
-      ? "-"
-      : (weapon.infusions?.[0] ?? "-");
+    const nextInfusion = weapon.infusions?.includes("-") ? "-" : (weapon.infusions?.[0] ?? "-");
     setInfusion(nextInfusion);
     setDs1Path("regular");
     setUpgrade(0);
@@ -645,12 +643,11 @@ function WeaponTechnicalCard({
   const scaling = isDs3
     ? (currentWeapon.scalingLetters ?? weapon.scalingLetters ?? {})
     : ds1ScalingForPath(weapon, ds1Path);
-  const damageSource =
-    isDs3
-      ? currentWeapon.baseDamage
-      : ds1Path === "regular"
-        ? ds1RegularDamageAtUpgrade(weapon, upgrade)
-        : weapon.baseDamage;
+  const damageSource = isDs3
+    ? currentWeapon.baseDamage
+    : ds1Path === "regular"
+      ? ds1RegularDamageAtUpgrade(weapon, upgrade)
+      : weapon.baseDamage;
   const damage = [
     ["PHY", damageSource.physical],
     ["MAG", damageSource.magic],
@@ -695,11 +692,7 @@ function WeaponTechnicalCard({
         />
         <TechCell
           label={copy("Modificação", "Modification", "Modificación")}
-          value={
-            isDs3
-              ? ds3InfusionLabel(infusion, locale)
-              : DS1_UPGRADE_PATHS[ds1Path].label
-          }
+          value={isDs3 ? ds3InfusionLabel(infusion, locale) : DS1_UPGRADE_PATHS[ds1Path].label}
         />
       </div>
 
@@ -727,14 +720,18 @@ function WeaponTechnicalCard({
           </p>
         </div>
         <label className="block">
-          <span className="sr-only">{copy("Atributo em foco", "Focused attribute", "Atributo destacado")}</span>
+          <span className="sr-only">
+            {copy("Atributo em foco", "Focused attribute", "Atributo destacado")}
+          </span>
           <select
             value={focusStat}
             onChange={(event) => setFocusStat(event.target.value as SoulsDpsStat)}
             className="h-9 rounded-lg border border-border bg-background px-2 text-xs font-bold text-foreground outline-none focus:border-gold/50"
           >
             {stats.map(([stat, label]) => (
-              <option key={stat} value={stat}>{label}</option>
+              <option key={stat} value={stat}>
+                {label}
+              </option>
             ))}
           </select>
         </label>
@@ -766,7 +763,9 @@ function WeaponTechnicalCard({
       </div>
       <p className="mt-2 text-[0.64rem] leading-5 text-muted-foreground">
         {copy("Atributo em foco", "Focused attribute", "Atributo destacado")}:{" "}
-        <strong className="text-foreground">{focusStat.toUpperCase()} · {focusGrade}</strong>
+        <strong className="text-foreground">
+          {focusStat.toUpperCase()} · {focusGrade}
+        </strong>
       </p>
 
       {damage.length ? (
@@ -925,7 +924,11 @@ function ds1ScalingForPath(
   weapon: SoulsDpsWeapon,
   path: Ds1UpgradePath,
 ): Partial<Record<SoulsDpsStat, string>> {
-  const base = weapon.scalingLetters ?? {};
+  const base = Object.fromEntries(
+    Object.entries(weapon.scalingLetters ?? {}).filter(
+      (entry): entry is [string, string] => entry[1] !== null,
+    ),
+  ) as Partial<Record<SoulsDpsStat, string>>;
   if (path === "regular" || path === "crystal") return base;
   if (path === "magic") return { int: "FOCO" };
   if (path === "enchanted") return { int: "FOCO+" };

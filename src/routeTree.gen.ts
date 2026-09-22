@@ -17,6 +17,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as NexusRouteImport } from './routes/nexus'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as RobloxRouteImport } from './routes/roblox'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -25,7 +26,9 @@ import { Route as CommunitiesIndexRouteImport } from './routes/communities.index
 import { Route as CommunitiesSlugRouteImport } from './routes/communities.$slug'
 import { Route as GamesIndexRouteImport } from './routes/games.index'
 import { Route as GamesSlugRouteImport } from './routes/games.$slug'
+import { Route as RobloxSlugRouteImport } from './routes/roblox.$slug'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as AuthenticatedAdminFeedbackRouteImport } from './routes/_authenticated/admin.feedback'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin.reports'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings.account'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings.appearance'
@@ -33,6 +36,7 @@ import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_
 import { Route as AuthenticatedSettingsIdentityRouteImport } from './routes/_authenticated/settings.identity'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as ConnectSteamCallbackRouteImport } from './routes/connect.steam.callback'
+import { Route as RobloxSlugSectionRouteImport } from './routes/roblox.$slug.$section'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as UUsernameGamesSlugRouteImport } from './routes/u.$username.games.$slug'
 
@@ -75,6 +79,11 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RobloxRoute = RobloxRouteImport.update({
+  id: '/roblox',
+  path: '/roblox',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
@@ -115,11 +124,22 @@ const GamesSlugRoute = GamesSlugRouteImport.update({
   path: '/games/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RobloxSlugRoute = RobloxSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => RobloxRoute,
+} as any)
 const UUsernameRoute = UUsernameRouteImport.update({
   id: '/u/$username',
   path: '/u/$username',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminFeedbackRoute =
+  AuthenticatedAdminFeedbackRouteImport.update({
+    id: '/admin/feedback',
+    path: '/admin/feedback',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminReportsRoute =
   AuthenticatedAdminReportsRouteImport.update({
     id: '/admin/reports',
@@ -161,6 +181,11 @@ const ConnectSteamCallbackRoute = ConnectSteamCallbackRouteImport.update({
   path: '/connect/steam/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RobloxSlugSectionRoute = RobloxSlugSectionRouteImport.update({
+  id: '/$section',
+  path: '/$section',
+  getParentRoute: () => RobloxSlugRoute,
+} as any)
 const LovableEmailTransactionalPreviewRoute =
   LovableEmailTransactionalPreviewRouteImport.update({
     id: '/lovable/email/transactional/preview',
@@ -181,15 +206,18 @@ export interface FileRoutesByFullPath {
   '/nexus': typeof NexusRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
+  '/roblox': typeof RobloxRouteWithChildren
   '/search': typeof SearchRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/communities/$slug': typeof CommunitiesSlugRoute
   '/games/$slug': typeof GamesSlugRoute
+  '/roblox/$slug': typeof RobloxSlugRouteWithChildren
   '/u/$username': typeof UUsernameRouteWithChildren
   '/communities/': typeof CommunitiesIndexRoute
   '/games/': typeof GamesIndexRoute
+  '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -197,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/connect/steam/callback': typeof ConnectSteamCallbackRoute
+  '/roblox/$slug/$section': typeof RobloxSlugSectionRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -208,15 +237,18 @@ export interface FileRoutesByTo {
   '/nexus': typeof NexusRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
+  '/roblox': typeof RobloxRouteWithChildren
   '/search': typeof SearchRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/communities/$slug': typeof CommunitiesSlugRoute
   '/games/$slug': typeof GamesSlugRoute
+  '/roblox/$slug': typeof RobloxSlugRouteWithChildren
   '/u/$username': typeof UUsernameRouteWithChildren
   '/communities': typeof CommunitiesIndexRoute
   '/games': typeof GamesIndexRoute
+  '/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -224,6 +256,7 @@ export interface FileRoutesByTo {
   '/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/connect/steam/callback': typeof ConnectSteamCallbackRoute
+  '/roblox/$slug/$section': typeof RobloxSlugSectionRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -237,15 +270,18 @@ export interface FileRoutesById {
   '/nexus': typeof NexusRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
+  '/roblox': typeof RobloxRouteWithChildren
   '/search': typeof SearchRoute
   '/support': typeof SupportRoute
   '/terms': typeof TermsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/communities/$slug': typeof CommunitiesSlugRoute
   '/games/$slug': typeof GamesSlugRoute
+  '/roblox/$slug': typeof RobloxSlugRouteWithChildren
   '/u/$username': typeof UUsernameRouteWithChildren
   '/communities/': typeof CommunitiesIndexRoute
   '/games/': typeof GamesIndexRoute
+  '/_authenticated/admin/feedback': typeof AuthenticatedAdminFeedbackRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
@@ -253,6 +289,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/identity': typeof AuthenticatedSettingsIdentityRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/connect/steam/callback': typeof ConnectSteamCallbackRoute
+  '/roblox/$slug/$section': typeof RobloxSlugSectionRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/u/$username/games/$slug': typeof UUsernameGamesSlugRoute
 }
@@ -266,15 +303,18 @@ export interface FileRouteTypes {
     | '/nexus'
     | '/privacy'
     | '/register'
+    | '/roblox'
     | '/search'
     | '/support'
     | '/terms'
     | '/onboarding'
     | '/communities/$slug'
     | '/games/$slug'
+    | '/roblox/$slug'
     | '/u/$username'
     | '/communities/'
     | '/games/'
+    | '/admin/feedback'
     | '/admin/reports'
     | '/settings/account'
     | '/settings/appearance'
@@ -282,6 +322,7 @@ export interface FileRouteTypes {
     | '/settings/identity'
     | '/settings/profile'
     | '/connect/steam/callback'
+    | '/roblox/$slug/$section'
     | '/lovable/email/transactional/preview'
     | '/u/$username/games/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -293,15 +334,18 @@ export interface FileRouteTypes {
     | '/nexus'
     | '/privacy'
     | '/register'
+    | '/roblox'
     | '/search'
     | '/support'
     | '/terms'
     | '/onboarding'
     | '/communities/$slug'
     | '/games/$slug'
+    | '/roblox/$slug'
     | '/u/$username'
     | '/communities'
     | '/games'
+    | '/admin/feedback'
     | '/admin/reports'
     | '/settings/account'
     | '/settings/appearance'
@@ -309,6 +353,7 @@ export interface FileRouteTypes {
     | '/settings/identity'
     | '/settings/profile'
     | '/connect/steam/callback'
+    | '/roblox/$slug/$section'
     | '/lovable/email/transactional/preview'
     | '/u/$username/games/$slug'
   id:
@@ -321,15 +366,18 @@ export interface FileRouteTypes {
     | '/nexus'
     | '/privacy'
     | '/register'
+    | '/roblox'
     | '/search'
     | '/support'
     | '/terms'
     | '/_authenticated/onboarding'
     | '/communities/$slug'
     | '/games/$slug'
+    | '/roblox/$slug'
     | '/u/$username'
     | '/communities/'
     | '/games/'
+    | '/_authenticated/admin/feedback'
     | '/_authenticated/admin/reports'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
@@ -337,6 +385,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/identity'
     | '/_authenticated/settings/profile'
     | '/connect/steam/callback'
+    | '/roblox/$slug/$section'
     | '/lovable/email/transactional/preview'
     | '/u/$username/games/$slug'
   fileRoutesById: FileRoutesById
@@ -350,6 +399,7 @@ export interface RootRouteChildren {
   NexusRoute: typeof NexusRoute
   PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
+  RobloxRoute: typeof RobloxRouteWithChildren
   SearchRoute: typeof SearchRoute
   SupportRoute: typeof SupportRoute
   TermsRoute: typeof TermsRoute
@@ -420,6 +470,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/roblox': {
+      id: '/roblox'
+      path: '/roblox'
+      fullPath: '/roblox'
+      preLoaderRoute: typeof RobloxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search': {
       id: '/search'
       path: '/search'
@@ -476,12 +533,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GamesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/roblox/$slug': {
+      id: '/roblox/$slug'
+      path: '/$slug'
+      fullPath: '/roblox/$slug'
+      preLoaderRoute: typeof RobloxSlugRouteImport
+      parentRoute: typeof RobloxRoute
+    }
     '/u/$username': {
       id: '/u/$username'
       path: '/u/$username'
       fullPath: '/u/$username'
       preLoaderRoute: typeof UUsernameRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/feedback': {
+      id: '/_authenticated/admin/feedback'
+      path: '/admin/feedback'
+      fullPath: '/admin/feedback'
+      preLoaderRoute: typeof AuthenticatedAdminFeedbackRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin/reports': {
       id: '/_authenticated/admin/reports'
@@ -532,6 +603,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConnectSteamCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/roblox/$slug/$section': {
+      id: '/roblox/$slug/$section'
+      path: '/$section'
+      fullPath: '/roblox/$slug/$section'
+      preLoaderRoute: typeof RobloxSlugSectionRouteImport
+      parentRoute: typeof RobloxSlugRoute
+    }
     '/lovable/email/transactional/preview': {
       id: '/lovable/email/transactional/preview'
       path: '/lovable/email/transactional/preview'
@@ -551,6 +629,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedAdminFeedbackRoute: typeof AuthenticatedAdminFeedbackRoute
   AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
   AuthenticatedSettingsAccountRoute: typeof AuthenticatedSettingsAccountRoute
   AuthenticatedSettingsAppearanceRoute: typeof AuthenticatedSettingsAppearanceRoute
@@ -561,6 +640,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedAdminFeedbackRoute: AuthenticatedAdminFeedbackRoute,
   AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
   AuthenticatedSettingsAccountRoute: AuthenticatedSettingsAccountRoute,
   AuthenticatedSettingsAppearanceRoute: AuthenticatedSettingsAppearanceRoute,
@@ -571,6 +651,29 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface RobloxSlugRouteChildren {
+  RobloxSlugSectionRoute: typeof RobloxSlugSectionRoute
+}
+
+const RobloxSlugRouteChildren: RobloxSlugRouteChildren = {
+  RobloxSlugSectionRoute: RobloxSlugSectionRoute,
+}
+
+const RobloxSlugRouteWithChildren = RobloxSlugRoute._addFileChildren(
+  RobloxSlugRouteChildren,
+)
+
+interface RobloxRouteChildren {
+  RobloxSlugRoute: typeof RobloxSlugRouteWithChildren
+}
+
+const RobloxRouteChildren: RobloxRouteChildren = {
+  RobloxSlugRoute: RobloxSlugRouteWithChildren,
+}
+
+const RobloxRouteWithChildren =
+  RobloxRoute._addFileChildren(RobloxRouteChildren)
 
 interface UUsernameRouteChildren {
   UUsernameGamesSlugRoute: typeof UUsernameGamesSlugRoute
@@ -593,6 +696,7 @@ const rootRouteChildren: RootRouteChildren = {
   NexusRoute: NexusRoute,
   PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
+  RobloxRoute: RobloxRouteWithChildren,
   SearchRoute: SearchRoute,
   SupportRoute: SupportRoute,
   TermsRoute: TermsRoute,

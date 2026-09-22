@@ -17,9 +17,7 @@ function normalizeMarkdown(content: string) {
 }
 
 function cleanPlainText(value: string) {
-  return value
-    .replace(/\*{2,3}/g, "")
-    .replace(/_{2,3}/g, "");
+  return value.replace(/\*{2,3}/g, "").replace(/_{2,3}/g, "");
 }
 
 function inlineMarkdown(value: string): ReactNode[] {
@@ -93,10 +91,7 @@ function parseBlocks(rawContent: string): Block[] {
     if (line.startsWith("\x60\x60\x60")) {
       const code: string[] = [];
       index += 1;
-      while (
-        index < lines.length &&
-        !(lines[index] ?? "").trim().startsWith("\x60\x60\x60")
-      ) {
+      while (index < lines.length && !(lines[index] ?? "").trim().startsWith("\x60\x60\x60")) {
         code.push(lines[index] ?? "");
         index += 1;
       }
@@ -107,10 +102,16 @@ function parseBlocks(rawContent: string): Block[] {
 
     const heading = line.match(/^(#{1,4})\s*(.+)$/);
     if (heading) {
+      const marker = heading[1];
+      const content = heading[2];
+      if (!marker || !content) {
+        index += 1;
+        continue;
+      }
       blocks.push({
         type: "heading",
-        level: heading[1].length,
-        text: cleanPlainText(heading[2].trim()),
+        level: marker.length,
+        text: cleanPlainText(content.trim()),
       });
       index += 1;
       continue;
@@ -122,7 +123,7 @@ function parseBlocks(rawContent: string): Block[] {
         const current = (lines[index] ?? "").trim();
         const item = current.match(/^[-+*]\s+(.+)$/);
         if (!item) break;
-        items.push(item[1]);
+        items.push(item[1] ?? "");
         index += 1;
       }
       blocks.push({ type: "unordered", items });
@@ -135,7 +136,7 @@ function parseBlocks(rawContent: string): Block[] {
         const current = (lines[index] ?? "").trim();
         const item = current.match(/^\d+[.)]\s*(.+)$/);
         if (!item) break;
-        items.push(item[1]);
+        items.push(item[1] ?? "");
         index += 1;
       }
       blocks.push({ type: "ordered", items });
@@ -219,10 +220,7 @@ export function NexusMarkdown({ content }: { content: string }) {
 
         if (block.type === "quote") {
           return (
-            <blockquote
-              key={key}
-              className="border-l-2 border-gold/35 pl-3 text-muted-foreground"
-            >
+            <blockquote key={key} className="border-l-2 border-gold/35 pl-3 text-muted-foreground">
               {inlineMarkdown(block.text)}
             </blockquote>
           );

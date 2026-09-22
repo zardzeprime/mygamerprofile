@@ -16,12 +16,25 @@ type ThemeContextValue = {
   resetAccentColor: () => void;
   setCursorStyle: (value: CursorStyle) => void;
 };
-type ProfileAppearanceRow = Pick<Database["public"]["Tables"]["profiles"]["Row"], "theme_preference"> & { accent_color?: string | null };
-type ProfileAppearanceUpdate = Database["public"]["Tables"]["profiles"]["Update"] & { accent_color?: string | null };
+type ProfileAppearanceRow = Pick<
+  Database["public"]["Tables"]["profiles"]["Row"],
+  "theme_preference"
+> & { accent_color?: string | null };
+type ProfileAppearanceUpdate = Database["public"]["Tables"]["profiles"]["Update"] & {
+  accent_color?: string | null;
+};
 const ThemeContext = createContext<ThemeContextValue | null>(null);
-const isHexColor=(v:string|null):v is string=>typeof v==="string"&&/^#[0-9a-f]{6}$/i.test(v);
-const isCursor=(v:string|null):v is CursorStyle=>v==="classic"||v==="sword"||v==="axe"||v==="reticle";
-function readableForeground(v:string):"#111318"|"#ffffff"{const x=[1,3,5].map(i=>Number.parseInt(v.slice(i,i+2),16)/255).map(c=>c<=.04045?c/12.92:((c+.055)/1.055)**2.4);return .2126*x[0]+.7152*x[1]+.0722*x[2]>.42?"#111318":"#ffffff"}
+const isHexColor = (v: string | null): v is string =>
+  typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v);
+const isCursor = (v: string | null): v is CursorStyle =>
+  v === "classic" || v === "sword" || v === "axe" || v === "reticle";
+function readableForeground(v: string): "#111318" | "#ffffff" {
+  const x = [1, 3, 5]
+    .map((i) => Number.parseInt(v.slice(i, i + 2), 16) / 255)
+    .map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  const [red = 0, green = 0, blue = 0] = x;
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue > 0.42 ? "#111318" : "#ffffff";
+}
 const uri = (svg: string) => `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 
 function classicCursor(accent: string, active: boolean) {
@@ -70,7 +83,7 @@ function applyCursor(style: CursorStyle) {
   const root = document.documentElement;
   const customAccent = root.style.getPropertyValue("--mgp-user-accent").trim();
   const accent =
-    root.dataset.accent === "custom" && isHexColor(customAccent)
+    root.dataset["accent"] === "custom" && isHexColor(customAccent)
       ? customAccent
       : DEFAULT_ACCENT_COLOR;
 
@@ -96,7 +109,20 @@ function applyCursor(style: CursorStyle) {
   root.style.setProperty("--mgp-cursor-pointer", `${uri(activeSvg)} ${hotSpot}`);
 }
 
-function applyAccent(v:string|null, cursor:CursorStyle){if(typeof document==="undefined")return;const r=document.documentElement;r.style.removeProperty("--mgp-user-accent-foreground");if(isHexColor(v)){r.style.setProperty("--mgp-user-accent",v);r.style.setProperty("--mgp-user-accent-foreground",readableForeground(v));r.dataset.accent="custom"}else{r.style.removeProperty("--mgp-user-accent");delete r.dataset.accent}applyCursor(cursor)}
+function applyAccent(v: string | null, cursor: CursorStyle) {
+  if (typeof document === "undefined") return;
+  const r = document.documentElement;
+  r.style.removeProperty("--mgp-user-accent-foreground");
+  if (isHexColor(v)) {
+    r.style.setProperty("--mgp-user-accent", v);
+    r.style.setProperty("--mgp-user-accent-foreground", readableForeground(v));
+    r.dataset["accent"] = "custom";
+  } else {
+    r.style.removeProperty("--mgp-user-accent");
+    delete r.dataset["accent"];
+  }
+  applyCursor(cursor);
+}
 function read(key: string) {
   try {
     return localStorage.getItem(key);
@@ -113,16 +139,105 @@ function store(key: string, value: string | null) {
     // Appearance preferences remain available in memory when storage is blocked.
   }
 }
-async function persistAccountPreference(patch:{theme_preference?:"dark";accent_color?:string|null}){try{const{data:{user}}=await supabase.auth.getUser();if(!user)return;const p=supabase.from("profiles") as unknown as {update:(v:ProfileAppearanceUpdate)=>{eq:(c:"id",v:string)=>Promise<{error:{message:string}|null}>}};const{error}=await p.update(patch).eq("id",user.id);if(error)console.warn("[MGP] appearance sync",error.message)}catch(e){console.warn("[MGP] appearance local only",e)}}
-export const themeBootstrapScript=`(function(){var r=document.documentElement;r.classList.add("dark");r.style.colorScheme="dark";try{localStorage.setItem("mgp-theme","dark");var a=localStorage.getItem("mgp-accent-color");if(a&&/^#[0-9a-f]{6}$/i.test(a)){r.style.setProperty("--mgp-user-accent",a.toLowerCase());r.dataset.accent="custom"}else{r.style.removeProperty("--mgp-user-accent");delete r.dataset.accent}}catch(e){}})();`;
-export function ThemeProvider({children}:{children:ReactNode}){
- const [accentColor,setAccentState]=useState<string|null>(null),[cursorStyle,setCursorState]=useState<CursorStyle>("classic");const rev=useRef(0);
- useEffect(()=>{let active=true;const sa=read(ACCENT_STORAGE_KEY),a=isHexColor(sa)?sa.toLowerCase():null,c=isCursor(read(CURSOR_STORAGE_KEY))?read(CURSOR_STORAGE_KEY) as CursorStyle:"classic";document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";store(THEME_STORAGE_KEY,"dark");setAccentState(a);setCursorState(c);applyAccent(a,c);
- const hydrate=async(id:string)=>{const at=rev.current;const{data:raw,error}=await supabase.from("profiles").select("*").eq("id",id).maybeSingle();const p=raw as ProfileAppearanceRow|null;if(!active||error||!p||rev.current!==at)return;if(p.theme_preference!=="dark")void persistAccountPreference({theme_preference:"dark"});const aa=isHexColor(p.accent_color??null)?p.accent_color!.toLowerCase():null;if(aa){setAccentState(aa);store(ACCENT_STORAGE_KEY,aa);applyAccent(aa,c)}};void supabase.auth.getUser().then(({data})=>{if(active&&data.user)void hydrate(data.user.id)});const{data:s}=supabase.auth.onAuthStateChange((e,x)=>{if(e==="SIGNED_IN"&&x?.user)void hydrate(x.user.id)});return()=>{active=false;s.subscription.unsubscribe()}},[]);
- const setAccentColor=useCallback((v:string)=>{if(!isHexColor(v))return;rev.current++;const n=v.toLowerCase();setAccentState(n);store(ACCENT_STORAGE_KEY,n);applyAccent(n,cursorStyle);void persistAccountPreference({accent_color:n})},[cursorStyle]);
- const resetAccentColor=useCallback(()=>{rev.current++;setAccentState(null);store(ACCENT_STORAGE_KEY,null);applyAccent(null,cursorStyle);void persistAccountPreference({accent_color:null})},[cursorStyle]);
- const setCursorStyle=useCallback((v:CursorStyle)=>{setCursorState(v);store(CURSOR_STORAGE_KEY,v);applyCursor(v)},[]);
- const value=useMemo(()=>({accentColor,cursorStyle,setAccentColor,resetAccentColor,setCursorStyle}),[accentColor,cursorStyle,setAccentColor,resetAccentColor,setCursorStyle]);
- return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+async function persistAccountPreference(patch: {
+  theme_preference?: "dark";
+  accent_color?: string | null;
+}) {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+    const p = supabase.from("profiles") as unknown as {
+      update: (v: ProfileAppearanceUpdate) => {
+        eq: (c: "id", v: string) => Promise<{ error: { message: string } | null }>;
+      };
+    };
+    const { error } = await p.update(patch).eq("id", user.id);
+    if (error) console.warn("[MGP] appearance sync", error.message);
+  } catch (e) {
+    console.warn("[MGP] appearance local only", e);
+  }
 }
-export function useTheme(){const c=useContext(ThemeContext);if(!c)throw new Error("useTheme must be used inside ThemeProvider");return c}
+export const themeBootstrapScript = `(function(){var r=document.documentElement;r.classList.add("dark");r.style.colorScheme="dark";try{localStorage.setItem("mgp-theme","dark");var a=localStorage.getItem("mgp-accent-color");if(a&&/^#[0-9a-f]{6}$/i.test(a)){r.style.setProperty("--mgp-user-accent",a.toLowerCase());r.dataset.accent="custom"}else{r.style.removeProperty("--mgp-user-accent");delete r.dataset.accent}}catch(e){}})();`;
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [accentColor, setAccentState] = useState<string | null>(null),
+    [cursorStyle, setCursorState] = useState<CursorStyle>("classic");
+  const rev = useRef(0);
+  useEffect(() => {
+    let active = true;
+    const sa = read(ACCENT_STORAGE_KEY),
+      a = isHexColor(sa) ? sa.toLowerCase() : null,
+      c = isCursor(read(CURSOR_STORAGE_KEY))
+        ? (read(CURSOR_STORAGE_KEY) as CursorStyle)
+        : "classic";
+    document.documentElement.classList.add("dark");
+    document.documentElement.style.colorScheme = "dark";
+    store(THEME_STORAGE_KEY, "dark");
+    setAccentState(a);
+    setCursorState(c);
+    applyAccent(a, c);
+    const hydrate = async (id: string) => {
+      const at = rev.current;
+      const { data: raw, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+      const p = raw as ProfileAppearanceRow | null;
+      if (!active || error || !p || rev.current !== at) return;
+      if (p.theme_preference !== "dark")
+        void persistAccountPreference({ theme_preference: "dark" });
+      const aa = isHexColor(p.accent_color ?? null) ? p.accent_color!.toLowerCase() : null;
+      if (aa) {
+        setAccentState(aa);
+        store(ACCENT_STORAGE_KEY, aa);
+        applyAccent(aa, c);
+      }
+    };
+    void supabase.auth.getUser().then(({ data }) => {
+      if (active && data.user) void hydrate(data.user.id);
+    });
+    const { data: s } = supabase.auth.onAuthStateChange((e, x) => {
+      if (e === "SIGNED_IN" && x?.user) void hydrate(x.user.id);
+    });
+    return () => {
+      active = false;
+      s.subscription.unsubscribe();
+    };
+  }, []);
+  const setAccentColor = useCallback(
+    (v: string) => {
+      if (!isHexColor(v)) return;
+      rev.current++;
+      const n = v.toLowerCase();
+      setAccentState(n);
+      store(ACCENT_STORAGE_KEY, n);
+      applyAccent(n, cursorStyle);
+      void persistAccountPreference({ accent_color: n });
+    },
+    [cursorStyle],
+  );
+  const resetAccentColor = useCallback(() => {
+    rev.current++;
+    setAccentState(null);
+    store(ACCENT_STORAGE_KEY, null);
+    applyAccent(null, cursorStyle);
+    void persistAccountPreference({ accent_color: null });
+  }, [cursorStyle]);
+  const setCursorStyle = useCallback((v: CursorStyle) => {
+    setCursorState(v);
+    store(CURSOR_STORAGE_KEY, v);
+    applyCursor(v);
+  }, []);
+  const value = useMemo(
+    () => ({ accentColor, cursorStyle, setAccentColor, resetAccentColor, setCursorStyle }),
+    [accentColor, cursorStyle, setAccentColor, resetAccentColor, setCursorStyle],
+  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+}
+export function useTheme() {
+  const c = useContext(ThemeContext);
+  if (!c) throw new Error("useTheme must be used inside ThemeProvider");
+  return c;
+}
