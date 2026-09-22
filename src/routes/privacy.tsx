@@ -205,10 +205,10 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          O MGP pretende permitir conexão opcional com serviços como Steam,
-          Riot Games e Google. A disponibilidade depende das políticas,
-          aprovações e capacidades técnicas de cada fornecedor. Conectar uma
-          conta nunca deve exigir que você entregue ao MGP a senha desse
+          O MGP permite autenticação opcional com Google e conexão de serviços
+          de jogos como Steam; integrações futuras, como Riot Games, dependem
+          das políticas, aprovações e capacidades técnicas de cada fornecedor.
+          Nenhum desses fluxos deve exigir que você entregue ao MGP a senha do
           serviço; a autenticação deve ocorrer pelo fluxo oficial do provedor.
         </p>
         <p>
@@ -241,9 +241,9 @@ const sections: LegalSection[] = [
             entrega e operação da aplicação web;
           </li>
           <li>
-            <strong className="text-foreground">Google:</strong> recursos que
-            você escolher usar, como autenticação e, futuramente, publicidade,
-            sempre conforme as configurações e políticas aplicáveis;
+            <strong className="text-foreground">Google:</strong> autenticação
+            opcional e publicidade quando ativada/aprovada, sempre conforme as
+            configurações, consentimentos e políticas aplicáveis;
           </li>
           <li>
             <strong className="text-foreground">Plataformas de jogos:</strong>{" "}
