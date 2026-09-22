@@ -170,7 +170,7 @@ export function AppHeader() {
       );
     }
     return (
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <button
             type="button"
@@ -222,7 +222,7 @@ export function AppHeader() {
   return (
     <header
       ref={headerRef}
-      className="mgp-header sticky top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-xl"
+      className="mgp-header fixed inset-x-0 top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-xl"
     >
       <div className="mx-auto grid h-[4.25rem] w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 sm:px-6">
         <div className="flex min-w-0 items-center gap-2">

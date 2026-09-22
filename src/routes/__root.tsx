@@ -203,6 +203,7 @@ function RootComponent() {
           <RouteTransitionLoader />
           <div className="flex min-h-screen flex-col bg-background">
             <AppHeader />
+            <div aria-hidden="true" className="h-[4.25rem] shrink-0" />
             <main className="flex-1">
               {/* Required: nested routes render here. */}
               <Outlet />
