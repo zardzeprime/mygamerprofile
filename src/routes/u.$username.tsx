@@ -285,7 +285,9 @@ function ProfilePage() {
           <Tabs defaultValue="posts" className="min-w-0">
             <TabsList className="h-auto w-full justify-start overflow-x-auto rounded-xl bg-muted/45 p-1">
               <TabsTrigger value="posts" className="shrink-0">{t("profile.posts")}</TabsTrigger>
-              <TabsTrigger value="games" className="shrink-0">{t("profile.gameProfiles")}</TabsTrigger>
+              <TabsTrigger value="games" className="shrink-0">
+                {copy("Perfis por jogo", "Game profiles", "Perfiles por juego")}
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="posts" className="mt-4 min-w-0 space-y-4">
               {posts.length === 0 ? <EmptyState title={t("home.activity.empty")} /> : posts.map((post) => <PostCard key={post.id} post={post} />)}
@@ -312,7 +314,14 @@ function ProfilePage() {
                   )}
                 </div>
               ) : (
-                gameProfiles.map((gameProfile) => <GameProfileCard key={gameProfile.game_id} gameProfile={gameProfile} username={profile.username} />)
+                gameProfiles.map((gameProfile) => (
+                  <GameProfileCard
+                    key={gameProfile.game_id}
+                    gameProfile={gameProfile}
+                    username={profile.username}
+                    isOwn={isOwn}
+                  />
+                ))
               )}
             </TabsContent>
           </Tabs>
