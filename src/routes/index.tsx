@@ -243,7 +243,7 @@ function Home() {
               </p>
               <Link
                 to="/lfg"
-                search={{}}
+                search={{ compose: false, game: "" }}
                 className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-gold-strong"
               >
                 {copy("Buscar grupo", "Find a group", "Buscar grupo")}
