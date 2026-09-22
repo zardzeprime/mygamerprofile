@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import {
+  Boxes,
   Gamepad2,
   Loader2,
   Search,
@@ -45,6 +46,7 @@ export function GlobalSearch({
   const trimmed = query.trim();
   const hasResults =
     localResults.games.length > 0 ||
+    localResults.robloxExperiences.length > 0 ||
     localResults.communities.length > 0 ||
     profiles.length > 0;
 
@@ -162,6 +164,34 @@ export function GlobalSearch({
             </SearchGroup>
           ) : null}
 
+          {localResults.robloxExperiences.length ? (
+            <SearchGroup
+              icon={Boxes}
+              title={copy("Roblox Experiences", "Roblox Experiences", "Experiencias Roblox")}
+            >
+              {localResults.robloxExperiences.map((experience) => (
+                <Link
+                  key={"roblox-" + experience.slug}
+                  to="/roblox"
+                  search={{ experience: experience.slug, tab: "overview" }}
+                  onClick={() => {
+                    setOpen(false);
+                    onNavigate?.();
+                  }}
+                  className="flex min-w-0 items-center gap-3 rounded-[0.8rem_0.8rem_0.32rem_0.8rem] border border-transparent px-2.5 py-2 transition-colors hover:border-gold/20 hover:bg-gold-soft/35"
+                >
+                  <span className="grid size-10 shrink-0 place-items-center rounded-[0.7rem_0.7rem_0.28rem_0.7rem] border border-border bg-muted text-gold-strong">
+                    <Gamepad2 className="size-4" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-semibold text-foreground">{experience.name}</span>
+                    <span className="block truncate text-xs text-muted-foreground">{experience.category}</span>
+                  </span>
+                </Link>
+              ))}
+            </SearchGroup>
+          ) : null}
+
           {localResults.communities.length ? (
             <SearchGroup
               icon={Users}
@@ -229,9 +259,9 @@ export function GlobalSearch({
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {copy(
-                  "Tente outro jogo, comunidade ou username.",
-                  "Try another game, community or username.",
-                  "Prueba otro juego, comunidad o nombre de usuario.",
+                  "Tente outro jogo, experiência Roblox, comunidade ou username.",
+                  "Try another game, Roblox experience, community or username.",
+                  "Prueba otro juego, experiencia Roblox, comunidad o nombre de usuario.",
                 )}
               </p>
             </div>
