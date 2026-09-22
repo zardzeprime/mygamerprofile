@@ -402,7 +402,7 @@ function OverviewPanel({
                 locale={locale}
               />
               <HubStatusRow
-                label={copy("Páginas internas", "Internal pages", "Páginas internas")}
+                label={copy("Conteúdo das páginas", "Page content", "Contenido de las páginas")}
                 ready={false}
                 locale={locale}
               />
