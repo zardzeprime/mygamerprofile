@@ -295,10 +295,11 @@ const sections: LegalSection[] = [
           ferramentas oferecidas pelo fornecedor de anúncios.
         </p>
         <p>
-          Onde a lei ou a política do fornecedor exigir consentimento prévio, o
-          MGP exibirá ferramenta de gestão de consentimento antes de usar
-          cookies publicitários não essenciais. Recusar publicidade
-          personalizada não bloqueará o acesso gratuito ao conteúdo principal.
+          Onde a lei ou a política do fornecedor exigir consentimento prévio,
+          a veiculação publicitária que dependa desse consentimento deve
+          permanecer desativada até que o MGP tenha configurado uma ferramenta
+          adequada de gestão de consentimento. Recusar publicidade personalizada
+          não bloqueará o acesso gratuito ao conteúdo principal.
         </p>
       </>
     ),
