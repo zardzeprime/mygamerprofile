@@ -23,7 +23,6 @@ import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { supabase } from "@/integrations/supabase/client";
 import { getRiotApiReadiness } from "@/lib/riot.functions";
-import { getAuthRedirectUrl } from "@/lib/siteUrl";
 import { getSteamApiReadiness } from "@/lib/steam.functions";
 import {
   getSteamSyncStatus,
@@ -168,7 +167,6 @@ function SettingsConnectionsPage() {
   const [apiReadiness, setApiReadiness] = useState<ApiReadiness>({ steam: null, riot: null });
   const [loading, setLoading] = useState(true);
   const [steamBusy, setSteamBusy] = useState(false);
-  const [googleBusy, setGoogleBusy] = useState(false);
   const [connectionError, setConnectionError] = useState("");
   const [steamSyncStatus, setSteamSyncStatus] = useState<SteamSyncStatus | null>(null);
   const [steamSyncing, setSteamSyncing] = useState(false);
@@ -239,86 +237,6 @@ function SettingsConnectionsPage() {
     (googleIdentity?.identity_data?.["name"] as string | undefined) ||
     (googleIdentity?.identity_data?.["email"] as string | undefined) ||
     null;
-
-  const handleGoogleConnect = async () => {
-    if (googleBusy || googleConnected) return;
-    setGoogleBusy(true);
-    setConnectionError("");
-
-    try {
-      const { data, error } = await supabase.auth.linkIdentity({
-        provider: "google",
-        options: {
-          redirectTo: getAuthRedirectUrl("/settings/connections"),
-          scopes: "openid email profile",
-          queryParams: {
-            prompt: "select_account",
-          },
-        },
-      });
-
-      if (error) throw error;
-      if (data?.url) {
-        window.location.assign(data.url);
-        return;
-      }
-
-      throw new Error("GOOGLE_IDENTITY_LINK_URL_MISSING");
-    } catch (error) {
-      console.error("[MGP Google] Could not link identity", error);
-      setGoogleBusy(false);
-      setConnectionError(
-        copy(
-          "Não foi possível vincular o Google agora. Tente novamente; se o erro continuar, o vínculo manual de identidades precisa ser habilitado no Supabase Auth.",
-          "Could not link Google right now. Try again; if it keeps failing, manual identity linking must be enabled in Supabase Auth.",
-          "No se pudo vincular Google ahora. Inténtalo de nuevo; si el error continúa, debe habilitarse la vinculación manual de identidades en Supabase Auth.",
-        ),
-      );
-    }
-  };
-
-  const handleGoogleDisconnect = async () => {
-    if (googleBusy || !googleIdentity) return;
-
-    const identityCount = user?.identities?.length ?? 0;
-    if (identityCount < 2) {
-      setConnectionError(
-        copy(
-          "Esta conta usa o Google como único método de acesso. Adicione outro método de login antes de desvincular o Google.",
-          "Google is this account's only sign-in method. Add another sign-in method before unlinking Google.",
-          "Google es el único método de acceso de esta cuenta. Añade otro método antes de desvincular Google.",
-        ),
-      );
-      return;
-    }
-
-    const confirmed = window.confirm(
-      copy(
-        "Desvincular sua identidade Google do MG Profile?",
-        "Unlink your Google identity from MG Profile?",
-        "¿Desvincular tu identidad de Google de MG Profile?",
-      ),
-    );
-    if (!confirmed) return;
-
-    setGoogleBusy(true);
-    setConnectionError("");
-    try {
-      const { error } = await supabase.auth.unlinkIdentity(googleIdentity);
-      if (error) throw error;
-      window.location.reload();
-    } catch (error) {
-      console.error("[MGP Google] Could not unlink identity", error);
-      setConnectionError(
-        copy(
-          "Não foi possível desvincular o Google agora. Tente novamente.",
-          "Could not unlink Google right now. Try again.",
-          "No se pudo desvincular Google ahora. Inténtalo de nuevo.",
-        ),
-      );
-      setGoogleBusy(false);
-    }
-  };
 
   const handleSteamConnect = async () => {
     if (steamBusy) return;
@@ -554,13 +472,10 @@ function SettingsConnectionsPage() {
                         : null
                   }
                   steamBusy={steamBusy}
-                  googleBusy={googleBusy}
                   googleConnected={provider.key === "google" ? googleConnected : false}
                   googleDisplayName={provider.key === "google" ? googleDisplayName : null}
                   onSteamConnect={handleSteamConnect}
                   onSteamDisconnect={handleSteamDisconnect}
-                  onGoogleConnect={handleGoogleConnect}
-                  onGoogleDisconnect={handleGoogleDisconnect}
                 />
               );
             })}
@@ -649,9 +564,9 @@ function SettingsConnectionsPage() {
 
         <div className="rounded-xl border border-dashed border-border px-4 py-3 text-xs leading-5 text-muted-foreground">
           {copy(
-            "Steam e Google já usam login oficial. Riot continua dependendo da aprovação de produção e do RSO para vínculo de conta.",
-            "Steam and Google now use official sign-in. Riot still depends on production approval and RSO for account linking.",
-            "Steam y Google ya usan acceso oficial. Riot aún depende de la aprobación de producción y RSO para vincular cuentas.",
+            "Steam pode ser vinculada aqui. Google é escolhido apenas no cadastro/login por “Continuar com Google”. Riot continua dependendo da aprovação de produção e do RSO.",
+            "Steam can be linked here. Google is selected only during sign-up/sign-in through “Continue with Google”. Riot still depends on production approval and RSO.",
+            "Steam puede vincularse aquí. Google se elige solo durante el registro/acceso mediante “Continuar con Google”. Riot aún depende de la aprobación de producción y RSO.",
           )}{" "}
           <Link to="/privacy" className="font-semibold text-gold-strong hover:underline">
             {copy("Ver privacidade", "View privacy", "Ver privacidad")}
@@ -669,13 +584,10 @@ function ProviderCard({
   loading,
   readiness,
   steamBusy,
-  googleBusy,
   googleConnected,
   googleDisplayName,
   onSteamConnect,
   onSteamDisconnect,
-  onGoogleConnect,
-  onGoogleDisconnect,
 }: {
   provider: (typeof PROVIDERS)[number];
   account: ConnectedAccount | undefined;
@@ -686,13 +598,10 @@ function ProviderCard({
     | ApiReadiness["riot"]
     | null;
   steamBusy: boolean;
-  googleBusy: boolean;
   googleConnected: boolean;
   googleDisplayName: string | null;
   onSteamConnect: () => void;
   onSteamDisconnect: () => void;
-  onGoogleConnect: () => void;
-  onGoogleDisconnect: () => void;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const Icon = provider.icon;
@@ -792,25 +701,19 @@ function ProviderCard({
               : copy("Conectar Steam", "Connect Steam", "Conectar Steam")}
         </Button>
       ) : provider.key === "google" ? (
-        <Button
-          variant={connected ? "outline" : "default"}
-          className="mt-4 w-full"
-          disabled={googleBusy}
-          onClick={connected ? onGoogleDisconnect : onGoogleConnect}
-        >
-          {googleBusy ? (
-            <RefreshCw className="mr-2 size-4 animate-spin" />
-          ) : connected ? (
-            <RefreshCw className="mr-2 size-4" />
-          ) : (
-            <Link2 className="mr-2 size-4" />
-          )}
-          {googleBusy
-            ? copy("Aguarde…", "Please wait…", "Espera…")
-            : connected
-              ? copy("Desvincular Google", "Unlink Google", "Desvincular Google")
-              : copy("Conectar Google", "Connect Google", "Conectar Google")}
-        </Button>
+        <div className="mt-4 rounded-lg border border-border/70 bg-background/35 px-3 py-2 text-xs leading-5 text-muted-foreground">
+          {connected
+            ? copy(
+                "Google é o método de login desta conta. O vínculo é gerenciado pelo acesso com Google.",
+                "Google is a sign-in method for this account. The identity is managed through Google sign-in.",
+                "Google es un método de acceso de esta cuenta. La identidad se gestiona mediante el acceso con Google.",
+              )
+            : copy(
+                "Para usar Google, escolha “Continuar com Google” na tela de cadastro ou login. Não é possível vincular manualmente por esta página.",
+                "To use Google, choose “Continue with Google” on the sign-up or sign-in screen. Manual linking is not available on this page.",
+                "Para usar Google, elige “Continuar con Google” en la pantalla de registro o acceso. No se puede vincular manualmente desde esta página.",
+              )}
+        </div>
       ) : (
         <Button variant="default" className="mt-4 w-full" disabled>
           <Link2 className="mr-2 size-4" />
