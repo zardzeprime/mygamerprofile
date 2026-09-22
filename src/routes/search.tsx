@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Gamepad2, Loader2, Search, UserRound, Users } from "lucide-react";
+import { Boxes, Gamepad2, Loader2, Search, UserRound, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { useI18n } from "@/i18n";
@@ -66,7 +66,11 @@ function SearchPage() {
     };
   }, [query, searchProfiles]);
 
-  const total = local.games.length + local.communities.length + profiles.length;
+  const total =
+    local.games.length +
+    local.robloxExperiences.length +
+    local.communities.length +
+    profiles.length;
 
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
@@ -82,14 +86,14 @@ function SearchPage() {
               `Resultados para “${query}”`,
             )
           : copy(
-              "Digite na barra superior para buscar jogos, comunidades e pessoas.",
-              "Use the top search bar to find games, communities and people.",
-              "Usa la barra superior para buscar juegos, comunidades y personas.",
+              "Digite na barra superior para buscar jogos, experiências Roblox, comunidades e pessoas.",
+              "Use the top search bar to find games, Roblox experiences, communities and people.",
+              "Usa la barra superior para buscar juegos, experiencias Roblox, comunidades y personas.",
             )}
       </p>
 
       {!query ? null : (
-        <div className="mt-8 grid gap-6 lg:grid-cols-3">
+        <div className="mt-8 grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
           <ResultSection
             icon={Gamepad2}
             title={copy("Jogos", "Games", "Juegos")}
@@ -110,6 +114,29 @@ function SearchPage() {
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-semibold">{game.name}</span>
                   <span className="block truncate text-xs text-muted-foreground">{game.genre}</span>
+                </span>
+              </Link>
+            ))}
+          </ResultSection>
+
+          <ResultSection
+            icon={Boxes}
+            title={copy("Roblox Experiences", "Roblox Experiences", "Experiencias Roblox")}
+            count={local.robloxExperiences.length}
+          >
+            {local.robloxExperiences.map((experience) => (
+              <Link
+                key={experience.slug}
+                to="/roblox"
+                search={{ experience: experience.slug, tab: "overview" }}
+                className="flex min-w-0 items-center gap-3 rounded-xl border border-border bg-surface p-3 transition hover:-translate-y-0.5 hover:border-gold/30"
+              >
+                <span className="grid size-12 shrink-0 place-items-center rounded-lg border border-border bg-muted text-gold-strong">
+                  <Gamepad2 className="size-5" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold">{experience.name}</span>
+                  <span className="block truncate text-xs text-muted-foreground">{experience.category}</span>
                 </span>
               </Link>
             ))}
@@ -184,9 +211,9 @@ function SearchPage() {
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
             {copy(
-              "Tente outro nome, username ou jogo.",
-              "Try another name, username or game.",
-              "Prueba otro nombre, usuario o juego.",
+              "Tente outro nome, username, jogo ou experiência Roblox.",
+              "Try another name, username, game or Roblox experience.",
+              "Prueba otro nombre, usuario, juego o experiencia Roblox.",
             )}
           </p>
         </div>
