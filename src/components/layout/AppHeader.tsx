@@ -57,6 +57,8 @@ export function AppHeader() {
     };
   }, [open]);
   const [profileUsername, setProfileUsername] = useState<string | null>(null);
+  const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
+  const [profileDisplayName, setProfileDisplayName] = useState<string | null>(null);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [profileLoading, setProfileLoading] = useState(false);
 
@@ -66,6 +68,8 @@ export function AppHeader() {
     const loadProfileUsername = async () => {
       if (!userId) {
         setProfileUsername(null);
+        setProfileAvatarUrl(null);
+        setProfileDisplayName(null);
         setProfileLoading(false);
         return;
       }
@@ -73,16 +77,20 @@ export function AppHeader() {
       setProfileLoading(true);
       const { data, error } = await supabase
         .from("profiles")
-        .select("username")
+        .select("username,avatar_url,display_name")
         .eq("id", userId)
         .maybeSingle();
 
       if (cancelled) return;
       if (error) {
-        console.error("[MGP] Failed to load current profile username", error);
+        console.error("[MGP] Failed to load current profile header data", error);
         setProfileUsername(null);
+        setProfileAvatarUrl(null);
+        setProfileDisplayName(null);
       } else {
         setProfileUsername(data?.username ?? null);
+        setProfileAvatarUrl(data?.avatar_url ?? null);
+        setProfileDisplayName(data?.display_name ?? null);
       }
       setProfileLoading(false);
     };
@@ -169,7 +177,12 @@ export function AppHeader() {
             aria-label={t("navigation.menu")}
             className="flex items-center gap-2 rounded-full border border-border bg-surface px-2 py-1 text-sm font-medium transition-colors hover:bg-muted"
           >
-            <UserAvatar user={user} size="sm" />
+            <UserAvatar
+              user={user}
+              src={profileAvatarUrl}
+              name={profileDisplayName}
+              size="sm"
+            />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
