@@ -16,6 +16,10 @@ import {
 import { useEffect, useMemo, useState } from "react";
 
 import { LeagueRuneSelector } from "@/components/games/LeagueRuneSelector";
+import {
+  NexusBuildAssistant,
+  type NexusBuildSuggestion,
+} from "@/components/nexus/NexusBuildAssistant";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import type { Locale } from "@/i18n";
@@ -23,6 +27,7 @@ import { localeCopy } from "@/i18n/locale-utils";
 import type { LeagueBuildResponse } from "@/lib/league-builds";
 import {
   LEAGUE_DDRAGON,
+  LEAGUE_STAT_SHARDS,
   findLeagueRune,
   leagueRuneIcon,
   loadLeagueRuneStyles,
@@ -150,9 +155,11 @@ export function LeagueBuildCreator({
 
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "login" | "error">("idle");
+  const [nexusApplied, setNexusApplied] = useState(false);
+  const championId = champion?.id;
 
   useEffect(() => {
-    if (!champion) return;
+    if (!championId) return;
     setTitle("");
     setNotes("");
     setTagsText("");
@@ -162,7 +169,8 @@ export function LeagueBuildCreator({
     setSelectedSummoners([]);
     setSkillOrder(["Q", "W", "E"]);
     setSaveStatus("idle");
-  }, [champion?.id]);
+    setNexusApplied(false);
+  }, [championId]);
 
   useEffect(() => {
     let active = true;
@@ -277,6 +285,206 @@ export function LeagueBuildCreator({
     (runePage?.secondaryPerkIds.length ?? 0) === 2 &&
     (runePage?.statShards.length ?? 0) === 3;
 
+  const nexusContext = useMemo(
+    () => ({
+      champion: champion
+        ? { id: champion.id, name: champion.name, tags: champion.tags }
+        : null,
+      currentBuild: {
+        role,
+        patchLabel: patchLabel.trim() || null,
+        title: title.trim() || null,
+        coreItemIds: coreItems,
+        situationalItemIds: situationalItems,
+        bootsId,
+        summonerSpellIds: selectedSummoners,
+        skillOrder,
+        runes: runePage,
+        tags,
+        notes: notes.trim(),
+      },
+      verifiedReference: buildData
+        ? {
+            patch: buildData.patch,
+            role: buildData.role,
+            source: buildData.source,
+            builds: buildData.builds,
+            crossChecks: buildData.crossChecks ?? [],
+          }
+        : null,
+      itemCatalog: Object.entries(items)
+        .filter(([, item]) => item.maps?.["11"] !== false)
+        .filter(([, item]) => item.gold?.purchasable !== false)
+        .filter(([, item]) => !item.into?.length)
+        .filter(([, item]) => !item.tags?.includes("Consumable") && !item.tags?.includes("Trinket"))
+        .map(([id, item]) => ({
+          id,
+          name: item.name,
+          tags: item.tags ?? [],
+          gold: item.gold?.total ?? null,
+        }))
+        .slice(0, 260),
+      summonerSpells: summoners.map((spell) => ({ id: spell.id, name: spell.name })),
+      runeStyles: runeStyles.map((style) => ({
+        id: style.id,
+        name: style.name,
+        slots: style.slots.map((slot) =>
+          slot.runes.map((rune) => ({ id: rune.id, name: rune.name })),
+        ),
+      })),
+      statShards: LEAGUE_STAT_SHARDS.map((row) => row.map((option) => option.key)),
+      dataDragonVersion: version,
+    }),
+    [
+      bootsId,
+      buildData,
+      champion,
+      coreItems,
+      items,
+      notes,
+      patchLabel,
+      role,
+      runePage,
+      runeStyles,
+      selectedSummoners,
+      situationalItems,
+      skillOrder,
+      summoners,
+      tags,
+      title,
+      version,
+    ],
+  );
+
+  const applyNexusPreset = (suggestion: NexusBuildSuggestion) => {
+    const suggestedRole = suggestion["role"];
+    if (typeof suggestedRole === "string" && ROLE_OPTIONS.includes(suggestedRole as Role)) {
+      setRole(suggestedRole as Role);
+    }
+
+    if (typeof suggestion.title === "string") setTitle(suggestion.title.slice(0, 100));
+    if (typeof suggestion["patchLabel"] === "string") {
+      setPatchLabel(String(suggestion["patchLabel"]).slice(0, 24));
+    }
+
+    const validItemIds = new Set(Object.keys(items));
+    const nextCore = Array.isArray(suggestion["coreItemIds"])
+      ? suggestion["coreItemIds"]
+          .filter((id): id is string => typeof id === "string" && validItemIds.has(id))
+          .slice(0, 3)
+      : [];
+    const nextSituational = Array.isArray(suggestion["situationalItemIds"])
+      ? suggestion["situationalItemIds"]
+          .filter(
+            (id): id is string =>
+              typeof id === "string" &&
+              validItemIds.has(id) &&
+              !nextCore.includes(id),
+          )
+          .slice(0, 2)
+      : [];
+    const nextBoots =
+      typeof suggestion["bootsId"] === "string" && validItemIds.has(suggestion["bootsId"])
+        ? suggestion["bootsId"]
+        : null;
+
+    if (nextCore.length) setCoreItems(nextCore);
+    setSituationalItems(nextSituational);
+    setBootsId(nextBoots);
+
+    const validSpellIds = new Set(summoners.map((spell) => spell.id));
+    const nextSpells = Array.isArray(suggestion["summonerSpellIds"])
+      ? suggestion["summonerSpellIds"]
+          .filter((id): id is string => typeof id === "string" && validSpellIds.has(id))
+          .slice(0, 2)
+      : [];
+    if (nextSpells.length === 2) setSelectedSummoners(nextSpells);
+
+    const suggestedOrder = Array.isArray(suggestion["skillOrder"])
+      ? suggestion["skillOrder"].filter(
+          (skill): skill is SkillKey => skill === "Q" || skill === "W" || skill === "E",
+        )
+      : [];
+    if (
+      suggestedOrder.length === 3 &&
+      new Set(suggestedOrder).size === 3
+    ) {
+      setSkillOrder(suggestedOrder as [SkillKey, SkillKey, SkillKey]);
+    }
+
+    const runes =
+      suggestion["runes"] && typeof suggestion["runes"] === "object" && !Array.isArray(suggestion["runes"])
+        ? (suggestion["runes"] as Record<string, unknown>)
+        : null;
+    if (runes) {
+      const primaryStyleId =
+        typeof runes["primaryStyleId"] === "number" ? runes["primaryStyleId"] : null;
+      const secondaryStyleId =
+        typeof runes["secondaryStyleId"] === "number" ? runes["secondaryStyleId"] : null;
+      const primaryStyle = runeStyles.find((style) => style.id === primaryStyleId);
+      const secondaryStyle = runeStyles.find((style) => style.id === secondaryStyleId);
+      const primaryIds = Array.isArray(runes["primaryPerkIds"])
+        ? runes["primaryPerkIds"].filter((id): id is number => typeof id === "number")
+        : [];
+      const secondaryIds = Array.isArray(runes["secondaryPerkIds"])
+        ? runes["secondaryPerkIds"].filter((id): id is number => typeof id === "number")
+        : [];
+      const shardValues = Array.isArray(runes["statShards"])
+        ? runes["statShards"].filter((key): key is string => typeof key === "string")
+        : [];
+
+      const primaryValid =
+        Boolean(primaryStyle) &&
+        primaryIds.length === primaryStyle?.slots.length &&
+        primaryStyle?.slots.every((slot, index) =>
+          slot.runes.some((rune) => rune.id === primaryIds[index]),
+        );
+      const secondarySlots = secondaryStyle
+        ? secondaryIds.map((id) =>
+            secondaryStyle.slots.findIndex((slot) => slot.runes.some((rune) => rune.id === id)),
+          )
+        : [];
+      const secondaryValid =
+        Boolean(secondaryStyle) &&
+        secondaryStyleId !== primaryStyleId &&
+        secondaryIds.length === 2 &&
+        secondarySlots.every((slotIndex) => slotIndex > 0) &&
+        new Set(secondarySlots).size === 2;
+      const shardsValid =
+        shardValues.length === 3 &&
+        shardValues.every((key, index) =>
+          LEAGUE_STAT_SHARDS[index]?.some((option) => option.key === key),
+        );
+
+      if (primaryValid && secondaryValid && shardsValid) {
+        setRunePage({
+          primaryStyleId,
+          primaryPerkIds: primaryIds,
+          secondaryStyleId,
+          secondaryPerkIds: secondaryIds,
+          statShards: shardValues as [string, string, string],
+        });
+      }
+    }
+
+    if (Array.isArray(suggestion["tags"])) {
+      setTagsText(
+        suggestion["tags"]
+          .filter((tag): tag is string => typeof tag === "string")
+          .slice(0, 6)
+          .join(", "),
+      );
+    }
+    if (typeof suggestion["notes"] === "string") {
+      setNotes(suggestion["notes"].slice(0, 1600));
+    } else if (typeof suggestion.reason === "string") {
+      setNotes(suggestion.reason.slice(0, 1600));
+    }
+
+    setNexusApplied(true);
+    setSaveStatus("idle");
+  };
+
   const canSave =
     Boolean(champion) &&
     coreItems.length > 0 &&
@@ -366,7 +574,8 @@ export function LeagueBuildCreator({
           verifiedSource: buildData?.source?.label ?? null,
           verifiedSourceUrl: buildData?.source?.url ?? null,
           crossChecks: buildData?.crossChecks ?? [],
-          createdWith: "mgp-league-builder-v2",
+          createdWith: nexusApplied ? "mgp-league-builder-v2+nexus" : "mgp-league-builder-v2",
+          nexusAssisted: nexusApplied,
         },
         p_visibility: visibility,
       });
@@ -414,6 +623,18 @@ export function LeagueBuildCreator({
         </div>
 
         <div className="space-y-7 p-5 sm:p-7">
+          <NexusBuildAssistant
+            gameSlug="league-of-legends"
+            locale={locale}
+            context={nexusContext}
+            quickPrompts={[
+              copy("SoloQ consistente", "Consistent SoloQ", "SoloQ consistente"),
+              copy("Mais ofensiva", "More aggressive", "Más ofensiva"),
+              copy("Mais segura / anti-burst", "Safer / anti-burst", "Más segura / anti-burst"),
+            ]}
+            onApply={applyNexusPreset}
+          />
+
           <div className="grid gap-4 md:grid-cols-2">
             <label>
               <span className="text-xs font-black uppercase tracking-[0.09em] text-muted-foreground">

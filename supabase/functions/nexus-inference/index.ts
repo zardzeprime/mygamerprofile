@@ -2,6 +2,7 @@ import { CHILD_CORES } from "./core.ts";
 import { aiReady, providerStatuses } from "./providers.ts";
 import { isProjectPublishableKey } from "./supabase-keys.ts";
 import {
+  handleBuildAssist,
   handleDeleteThread,
   handleGuestSend,
   handleGuestStatus,
@@ -58,7 +59,7 @@ function clientIp(req: Request) {
 }
 
 function rateLimitForAction(action: string) {
-  if (action === "guest.send" || action === "member.send") return { bucket: "send", limit: 20 };
+  if (action === "guest.send" || action === "member.send" || action === "build.assist") return { bucket: "send", limit: 20 };
   if (action === "translate.souls") return { bucket: "translation", limit: 24 };
   if (action === "health") return { bucket: "health", limit: 180 };
   return { bucket: "read", limit: 120 };
@@ -115,6 +116,7 @@ Deno.serve(async (req: Request) => {
     }
 
     if (action === "translate.souls") return reply(await handleSoulsTranslate(raw));
+    if (action === "build.assist") return reply(await handleBuildAssist(req, raw));
     if (action === "guest.status") return reply(await handleGuestStatus(raw));
     if (action === "guest.send") return reply(await handleGuestSend(raw));
     if (action === "member.bootstrap") return reply(await handleMemberBootstrap(req));

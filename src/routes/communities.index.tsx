@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, MessageCircle, ShieldCheck, Sparkles, Users } from "lucide-react";
+import { ArrowRight, Hammer, MessageCircle, ShieldCheck, Users } from "lucide-react";
 import { GameArtwork } from "@/components/games/GameArtwork";
-import { GAMES } from "@/config/games";
+import { ACTIVE_GAMES } from "@/config/gameAvailability";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 
@@ -40,7 +40,7 @@ function CommunitiesCatalog() {
       </div>
 
       <div className="mt-9 grid gap-6 md:grid-cols-2">
-        {GAMES.map((game) => (
+        {ACTIVE_GAMES.map((game) => (
           <article key={game.slug} className="surface-panel group overflow-hidden rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-gold/30 hover:shadow-soft">
             <div className="relative h-48 overflow-hidden border-b border-border">
               <GameArtwork game={game} variant="hero" className="h-full w-full transition-transform duration-500 group-hover:scale-[1.025]" />
@@ -62,16 +62,16 @@ function CommunitiesCatalog() {
             <div className="p-5 sm:p-6">
               <p className="text-sm leading-6 text-muted-foreground">
                 {copy(
-                  `Espaço social para jogadores de ${game.name}: discussões, posts editoriais e, na próxima etapa, conteúdo publicado pela comunidade.`,
-                  `Social space for ${game.name} players: discussions, editorial posts and, in the next stage, community-published content.`,
-                  `Espacio social para jugadores de ${game.name}: debates, publicaciones editoriales y, en la próxima etapa, contenido publicado por la comunidad.`,
+                  `Espaço social para jogadores de ${game.name}: posts, builds, discussões, LFG e conteúdo criado pela própria comunidade.`,
+                  `Social space for ${game.name} players: posts, builds, discussions, LFG and player-created content.`,
+                  `Espacio social para jugadores de ${game.name}: posts, builds, debates, LFG y contenido creado por la comunidad.`,
                 )}
               </p>
 
               <div className="mt-5 grid grid-cols-3 gap-2">
                 <CommunityFeature icon={MessageCircle} label={copy("Posts", "Posts", "Posts")} />
-                <CommunityFeature icon={Users} label={copy("Criadores", "Creators", "Creadores")} />
-                <CommunityFeature icon={Sparkles} label={copy("Destaques", "Highlights", "Destacados")} />
+                <CommunityFeature icon={Hammer} label={copy("Builds", "Builds", "Builds")} />
+                <CommunityFeature icon={Users} label="LFG" />
               </div>
 
               <Link
