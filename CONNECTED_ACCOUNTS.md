@@ -75,7 +75,7 @@ Production configuration uses Supabase Auth with the exact provider callback:
 
 `https://gudvdgpjfapshzqyfcpj.supabase.co/auth/v1/callback`
 
-The login/register flow uses normal Google OAuth. The authenticated Connected Accounts page uses Supabase identity linking so an email/password account can add Google without replacing the MGP user id. Connected state is derived from the user's Supabase Auth identities rather than requiring a duplicate `connected_accounts` row.
+The login/register flow uses normal Google OAuth. Google is intentionally treated as a sign-up/sign-in method rather than a manual connection from the Connected Accounts page. Accounts created with email/password are not offered a manual Google-linking action. Accounts that authenticated through Google are detected from Supabase Auth identities and shown as connected without requiring a duplicate `connected_accounts` row.
 
 Google OAuth was probed successfully on 2026-09-21: the Supabase provider reported enabled and the authorize endpoint redirected to `accounts.google.com`.
 
@@ -83,7 +83,7 @@ Google OAuth was probed successfully on 2026-09-21: the Supabase provider report
 
 `/settings/connections` is the single user-facing control center.
 
-Buttons stay disabled only for providers that are not production-ready. Steam and Google are active. Riot account linking remains disabled until production approval/RSO is available.
+Steam linking is active from Connected Accounts. Google authentication is active only through the sign-up/sign-in screens and is displayed as read-only status in Connected Accounts. Riot account linking remains disabled until production approval/RSO is available.
 
 ## Disconnect and deletion
 
