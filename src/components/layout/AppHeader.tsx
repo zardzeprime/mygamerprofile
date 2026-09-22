@@ -20,9 +20,10 @@ import { GlobalSearch } from "@/components/search/GlobalSearch";
 import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/googleAuth";
 
-const NAV: { to: string; key: TranslationKey }[] = [
+const NAV: { to: string; key?: TranslationKey; label?: string }[] = [
   { to: "/", key: "navigation.home" },
   { to: "/games", key: "navigation.games" },
+  { to: "/roblox", label: "Roblox" },
   { to: "/communities", key: "navigation.communities" },
   { to: "/lfg", key: "navigation.lfg" },
 ];
@@ -235,13 +236,13 @@ export function AppHeader() {
         <nav aria-label={t("navigation.menu")} className="hidden items-center gap-0.5 2xl:flex">
           {NAV.map((item) => (
             <Link
-              key={item.key}
+              key={item.to}
               to={item.to}
               activeOptions={{ exact: item.to === "/" }}
               activeProps={{ className: "mgp-nav-link-active" }}
               className="mgp-nav-link px-3 py-2 text-sm font-medium text-muted-foreground"
             >
-              {t(item.key)}
+              {item.key ? t(item.key) : item.label}
             </Link>
           ))}
         </nav>
@@ -284,14 +285,14 @@ export function AppHeader() {
           <nav aria-label={t("navigation.menu")} className="flex flex-col gap-1">
             {NAV.map((item) => (
               <Link
-                key={item.key}
+                key={item.to}
                 to={item.to}
                 onClick={() => setOpen(false)}
                 activeOptions={{ exact: item.to === "/" }}
                 activeProps={{ className: "mgp-nav-link-active" }}
                 className="mgp-nav-link rounded-lg px-3 py-2.5 text-sm font-medium text-foreground"
               >
-                {t(item.key)}
+                {item.key ? t(item.key) : item.label}
               </Link>
             ))}
           </nav>
