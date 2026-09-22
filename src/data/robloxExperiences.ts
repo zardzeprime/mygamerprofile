@@ -2,6 +2,15 @@ import type { AppLocale as Locale } from "@/i18n/translations";
 
 export type RobloxHubTab = "overview" | "codes" | "tier-list" | "guides" | "builds";
 
+export type RobloxSectionStatus = "ready" | "in-progress";
+
+export type RobloxExperienceSection = {
+  slug: string;
+  label: Record<Locale, string>;
+  description: Record<Locale, string>;
+  status: RobloxSectionStatus;
+};
+
 export type RobloxExperience = {
   slug: string;
   name: string;
@@ -14,6 +23,11 @@ export type RobloxExperience = {
   tierScopes: Record<Locale, string[]>;
   guideTopics: Record<Locale, string[]>;
   buildTopics: Record<Locale, string[]>;
+  sections: RobloxExperienceSection[];
+  hubStatus: {
+    structure: RobloxSectionStatus;
+    editorial: RobloxSectionStatus;
+  };
   verifiedAt: string;
   visual: {
     coverImage: string;
@@ -76,6 +90,69 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
       en: ["Sword build", "Fruit build", "Hybrid", "PvP", "Farm / PvE"],
       es: ["Build de espada", "Build de fruta", "Híbrida", "PvP", "Farm / PvE"],
     },
+    sections: [
+      {
+        slug: "frutas",
+        label: { "pt-BR": "Frutas", en: "Fruits", es: "Frutas" },
+        description: {
+          "pt-BR": "Catálogo de frutas, raridade, obtenção, awakenings, uso em PvE/PvP e comparações.",
+          en: "Fruit catalog with rarity, acquisition, awakenings, PvE/PvP use and comparisons.",
+          es: "Catálogo de frutas con rareza, obtención, awakenings, uso PvE/PvP y comparaciones.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "espadas",
+        label: { "pt-BR": "Espadas", en: "Swords", es: "Espadas" },
+        description: {
+          "pt-BR": "Espadas, requisitos, obtenção, upgrades, combos e recomendações por progressão.",
+          en: "Swords, requirements, acquisition, upgrades, combos and progression recommendations.",
+          es: "Espadas, requisitos, obtención, mejoras, combos y recomendaciones por progresión.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "estilos-de-luta",
+        label: { "pt-BR": "Estilos de luta", en: "Fighting styles", es: "Estilos de lucha" },
+        description: {
+          "pt-BR": "Estilos, requisitos, custos, evolução e uso em builds de fruta, espada e híbridas.",
+          en: "Styles, requirements, costs, progression and use in fruit, sword and hybrid builds.",
+          es: "Estilos, requisitos, costos, progresión y uso en builds de fruta, espada e híbridas.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "racas",
+        label: { "pt-BR": "Raças", en: "Races", es: "Razas" },
+        description: {
+          "pt-BR": "Raças e versões, bônus, obtenção, evolução e sinergias com builds.",
+          en: "Races and versions, bonuses, acquisition, progression and build synergies.",
+          es: "Razas y versiones, bonos, obtención, progresión y sinergias con builds.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "bosses",
+        label: { "pt-BR": "Bosses", en: "Bosses", es: "Jefes" },
+        description: {
+          "pt-BR": "Chefes, localizações, requisitos, drops e rotas de farm.",
+          en: "Bosses, locations, requirements, drops and farming routes.",
+          es: "Jefes, ubicaciones, requisitos, drops y rutas de farm.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "progressao",
+        label: { "pt-BR": "Progressão", en: "Progression", es: "Progresión" },
+        description: {
+          "pt-BR": "Rotas de level, Sea 1, Sea 2, Sea 3, raids e prioridades de evolução.",
+          en: "Level routes, Sea 1, Sea 2, Sea 3, raids and progression priorities.",
+          es: "Rutas de nivel, Sea 1, Sea 2, Sea 3, raids y prioridades de progresión.",
+        },
+        status: "in-progress",
+      },
+    ],
+    hubStatus: { structure: "ready", editorial: "in-progress" },
     verifiedAt: "2026-09-22",
     visual: { coverImage: BLOX_FRUITS_ART, heroImage: BLOX_FRUITS_ART },
   },
@@ -111,6 +188,59 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
       en: ["Slayer", "Demon", "PvE", "PvP", "Bossing"],
       es: ["Slayer", "Demon", "PvE", "PvP", "Bossing"],
     },
+    sections: [
+      {
+        slug: "respiracoes",
+        label: { "pt-BR": "Respirações", en: "Breathing styles", es: "Respiraciones" },
+        description: {
+          "pt-BR": "Respirações, obtenção, progressão, habilidades e usos em PvE/PvP.",
+          en: "Breathing styles, acquisition, progression, skills and PvE/PvP use.",
+          es: "Respiraciones, obtención, progresión, habilidades y uso PvE/PvP.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "artes-demoniacas",
+        label: { "pt-BR": "Artes demoníacas", en: "Demon arts", es: "Artes demoníacas" },
+        description: {
+          "pt-BR": "Artes demoníacas, requisitos, habilidades, sinergias e comparação.",
+          en: "Demon arts, requirements, abilities, synergies and comparisons.",
+          es: "Artes demoníacas, requisitos, habilidades, sinergias y comparaciones.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "clas",
+        label: { "pt-BR": "Clãs", en: "Clans", es: "Clanes" },
+        description: {
+          "pt-BR": "Clãs, raridade, bônus e impacto em builds.",
+          en: "Clans, rarity, bonuses and build impact.",
+          es: "Clanes, rareza, bonos e impacto en builds.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "bosses",
+        label: { "pt-BR": "Bosses", en: "Bosses", es: "Jefes" },
+        description: {
+          "pt-BR": "Bosses, requisitos, drops e rotas de farm.",
+          en: "Bosses, requirements, drops and farming routes.",
+          es: "Jefes, requisitos, drops y rutas de farm.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "progressao",
+        label: { "pt-BR": "Progressão", en: "Progression", es: "Progresión" },
+        description: {
+          "pt-BR": "Caminho inicial, Slayer/Demon, evolução de habilidades e farm.",
+          en: "Starting route, Slayer/Demon path, skill progression and farming.",
+          es: "Ruta inicial, camino Slayer/Demon, progresión de habilidades y farm.",
+        },
+        status: "in-progress",
+      },
+    ],
+    hubStatus: { structure: "ready", editorial: "in-progress" },
     verifiedAt: "2026-09-22",
     visual: { coverImage: PROJECT_SLAYERS_2_ART, heroImage: PROJECT_SLAYERS_2_ART },
   },
@@ -146,6 +276,49 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
       en: ["General team", "Bossing", "Farm", "Support", "Endgame"],
       es: ["Equipo general", "Bossing", "Farm", "Soporte", "Endgame"],
     },
+    sections: [
+      {
+        slug: "unidades",
+        label: { "pt-BR": "Unidades", en: "Units", es: "Unidades" },
+        description: {
+          "pt-BR": "Unidades, raridade, funções, evolução e uso em modos diferentes.",
+          en: "Units, rarity, roles, evolution and use across modes.",
+          es: "Unidades, rareza, roles, evolución y uso en distintos modos.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "traits",
+        label: { "pt-BR": "Traits", en: "Traits", es: "Traits" },
+        description: {
+          "pt-BR": "Traits, efeitos, raridade e melhores usos.",
+          en: "Traits, effects, rarity and best uses.",
+          es: "Traits, efectos, rareza y mejores usos.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "evolucoes",
+        label: { "pt-BR": "Evoluções", en: "Evolutions", es: "Evoluciones" },
+        description: {
+          "pt-BR": "Materiais, requisitos e rotas de evolução.",
+          en: "Materials, requirements and evolution routes.",
+          es: "Materiales, requisitos y rutas de evolución.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "times",
+        label: { "pt-BR": "Times", en: "Teams", es: "Equipos" },
+        description: {
+          "pt-BR": "Composições para farm, bossing, suporte e endgame.",
+          en: "Team comps for farming, bossing, support and endgame.",
+          es: "Composiciones para farm, bossing, soporte y endgame.",
+        },
+        status: "in-progress",
+      },
+    ],
+    hubStatus: { structure: "ready", editorial: "in-progress" },
     verifiedAt: "2026-09-22",
     visual: { coverImage: ANIME_VANGUARDS_ART, heroImage: ANIME_VANGUARDS_ART },
   },
@@ -181,6 +354,49 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
       en: ["Budget team", "Meta team", "Boss", "Farm", "Support"],
       es: ["Equipo barato", "Equipo meta", "Boss", "Farm", "Soporte"],
     },
+    sections: [
+      {
+        slug: "unidades",
+        label: { "pt-BR": "Unidades", en: "Units", es: "Unidades" },
+        description: {
+          "pt-BR": "Unidades, funções, raridade e desempenho por modo.",
+          en: "Units, roles, rarity and performance by mode.",
+          es: "Unidades, roles, rareza y rendimiento por modo.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "traits",
+        label: { "pt-BR": "Traits", en: "Traits", es: "Traits" },
+        description: {
+          "pt-BR": "Traits, efeitos e recomendações por unidade.",
+          en: "Traits, effects and recommendations by unit.",
+          es: "Traits, efectos y recomendaciones por unidad.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "evolucoes",
+        label: { "pt-BR": "Evoluções", en: "Evolutions", es: "Evoluciones" },
+        description: {
+          "pt-BR": "Evoluções, materiais e prioridades.",
+          en: "Evolutions, materials and priorities.",
+          es: "Evoluciones, materiales y prioridades.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "times",
+        label: { "pt-BR": "Times", en: "Teams", es: "Equipos" },
+        description: {
+          "pt-BR": "Composições baratas, meta, boss e farm.",
+          en: "Budget, meta, boss and farming team comps.",
+          es: "Composiciones baratas, meta, boss y farm.",
+        },
+        status: "in-progress",
+      },
+    ],
+    hubStatus: { structure: "ready", editorial: "in-progress" },
     verifiedAt: "2026-09-22",
     visual: { coverImage: ANIME_LAST_STAND_ART, heroImage: ANIME_LAST_STAND_ART },
   },
@@ -216,6 +432,59 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
       en: ["Fruit", "Sword", "Hybrid", "PvP", "Farm"],
       es: ["Fruta", "Espada", "Híbrida", "PvP", "Farm"],
     },
+    sections: [
+      {
+        slug: "frutas",
+        label: { "pt-BR": "Frutas", en: "Fruits", es: "Frutas" },
+        description: {
+          "pt-BR": "Frutas, raridade, uso em PvE/PvP e comparação.",
+          en: "Fruits, rarity, PvE/PvP use and comparisons.",
+          es: "Frutas, rareza, uso PvE/PvP y comparaciones.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "espadas",
+        label: { "pt-BR": "Espadas", en: "Swords", es: "Espadas" },
+        description: {
+          "pt-BR": "Espadas, obtenção, upgrades e recomendações.",
+          en: "Swords, acquisition, upgrades and recommendations.",
+          es: "Espadas, obtención, mejoras y recomendaciones.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "acessorios",
+        label: { "pt-BR": "Acessórios", en: "Accessories", es: "Accesorios" },
+        description: {
+          "pt-BR": "Acessórios, bônus, fontes e sinergias.",
+          en: "Accessories, bonuses, sources and synergies.",
+          es: "Accesorios, bonos, fuentes y sinergias.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "haki",
+        label: { "pt-BR": "Haki", en: "Haki", es: "Haki" },
+        description: {
+          "pt-BR": "Tipos, progressão e usos em combate.",
+          en: "Types, progression and combat uses.",
+          es: "Tipos, progresión y usos en combate.",
+        },
+        status: "in-progress",
+      },
+      {
+        slug: "progressao",
+        label: { "pt-BR": "Progressão", en: "Progression", es: "Progresión" },
+        description: {
+          "pt-BR": "Leveling, seas, raids, bosses e farm.",
+          en: "Leveling, seas, raids, bosses and farming.",
+          es: "Leveling, seas, raids, jefes y farm.",
+        },
+        status: "in-progress",
+      },
+    ],
+    hubStatus: { structure: "ready", editorial: "in-progress" },
     verifiedAt: "2026-09-22",
     visual: { coverImage: KING_LEGACY_ART, heroImage: KING_LEGACY_ART },
   },
@@ -224,4 +493,12 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
 export function getRobloxExperience(slug: string | undefined) {
   if (!slug) return ROBLOX_EXPERIENCES[0] ?? null;
   return ROBLOX_EXPERIENCES.find((experience) => experience.slug === slug) ?? null;
+}
+
+export function getRobloxExperienceSection(experienceSlug: string, sectionSlug: string) {
+  const experience = getRobloxExperience(experienceSlug);
+  if (!experience) return null;
+  const section = experience.sections.find((entry) => entry.slug === sectionSlug) ?? null;
+  if (!section) return null;
+  return { experience, section };
 }

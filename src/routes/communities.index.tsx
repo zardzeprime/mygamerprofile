@@ -43,7 +43,12 @@ function CommunitiesCatalog() {
         {ACTIVE_GAMES.map((game) => (
           <article key={game.slug} className="surface-panel group overflow-hidden rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:border-gold/30 hover:shadow-soft">
             <div className="relative h-48 overflow-hidden border-b border-border">
-              <GameArtwork game={game} variant="hero" className="h-full w-full transition-transform duration-500 group-hover:scale-[1.025]" />
+              <GameArtwork
+                game={game}
+                variant="card"
+                className="h-full w-full transition-transform duration-500 group-hover:scale-[1.025]"
+                imageClassName={game.slug === "league-of-legends" ? "!p-[8%] !opacity-100" : undefined}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5">
                 <div className="flex flex-wrap items-center gap-2">

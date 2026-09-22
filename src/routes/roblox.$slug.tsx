@@ -283,6 +283,7 @@ function RobloxExperienceHub() {
                     "Las listas se separan por objetivo para no mezclar PvE, PvP, farm y bossing sin contexto.",
                   )}
                   topics={experience.tierScopes[locale]}
+                  locale={locale}
                 />
               ) : null}
               {active === "guides" ? (
@@ -296,6 +297,7 @@ function RobloxExperienceHub() {
                     "Rutas de progresión, farm, jefes, desbloqueos y sistemas importantes de la experiencia.",
                   )}
                   topics={experience.guideTopics[locale]}
+                  locale={locale}
                 />
               ) : null}
               {active === "builds" ? (
@@ -309,6 +311,7 @@ function RobloxExperienceHub() {
                     "Presets organizados por objetivo. Esta área puede usar el mismo flujo NEXUS que los otros creadores de MGP.",
                   )}
                   topics={experience.buildTopics[locale]}
+                  locale={locale}
                 />
               ) : null}
             </div>
@@ -348,30 +351,67 @@ function OverviewPanel({
           </p>
 
           <div className="mt-7 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {experience.focusAreas[locale].map((area) => (
-              <div key={area} className="rounded-xl border border-border bg-muted/10 p-4">
-                <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
-                  {copy("Área do hub", "Hub area", "Área del hub")}
+            {experience.sections.map((section) => (
+              <Link
+                key={section.slug}
+                to="/roblox/$slug/$section"
+                params={{ slug: experience.slug, section: section.slug }}
+                className="group rounded-xl border border-border bg-muted/10 p-4 transition hover:border-gold/30 hover:bg-gold/[0.035]"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
+                      {copy("Área do hub", "Hub area", "Área del hub")}
+                    </p>
+                    <p className="mt-1 font-semibold text-foreground">{section.label[locale]}</p>
+                  </div>
+                  <ProgressBadge locale={locale} compact />
+                </div>
+                <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted-foreground">
+                  {section.description[locale]}
                 </p>
-                <p className="mt-1 font-semibold text-foreground">{area}</p>
-              </div>
+                <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-gold-strong">
+                  {copy("Abrir página", "Open page", "Abrir página")}
+                  <ChevronRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </Link>
             ))}
           </div>
         </article>
 
         <aside className="space-y-4">
           <section className="surface-panel rounded-2xl p-5">
-            <div className="flex items-center gap-2">
-              <BadgeCheck className="size-4 text-gold-strong" />
-              <h3 className="font-display text-base font-semibold text-foreground">
-                {copy("Conteúdo dinâmico", "Dynamic content", "Contenido dinámico")}
-              </h3>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <BadgeCheck className="size-4 text-gold-strong" />
+                <h3 className="font-display text-base font-semibold text-foreground">
+                  {copy("Status do hub", "Hub status", "Estado del hub")}
+                </h3>
+              </div>
+              <ProgressBadge locale={locale} />
             </div>
-            <p className="mt-2 text-xs leading-5 text-muted-foreground">
+            <div className="mt-4 space-y-3">
+              <HubStatusRow
+                label={copy("Estrutura e navegação", "Structure and navigation", "Estructura y navegación")}
+                ready={experience.hubStatus.structure === "ready"}
+                locale={locale}
+              />
+              <HubStatusRow
+                label={copy("Conteúdo editorial", "Editorial content", "Contenido editorial")}
+                ready={experience.hubStatus.editorial === "ready"}
+                locale={locale}
+              />
+              <HubStatusRow
+                label={copy("Conteúdo das páginas", "Page content", "Contenido de las páginas")}
+                ready={false}
+                locale={locale}
+              />
+            </div>
+            <p className="mt-4 text-xs leading-5 text-muted-foreground">
               {copy(
-                "Códigos e tier lists recebem data de verificação para não parecerem atuais quando já estiverem desatualizados.",
-                "Codes and tier lists receive verification dates so stale information is not presented as current.",
-                "Los códigos y tier lists reciben fecha de verificación para no presentar información vieja como actual.",
+                "A fundação do hub está pronta. As páginas de conteúdo, códigos verificados, tier lists e guias estão sendo populadas por experiência.",
+                "The hub foundation is ready. Content pages, verified codes, tier lists and guides are being populated per experience.",
+                "La base del hub está lista. Las páginas de contenido, códigos verificados, tier lists y guías se están poblando por experiencia.",
               )}
             </p>
             <p className="mt-3 text-xs font-semibold text-foreground">
@@ -422,10 +462,13 @@ function CodesPanel({
           )}
         </p>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          <StatusCard label={copy("Ativos verificados", "Verified active", "Activos verificados")} value="0" />
-          <StatusCard label={copy("Expirados catalogados", "Catalogued expired", "Expirados catalogados")} value="0" />
-          <StatusCard label={copy("Status", "Status", "Estado")} value={copy("Aguardando carga", "Awaiting data", "Esperando datos")} />
+        <div className="mt-5">
+          <ProgressBadge locale={locale} />
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <StatusCard label={copy("Ativos verificados", "Verified active", "Activos verificados")} value="—" />
+          <StatusCard label={copy("Expirados catalogados", "Catalogued expired", "Expirados catalogados")} value="—" />
+          <StatusCard label={copy("Carga editorial", "Editorial load", "Carga editorial")} value={copy("Em andamento", "In progress", "En curso")} />
         </div>
       </section>
     </div>
@@ -438,12 +481,14 @@ function TopicPanel({
   title,
   description,
   topics,
+  locale,
 }: {
   icon: typeof Trophy;
   kicker: string;
   title: string;
   description: string;
   topics: string[];
+  locale: Locale;
 }) {
   return (
     <section className="surface-panel p-6 sm:p-8">
@@ -451,7 +496,10 @@ function TopicPanel({
         <Icon className="size-5 text-gold-strong" />
         <span className="section-kicker">{kicker}</span>
       </div>
-      <h2 className="mt-3 font-display text-2xl font-semibold text-foreground">{title}</h2>
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <h2 className="font-display text-2xl font-semibold text-foreground">{title}</h2>
+        <ProgressBadge locale={locale} />
+      </div>
       <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">{description}</p>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -471,6 +519,55 @@ function TopicPanel({
         ))}
       </div>
     </section>
+  );
+}
+
+function ProgressBadge({
+  locale,
+  compact = false,
+}: {
+  locale: Locale;
+  compact?: boolean;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full border border-amber-400/25 bg-amber-400/10 font-bold uppercase tracking-[0.09em] text-amber-200",
+        compact ? "px-2 py-0.5 text-[0.56rem]" : "px-2.5 py-1 text-[0.62rem]",
+      )}
+    >
+      {copy("Em andamento", "In progress", "En curso")}
+    </span>
+  );
+}
+
+function HubStatusRow({
+  label,
+  ready,
+  locale,
+}: {
+  label: string;
+  ready: boolean;
+  locale: Locale;
+}) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/10 px-3 py-2.5">
+      <span className="text-xs font-semibold text-foreground">{label}</span>
+      <span
+        className={cn(
+          "rounded-full border px-2 py-0.5 text-[0.56rem] font-black uppercase tracking-[0.08em]",
+          ready
+            ? "border-emerald-400/25 bg-emerald-400/10 text-emerald-200"
+            : "border-amber-400/25 bg-amber-400/10 text-amber-200",
+        )}
+      >
+        {ready
+          ? copy("Pronto", "Ready", "Listo")
+          : copy("Em andamento", "In progress", "En curso")}
+      </span>
+    </div>
   );
 }
 
