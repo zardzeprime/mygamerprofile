@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowRight, BadgeCheck, Gamepad2, Hammer, MessageCircle, ShieldCheck, Sparkles, TriangleAlert, Users } from "lucide-react";
+import { ArrowRight, BadgeCheck, Hammer, MessageCircle, ShieldCheck, Sparkles, TriangleAlert, Users } from "lucide-react";
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { PostCard } from "@/components/posts/PostCard";
 import { PostComposer } from "@/components/posts/PostComposer";
