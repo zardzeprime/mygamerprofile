@@ -1,17 +1,31 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowRight, BadgeCheck, Gamepad2, MessageCircle, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, BadgeCheck, Gamepad2, Hammer, MessageCircle, ShieldCheck, Sparkles, TriangleAlert, Users } from "lucide-react";
 import { GameArtwork } from "@/components/games/GameArtwork";
+import { PostCard } from "@/components/posts/PostCard";
+import { PostComposer } from "@/components/posts/PostComposer";
+import { isGameActive } from "@/config/gameAvailability";
 import { getGameConfig } from "@/config/games";
 import { COMMUNITY_STARTER_POSTS } from "@/data/communityStarterPosts";
+import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
+import { getGameBySlug } from "@/lib/games.functions";
+import { listPosts } from "@/lib/posts.functions";
 
 export const Route = createFileRoute("/communities/$slug")({
   loader: async ({ params }) => {
     const game = getGameConfig(params.slug);
     const starter = COMMUNITY_STARTER_POSTS[params.slug];
-    if (!game || !starter) throw notFound();
-    return { game, starter };
+    if (!game || !starter || !isGameActive(params.slug)) throw notFound();
+
+    const gameRecord = await getGameBySlug({ data: { slug: params.slug } });
+    const posts = await listPosts({ data: { gameId: gameRecord.id, page: 1 } }).catch((error) => {
+      console.warn("[Community] Could not load posts", error);
+      return [];
+    });
+
+    return { game, starter, gameRecord, posts };
   },
   head: ({ loaderData }) => {
     if (!loaderData) return { meta: [{ title: "Comunidade não encontrada — MGP" }, { name: "robots", content: "noindex" }] };
@@ -30,8 +44,10 @@ export const Route = createFileRoute("/communities/$slug")({
 });
 
 function GameCommunityPage() {
-  const { game, starter } = Route.useLoaderData();
+  const { game, starter, gameRecord, posts: initialPosts } = Route.useLoaderData();
+  const { user } = useAuth();
   const { locale } = useI18n();
+  const [posts, setPosts] = useState(initialPosts);
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const ageLabel = starter.audience === "mature" ? "18+" : starter.audience === "teen" ? "13+" : copy("Geral", "General", "General");
 
@@ -59,15 +75,31 @@ function GameCommunityPage() {
                 `Debates, descubrimientos, creación de la comunidad y contenido editorial sobre ${game.name}, reunidos en un mismo espacio.`,
               )}
             </p>
-            <Link
-              to="/games/$slug"
-              params={{ slug: game.slug }}
-              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-white transition hover:text-gold-strong"
-            >
-              <Gamepad2 className="size-4" />
-              {copy("Abrir hub do jogo", "Open game hub", "Abrir hub del juego")}
-              <ArrowRight className="size-4" />
-            </Link>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <Link
+                to="/games/$slug"
+                params={{ slug: game.slug }}
+                className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:border-gold/40 hover:text-gold-strong"
+              >
+                <Hammer className="size-4" />
+                {copy("Builds e guias", "Builds & guides", "Builds y guías")}
+              </Link>
+              <a
+                href={`/lfg?game=${encodeURIComponent(game.slug)}`}
+                className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:border-gold/40 hover:text-gold-strong"
+              >
+                <Users className="size-4" />
+                LFG
+              </a>
+              <a
+                href="#community-feed"
+                className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-black/30 px-3 py-2 text-sm font-semibold text-white backdrop-blur transition hover:border-gold/40 hover:text-gold-strong"
+              >
+                <MessageCircle className="size-4" />
+                {copy("Ir para o feed", "Open feed", "Ir al feed")}
+                <ArrowRight className="size-4" />
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -106,23 +138,68 @@ function GameCommunityPage() {
             </div>
           </article>
 
-          <div className="surface-panel rounded-2xl p-5 sm:p-6">
-            <div className="flex items-start gap-3">
-              <MessageCircle className="mt-0.5 size-5 shrink-0 text-gold-strong" />
+          <section id="community-feed" className="space-y-4 scroll-mt-24">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h2 className="font-display text-lg font-semibold text-foreground">
-                  {copy("Feed comunitário em preparação", "Community feed in preparation", "Feed comunitario en preparación")}
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <MessageCircle className="size-5 text-gold-strong" />
+                  <h2 className="font-display text-xl font-semibold text-foreground">
+                    {copy("Feed da comunidade", "Community feed", "Feed de la comunidad")}
+                  </h2>
+                </div>
+                <p className="mt-1 text-xs leading-5 text-muted-foreground">
                   {copy(
-                    "A comunidade já tem identidade e conteúdo editorial inicial. O feed de usuários será conectado aqui quando moderação, classificação etária e publicação estiverem fechadas na mesma fundação.",
-                    "The community already has its identity and initial editorial content. The user feed will connect here once moderation, age rating and publishing are finalized in the same foundation.",
-                    "La comunidad ya tiene identidad y contenido editorial inicial. El feed de usuarios se conectará aquí cuando moderación, clasificación por edad y publicación estén finalizadas.",
+                    "Posts publicados aqui aparecem vinculados a este jogo e podem receber curtidas e comentários.",
+                    "Posts published here are linked to this game and support likes and comments.",
+                    "Los posts publicados aquí quedan vinculados a este juego y admiten me gusta y comentarios.",
                   )}
                 </p>
               </div>
+              <span className="rounded-full border border-border bg-muted/20 px-3 py-1 text-xs font-semibold text-muted-foreground">
+                {posts.length} {copy("posts recentes", "recent posts", "posts recientes")}
+              </span>
             </div>
-          </div>
+
+            {user ? (
+              <PostComposer
+                gameId={gameRecord.id}
+                onCreated={(post) => setPosts((current) => [post, ...current])}
+              />
+            ) : (
+              <div className="surface-panel rounded-xl p-4 text-sm text-muted-foreground">
+                {copy(
+                  "Entre na sua conta para publicar nesta comunidade.",
+                  "Sign in to publish in this community.",
+                  "Inicia sesión para publicar en esta comunidad.",
+                )}{" "}
+                <Link to="/login" className="font-semibold text-gold-strong hover:underline">
+                  {copy("Entrar", "Sign in", "Entrar")}
+                </Link>
+              </div>
+            )}
+
+            {posts.length ? (
+              <div className="space-y-4">
+                {posts.map((post) => (
+                  <PostCard key={post.id} post={post} />
+                ))}
+              </div>
+            ) : (
+              <div className="surface-panel rounded-2xl p-6 text-center">
+                <Sparkles className="mx-auto size-5 text-gold-strong" />
+                <h3 className="mt-3 font-display text-lg font-semibold text-foreground">
+                  {copy("Abra a conversa", "Start the conversation", "Abre la conversación")}
+                </h3>
+                <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-muted-foreground">
+                  {copy(
+                    "Ainda não há posts de jogadores aqui. Use a pergunta editorial acima como ponto de partida ou publique sua própria descoberta.",
+                    "There are no player posts here yet. Use the editorial prompt above as a starting point or publish your own discovery.",
+                    "Todavía no hay posts de jugadores aquí. Usa la pregunta editorial de arriba como punto de partida o publica tu propio descubrimiento.",
+                  )}
+                </p>
+              </div>
+            )}
+          </section>
         </section>
 
         <aside className="space-y-4">
