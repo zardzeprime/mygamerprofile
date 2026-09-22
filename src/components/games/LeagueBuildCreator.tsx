@@ -156,9 +156,10 @@ export function LeagueBuildCreator({
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "login" | "error">("idle");
   const [nexusApplied, setNexusApplied] = useState(false);
+  const championId = champion?.id;
 
   useEffect(() => {
-    if (!champion) return;
+    if (!championId) return;
     setTitle("");
     setNotes("");
     setTagsText("");
@@ -169,7 +170,7 @@ export function LeagueBuildCreator({
     setSkillOrder(["Q", "W", "E"]);
     setSaveStatus("idle");
     setNexusApplied(false);
-  }, [champion?.id]);
+  }, [championId]);
 
   useEffect(() => {
     let active = true;
