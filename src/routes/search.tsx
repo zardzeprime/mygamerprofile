@@ -127,8 +127,8 @@ function SearchPage() {
             {local.robloxExperiences.map((experience) => (
               <Link
                 key={experience.slug}
-                to="/roblox"
-                search={{ experience: experience.slug, tab: "overview" }}
+                to="/roblox/$slug"
+                params={{ slug: experience.slug }}
                 className="flex min-w-0 items-center gap-3 rounded-xl border border-border bg-surface p-3 transition hover:-translate-y-0.5 hover:border-gold/30"
               >
                 <span className="grid size-12 shrink-0 place-items-center rounded-lg border border-border bg-muted text-gold-strong">
