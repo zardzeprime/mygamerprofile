@@ -494,3 +494,11 @@ export function getRobloxExperience(slug: string | undefined) {
   if (!slug) return ROBLOX_EXPERIENCES[0] ?? null;
   return ROBLOX_EXPERIENCES.find((experience) => experience.slug === slug) ?? null;
 }
+
+export function getRobloxExperienceSection(experienceSlug: string, sectionSlug: string) {
+  const experience = getRobloxExperience(experienceSlug);
+  if (!experience) return null;
+  const section = experience.sections.find((entry) => entry.slug === sectionSlug) ?? null;
+  if (!section) return null;
+  return { experience, section };
+}
