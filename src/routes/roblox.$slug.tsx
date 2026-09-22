@@ -5,7 +5,6 @@ import {
   BookOpen,
   ChevronDown,
   ChevronRight,
-  ClipboardList,
   Code2,
   Gamepad2,
   Menu,
