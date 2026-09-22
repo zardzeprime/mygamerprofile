@@ -81,7 +81,7 @@ function OnboardingPage() {
   const [error, setError] = useState("");
 
   const age = birthDate ? ageFromBirthDate(birthDate) : null;
-  const minorNeedsSupervision = age !== null && age >= 13 && age < 18;
+  const teenSafetyNotice = age !== null && age >= 13 && age < 18;
 
   const toggleFavorite = (gameSlug: string) => {
     setFavoriteGameSlugs((current) =>
@@ -322,16 +322,16 @@ function OnboardingPage() {
                 </p>
               </div>
 
-              {minorNeedsSupervision ? (
+              {teenSafetyNotice ? (
                 <div className="rounded-xl border border-amber-500/25 bg-amber-500/5 p-4 text-sm leading-relaxed text-muted-foreground">
                   <div className="mb-2 flex items-center gap-2 font-semibold text-foreground">
                     <ShieldCheck className="size-4 text-amber-500" />
                     {copy("Conta de adolescente", "Teen account", "Cuenta adolescente")}
                   </div>
                   {copy(
-                    "Contas de 13 a 17 anos ficam sujeitas às regras de supervisão do MGP. Recursos sociais sensíveis podem permanecer restritos até a confirmação de um responsável conforme a faixa etária e a legislação aplicável.",
-                    "Accounts ages 13–17 are subject to MGP supervision rules. Sensitive social features may remain restricted until guardian confirmation according to age and applicable law.",
-                    "Las cuentas de 13 a 17 años están sujetas a las reglas de supervisión de MGP. Algunas funciones sociales pueden permanecer restringidas hasta la confirmación de un responsable.",
+                    "Na beta, contas de 13 a 17 anos recebem proteções extras de segurança. O LFG usa a data de nascimento declarada para limitar automaticamente faixas de match, e denúncias/bloqueios continuam disponíveis. Essa idade ainda não é uma verificação documental.",
+                    "During beta, accounts ages 13–17 receive additional safety protections. LFG uses the declared birth date to automatically limit matchmaking age bands, and reporting/blocking remain available. This age is not document-verified yet.",
+                    "Durante la beta, las cuentas de 13 a 17 años reciben protecciones de seguridad adicionales. El LFG usa la fecha de nacimiento declarada para limitar automáticamente los rangos de match, y siguen disponibles las denuncias y bloqueos. Esta edad todavía no está verificada mediante documentos.",
                   )}
                 </div>
               ) : null}
