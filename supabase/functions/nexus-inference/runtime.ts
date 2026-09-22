@@ -163,7 +163,10 @@ const BUILD_ASSIST_GAMES = new Set([
 
 function parseBuildJson(text: string) {
   const trimmed = text.trim();
-  const unfenced = trimmed\n    .replace(/^```(?:json)?\\s*/i, "")\n    .replace(/\\s*```$/i, "")\n    .trim();
+  const unfenced = trimmed
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim();
   const start = unfenced.indexOf("{");
   const end = unfenced.lastIndexOf("}");
   if (start < 0 || end <= start) throw new Error("NEXUS_BUILD_INVALID_RESPONSE");
