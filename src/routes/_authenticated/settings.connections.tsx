@@ -545,7 +545,7 @@ function SettingsConnectionsPage() {
                 <FlowStep n="1" text={copy("Abrir verificação segura", "Open secure verification", "Abrir verificación segura")} />
                 <FlowStep n="2" text={copy("Confirmar identidade e idade", "Confirm identity and age", "Confirmar identidad y edad")} />
                 <FlowStep n="3" text={copy("Receber apenas o resultado", "Receive verdict only", "Recibir solo el resultado")} />
-                <FlowStep n="4" text={copy("Liberar match e regras por idade", "Unlock matching and age rules", "Habilitar match y reglas por edad")} />
+                <FlowStep n="4" text={copy("Liberar recursos que exigirem verificação reforçada", "Unlock features that require stronger verification", "Habilitar funciones que requieran verificación reforzada")} />
               </ol>
               <Button className="mt-5 w-full" disabled>
                 <ShieldQuestion className="mr-2 size-4" />
@@ -938,7 +938,7 @@ function VerificationStatus({
               : copy("Idade verificada", "Age verified", "Edad verificada")
             : pending
               ? copy("Verificação em andamento", "Verification pending", "Verificación en curso")
-              : copy("18+ ainda não verificado", "18+ not yet verified", "18+ aún no verificado")}
+              : copy("Verificação reforçada não configurada", "Stronger verification not configured", "Verificación reforzada no configurada")}
         </p>
         <p className="mt-1 text-sm leading-5 text-muted-foreground">
           {verified
@@ -947,7 +947,7 @@ function VerificationStatus({
               : copy("Sua idade foi confirmada. O MGP pode aplicar faixas etárias no LFG sem expor sua data de nascimento aos outros usuários.", "Your age is confirmed. MGP can enforce LFG age ranges without exposing your birth date to other users.", "Tu edad está confirmada. MGP puede aplicar rangos de edad en el LFG sin exponer tu fecha de nacimiento a otros usuarios.")
             : pending
               ? copy("A liberação só acontece quando o verificador concluir a checagem.", "Access unlocks only after the verifier completes the check.", "El acceso solo se libera cuando finalice la comprobación.")
-              : copy("Conteúdo 18+ permanecerá bloqueado mesmo que a data de nascimento informada indique maioridade.", "18+ content remains blocked even if the entered birth date indicates adulthood.", "El contenido 18+ seguirá bloqueado aunque la fecha de nacimiento indique mayoría de edad.")}
+              : copy("A beta atual não depende dessa verificação para usar o LFG. Ela fica reservada para recursos futuros que realmente precisem de uma checagem mais forte.", "The current beta does not require this verification to use LFG. It is reserved for future features that genuinely need stronger age assurance.", "La beta actual no requiere esta verificación para usar el LFG. Queda reservada para funciones futuras que realmente necesiten una comprobación más fuerte.")}
         </p>
       </div>
     </div>
