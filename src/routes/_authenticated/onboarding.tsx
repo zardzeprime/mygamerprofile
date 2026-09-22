@@ -257,7 +257,7 @@ function OnboardingPage() {
                   id="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value.toLowerCase())}
-                  placeholder="zardze"
+                  placeholder={copy("seu_nick", "your_nick", "tu_nick")}
                   required
                 />
                 <p className="text-xs text-muted-foreground">{t("auth.errors.invalidUsername")}</p>
