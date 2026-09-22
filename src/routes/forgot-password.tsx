@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useI18n } from "@/i18n";
+import { localeCopy } from "@/i18n/locale-utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +21,8 @@ export const Route = createFileRoute("/forgot-password")({
 });
 
 function ForgotPasswordPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -35,7 +37,22 @@ function ForgotPasswordPage() {
     });
     setLoading(false);
     if (resetError) {
-      setError(resetError.message || t("auth.errors.generic"));
+      const message = (resetError.message || "").toLowerCase();
+      const deliveryUnavailable =
+        message.includes("email address not authorized") ||
+        message.includes("smtp") ||
+        message.includes("email rate limit") ||
+        message.includes("error sending");
+
+      setError(
+        deliveryUnavailable
+          ? copy(
+              "A recuperação por e-mail está temporariamente indisponível. Tente novamente mais tarde.",
+              "Email recovery is temporarily unavailable. Please try again later.",
+              "La recuperación por correo está temporalmente no disponible. Inténtalo de nuevo más tarde.",
+            )
+          : resetError.message || t("auth.errors.generic"),
+      );
       return;
     }
     setSent(true);
