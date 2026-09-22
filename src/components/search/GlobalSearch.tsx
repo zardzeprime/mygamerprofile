@@ -172,8 +172,8 @@ export function GlobalSearch({
               {localResults.robloxExperiences.map((experience) => (
                 <Link
                   key={"roblox-" + experience.slug}
-                  to="/roblox"
-                  search={{ experience: experience.slug, tab: "overview" }}
+                  to="/roblox/$slug"
+                  params={{ slug: experience.slug }}
                   onClick={() => {
                     setOpen(false);
                     onNavigate?.();
