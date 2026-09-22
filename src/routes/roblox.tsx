@@ -111,9 +111,17 @@ function RobloxCatalog() {
                   </span>
                 ))}
               </div>
-              <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-gold-strong">
-                <Sparkles className="size-4" />
-                {copy("Abrir hub", "Open hub", "Abrir hub")}
+              <div className="mt-5 flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold-strong">
+                  <Sparkles className="size-4" />
+                  {copy("Abrir hub", "Open hub", "Abrir hub")}
+                </span>
+                <span className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2 py-0.5 text-[0.56rem] font-black uppercase tracking-[0.08em] text-emerald-200">
+                  {copy("Estrutura pronta", "Structure ready", "Estructura lista")}
+                </span>
+                <span className="rounded-full border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 text-[0.56rem] font-black uppercase tracking-[0.08em] text-amber-200">
+                  {copy("Conteúdo em andamento", "Content in progress", "Contenido en curso")}
+                </span>
               </div>
             </div>
           </Link>
