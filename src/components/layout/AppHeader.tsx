@@ -20,10 +20,9 @@ import { GlobalSearch } from "@/components/search/GlobalSearch";
 import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/googleAuth";
 
-const NAV: { to: string; key?: TranslationKey; label?: string }[] = [
+const NAV: { to: string; key: TranslationKey }[] = [
   { to: "/", key: "navigation.home" },
   { to: "/games", key: "navigation.games" },
-  { to: "/roblox", label: "Roblox" },
   { to: "/communities", key: "navigation.communities" },
   { to: "/lfg", key: "navigation.lfg" },
 ];
@@ -242,7 +241,7 @@ export function AppHeader() {
               activeProps={{ className: "mgp-nav-link-active" }}
               className="mgp-nav-link px-3 py-2 text-sm font-medium text-muted-foreground"
             >
-              {item.key ? t(item.key) : item.label}
+              {t(item.key)}
             </Link>
           ))}
         </nav>
@@ -292,7 +291,7 @@ export function AppHeader() {
                 activeProps={{ className: "mgp-nav-link-active" }}
                 className="mgp-nav-link rounded-lg px-3 py-2.5 text-sm font-medium text-foreground"
               >
-                {item.key ? t(item.key) : item.label}
+                {t(item.key)}
               </Link>
             ))}
           </nav>
