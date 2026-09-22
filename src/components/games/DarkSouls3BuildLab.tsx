@@ -10,6 +10,10 @@ import {
   Swords,
   WandSparkles,
 } from "lucide-react";
+import {
+  NexusBuildAssistant,
+  type NexusBuildSuggestion,
+} from "@/components/nexus/NexusBuildAssistant";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import type { Locale } from "@/i18n";
@@ -214,6 +218,7 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
   const [visibility, setVisibility] = useState<"public" | "private">("private");
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "login" | "error">("idle");
+  const [nexusApplied, setNexusApplied] = useState(false);
 
   const active = useMemo(
     () => BUILDS.find((build) => build.id === selected) ?? BUILDS[0],
@@ -221,6 +226,58 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
   );
   if (!active) return null;
   const ActiveIcon = active.icon;
+
+  const nexusContext = {
+    game: "dark-souls-iii",
+    activePreset: {
+      id: active.id,
+      title: active.title[locale],
+      archetype: active.archetype[locale],
+      summary: active.summary[locale],
+      startingClass: active.startingClass,
+      stats: active.stats,
+      core: active.core,
+      secondary: active.secondary,
+      rings: active.rings,
+      spells: active.spells,
+      variants: active.variants.map((entry) => entry[locale]),
+      sources: active.sources,
+    },
+    currentBuild: {
+      title: customName,
+      core: [coreOne, coreTwo].filter(Boolean),
+      situational: variant || null,
+      notes,
+    },
+  };
+
+  const applyNexusPreset = (suggestion: NexusBuildSuggestion) => {
+    if (typeof suggestion.title === "string") {
+      setCustomName(suggestion.title.slice(0, 100));
+    }
+
+    const suggestedCore = Array.isArray(suggestion["core"])
+      ? suggestion["core"].filter((value): value is string => typeof value === "string").slice(0, 2)
+      : [];
+    if (suggestedCore[0]) setCoreOne(suggestedCore[0].slice(0, 140));
+    if (suggestedCore[1]) setCoreTwo(suggestedCore[1].slice(0, 140));
+    else if (suggestedCore.length === 1) setCoreTwo("");
+
+    if (typeof suggestion["situational"] === "string") {
+      setVariant(suggestion["situational"].slice(0, 180));
+    } else {
+      setVariant("");
+    }
+
+    if (typeof suggestion["notes"] === "string") {
+      setNotes(suggestion["notes"].slice(0, 1600));
+    } else if (typeof suggestion.reason === "string") {
+      setNotes(suggestion.reason.slice(0, 1600));
+    }
+
+    setNexusApplied(true);
+    setSaveStatus("idle");
+  };
 
   const saveCustomBuild = async () => {
     if (!coreOne.trim() || saving) return;
@@ -251,7 +308,8 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
           referenceStats: active.stats,
         },
         p_source_context: {
-          createdWith: "mgp-souls-builder-v2",
+          createdWith: nexusApplied ? "mgp-souls-builder-v2+nexus" : "mgp-souls-builder-v2",
+          nexusAssisted: nexusApplied,
           presetSources: active.sources.map((source) => ({
             label: source.label,
             url: source.url,
@@ -391,6 +449,20 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
             "Define uno o dos núcleos y deja el resto como alternativas. Así la build sigue legible sin tratar seis piezas como igualmente obligatorias.",
           )}
         </p>
+
+        <div className="mt-5">
+          <NexusBuildAssistant
+            gameSlug="dark-souls-iii"
+            locale={locale}
+            context={nexusContext}
+            quickPrompts={[
+              copy("PvE para primeira run", "PvE for a first run", "PvE para primera run"),
+              copy("Mais agressiva", "More aggressive", "Más agresiva"),
+              copy("Mais segura contra bosses", "Safer for bosses", "Más segura contra jefes"),
+            ]}
+            onApply={applyNexusPreset}
+          />
+        </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <BuilderField label={copy("Nome", "Name", "Nombre")}>
