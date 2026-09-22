@@ -155,6 +155,130 @@ function translationLanguage(locale: ReturnType<typeof normalizeLocale>) {
   return "natural Brazilian Portuguese";
 }
 
+const BUILD_ASSIST_GAMES = new Set([
+  "league-of-legends",
+  "dark-souls-remastered",
+  "dark-souls-iii",
+]);
+
+function parseBuildJson(text: string) {
+  const trimmed = text.trim();
+  const unfenced = trimmed
+    .replace(/^\`\`\`(?:json)?\s*/i, "")
+    .replace(/\s*\`\`\`$/i, "")
+    .trim();
+  const start = unfenced.indexOf("{");
+  const end = unfenced.lastIndexOf("}");
+  if (start < 0 || end <= start) throw new Error("NEXUS_BUILD_INVALID_RESPONSE");
+
+  try {
+    const parsed = JSON.parse(unfenced.slice(start, end + 1));
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      throw new Error("NEXUS_BUILD_INVALID_RESPONSE");
+    }
+    return parsed as Record<string, unknown>;
+  } catch {
+    throw new Error("NEXUS_BUILD_INVALID_RESPONSE");
+  }
+}
+
+function buildAssistSchema(gameSlug: string) {
+  if (gameSlug === "league-of-legends") {
+    return [
+      "Return exactly one JSON object with this shape:",
+      '{"title":"string","summary":"string","reason":"string","role":"Top|Jungle|Mid|ADC|Support|Fill","patchLabel":"string|null","coreItemIds":["id"],"situationalItemIds":["id"],"bootsId":"id|null","summonerSpellIds":["id","id"],"skillOrder":["Q","W","E"],"runes":{"primaryStyleId":0,"primaryPerkIds":[0],"secondaryStyleId":0,"secondaryPerkIds":[0,0],"statShards":["key","key","key"]},"tags":["string"],"notes":"string"}',
+      "Use only IDs and shard keys explicitly present in the supplied context.",
+      "Choose at most 3 core items, at most 2 situational items, exactly 2 summoner spells, one boots item when appropriate, a complete primary rune tree, exactly 2 secondary runes from different non-keystone rows, and exactly 3 stat shards.",
+      "skillOrder must be a permutation of Q, W and E.",
+      "If the verified reference and the user's request conflict, explain the tradeoff in reason and favor a coherent playable build.",
+    ].join("\n");
+  }
+
+  return [
+    "Return exactly one JSON object with this shape:",
+    '{"title":"string","summary":"string","reason":"string","basePresetId":"string","core":["string"],"situational":"string|null","notes":"string"}',
+    "core must contain 1 or 2 concrete pieces of equipment or build-defining tools.",
+    "Use the supplied verified preset as the factual anchor. Adapt it to the user's goal instead of inventing unsupported mechanics.",
+    "Keep notes practical: stat priorities, play pattern, tradeoffs and when the situational option matters.",
+  ].join("\n");
+}
+
+export async function handleBuildAssist(req: Request, raw: Record<string, unknown>) {
+  const userId = await authenticatedUser(req);
+  const db = adminDb();
+  const gameSlug = typeof raw.gameSlug === "string" ? raw.gameSlug.trim() : "";
+  if (!BUILD_ASSIST_GAMES.has(gameSlug)) throw new Error("NEXUS_BUILD_GAME_UNSUPPORTED");
+  if (!aiReady()) throw new Error("NEXUS_NO_PROVIDER");
+
+  const locale = normalizeLocale(raw.locale);
+  const request = requireMessage(raw.request, 1200);
+  const context =
+    raw.context && typeof raw.context === "object" && !Array.isArray(raw.context)
+      ? raw.context
+      : {};
+  const serializedContext = JSON.stringify(context);
+  if (serializedContext.length > 60_000) throw new Error("NEXUS_BUILD_CONTEXT_TOO_LARGE");
+
+  const system = [
+    "You are NEXUS Build Architect inside MGP — My Gamer Profile.",
+    `Respond in ${translationLanguage(locale)}.`,
+    "Your job is to turn the player's goal into a structured preset that the MGP builder can apply directly.",
+    "Treat the supplied builder context as authoritative for IDs, available options and verified reference data.",
+    "Never invent an item ID, rune ID, spell ID, shard key or preset ID that is absent from the context.",
+    "Do not claim live/current meta certainty beyond the supplied patch/reference context.",
+    "Return JSON only: no markdown fences, headings or commentary outside the JSON object.",
+    buildAssistSchema(gameSlug),
+  ].join("\n");
+
+  let completion: Awaited<ReturnType<typeof complete>>;
+  try {
+    completion = await complete({
+      system,
+      messages: [
+        {
+          role: "user",
+          content: [
+            `gameSlug=${gameSlug}`,
+            `playerRequest=${request}`,
+            "builderContext=",
+            serializedContext,
+          ].join("\n"),
+        },
+      ],
+      effort: "medium",
+      maxOutputTokens: 1700,
+      grounding: false,
+    });
+  } catch (error) {
+    await recordRuntimeEvent(db, "build_assist_failure", runtimeErrorText(error), {
+      userId,
+      gameSlug,
+      locale,
+      runtime: "edge-v3",
+    });
+    throw error;
+  }
+
+  const suggestion = parseBuildJson(completion.text);
+  await recordRuntimeEvent(db, "build_assist_success", "Structured build preset generated", {
+    userId,
+    gameSlug,
+    locale,
+    provider: completion.provider,
+    model: completion.model,
+    latencyMs: completion.latencyMs,
+  });
+
+  return {
+    gameSlug,
+    suggestion,
+    provider: completion.provider,
+    model: completion.model,
+    latencyMs: completion.latencyMs,
+    orchestrator: "nexus",
+  };
+}
+
 export async function handleSoulsTranslate(raw: Record<string, unknown>) {
   if (raw.scope !== "souls-compendium") throw new Error("NEXUS_TRANSLATION_SCOPE_INVALID");
   const locale = normalizeLocale(raw.locale);
