@@ -15,7 +15,22 @@ export type RobloxExperience = {
   guideTopics: Record<Locale, string[]>;
   buildTopics: Record<Locale, string[]>;
   verifiedAt: string;
+  visual: {
+    coverImage: string;
+    heroImage: string;
+  };
 };
+
+function makeRobloxPlaceholder(label: string, subtitle: string, from: string, to: string) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient></defs><rect width="1600" height="900" fill="url(#g)"/><circle cx="1360" cy="120" r="360" fill="white" opacity=".05"/><circle cx="170" cy="850" r="500" fill="white" opacity=".035"/><text x="110" y="645" fill="white" font-family="Arial,sans-serif" font-size="88" font-weight="700">${label}</text><text x="114" y="715" fill="white" opacity=".65" font-family="Arial,sans-serif" font-size="28" letter-spacing="5">${subtitle}</text></svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+const BLOX_FRUITS_ART = makeRobloxPlaceholder("BLOX FRUITS", "ROBLOX EXPERIENCE · MGP", "#071a2e", "#0a6385");
+const PROJECT_SLAYERS_2_ART = makeRobloxPlaceholder("PROJECT SLAYERS 2", "ROBLOX EXPERIENCE · MGP", "#160d1d", "#6f2437");
+const ANIME_VANGUARDS_ART = makeRobloxPlaceholder("ANIME VANGUARDS", "ROBLOX EXPERIENCE · MGP", "#0f1027", "#4f2f87");
+const ANIME_LAST_STAND_ART = makeRobloxPlaceholder("ANIME LAST STAND", "ROBLOX EXPERIENCE · MGP", "#16120e", "#84592e");
+const KING_LEGACY_ART = makeRobloxPlaceholder("KING LEGACY", "ROBLOX EXPERIENCE · MGP", "#071d1a", "#156a58");
 
 export const ROBLOX_HUB_TABS: Array<{
   id: RobloxHubTab;
@@ -62,6 +77,7 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
       es: ["Build de espada", "Build de fruta", "Híbrida", "PvP", "Farm / PvE"],
     },
     verifiedAt: "2026-09-22",
+    visual: { coverImage: BLOX_FRUITS_ART, heroImage: BLOX_FRUITS_ART },
   },
   {
     slug: "project-slayers-2",
@@ -96,6 +112,7 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
       es: ["Slayer", "Demon", "PvE", "PvP", "Bossing"],
     },
     verifiedAt: "2026-09-22",
+    visual: { coverImage: PROJECT_SLAYERS_2_ART, heroImage: PROJECT_SLAYERS_2_ART },
   },
   {
     slug: "anime-vanguards",
@@ -130,6 +147,7 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
       es: ["Equipo general", "Bossing", "Farm", "Soporte", "Endgame"],
     },
     verifiedAt: "2026-09-22",
+    visual: { coverImage: ANIME_VANGUARDS_ART, heroImage: ANIME_VANGUARDS_ART },
   },
   {
     slug: "anime-last-stand",
@@ -164,6 +182,7 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
       es: ["Equipo barato", "Equipo meta", "Boss", "Farm", "Soporte"],
     },
     verifiedAt: "2026-09-22",
+    visual: { coverImage: ANIME_LAST_STAND_ART, heroImage: ANIME_LAST_STAND_ART },
   },
   {
     slug: "king-legacy",
@@ -198,6 +217,7 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
       es: ["Fruta", "Espada", "Híbrida", "PvP", "Farm"],
     },
     verifiedAt: "2026-09-22",
+    visual: { coverImage: KING_LEGACY_ART, heroImage: KING_LEGACY_ART },
   },
 ];
 
