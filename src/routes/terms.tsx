@@ -125,8 +125,10 @@ const sections: LegalSection[] = [
           Dados informados manualmente — como rank, função, personagem, build ou
           experiência — são declarações do próprio usuário e não representam
           verificação oficial. Quando uma integração aprovada importar dados de
-          Steam, Riot Games, Google ou outro provedor, o MGP deverá indicar a
+          Steam, Riot Games ou outro provedor de jogos, o MGP deverá indicar a
           procedência e distinguir informação importada de informação declarada.
+          Google é usado como método opcional de autenticação, não como fonte de
+          dados de desempenho em jogos.
         </p>
         <p>
           O MGP não promete que uma plataforma externa fornecerá todo dado que o

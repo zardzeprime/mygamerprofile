@@ -125,7 +125,22 @@ function RegisterPage() {
         },
       });
       if (signUpError) {
-        setError(signUpError.message || t("auth.errors.generic"));
+        const message = (signUpError.message || "").toLowerCase();
+        const deliveryUnavailable =
+          message.includes("email address not authorized") ||
+          message.includes("smtp") ||
+          message.includes("email rate limit") ||
+          message.includes("error sending");
+
+        setError(
+          deliveryUnavailable
+            ? copy(
+                "O cadastro por e-mail está temporariamente limitado na beta. Use “Continuar com Google” ou tente novamente quando o envio de e-mail estiver disponível.",
+                "Email sign-up is temporarily limited during beta. Use “Continue with Google” or try again when email delivery is available.",
+                "El registro por correo está temporalmente limitado durante la beta. Usa “Continuar con Google” o inténtalo de nuevo cuando el envío de correo esté disponible.",
+              )
+            : signUpError.message || t("auth.errors.generic"),
+        );
         return;
       }
 
@@ -206,6 +221,13 @@ function RegisterPage() {
               ? t("common.loading")
               : copy("Continuar com Google", "Continue with Google", "Continuar con Google")}
           </Button>
+          <p className="mt-2 text-center text-[0.68rem] leading-5 text-muted-foreground">
+            {copy(
+              "Recomendado na beta: o Google não depende do envio de e-mail de confirmação do MGP.",
+              "Recommended during beta: Google does not depend on MGP confirmation-email delivery.",
+              "Recomendado durante la beta: Google no depende del envío del correo de confirmación de MGP.",
+            )}
+          </p>
 
           <div className="my-5 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
             <span className="h-px flex-1 bg-border" />

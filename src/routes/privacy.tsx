@@ -73,9 +73,9 @@ const sections: LegalSection[] = [
           <li>
             <strong className="text-foreground">Idade e segurança:</strong>{" "}
             data de nascimento informada no onboarding, faixa etária derivada,
-            estado de supervisão/participação de responsável e método de
-            aferição aplicável. A data de nascimento fica separada dos dados
-            públicos do perfil e não é exibida a outros usuários.
+            método de aferição aplicável e estados técnicos de proteção por
+            idade. A data de nascimento fica separada dos dados públicos do
+            perfil e não é exibida a outros usuários.
           </li>
           <li>
             <strong className="text-foreground">Perfil:</strong> username, nome
@@ -141,7 +141,7 @@ const sections: LegalSection[] = [
           <li>personalizar idioma, tema, jogos e experiência de navegação;</li>
           <li>
             adequar recursos, avisos e interações sociais à faixa etária e
-            aplicar medidas de supervisão e proteção de menores;
+            aplicar medidas de segurança e proteção de menores;
           </li>
           <li>
             viabilizar interações sociais, LFG, moderação, denúncias e prevenção
@@ -205,10 +205,10 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          O MGP pretende permitir conexão opcional com serviços como Steam,
-          Riot Games e Google. A disponibilidade depende das políticas,
-          aprovações e capacidades técnicas de cada fornecedor. Conectar uma
-          conta nunca deve exigir que você entregue ao MGP a senha desse
+          O MGP permite autenticação opcional com Google e conexão de serviços
+          de jogos como Steam; integrações futuras, como Riot Games, dependem
+          das políticas, aprovações e capacidades técnicas de cada fornecedor.
+          Nenhum desses fluxos deve exigir que você entregue ao MGP a senha do
           serviço; a autenticação deve ocorrer pelo fluxo oficial do provedor.
         </p>
         <p>
@@ -241,9 +241,9 @@ const sections: LegalSection[] = [
             entrega e operação da aplicação web;
           </li>
           <li>
-            <strong className="text-foreground">Google:</strong> recursos que
-            você escolher usar, como autenticação e, futuramente, publicidade,
-            sempre conforme as configurações e políticas aplicáveis;
+            <strong className="text-foreground">Google:</strong> autenticação
+            opcional e publicidade quando ativada/aprovada, sempre conforme as
+            configurações, consentimentos e políticas aplicáveis;
           </li>
           <li>
             <strong className="text-foreground">Plataformas de jogos:</strong>{" "}
@@ -295,10 +295,11 @@ const sections: LegalSection[] = [
           ferramentas oferecidas pelo fornecedor de anúncios.
         </p>
         <p>
-          Onde a lei ou a política do fornecedor exigir consentimento prévio, o
-          MGP exibirá ferramenta de gestão de consentimento antes de usar
-          cookies publicitários não essenciais. Recusar publicidade
-          personalizada não bloqueará o acesso gratuito ao conteúdo principal.
+          Onde a lei ou a política do fornecedor exigir consentimento prévio,
+          a veiculação publicitária que dependa desse consentimento deve
+          permanecer desativada até que o MGP tenha configurado uma ferramenta
+          adequada de gestão de consentimento. Recusar publicidade personalizada
+          não bloqueará o acesso gratuito ao conteúdo principal.
         </p>
       </>
     ),
