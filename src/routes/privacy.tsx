@@ -73,9 +73,9 @@ const sections: LegalSection[] = [
           <li>
             <strong className="text-foreground">Idade e segurança:</strong>{" "}
             data de nascimento informada no onboarding, faixa etária derivada,
-            estado de supervisão/participação de responsável e método de
-            aferição aplicável. A data de nascimento fica separada dos dados
-            públicos do perfil e não é exibida a outros usuários.
+            método de aferição aplicável e estados técnicos de proteção por
+            idade. A data de nascimento fica separada dos dados públicos do
+            perfil e não é exibida a outros usuários.
           </li>
           <li>
             <strong className="text-foreground">Perfil:</strong> username, nome
@@ -141,7 +141,7 @@ const sections: LegalSection[] = [
           <li>personalizar idioma, tema, jogos e experiência de navegação;</li>
           <li>
             adequar recursos, avisos e interações sociais à faixa etária e
-            aplicar medidas de supervisão e proteção de menores;
+            aplicar medidas de segurança e proteção de menores;
           </li>
           <li>
             viabilizar interações sociais, LFG, moderação, denúncias e prevenção
