@@ -12,6 +12,7 @@ import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { getGameBySlug } from "@/lib/games.functions";
 import { listPosts } from "@/lib/posts.functions";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/communities/$slug")({
   loader: async ({ params }) => {
@@ -31,14 +32,12 @@ export const Route = createFileRoute("/communities/$slug")({
     if (!loaderData) return { meta: [{ title: "Comunidade não encontrada — MGP" }, { name: "robots", content: "noindex" }] };
     const title = `${loaderData.game.name} — Comunidade MGP`;
     const description = `Comunidade de ${loaderData.game.name} no My Gamer Profile.`;
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-      ],
-    };
+    return buildSeo({
+      title,
+      description,
+      path: `/communities/${loaderData.game.slug}`,
+      image: loaderData.game.visual.coverImage,
+    });
   },
   component: GameCommunityPage,
 });
