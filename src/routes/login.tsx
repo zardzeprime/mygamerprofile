@@ -16,6 +16,7 @@ export const Route = createFileRoute("/login")({
     meta: [
       { title: "Entrar — MGP" },
       { name: "description", content: "Entre na sua conta do My Gamer Profile." },
+      { name: "robots", content: "noindex, follow" },
     ],
   }),
 });
