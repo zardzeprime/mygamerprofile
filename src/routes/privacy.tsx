@@ -10,19 +10,17 @@ import {
   LEGAL_OPERATOR_NAME,
   LEGAL_VERSION,
 } from "@/config/legal";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
-  head: () => ({
-    meta: [
-      { title: "Política de Privacidade — MGP" },
-      {
-        name: "description",
-        content:
-          "Saiba como o My Gamer Profile coleta, usa, compartilha e protege dados pessoais.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeo({
+      title: "Política de Privacidade — MG Profile",
+      description:
+        "Saiba como o MG Profile coleta, usa, compartilha e protege dados pessoais.",
+      path: "/privacy",
+    }),
 });
 
 const listClassName = "list-disc space-y-1.5 pl-5 marker:text-gold-strong";
