@@ -8,6 +8,7 @@ import { ACTIVE_GAMES } from "@/config/gameAvailability";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
+import { buildSeo } from "@/lib/seo";
 
 type GenreFilter = "all" | "rpg" | "fps" | "moba" | "sports";
 
@@ -16,20 +17,13 @@ const SORTED_GAMES = [...ACTIVE_GAMES].sort((first, second) =>
 );
 
 export const Route = createFileRoute("/games/")({
-  head: () => ({
-    meta: [
-      { title: "Catálogo de jogos — MGP" },
-      {
-        name: "description",
-        content: "Catálogo editorial de jogos ativos do MGP com informações, guias, builds e coleções por título.",
-      },
-      { property: "og:title", content: "Catálogo de jogos — MGP" },
-      {
-        property: "og:description",
-        content: "Catálogo editorial de jogos ativos do MGP com informações, guias, builds e coleções por título.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeo({
+      title: "Jogos, guias e builds — MG Profile",
+      description:
+        "Explore Valorant, League of Legends, Dark Souls e outros hubs com guias, builds, informações e ferramentas no MG Profile.",
+      path: "/games",
+    }),
   component: GamesCatalog,
 });
 
