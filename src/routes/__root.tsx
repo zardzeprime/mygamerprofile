@@ -22,6 +22,7 @@ import { RouteTransitionLoader } from "../components/common/RouteTransitionLoade
 import { AppHeader } from "../components/layout/AppHeader";
 import { AppFooter } from "../components/layout/AppFooter";
 import { NexusChat } from "../components/nexus/NexusChat";
+import { DEFAULT_OG_IMAGE, SITE_STRUCTURED_DATA } from "../lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -93,10 +94,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "MGP é a plataforma de identidade gamer: perfil, jogos, Game Profiles, comunidades e LFG.",
       },
-      { property: "og:site_name", content: "MGP — My Gamer Profile" },
+      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
+      { name: "theme-color", content: "#0b0b0d" },
+      { property: "og:site_name", content: "MG Profile" },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: DEFAULT_OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: DEFAULT_OG_IMAGE },
       { name: "google-adsense-account", content: "ca-pub-7774329183197175" },
+    ],
+    scripts: [
+      { type: "application/ld+json", children: SITE_STRUCTURED_DATA },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
