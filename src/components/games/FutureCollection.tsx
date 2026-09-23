@@ -24,6 +24,7 @@ import { LeagueBuildLab } from "@/components/games/LeagueBuildLab";
 import { LeagueItemsExplorerV2 } from "@/components/games/LeagueItemsExplorerV2";
 import { LeagueModesExplorer } from "@/components/games/LeagueModesExplorer";
 import { LeagueEsportsPanel } from "@/components/games/LeagueEsportsPanel";
+import { LeagueNews } from "@/components/games/LeagueNews";
 import { SoulsBossExplorer } from "@/components/games/SoulsBossExplorer";
 import { SoulsGameGuides } from "@/components/games/SoulsGameGuides";
 
@@ -75,6 +76,7 @@ export function FutureCollection({
   }
 
   if (gameSlug === "league-of-legends") {
+    if (moduleKey === "news") return <LeagueNews locale={locale} />;
     if (moduleKey === "builds") return <LeagueBuildLab locale={locale} />;
     if (moduleKey === "champions") return <LeagueChampionExplorer locale={locale} />;
     if (moduleKey === "runes") return <LeagueRunesExplorer locale={locale} />;
