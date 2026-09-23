@@ -120,7 +120,7 @@ export const GAME_EDITORIAL_OVERVIEW: Record<string, GameEditorialOverview | und
     },
     developer: "Riot Games",
     publisher: "Riot Games",
-    latestVersion: "13.05",
+    latestVersion: "13.06 · 22 set 2026",
     score: {
       value: 8.1,
       sourceLabel: "Metacritic 80 · OpenCritic 81",
@@ -168,7 +168,7 @@ export const GAME_EDITORIAL_OVERVIEW: Record<string, GameEditorialOverview | und
     release: { "pt-BR": "27 out 2009", en: "Oct 27, 2009", es: "27 oct 2009" },
     developer: "Riot Games",
     publisher: "Riot Games",
-    latestVersion: "Patch 26.18 · set 2026",
+    latestVersion: "Patch 26.19 · 22 set 2026",
     featured: [],
   },
   "ea-sports-fc": {
