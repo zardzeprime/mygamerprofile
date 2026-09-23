@@ -28,15 +28,7 @@ export const Route = createFileRoute("/u/$username/games/$slug")({
     if (!data.profile) throw notFound();
     return { config, ...data };
   },
-  notFoundComponent: () => {
-    const { t } = useI18n();
-    return (
-      <div className="mx-auto max-w-6xl px-4 py-12 text-center">
-        <h1 className="font-display text-2xl">{t("common.error")}</h1>
-        <p className="text-muted-foreground">Game Profile não encontrado.</p>
-      </div>
-    );
-  },
+  notFoundComponent: GameProfileNotFound,
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return {
@@ -57,6 +49,16 @@ export const Route = createFileRoute("/u/$username/games/$slug")({
   },
   component: GameProfilePage,
 });
+
+function GameProfileNotFound() {
+  const { t } = useI18n();
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-12 text-center">
+      <h1 className="font-display text-2xl">{t("common.error")}</h1>
+      <p className="text-muted-foreground">Game Profile não encontrado.</p>
+    </div>
+  );
+}
 
 function GameProfilePage() {
   const { t, locale } = useI18n();
