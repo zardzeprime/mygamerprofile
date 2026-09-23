@@ -38,6 +38,7 @@ import { UserAvatar } from "@/components/common/UserAvatar";
 import { EmptyState } from "@/components/common/EmptyState";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
+import { buildSeo } from "@/lib/seo";
 
 const PLATFORMS = ["PC", "PlayStation", "Xbox", "Nintendo Switch"] as const;
 const LANGUAGES = ["pt-BR", "en", "es", "fr"] as const;
@@ -87,12 +88,13 @@ export const Route = createFileRoute("/lfg")({
     const posts = await listLfgPosts({ data: { status: "open" } });
     return { games, posts };
   },
-  head: () => ({
-    meta: [
-      { title: "LFG — MGP" },
-      { name: "description", content: "Encontre um grupo para jogar no My Gamer Profile." },
-    ],
-  }),
+  head: () =>
+    buildSeo({
+      title: "LFG: encontre jogadores e grupos — MG Profile",
+      description:
+        "Encontre jogadores e monte grupos por jogo, plataforma, idioma e região no LFG do MG Profile.",
+      path: "/lfg",
+    }),
   component: LfgPage,
 });
 
