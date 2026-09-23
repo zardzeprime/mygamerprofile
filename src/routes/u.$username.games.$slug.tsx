@@ -18,6 +18,7 @@ import {
 import { DataSourceIndicator } from "@/components/common/DataSourceIndicator";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { useServerFn } from "@tanstack/react-start";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/u/$username/games/$slug")({
   loader: async ({ params }) => {
@@ -36,12 +37,24 @@ export const Route = createFileRoute("/u/$username/games/$slug")({
       </div>
     );
   },
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug} — @${params.username} — MGP` },
-      { name: "description", content: `Game Profile de @${params.username} para ${params.slug}.` },
-    ],
-  }),
+  head: ({ params, loaderData }) => {
+    if (!loaderData) {
+      return {
+        meta: [
+          { title: `${params.slug} — @${params.username} — MG Profile` },
+          { name: "robots", content: "noindex, follow" },
+        ],
+      };
+    }
+    const { config, profile } = loaderData;
+    return buildSeo({
+      title: `${config.name} — ${profile.display_name} (@${profile.username}) — MG Profile`,
+      description: `Game Profile público de @${profile.username} para ${config.name} no MG Profile.`,
+      path: `/u/${profile.username}/games/${config.slug}`,
+      image: profile.avatar_url ?? config.visual.coverImage,
+      type: "profile",
+    });
+  },
   component: GameProfilePage,
 });
 
