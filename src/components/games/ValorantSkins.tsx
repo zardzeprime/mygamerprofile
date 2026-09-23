@@ -3,6 +3,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Coins,
+  ExternalLink,
   Layers3,
   Palette,
   Play,
@@ -173,6 +174,31 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
           )}
         </p>
       </header>
+
+      <a
+        href="https://www.youtube.com/watch?v=PoogGcJjsFU"
+        target="_blank"
+        rel="noreferrer"
+        className="group flex flex-col justify-between gap-3 rounded-2xl border border-gold/20 bg-gold/[0.035] p-4 transition-colors hover:border-gold/40 sm:flex-row sm:items-center sm:px-5"
+      >
+        <div>
+          <p className="text-[0.62rem] font-black uppercase tracking-[0.12em] text-gold-strong">
+            {copy("Destaque oficial · Ato V", "Official spotlight · Act V", "Destacado oficial · Acto V")}
+          </p>
+          <p className="mt-1 font-display text-lg font-semibold text-foreground">Aeris</p>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+            {copy(
+              "A linha Aeris segue em destaque oficial na Temporada 26: Ato V. O catálogo abaixo continua sendo carregado dinamicamente para incorporar novas skins e variantes conforme os dados ficam disponíveis.",
+              "Aeris remains Riot's official Season 26: Act V spotlight. The catalog below stays data-driven so new skins and variants can appear as provider data becomes available.",
+              "Aeris sigue como destaque oficial de la Temporada 26: Acto V. El catálogo se carga de forma dinámica para incorporar nuevas skins y variantes cuando los datos estén disponibles.",
+            )}
+          </p>
+        </div>
+        <span className="inline-flex shrink-0 items-center gap-1.5 text-xs font-bold text-gold-strong">
+          {copy("Trailer oficial", "Official trailer", "Tráiler oficial")}
+          <ExternalLink className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+        </span>
+      </a>
 
       <div className="flex flex-col gap-3 border-y border-border py-4 lg:flex-row lg:items-center lg:justify-between">
         <label className="flex max-w-md flex-1 items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 transition-colors focus-within:border-gold/60">

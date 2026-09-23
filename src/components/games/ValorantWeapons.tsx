@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Crosshair, Search, ShieldAlert, Zap } from "lucide-react";
+import { Crosshair, ExternalLink, Search, ShieldAlert, Zap } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
@@ -68,6 +68,34 @@ export function ValorantWeapons({ locale }: { locale: Locale }) {
           {copy("Compare preço, cadência, pente, penetração de parede e dano por distância. Os valores são uma fotografia dos dados atuais do jogo e podem mudar com patches.", "Compare price, fire rate, magazine size, wall penetration and range-based damage. Values are a snapshot of current game data and can change with patches.", "Compara precio, cadencia, cargador, penetración de paredes y daño por distancia. Los valores son una fotografía de los datos actuales y pueden cambiar con parches.")}
         </p>
       </header>
+
+      <a
+        href="https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-06/"
+        target="_blank"
+        rel="noreferrer"
+        className="group grid gap-4 rounded-2xl border border-gold/30 bg-[radial-gradient(circle_at_top_left,rgba(212,167,44,0.12),transparent_42%),hsl(var(--surface))] p-5 transition-all hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-lift sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-6"
+      >
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full border border-gold/30 bg-gold/10 px-2.5 py-1 text-[0.62rem] font-black uppercase tracking-[0.1em] text-gold-strong">
+              {copy("Novidade · 13.06", "New · 13.06", "Nuevo · 13.06")}
+            </span>
+            <span className="text-xs font-semibold text-muted-foreground">Riot Games · 22/09/2026</span>
+          </div>
+          <h3 className="mt-3 font-display text-2xl font-bold text-foreground">Warden</h3>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+            {copy(
+              "Novo fuzil automático de 2.900 créditos: 18 balas, mira 2x, cadência 6,5/s, 50 de dano no corpo, 200 na cabeça e 42 nas pernas em todas as distâncias.",
+              "New 2,900-credit automatic rifle: 18 rounds, 2x scope, 6.5/s fire rate, 50 body damage, 200 headshot and 42 leg damage at all ranges.",
+              "Nuevo rifle automático de 2.900 créditos: 18 balas, mira 2x, cadencia 6,5/s, 50 de daño al cuerpo, 200 a la cabeza y 42 a las piernas a cualquier distancia.",
+            )}
+          </p>
+        </div>
+        <span className="inline-flex items-center gap-2 text-xs font-bold text-gold-strong">
+          {copy("Ver patch oficial", "View official patch", "Ver parche oficial")}
+          <ExternalLink className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+        </span>
+      </a>
 
       <div className="flex flex-col gap-3 border-y border-border py-4 xl:flex-row xl:items-center xl:justify-between">
         <label className="flex max-w-md flex-1 items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 focus-within:border-gold/60">

@@ -31,12 +31,13 @@ export const VALORANT_NEWS: ValorantNewsItem[] = [
     summary: localized("A equipe de desenvolvimento apresenta novo modo, novo fuzil e sistemas que compõem a maior atualização do VALORANT em 2026.", "The development team previews a new mode, a new rifle and systems behind VALORANT's biggest 2026 update.", "El equipo de desarrollo presenta un nuevo modo, un nuevo rifle y sistemas de la mayor actualización de VALORANT de 2026."),
     url: "https://www.youtube.com/watch?v=LnQxJoS-c4Q", sourceLabel: "VALORANT // Brasil · YouTube",
   },
-  {
-    id: "patch-13-06-announced", category: "announcement", publishedAt: "2026-09-22T13:00:00.000Z", upcoming: true, official: true,
-    title: localized("Atualização 13.06 está prevista para 22 de setembro", "Patch 13.06 is planned for September 22", "La versión 13.06 está prevista para el 22 de septiembre"),
-    summary: localized("A Riot antecipou uma atualização maior para o sistema de Equipamentos de Agentes, vinculando a progressão ao tempo jogado com cada Agente.", "Riot previewed a larger Agent Gear system update that will tie progression more directly to time played on each Agent.", "Riot adelantó una actualización mayor del sistema de Equipamiento de Agentes, vinculando la progresión al tiempo jugado con cada Agente."),
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-05/", sourceLabel: "Riot Games · Patch 13.05",
-  },
+  patch(
+    "13.06",
+    "2026-09-22T13:00:00.000Z",
+    "A maior atualização de 2026 trouxe o novo fuzil Warden, novo Home/Lobby, Agent Mastery, Gauntlet: Glitched, treino no Range durante a fila, Performance Score, Accolades e Rank Legacy.",
+    "VALORANT's biggest 2026 update introduced the Warden rifle, new Home/Lobby, Agent Mastery, Gauntlet: Glitched, Range while queueing, Performance Score, Accolades and Rank Legacy.",
+    "La mayor actualización de 2026 incorporó el rifle Warden, nuevo Home/Lobby, Agent Mastery, Gauntlet: Glitched, Range durante la cola, Performance Score, Accolades y Rank Legacy.",
+  ),
   {
     id: "gauntlet-glitched-reveal", category: "media", publishedAt: "2026-09-14T14:00:00.000Z", official: true,
     title: localized("GAUNTLET: GLITCHED — trailer de revelação do modo", "GAUNTLET: GLITCHED — Game Mode Reveal Trailer", "GAUNTLET: GLITCHED — tráiler de presentación del modo"),
