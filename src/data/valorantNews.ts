@@ -7,12 +7,19 @@ const localized = (pt: string, en: string, es: string): Record<Locale, string> =
 const patch = (version: string, publishedAt: string, pt: string, en: string, es: string): ValorantNewsItem => ({
   id: `patch-${version.replace(".", "-")}`, category: "patch", publishedAt, official: true,
   title: localized(`Atualização ${version} do VALORANT`, `VALORANT Patch Notes ${version}`, `Notas de la versión ${version} de VALORANT`),
-  summary: localized(pt, en, es), url: `https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-${version.replace(".", "-")}/`, sourceLabel: "Riot Games",
+  summary: localized(pt, en, es), url: version === "9.06" ? "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-906/" : `https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-${version.replace(".", "-")}/`, sourceLabel: "Riot Games",
 });
 
 // Editorial snapshot sourced only from Riot Games / VALORANT Esports official channels.
 // Historical patches are backfilled in chronological batches through reviewable pull requests.
 export const VALORANT_NEWS: ValorantNewsItem[] = [
+  patch("13.06", "2026-09-22T13:00:00.000Z", "A maior atualização de 2026 trouxe nova Home/Lobby, Maestria de Agentes, Gauntlet: Glitched, treino durante a fila, Performance Score, Accolades, Rank Legacy e o novo rifle Warden.", "VALORANT's biggest 2026 update introduced a new Home/Lobby, Agent Mastery, Gauntlet: Glitched, Range while queued, Performance Score, Accolades, Rank Legacy, and the new Warden rifle.", "La mayor actualización de 2026 introdujo nueva Home/Lobby, Maestría de Agentes, Gauntlet: Glitched, práctica durante la cola, Performance Score, Accolades, Rank Legacy y el nuevo rifle Warden."),
+  {
+    id: "playing-with-respect-2026", category: "announcement", publishedAt: "2026-09-22T13:00:00.000Z", official: true,
+    title: localized("Jogando com respeito", "Playing with Respect", "Jugar con respeto"),
+    summary: localized("A Riot detalhou a expansão do Riot Voice Evaluation para português, espanhol e coreano e reforçou medidas contra abuso nas comunicações.", "Riot detailed Riot Voice Evaluation expansion to Portuguese, Spanish and Korean and reinforced measures against abusive communications.", "Riot detalló la expansión de Riot Voice Evaluation a portugués, español y coreano y reforzó las medidas contra comunicaciones abusivas."),
+    url: "https://playvalorant.com/en-us/news/announcements/playing-with-respect/", sourceLabel: "Riot Games",
+  },
   {
     id: "champions-shanghai-opening-day", category: "esports", publishedAt: "2026-09-16T12:45:00.000Z", official: true,
     title: localized("Abertura do Champions Shanghai", "Champions Shanghai Opening Day", "Día de apertura de Champions Shanghai"),
@@ -26,9 +33,9 @@ export const VALORANT_NEWS: ValorantNewsItem[] = [
     url: "https://www.youtube.com/watch?v=x8jAY2CoOBg", sourceLabel: "VALORANT // Brasil · YouTube",
   },
   {
-    id: "valorant-console-aus-nz", category: "announcement", publishedAt: "2026-09-16T00:00:00.000Z", official: true,
-    title: localized("VALORANT chega aos consoles na Austrália e Nova Zelândia", "VALORANT Coming to Console in Australia & New Zealand", "VALORANT llega a consolas en Australia y Nueva Zelanda"),
-    summary: localized("A Riot confirmou o lançamento no PS5 e Xbox Series X|S em 23 de setembro, com progressão compartilhada entre PC e console.", "Riot confirmed a September 23 launch on PS5 and Xbox Series X|S, with progression shared across PC and console.", "Riot confirmó el lanzamiento el 23 de septiembre en PS5 y Xbox Series X|S, con progresión compartida entre PC y consola."),
+    id: "valorant-console-aus-nz", category: "announcement", publishedAt: "2026-09-24T00:00:00.000Z", upcoming: true, official: true,
+    title: localized("VALORANT está disponível nos consoles na Austrália e Nova Zelândia", "VALORANT is Live in Australia & New Zealand", "VALORANT ya está disponible en consolas en Australia y Nueva Zelanda"),
+    summary: localized("A Riot confirmou o lançamento em 23 de setembro no PS5 e Xbox Series X|S, com servidor de Sydney e progressão compartilhada entre PC e console.", "Riot confirmed the September 23 launch on PS5 and Xbox Series X|S, with a Sydney server and progression shared across PC and console.", "Riot confirmó el lanzamiento el 23 de septiembre en PS5 y Xbox Series X|S, con servidor de Sídney y progresión compartida entre PC y consola."),
     url: "https://playvalorant.com/en-us/news/announcements/valorant-coming-to-console-in-australia--new-zealand/", sourceLabel: "Riot Games",
   },
   {
@@ -36,12 +43,6 @@ export const VALORANT_NEWS: ValorantNewsItem[] = [
     title: localized("Essa é das grandes — Atualizações Dev", "One BIG Dev Update", "Una gran actualización de desarrollo"),
     summary: localized("A equipe de desenvolvimento apresenta novo modo, novo fuzil e sistemas que compõem a maior atualização do VALORANT em 2026.", "The development team previews a new mode, a new rifle and systems behind VALORANT's biggest 2026 update.", "El equipo de desarrollo presenta un nuevo modo, un nuevo fuzil y sistemas de la mayor actualización de VALORANT de 2026."),
     url: "https://www.youtube.com/watch?v=LnQxJoS-c4Q", sourceLabel: "VALORANT // Brasil · YouTube",
-  },
-  {
-    id: "patch-13-06-announced", category: "announcement", publishedAt: "2026-09-22T13:00:00.000Z", upcoming: true, official: true,
-    title: localized("Atualização 13.06 está prevista para 22 de setembro", "Patch 13.06 is planned for September 22", "La versión 13.06 está prevista para el 22 de septiembre"),
-    summary: localized("A Riot antecipou uma atualização maior para o sistema de Equipamentos de Agentes, vinculando a progressão ao tempo jogado com cada Agente.", "Riot previewed a larger Agent Gear system update that will tie progression more directly to time played on each Agent.", "Riot adelantó una actualización mayor del sistema de Equipamiento de Agentes, vinculando la progresión al tiempo jugado con cada Agente."),
-    url: "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-13-05/", sourceLabel: "Riot Games · Patch 13.05",
   },
   {
     id: "gauntlet-glitched-reveal", category: "media", publishedAt: "2026-09-14T14:00:00.000Z", official: true,
@@ -106,4 +107,8 @@ export const VALORANT_NEWS: ValorantNewsItem[] = [
   patch("9.10", "2024-11-19T14:00:00.000Z", "Novo Escudo de Regeneração, ajustes de Controladores, Sentinelas e Phoenix, além de mudanças no Relatório de Combate.", "The new Regen Shield, Controller, Sentinel and Phoenix updates, plus Combat Report changes.", "Nuevo Escudo de Regeneración, ajustes de Controladores, Centinelas y Phoenix, además de cambios al Informe de combate."),
   patch("9.09", "2024-11-05T14:00:00.000Z", "Correções para Gekko, Fade, Deadlock, mapas, Premier e problemas de interface e comportamento.", "Bug fixes for Gekko, Fade, Deadlock, maps, Premier, UI and gameplay issues.", "Correcciones para Gekko, Fade, Deadlock, mapas, Premier y problemas de interfaz y jugabilidad."),
   patch("9.08", "2024-10-22T13:00:00.000Z", "Início do Ato III do Episódio 9, mudanças em Yoru e Gekko, atualização de Sunset e novo mapa TDM Glitch.", "Episode 9 Act III began with Yoru and Gekko updates, Sunset changes and the new Glitch TDM map.", "Comenzó el Acto III del Episodio 9 con cambios a Yoru y Gekko, ajustes de Sunset y el nuevo mapa TDM Glitch."),
+  patch("9.07", "2024-10-08T13:00:00.000Z", "Ajustes de interação com a Divisa Cósmica da Astra e a Câmera de Vigilância do Cypher, mudanças no Treinamento Básico e várias correções.", "Astra Cosmic Divide and Cypher Spycam interaction updates, Basic Training changes, and various bug fixes.", "Ajustes de interacción con la División Cósmica de Astra y la Cámara Espía de Cypher, cambios al Entrenamiento Básico y varias correcciones."),
+  patch("9.06", "2024-09-24T13:00:00.000Z", "Atualizações de comportamento e sistemas, dicas para novos jogadores, nomes de skins no seletor de armas, bloqueio de comunicações e Fracture nos consoles.", "Player Behavior and Gameplay Systems updates, New Player Tips, weapon-skin names in the switcher, communication blocking, and Fracture on console.", "Actualizaciones de comportamiento y sistemas, consejos para nuevos jugadores, nombres de skins en el selector, bloqueo de comunicaciones y Fracture en consola."),
+  patch("9.05", "2024-09-10T13:00:00.000Z", "Astra voltou a ter cinco estrelas, Chamber ganhou mais alcance no Rendezvous, o Ares foi ajustado e Breeze chegou às filas casuais nos consoles.", "Astra returned to five stars, Chamber gained more Rendezvous range, the Ares was adjusted, and Breeze joined casual console queues.", "Astra volvió a tener cinco estrellas, Chamber ganó más alcance en Rendezvous, el Ares fue ajustado y Breeze llegó a las colas casuales de consola."),
+  patch("9.04", "2024-08-27T13:00:00.000Z", "Vyse entrou como nova Sentinela, Split chegou às filas Sem Classificação e Swiftplay nos consoles e várias correções foram aplicadas.", "Vyse joined as the new Sentinel, Split entered Unrated and Swift Play on console, and multiple fixes shipped.", "Vyse llegó como nueva Centinela, Split entró en No Clasificatoria y Swiftplay en consola y se aplicaron varias correcciones."),
 ];
