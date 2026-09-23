@@ -37,6 +37,7 @@ import { getProfileBackground } from "@/config/profileBackgrounds";
 import { cn } from "@/lib/utils";
 import { getPublicSteamShowcase, type PublicSteamShowcase } from "@/lib/steamSync.functions";
 import { getPublicProfileLoadout } from "@/lib/profileIdentity.functions";
+import { absoluteSiteUrl, buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/u/$username")({
   loader: async ({ params }) => {
@@ -66,12 +67,52 @@ export const Route = createFileRoute("/u/$username")({
     return { profile, posts, gameProfiles, steamShowcase, identityLoadout };
   },
   notFoundComponent: ProfileNotFound,
-  head: ({ params }) => ({
-    meta: [
-      { title: `@${params.username} — MG Profile` },
-      { name: "description", content: `Perfil de @${params.username} no MG Profile.` },
-    ],
-  }),
+  head: ({ params, loaderData }) => {
+    if (!loaderData) {
+      return {
+        meta: [
+          { title: `@${params.username} — MG Profile` },
+          { name: "robots", content: "noindex, follow" },
+        ],
+      };
+    }
+
+    const { profile } = loaderData;
+    const title = `${profile.display_name} (@${profile.username}) — MG Profile`;
+    const description =
+      profile.bio?.trim() ||
+      `Perfil gamer de @${profile.username} no MG Profile: jogos, atividades e Game Profiles.`;
+    const url = absoluteSiteUrl(`/u/${profile.username}`);
+    const seo = buildSeo({
+      title,
+      description,
+      path: `/u/${profile.username}`,
+      image: profile.avatar_url ?? undefined,
+      type: "profile",
+    });
+
+    return {
+      ...seo,
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            url,
+            mainEntity: {
+              "@type": "Person",
+              name: profile.display_name,
+              alternateName: `@${profile.username}`,
+              url,
+              ...(profile.avatar_url ? { image: profile.avatar_url } : {}),
+              ...(profile.bio?.trim() ? { description: profile.bio.trim() } : {}),
+            },
+          }),
+        },
+      ],
+    };
+  },
   component: ProfilePage,
 });
 
