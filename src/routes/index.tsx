@@ -27,6 +27,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useState } from "react";
+import { buildSeo } from "@/lib/seo";
 
 const SORTED_GAMES = [...ACTIVE_GAMES].sort((a, b) =>
   a.name.localeCompare(b.name, "en", { sensitivity: "base" }),
@@ -34,17 +35,13 @@ const SORTED_GAMES = [...ACTIVE_GAMES].sort((a, b) =>
 
 export const Route = createFileRoute("/")({
   loader: async () => ({ posts: await listPosts({ data: {} }) }),
-  head: () => ({
-    meta: [
-      { title: "MG Profile — Seu próximo jogo começa aqui" },
-      {
-        name: "description",
-        content:
-          "Explore jogos, confira setups do competitivo e encontre sua comunidade no MG Profile.",
-      },
-      { property: "og:title", content: "MG Profile — Seu próximo jogo começa aqui" },
-    ],
-  }),
+  head: () =>
+    buildSeo({
+      title: "MG Profile — Seu próximo jogo começa aqui",
+      description:
+        "Explore jogos, guias, builds, setups do competitivo, comunidades e encontre jogadores no MG Profile.",
+      path: "/",
+    }),
   component: Home,
 });
 

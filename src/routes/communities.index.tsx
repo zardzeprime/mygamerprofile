@@ -4,19 +4,16 @@ import { GameArtwork } from "@/components/games/GameArtwork";
 import { ACTIVE_GAMES } from "@/config/gameAvailability";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/communities/")({
-  head: () => ({
-    meta: [
-      { title: "Comunidades — MGP" },
-      {
-        name: "description",
-        content:
-          "Espaços sociais do MGP para posts, discussões, criadores e conteúdo da comunidade.",
-      },
-      { property: "og:title", content: "Comunidades — MGP" },
-    ],
-  }),
+  head: () =>
+    buildSeo({
+      title: "Comunidades gamer — MG Profile",
+      description:
+        "Encontre comunidades de Valorant, League of Legends, Dark Souls e outros jogos para posts, discussões, builds e LFG.",
+      path: "/communities",
+    }),
   component: CommunitiesCatalog,
 });
 

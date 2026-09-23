@@ -10,19 +10,17 @@ import {
   LEGAL_OPERATOR_NAME,
   LEGAL_VERSION,
 } from "@/config/legal";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/terms")({
   component: TermsPage,
-  head: () => ({
-    meta: [
-      { title: "Termos de Uso — MGP" },
-      {
-        name: "description",
-        content:
-          "Regras para criar uma conta, publicar conteúdo e usar o My Gamer Profile.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeo({
+      title: "Termos de Uso — MG Profile",
+      description:
+        "Regras para criar uma conta, publicar conteúdo e usar o MG Profile.",
+      path: "/terms",
+    }),
 });
 
 const listClassName = "list-disc space-y-1.5 pl-5 marker:text-gold-strong";

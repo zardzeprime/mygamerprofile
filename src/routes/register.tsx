@@ -25,6 +25,7 @@ export const Route = createFileRoute("/register")({
     meta: [
       { title: "Criar perfil — MGP" },
       { name: "description", content: "Crie sua conta no My Gamer Profile." },
+      { name: "robots", content: "noindex, follow" },
     ],
   }),
 });

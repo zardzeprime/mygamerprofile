@@ -29,19 +29,17 @@ import {
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/support")({
   component: SupportPage,
-  head: () => ({
-    meta: [
-      { title: "Apoie o MG Profile — MGP" },
-      {
-        name: "description",
-        content:
-          "Conheça a história do MG Profile e veja como apoiar o desenvolvimento independente do projeto.",
-      },
-    ],
-  }),
+  head: () =>
+    buildSeo({
+      title: "Apoie o MG Profile",
+      description:
+        "Conheça a história do MG Profile e veja como apoiar o desenvolvimento independente da plataforma gamer.",
+      path: "/support",
+    }),
 });
 
 function SupportPage() {

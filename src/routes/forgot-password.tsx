@@ -16,6 +16,7 @@ export const Route = createFileRoute("/forgot-password")({
     meta: [
       { title: "Recuperar senha — MGP" },
       { name: "description", content: "Recupere sua senha do My Gamer Profile." },
+      { name: "robots", content: "noindex, follow" },
     ],
   }),
 });

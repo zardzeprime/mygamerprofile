@@ -18,6 +18,7 @@ import {
 import { DataSourceIndicator } from "@/components/common/DataSourceIndicator";
 import { UserAvatar } from "@/components/common/UserAvatar";
 import { useServerFn } from "@tanstack/react-start";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/u/$username/games/$slug")({
   loader: async ({ params }) => {
@@ -27,23 +28,37 @@ export const Route = createFileRoute("/u/$username/games/$slug")({
     if (!data.profile) throw notFound();
     return { config, ...data };
   },
-  notFoundComponent: () => {
-    const { t } = useI18n();
-    return (
-      <div className="mx-auto max-w-6xl px-4 py-12 text-center">
-        <h1 className="font-display text-2xl">{t("common.error")}</h1>
-        <p className="text-muted-foreground">Game Profile não encontrado.</p>
-      </div>
-    );
+  notFoundComponent: GameProfileNotFound,
+  head: ({ params, loaderData }) => {
+    if (!loaderData) {
+      return {
+        meta: [
+          { title: `${params.slug} — @${params.username} — MG Profile` },
+          { name: "robots", content: "noindex, follow" },
+        ],
+      };
+    }
+    const { config, profile } = loaderData;
+    return buildSeo({
+      title: `${config.name} — ${profile.display_name} (@${profile.username}) — MG Profile`,
+      description: `Game Profile público de @${profile.username} para ${config.name} no MG Profile.`,
+      path: `/u/${profile.username}/games/${config.slug}`,
+      image: profile.avatar_url ?? config.visual.coverImage,
+      type: "profile",
+    });
   },
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug} — @${params.username} — MGP` },
-      { name: "description", content: `Game Profile de @${params.username} para ${params.slug}.` },
-    ],
-  }),
   component: GameProfilePage,
 });
+
+function GameProfileNotFound() {
+  const { t } = useI18n();
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-12 text-center">
+      <h1 className="font-display text-2xl">{t("common.error")}</h1>
+      <p className="text-muted-foreground">Game Profile não encontrado.</p>
+    </div>
+  );
+}
 
 function GameProfilePage() {
   const { t, locale } = useI18n();

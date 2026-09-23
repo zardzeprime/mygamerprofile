@@ -6,19 +6,16 @@ import { AdReadyLayout, AdSlot } from "@/components/common/AdSlot";
 import { ROBLOX_EXPERIENCES } from "@/data/robloxExperiences";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/roblox")({
-  head: () => ({
-    meta: [
-      { title: "Roblox Experiences — MGP" },
-      {
-        name: "description",
-        content:
-          "Catálogo de experiências Roblox no MGP, com hubs próprios para códigos, tier lists, guias, builds e progressão.",
-      },
-      { property: "og:title", content: "Roblox Experiences — MGP" },
-    ],
-  }),
+  head: () =>
+    buildSeo({
+      title: "Roblox: códigos, tier lists e guias — MG Profile",
+      description:
+        "Explore hubs de Blox Fruits, Project Slayers 2 e outras experiências Roblox com códigos, tier lists, guias, builds e progressão.",
+      path: "/roblox",
+    }),
   component: RobloxCatalog,
 });
 

@@ -13,6 +13,7 @@ import { AdReadyLayout, AdSlot } from "@/components/common/AdSlot";
 import { getRobloxExperienceSection } from "@/data/robloxExperiences";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/roblox/$slug/$section")({
   loader: ({ params }) => {
@@ -32,14 +33,12 @@ export const Route = createFileRoute("/roblox/$slug/$section")({
 
     const title = `${loaderData.section.label["pt-BR"]} · ${loaderData.experience.name} — MGP`;
     const description = loaderData.section.description["pt-BR"];
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-      ],
-    };
+    return buildSeo({
+      title,
+      description,
+      path: `/roblox/${loaderData.experience.slug}/${loaderData.section.slug}`,
+      robots: "noindex, follow",
+    });
   },
   component: RobloxExperienceSectionPage,
 });
