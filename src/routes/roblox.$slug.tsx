@@ -24,6 +24,7 @@ import {
 import { useI18n, type Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/roblox/$slug")({
   loader: ({ params }) => {
@@ -43,14 +44,11 @@ export const Route = createFileRoute("/roblox/$slug")({
 
     const title = `${loaderData.experience.name} — MGP`;
     const description = `Códigos, tier lists, guias, builds e progressão de ${loaderData.experience.name} no MGP.`;
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-      ],
-    };
+    return buildSeo({
+      title,
+      description,
+      path: `/roblox/${loaderData.experience.slug}`,
+    });
   },
   component: RobloxExperienceHub,
   notFoundComponent: RobloxHubMissing,
