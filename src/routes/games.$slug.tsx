@@ -25,6 +25,7 @@ import { FutureCollection } from "@/components/games/FutureCollection";
 import { LeagueEsportsPanel } from "@/components/games/LeagueEsportsPanel";
 import { RiotPlayerSearch } from "@/components/games/RiotPlayerSearch";
 import { useGameAmbience } from "@/hooks/useGameAmbience";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/games/$slug")({
   loader: async ({ params }) => {
@@ -43,14 +44,12 @@ export const Route = createFileRoute("/games/$slug")({
     }
     const title = `${loaderData.game.name} — MG Profile`;
     const description = `Informações, guias, builds e conteúdo editorial de ${loaderData.game.name} no MG Profile.`;
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-      ],
-    };
+    return buildSeo({
+      title,
+      description,
+      path: `/games/${loaderData.game.slug}`,
+      image: loaderData.game.visual.coverImage,
+    });
   },
   component: GameHub,
   notFoundComponent: () => <HubMissing />,
