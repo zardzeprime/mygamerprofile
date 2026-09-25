@@ -7,7 +7,7 @@ const localized = (pt: string, en: string, es: string): Record<Locale, string> =
 const patch = (version: string, publishedAt: string, pt: string, en: string, es: string): ValorantNewsItem => ({
   id: `patch-${version.replace(".", "-")}`, category: "patch", publishedAt, official: true,
   title: localized(`Atualização ${version} do VALORANT`, `VALORANT Patch Notes ${version}`, `Notas de la versión ${version} de VALORANT`),
-  summary: localized(pt, en, es), url: version === "9.06" ? "https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-906/" : `https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-${version.replace(".", "-")}/`, sourceLabel: "Riot Games",
+  summary: localized(pt, en, es), url: ["9.06", "9.02", "9.01"].includes(version) ? `https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-${version.replace(".", "")}/` : `https://playvalorant.com/en-us/news/game-updates/valorant-patch-notes-${version.replace(".", "-")}/`, sourceLabel: "Riot Games",
 });
 
 // Editorial snapshot sourced only from Riot Games / VALORANT Esports official channels.
