@@ -119,6 +119,27 @@ export const LEAGUE_NEWS: LeagueNewsItem[] = [
     "Cambios en Arena, Summoner's Rift y otros modos continuaron preparando el meta de la Temporada 3.",
   ),
   patch(
+    "26.15",
+    "2026-07-28T18:00:00.000Z",
+    "Rebalanceamento amplo de Bel'Veth, ajustes em Campeões, itens e runas, além de mudanças sistêmicas no ARAM: Desordem e no Arena.",
+    "A broad Bel'Veth rebalance plus Champion, item and rune tuning, alongside systemic ARAM: Mayhem and Arena changes.",
+    "Un amplio reajuste de Bel'Veth, cambios de campeones, objetos y runas, además de cambios sistémicos en ARAM: Mayhem y Arena.",
+  ),
+  patch(
+    "26.14",
+    "2026-07-14T18:00:00.000Z",
+    "Ajustes em Campeões, itens e efeito azul, mudanças em Desordem e Arena, Clash de Summoner's Rift e as skins da T1 tricampeã mundial.",
+    "Champion, item and Blue Buff tuning, Mayhem and Arena changes, Summoner's Rift Clash and the three-time world champion T1 skins.",
+    "Ajustes de campeones, objetos y Blue Buff, cambios en Mayhem y Arena, Clash de Summoner's Rift y las skins de T1 tricampeón mundial.",
+  ),
+  patch(
+    "26.13",
+    "2026-06-23T18:00:00.000Z",
+    "Locke, o Exorcista Cinzento, entrou no elenco em 24 de junho, acompanhado por novas skins e ajustes de jogo.",
+    "Locke, the Ashen Exorcist, joined the roster on June 24 alongside new skins and gameplay changes.",
+    "Locke, el Exorcista Cinéreo, se unió al plantel el 24 de junio junto con nuevas skins y cambios de juego.",
+  ),
+  patch(
     "26.16",
     "2026-08-11T18:00:00.000Z",
     "Atualizações de Campeões e sistemas, além da chegada de novos conteúdos ao League Classic.",
