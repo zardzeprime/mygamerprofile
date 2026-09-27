@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-21",
+  "updatedAt": "2026-09-27",
   "cores": {
     "nexus": {
       "name": "NEXUS",
@@ -37,7 +37,8 @@
         "Reset legacy MGP account/profile state for pre-public onboarding: non-admin test Auth users were removed; the sole admin Auth identity/role was preserved to avoid lockout while its public profile/onboarding data was reset.",
         "Verified NEXUS Edge v17 end to end against the hosted Supabase runtime: the health endpoint returns HTTP 200 with aiReady=true and Gemini configured for inference.",
         "Removed NEXUS's hard dependency on one baked-in Supabase publishable key by resolving the hosted SUPABASE_PUBLISHABLE_KEYS set while retaining legacy compatibility for safe key rotation.",
-        "Made transient provider readiness recoverable in the NEXUS chat UI with an explicit re-check action instead of presenting every unavailable state as a permanently disconnected engine."
+        "Made transient provider readiness recoverable in the NEXUS chat UI with an explicit re-check action instead of presenting every unavailable state as a permanently disconnected engine.",
+        "Coordinated the responsive header hardening pass with progressive navigation/action breakpoints and a fluid global-search footprint."
       ],
       "inProgress": [
         "Continue page-by-page visual art-direction review on top of Visual System v2 after the foundation PR is merged and rendered in Lovable."
@@ -272,7 +273,8 @@
         "Added a Dark Souls Remastered Build Lab with three PvE starter presets—Quality Claymore, Strength Great Club and Dexterity + Pyromancy—plus a custom core/variant builder.",
         "Opened previously locked/placeholder game modules: incomplete areas now render explicit in-development panels instead of padlocks, while completed DS1/DS3 builds/guides route to functional modules.",
         "Dark Souls Remastered and Dark Souls III boss pages now intentionally omit external boss artwork and label the visual area as MGP gameplay screenshots in development.",
-        "Completed pre-launch polish stage 1: locked MGP to dark-only, preserved accent personalization, hardened header/hub responsive framing and touch targets, and stopped the pointer aura animation loop when idle."
+        "Completed pre-launch polish stage 1: locked MGP to dark-only, preserved accent personalization, hardened header/hub responsive framing and touch targets, and stopped the pointer aura animation loop when idle.",
+        "Hardened the global header across intermediate desktop widths by widening the shell, staggering navigation/settings/auth visibility, auto-closing the overlay at full desktop, and clamping header search width."
       ],
       "inProgress": [],
       "next": [
