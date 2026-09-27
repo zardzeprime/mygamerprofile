@@ -56,6 +56,18 @@ export function AppHeader() {
       document.removeEventListener("pointerdown", outside);
     };
   }, [open]);
+
+  useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 1760px)");
+    const closeMenuAtFullDesktop = () => {
+      if (desktopQuery.matches) setOpen(false);
+    };
+
+    closeMenuAtFullDesktop();
+    desktopQuery.addEventListener("change", closeMenuAtFullDesktop);
+    return () => desktopQuery.removeEventListener("change", closeMenuAtFullDesktop);
+  }, []);
+
   const [profileUsername, setProfileUsername] = useState<string | null>(null);
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [profileDisplayName, setProfileDisplayName] = useState<string | null>(null);
@@ -224,15 +236,15 @@ export function AppHeader() {
       ref={headerRef}
       className="mgp-header fixed inset-x-0 top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-xl"
     >
-      <div className="mx-auto grid h-[4.25rem] w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 sm:px-6">
+      <div className="mx-auto grid h-[4.25rem] w-full max-w-[104rem] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-3 sm:gap-3 sm:px-6">
         <div className="flex min-w-0 items-center gap-2">
           <BrandLogoPlaceholder />
-          <span className="hidden rounded-full border border-gold/30 bg-gold/[0.08] px-2 py-1 text-[0.56rem] font-black uppercase tracking-[0.1em] text-gold-strong sm:inline-flex">
+          <span className="hidden rounded-full border border-gold/30 bg-gold/[0.08] px-2 py-1 text-[0.56rem] font-black uppercase tracking-[0.1em] text-gold-strong lg:inline-flex">
             {locale === "pt-BR" ? "Beta público" : locale === "es" ? "Beta público" : "Public beta"}
           </span>
         </div>
 
-        <nav aria-label={t("navigation.menu")} className="hidden items-center gap-0.5 2xl:flex">
+        <nav aria-label={t("navigation.menu")} className="hidden min-w-0 items-center justify-center gap-0.5 min-[1280px]:flex">
           {NAV.map((item) => (
             <Link
               key={item.to}
@@ -250,12 +262,12 @@ export function AppHeader() {
           <div className="hidden sm:block">
             <GlobalSearch />
           </div>
-          <div className="hidden items-center gap-2 2xl:flex">
+          <div className="hidden items-center gap-2 min-[1500px]:flex">
             <LanguageSelector />
             <AppearanceQuickPanel />
           </div>
           <AudioControl />
-          <div className="hidden 2xl:block">
+          <div className="hidden min-[1760px]:block">
             <AuthSection />
           </div>
           <button
@@ -265,7 +277,7 @@ export function AppHeader() {
             onClick={() => setOpen((value) => !value)}
             aria-expanded={open}
             aria-label={open ? t("navigation.closeMenu") : t("navigation.openMenu")}
-            className="mgp-icon-button inline-flex size-11 shrink-0 items-center justify-center text-foreground 2xl:hidden"
+            className="mgp-icon-button inline-flex size-11 shrink-0 items-center justify-center text-foreground min-[1760px]:hidden"
           >
             {open ? (
               <X aria-hidden="true" className="size-4" />
@@ -279,7 +291,7 @@ export function AppHeader() {
       {open ? (
         <div
           id="site-mobile-navigation"
-          className="mgp-mobile-panel max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t border-border bg-surface px-4 py-4 2xl:hidden"
+          className="mgp-mobile-panel max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t border-border bg-surface px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] min-[1760px]:hidden"
         >
           <nav aria-label={t("navigation.menu")} className="flex flex-col gap-1">
             {NAV.map((item) => (
