@@ -97,7 +97,7 @@ export function GlobalSearch({
   return (
     <div
       ref={rootRef}
-      className={cn("relative", mobile ? "w-full" : "w-[min(28vw,22rem)]")}
+      className={cn("relative min-w-0", mobile ? "w-full" : "w-[clamp(10rem,18vw,22rem)]")}
       data-mgp-header-overlay="true"
     >
       <form
