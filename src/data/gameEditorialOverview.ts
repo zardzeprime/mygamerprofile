@@ -159,6 +159,57 @@ export const GAME_EDITORIAL_OVERVIEW: Record<string, GameEditorialOverview | und
       },
     ],
   },
+  "warframe": {
+    synopsis: {
+      "pt-BR": "Warframe combina combate cooperativo veloz, movimentação acrobática e uma progressão extensa baseada em Warframes, armas, Mods e atividades espalhadas pelo Sistema de Origem. O hub do MGP começa pela enciclopédia de Warframes e por guias editoriais, com espaço preparado para builds, arsenal e novidades.",
+      en: "Warframe combines fast cooperative combat, acrobatic movement and deep progression across Warframes, weapons, Mods and activities throughout the Origin System. MGP starts this hub with a Warframe encyclopedia and editorial guides, with builds, arsenal and news prepared to expand next.",
+      es: "Warframe combina combate cooperativo veloz, movimiento acrobático y una progresión amplia basada en Warframes, armas, Mods y actividades del Sistema Origen. El hub de MGP comienza con una enciclopedia de Warframes y guías editoriales, preparado para builds, arsenal y novedades.",
+    },
+    release: {
+      "pt-BR": "25 mar 2013 (PC) · expansão contínua como live service",
+      en: "Mar 25, 2013 (PC) · continuously expanded as a live service",
+      es: "25 mar 2013 (PC) · expansión continua como servicio en vivo",
+    },
+    developer: "Digital Extremes",
+    publisher: "Digital Extremes",
+    latestVersion: "Live service · 2026",
+    featured: [
+      {
+        id: "warframe-roster-foundation",
+        type: "collection",
+        title: {
+          "pt-BR": "Enciclopédia de Warframes",
+          en: "Warframe encyclopedia",
+          es: "Enciclopedia de Warframes",
+        },
+        description: {
+          "pt-BR": "Primeira leva com Garuda, Grendel e Nekros, habilidades, funções e estrutura pronta para mídia.",
+          en: "First roster batch with Garuda, Grendel and Nekros, abilities, roles and a media-ready structure.",
+          es: "Primera tanda con Garuda, Grendel y Nekros, habilidades, roles y estructura preparada para multimedia.",
+        },
+        origin: "official",
+        authorLabel: { "pt-BR": "MGP Editorial", en: "MGP Editorial", es: "MGP Editorial" },
+        module: "warframes",
+      },
+      {
+        id: "warframe-guides-foundation",
+        type: "guide",
+        title: {
+          "pt-BR": "Central de guias do Tenno",
+          en: "Tenno guide center",
+          es: "Centro de guías Tenno",
+        },
+        description: {
+          "pt-BR": "Estrutura inicial para retorno ao jogo, Mods, dano/status, progressão e farming.",
+          en: "Initial structure for returning players, Mods, damage/status, progression and farming.",
+          es: "Estructura inicial para regreso al juego, Mods, daño/estado, progresión y farming.",
+        },
+        origin: "official",
+        authorLabel: { "pt-BR": "MGP Editorial", en: "MGP Editorial", es: "MGP Editorial" },
+        module: "guides",
+      },
+    ],
+  },
   "league-of-legends": {
     synopsis: {
       "pt-BR": "League of Legends é o MOBA 5v5 da Riot Games em que duas equipes escolhem campeões, disputam rotas e objetivos e tentam destruir o Nexus adversário. O hub do MGP nasce preparado para campeões, mapas, itens, skins, competitivo e futura conexão de conta via serviços aprovados pela Riot.",

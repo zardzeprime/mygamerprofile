@@ -27,6 +27,7 @@ import { LeagueEsportsPanel } from "@/components/games/LeagueEsportsPanel";
 import { LeagueNews } from "@/components/games/LeagueNews";
 import { SoulsBossExplorer } from "@/components/games/SoulsBossExplorer";
 import { SoulsGameGuides } from "@/components/games/SoulsGameGuides";
+import { WarframeExplorer } from "@/components/games/WarframeExplorer";
 
 export function FutureCollection({
   moduleKey,
@@ -63,6 +64,11 @@ export function FutureCollection({
     }
     if (moduleKey === "bosses") return <SoulsBossExplorer gameSlug={gameSlug} locale={locale} />;
     if (moduleKey === "guides") return <SoulsGameGuides gameSlug={gameSlug} locale={locale} />;
+  }
+
+  if (gameSlug === "warframe") {
+    if (moduleKey === "warframes") return <WarframeExplorer mode="warframes" locale={locale} />;
+    if (moduleKey === "guides") return <WarframeExplorer mode="guides" locale={locale} />;
   }
 
   if (gameSlug === "valorant") {
@@ -106,6 +112,10 @@ export function FutureCollection({
     news: [
       copy("Novidades", "News", "Novedades"),
       copy("Atualizações e anúncios oficiais deste jogo aparecerão aqui.", "Official updates and announcements for this game will appear here.", "Actualizaciones y anuncios oficiales de este juego aparecerán aquí."),
+    ],
+    warframes: [
+      copy("Enciclopédia de Warframes", "Warframe encyclopedia", "Enciclopedia de Warframes"),
+      copy("Warframes, funções e habilidades serão organizados aqui.", "Warframes, roles and abilities will be organized here.", "Warframes, roles y habilidades se organizarán aquí."),
     ],
     agents: [
       copy("Enciclopédia de agentes", "Agent encyclopedia", "Enciclopedia de agentes"),
@@ -173,7 +183,7 @@ export function FutureCollection({
     copy("Em preparação", "In preparation", "En preparación"),
     copy("Este espaço está sendo preparado.", "This space is being prepared.", "Este espacio se está preparando."),
   ];
-  const collectionModules: GameModuleKey[] = ["bosses", "agents", "champions", "runes", "maps", "weapons", "items", "modes", "skins"];
+  const collectionModules: GameModuleKey[] = ["bosses", "warframes", "agents", "champions", "runes", "maps", "weapons", "items", "modes", "skins"];
   const isCollection = collectionModules.includes(moduleKey);
   const developmentCards = [
     {

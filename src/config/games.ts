@@ -12,6 +12,7 @@ export type GameModuleKey =
   | "fashion-test"
   | "bosses"
   | "guides"
+  | "warframes"
   | "news"
   | "agents"
   | "champions"
@@ -82,6 +83,7 @@ export const MODULE_LABELS: Record<GameModuleKey, Record<Locale, string>> = {
   "fashion-test": { "pt-BR": "Fashion Test", en: "Fashion Test", es: "Fashion Test" },
   bosses: { "pt-BR": "Chefes", en: "Bosses", es: "Jefes" },
   guides: { "pt-BR": "Guias", en: "Guides", es: "Guías" },
+  warframes: { "pt-BR": "Warframes", en: "Warframes", es: "Warframes" },
   news: { "pt-BR": "Novidades", en: "News", es: "Novedades" },
   agents: { "pt-BR": "Agentes", en: "Agents", es: "Agentes" },
   champions: { "pt-BR": "Campeões", en: "Champions", es: "Campeones" },
@@ -113,6 +115,12 @@ const NIGHTREIGN_PLACEHOLDER = makeMgpPlaceholder(
   "MGP · STANDALONE HUB",
   "#080f18",
   "#244e73",
+);
+const WARFRAME_PLACEHOLDER = makeMgpPlaceholder(
+  "WARFRAME",
+  "MGP · TENNO DATABASE",
+  "#061016",
+  "#1a5663",
 );
 const LOL_COVER = "/LoL-Symbol-500x281.png";
 const DS3_COVER = "/game-covers/ds3.webp";
@@ -472,6 +480,71 @@ export const GAMES: GameConfig[] = [
       assetSource:
         "MGP-generated placeholder; official Bandai Namco assets pending production asset review",
       assetLicense: "MGP original placeholder; no third-party game artwork embedded",
+    },
+  },
+  {
+    slug: "warframe",
+    name: "Warframe",
+    aliases: ["War Frame", "Tenno"],
+    description: {
+      "pt-BR":
+        "Ação cooperativa free-to-play com Warframes, armas, Mods, missões e progressão por sistemas que se conectam ao longo do Sistema de Origem.",
+      en: "A free-to-play cooperative action game built around Warframes, weapons, Mods, missions and interconnected progression systems across the Origin System.",
+      es: "Juego de acción cooperativo free-to-play centrado en Warframes, armas, Mods, misiones y sistemas de progresión conectados en el Sistema Origen.",
+    },
+    genre: "Action RPG / Looter Shooter",
+    platforms: ["PC", "PlayStation", "Xbox", "Nintendo Switch", "Mobile"],
+    ageRating: "16+",
+    themeKey: "competitive",
+    modules: ["overview", "warframes", "builds", "weapons", "guides", "news"],
+    profileFields: [
+      {
+        key: "favorite_warframe",
+        type: "text",
+        maxLength: 60,
+        label: { "pt-BR": "Warframe favorito", en: "Favorite Warframe", es: "Warframe favorito" },
+      },
+      {
+        key: "mastery_rank",
+        type: "number",
+        min: 0,
+        max: 40,
+        label: { "pt-BR": "Nível de Maestria", en: "Mastery Rank", es: "Rango de Maestría" },
+      },
+      {
+        key: "favorite_weapon",
+        type: "text",
+        maxLength: 80,
+        label: { "pt-BR": "Arma favorita", en: "Favorite weapon", es: "Arma favorita" },
+      },
+      {
+        key: "favorite_companion",
+        type: "text",
+        maxLength: 80,
+        label: { "pt-BR": "Companheiro favorito", en: "Favorite companion", es: "Compañero favorito" },
+      },
+      {
+        key: "preferred_activity",
+        type: "text",
+        maxLength: 80,
+        label: { "pt-BR": "Atividade preferida", en: "Preferred activity", es: "Actividad preferida" },
+      },
+      {
+        key: "personal_notes",
+        type: "textarea",
+        maxLength: 1000,
+        label: { "pt-BR": "Notas pessoais", en: "Personal notes", es: "Notas personales" },
+      },
+    ],
+    visual: {
+      coverImage: WARFRAME_PLACEHOLDER,
+      heroImage: WARFRAME_PLACEHOLDER,
+      backgroundImage: WARFRAME_PLACEHOLDER,
+      fallbackImage: valorantAtmosphere,
+      cardObjectPosition: "center",
+      heroObjectPosition: "center",
+      assetSource: "MGP-generated Warframe placeholder; official media can replace it after asset review",
+      assetLicense: "MGP original placeholder; no third-party artwork embedded",
     },
   },
   {

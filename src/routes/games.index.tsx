@@ -21,7 +21,7 @@ export const Route = createFileRoute("/games/")({
     buildSeo({
       title: "Jogos, guias e builds — MG Profile",
       description:
-        "Explore Valorant, League of Legends, Dark Souls e outros hubs com guias, builds, informações e ferramentas no MG Profile.",
+        "Explore Warframe, Valorant, League of Legends, Dark Souls e outros hubs com guias, builds, informações e ferramentas no MG Profile.",
       path: "/games",
     }),
   component: GamesCatalog,
@@ -68,9 +68,9 @@ function GamesCatalog() {
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">{t("games.subtitle")}</p>
       <p className="mt-2 max-w-2xl text-xs leading-5 text-muted-foreground">
         {copy(
-          "Nesta fase, o catálogo ativo foca Dark Souls, Dark Souls III, Valorant e League of Legends. Outros hubs continuam preservados e voltam quando o conteúdo estiver pronto.",
-          "This phase focuses the active catalog on Dark Souls, Dark Souls III, Valorant and League of Legends. Other hubs remain preserved and will return when their content is ready.",
-          "En esta fase, el catálogo activo se centra en Dark Souls, Dark Souls III, Valorant y League of Legends. Otros hubs se conservan y volverán cuando su contenido esté listo.",
+          "Nesta fase, o catálogo ativo foca Dark Souls, Dark Souls III, Warframe, Valorant e League of Legends. Outros hubs continuam preservados e voltam quando o conteúdo estiver pronto.",
+          "This phase focuses the active catalog on Dark Souls, Dark Souls III, Warframe, Valorant and League of Legends. Other hubs remain preserved and will return when their content is ready.",
+          "En esta fase, el catálogo activo se centra en Dark Souls, Dark Souls III, Warframe, Valorant y League of Legends. Otros hubs se conservan y volverán cuando su contenido esté listo.",
         )}
       </p>
 

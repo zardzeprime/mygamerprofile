@@ -5,6 +5,7 @@ export type GameAvailabilityState = "active" | "paused";
 export const ACTIVE_GAME_SLUGS = [
   "dark-souls-remastered",
   "dark-souls-iii",
+  "warframe",
   "valorant",
   "league-of-legends",
 ] as const;
