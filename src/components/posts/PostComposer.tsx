@@ -7,7 +7,7 @@ import { useServerFn } from "@tanstack/react-start";
 
 interface PostComposerProps {
   gameId?: string;
-  onCreated?: (post: any) => void;
+  onCreated?: (post: Awaited<ReturnType<typeof createPost>>) => void;
 }
 
 export function PostComposer({ gameId, onCreated }: PostComposerProps) {
