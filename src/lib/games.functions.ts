@@ -29,7 +29,7 @@ export const getGames = createServerFn({ method: "GET" }).handler(async () => {
 });
 
 export const getGameBySlug = createServerFn({ method: "GET" })
-  .inputValidator((data) => slugSchema.parse(data))
+  .validator((data) => slugSchema.parse(data))
   .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
     const { data: game, error } = await supabase
@@ -43,7 +43,7 @@ export const getGameBySlug = createServerFn({ method: "GET" })
   });
 
 export const getGameProfile = createServerFn({ method: "GET" })
-  .inputValidator((data) => gameProfileSchema.parse(data))
+  .validator((data) => gameProfileSchema.parse(data))
   .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
     const { data: profile, error: profileError } = await supabase
@@ -86,7 +86,7 @@ export const getGameProfile = createServerFn({ method: "GET" })
  * resilient to transient hosting/database latency.
  */
 export const getPublicGameProfilesByUserId = createServerFn({ method: "GET" })
-  .inputValidator((data) => publicGameProfilesSchema.parse(data))
+  .validator((data) => publicGameProfilesSchema.parse(data))
   .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
     const { data: gameProfiles, error: gpError } = await supabase
@@ -126,7 +126,7 @@ export const getPublicGameProfilesByUserId = createServerFn({ method: "GET" })
 
 export const upsertGameProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => upsertGameProfileSchema.parse(data))
+  .validator((data) => upsertGameProfileSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { game_id, profile_data, visibility = "public" } = data;
 
