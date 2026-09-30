@@ -1,7 +1,7 @@
 export const SITE_ORIGIN = "https://mgprofile.online";
 export const SITE_NAME = "ÍMPAR";
-export const SITE_FULL_NAME = "ÍMPAR — ÍMPAR";
-export const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/brand/mgp-logo.png`;
+export const SITE_FULL_NAME = "ÍMPAR — Sua identidade gamer";
+export const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/brand/impar-social.svg`;
 
 type SeoOptions = {
   title: string;
@@ -40,7 +40,7 @@ export function buildSeo({
       { property: "og:description", content: description },
       { property: "og:url", content: url },
       { property: "og:image", content: imageUrl },
-      { property: "og:image:alt", content: `${SITE_NAME} — identidade e conteúdo gamer` },
+      { property: "og:image:alt", content: `${SITE_NAME} — identidade gamer do seu jeito` },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: title },
       { name: "twitter:description", content: description },
@@ -57,7 +57,7 @@ export const SITE_STRUCTURED_DATA = JSON.stringify({
       "@type": "WebSite",
       "@id": `${SITE_ORIGIN}/#website`,
       name: SITE_NAME,
-      alternateName: "MGP",
+      alternateName: ["MG Profile", "MGP"],
       url: `${SITE_ORIGIN}/`,
       inLanguage: ["pt-BR", "en", "es"],
     },
@@ -65,11 +65,11 @@ export const SITE_STRUCTURED_DATA = JSON.stringify({
       "@type": "Organization",
       "@id": `${SITE_ORIGIN}/#organization`,
       name: SITE_NAME,
-      alternateName: "MGP",
+      alternateName: ["MG Profile", "MGP"],
       url: `${SITE_ORIGIN}/`,
       logo: {
         "@type": "ImageObject",
-        url: DEFAULT_OG_IMAGE,
+        url: `${SITE_ORIGIN}/brand/impar-logo.svg`,
       },
     },
   ],

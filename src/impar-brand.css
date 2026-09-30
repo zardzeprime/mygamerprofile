@@ -1,0 +1,148 @@
+/* ÍMPAR public brand layer.
+ * Legacy class names and tokens remain available for compatibility; this file
+ * only changes the public brand atmosphere and adds reusable ÍMPAR primitives.
+ */
+
+:root {
+  --impar-night: #0a0e17;
+  --impar-night-raised: #111823;
+  --impar-surface: #151d28;
+  --impar-spectral: #83e9a6;
+  --impar-spectral-strong: #a1f4bb;
+  --impar-spectral-soft: color-mix(in srgb, var(--impar-spectral) 16%, transparent);
+  --impar-amber: #f5c451;
+  --impar-mystic: #7567ff;
+  --impar-prestige: #d6a84b;
+  --impar-line: color-mix(in srgb, var(--impar-spectral) 18%, transparent);
+}
+
+.dark {
+  --color-background: var(--impar-night);
+  --color-surface: var(--impar-night-raised);
+  --color-card: var(--impar-surface);
+  --color-gold: var(--impar-prestige);
+  --color-gold-strong: var(--impar-spectral);
+  --color-gold-soft: color-mix(in srgb, var(--impar-spectral) 13%, transparent);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--impar-spectral) 34%, transparent);
+  color: white;
+}
+
+.impar-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.impar-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--impar-spectral) 13%, transparent), transparent 31rem),
+    radial-gradient(circle at 88% 4%, color-mix(in srgb, var(--impar-mystic) 12%, transparent), transparent 29rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--impar-night-raised) 74%, transparent), transparent 36rem);
+}
+
+.impar-grid {
+  position: relative;
+}
+
+.impar-grid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(var(--impar-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--impar-line) 1px, transparent 1px);
+  background-size: 38px 38px;
+  mask-image: linear-gradient(to bottom, black, transparent 82%);
+}
+
+.impar-kicker {
+  color: var(--impar-spectral);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.impar-accent {
+  color: var(--impar-spectral);
+}
+
+.impar-accent-amber {
+  color: var(--impar-amber);
+}
+
+.impar-card {
+  border: 1px solid color-mix(in srgb, var(--impar-spectral) 13%, var(--color-border));
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--impar-spectral) 4%, transparent), transparent 55%),
+    var(--color-surface);
+  box-shadow: 0 18px 54px rgb(0 0 0 / 0.18);
+}
+
+.impar-card-interactive {
+  transition: border-color 180ms ease, transform 180ms ease, background-color 180ms ease;
+}
+
+.impar-card-interactive:hover {
+  border-color: color-mix(in srgb, var(--impar-spectral) 42%, var(--color-border));
+  transform: translateY(-2px);
+}
+
+.impar-sigil {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.impar-sigil::before,
+.impar-sigil::after {
+  content: "";
+  position: absolute;
+  inset: 18%;
+  border: 1px solid color-mix(in srgb, var(--impar-spectral) 30%, transparent);
+  transform: rotate(45deg);
+}
+
+.impar-sigil::after {
+  inset: 31%;
+  border-color: color-mix(in srgb, var(--impar-amber) 32%, transparent);
+  transform: rotate(0deg);
+}
+
+.impar-noctis-halo {
+  background:
+    radial-gradient(circle at 42% 35%, color-mix(in srgb, var(--impar-spectral) 22%, transparent), transparent 40%),
+    radial-gradient(circle at 66% 58%, color-mix(in srgb, var(--impar-amber) 16%, transparent), transparent 42%);
+}
+
+.impar-destination-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .impar-destination-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .impar-card-interactive {
+    transition: none;
+  }
+
+  .impar-card-interactive:hover {
+    transform: none;
+  }
+}

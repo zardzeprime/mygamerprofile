@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { LanguageSelector } from "@/components/common/LanguageSelector";
 import { AppearanceQuickPanel } from "@/components/common/AppearanceQuickPanel";
-import { useI18n, type TranslationKey } from "@/i18n";
+import { useI18n } from "@/i18n";
+import { localeCopy } from "@/i18n/locale-utils";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,20 +21,22 @@ import { GlobalSearch } from "@/components/search/GlobalSearch";
 import { supabase } from "@/integrations/supabase/client";
 import { signInWithGoogle } from "@/lib/googleAuth";
 
-const NAV: { to: string; key: TranslationKey }[] = [
-  { to: "/", key: "navigation.home" },
-  { to: "/games", key: "navigation.games" },
-  { to: "/communities", key: "navigation.communities" },
-  { to: "/lfg", key: "navigation.lfg" },
-];
-
 export function AppHeader() {
   const { t, locale } = useI18n();
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const nav = [
+    { to: "/", label: copy("Início", "Home", "Inicio") },
+    { to: "/games", label: copy("Arquivos", "Archives", "Archivos") },
+    { to: "/codice", label: copy("Códice", "Codex", "Códice") },
+    { to: "/communities", label: copy("Guildas", "Guilds", "Guildas") },
+    { to: "/lfg", label: copy("LFG", "LFG", "LFG") },
+  ];
   const { user, loading, signOut } = useAuth();
   const userId = user?.id;
   const [open, setOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+
   useEffect(() => {
     if (!open) return;
     const close = (event: KeyboardEvent) => {
@@ -44,9 +47,7 @@ export function AppHeader() {
     };
     const outside = (event: PointerEvent) => {
       const target = event.target;
-      if (target instanceof Element && target.closest('[data-mgp-header-overlay="true"]')) {
-        return;
-      }
+      if (target instanceof Element && target.closest('[data-mgp-header-overlay="true"]')) return;
       if (!headerRef.current?.contains(target as Node)) setOpen(false);
     };
     document.addEventListener("keydown", close);
@@ -62,7 +63,6 @@ export function AppHeader() {
     const closeMenuAtFullDesktop = () => {
       if (desktopQuery.matches) setOpen(false);
     };
-
     closeMenuAtFullDesktop();
     desktopQuery.addEventListener("change", closeMenuAtFullDesktop);
     return () => desktopQuery.removeEventListener("change", closeMenuAtFullDesktop);
@@ -76,7 +76,6 @@ export function AppHeader() {
 
   useEffect(() => {
     let cancelled = false;
-
     const loadProfileUsername = async () => {
       if (!userId) {
         setProfileUsername(null);
@@ -108,12 +107,8 @@ export function AppHeader() {
     };
 
     void loadProfileUsername();
-
-    const refreshProfile = () => {
-      void loadProfileUsername();
-    };
+    const refreshProfile = () => void loadProfileUsername();
     window.addEventListener("mgp:profile-updated", refreshProfile);
-
     return () => {
       cancelled = true;
       window.removeEventListener("mgp:profile-updated", refreshProfile);
@@ -132,14 +127,8 @@ export function AppHeader() {
     }
   };
 
-  const profileLabel =
-    locale === "pt-BR" ? "Ver meu perfil" : locale === "es" ? "Ver mi perfil" : "View my profile";
-  const profileUnavailableLabel =
-    locale === "pt-BR"
-      ? "Perfil indisponível"
-      : locale === "es"
-        ? "Perfil no disponible"
-        : "Profile unavailable";
+  const profileLabel = copy("Ver meu perfil", "View my profile", "Ver mi perfil");
+  const profileUnavailableLabel = copy("Perfil indisponível", "Profile unavailable", "Perfil no disponible");
 
   const AuthSection = () => {
     if (loading) return null;
@@ -152,24 +141,10 @@ export function AppHeader() {
             size="sm"
             onClick={() => void handleGoogleSignIn()}
             disabled={googleLoading}
-            aria-label={
-              locale === "pt-BR"
-                ? "Entrar com Google"
-                : locale === "es"
-                  ? "Entrar con Google"
-                  : "Sign in with Google"
-            }
-            title={
-              locale === "pt-BR"
-                ? "Entrar com Google"
-                : locale === "es"
-                  ? "Entrar con Google"
-                  : "Sign in with Google"
-            }
+            aria-label={copy("Entrar com Google", "Sign in with Google", "Entrar con Google")}
+            title={copy("Entrar com Google", "Sign in with Google", "Entrar con Google")}
           >
-            <span className="grid size-4 place-items-center rounded-full text-[11px] font-black">
-              G
-            </span>
+            <span className="grid size-4 place-items-center rounded-full text-[11px] font-black">G</span>
             <span className="hidden 2xl:inline">Google</span>
           </Button>
           <Button variant="ghost" size="sm" asChild>
@@ -181,6 +156,7 @@ export function AppHeader() {
         </div>
       );
     }
+
     return (
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
@@ -189,22 +165,13 @@ export function AppHeader() {
             aria-label={t("navigation.menu")}
             className="flex items-center gap-2 rounded-full border border-border bg-surface px-2 py-1 text-sm font-medium transition-colors hover:bg-muted"
           >
-            <UserAvatar
-              user={user}
-              src={profileAvatarUrl}
-              name={profileDisplayName}
-              size="sm"
-            />
+            <UserAvatar user={user} src={profileAvatarUrl} name={profileDisplayName} size="sm" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {profileUsername ? (
             <DropdownMenuItem asChild>
-              <Link
-                to="/u/$username"
-                params={{ username: profileUsername }}
-                className="flex items-center gap-2"
-              >
+              <Link to="/u/$username" params={{ username: profileUsername }} className="flex items-center gap-2">
                 <UserRound className="size-4" />
                 {profileLabel}
               </Link>
@@ -234,18 +201,18 @@ export function AppHeader() {
   return (
     <header
       ref={headerRef}
-      className="mgp-header fixed inset-x-0 top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-xl"
+      className="mgp-header fixed inset-x-0 top-0 z-40 border-b border-[var(--impar-line)] bg-[color:var(--impar-night)]/90 backdrop-blur-xl"
     >
       <div className="mx-auto grid h-[4.25rem] w-full max-w-[104rem] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-3 sm:gap-3 sm:px-6">
         <div className="flex min-w-0 items-center gap-2">
           <BrandLogoPlaceholder />
-          <span className="hidden rounded-full border border-gold/30 bg-gold/[0.08] px-2 py-1 text-[0.56rem] font-black uppercase tracking-[0.1em] text-gold-strong lg:inline-flex">
-            {locale === "pt-BR" ? "Beta público" : locale === "es" ? "Beta público" : "Public beta"}
+          <span className="hidden rounded-full border border-[var(--impar-line)] bg-[var(--impar-spectral-soft)] px-2 py-1 text-[0.56rem] font-black uppercase tracking-[0.1em] text-[var(--impar-spectral)] lg:inline-flex">
+            {copy("Beta público", "Public beta", "Beta público")}
           </span>
         </div>
 
-        <nav aria-label={t("navigation.menu")} className="hidden min-w-0 items-center justify-center gap-0.5 min-[1280px]:flex">
-          {NAV.map((item) => (
+        <nav aria-label={t("navigation.menu")} className="hidden min-w-0 items-center justify-center gap-0.5 min-[1320px]:flex">
+          {nav.map((item) => (
             <Link
               key={item.to}
               to={item.to}
@@ -253,23 +220,19 @@ export function AppHeader() {
               activeProps={{ className: "mgp-nav-link-active" }}
               className="mgp-nav-link px-3 py-2 text-sm font-medium text-muted-foreground"
             >
-              {t(item.key)}
+              {item.label}
             </Link>
           ))}
         </nav>
 
         <div className="col-start-3 flex min-w-0 items-center justify-end gap-1 sm:gap-2">
-          <div className="hidden sm:block">
-            <GlobalSearch />
-          </div>
+          <div className="hidden sm:block"><GlobalSearch /></div>
           <div className="hidden items-center gap-2 min-[1500px]:flex">
             <LanguageSelector />
             <AppearanceQuickPanel />
           </div>
           <AudioControl />
-          <div className="hidden min-[1760px]:block">
-            <AuthSection />
-          </div>
+          <div className="hidden min-[1760px]:block"><AuthSection /></div>
           <button
             type="button"
             ref={menuButtonRef}
@@ -279,11 +242,7 @@ export function AppHeader() {
             aria-label={open ? t("navigation.closeMenu") : t("navigation.openMenu")}
             className="mgp-icon-button inline-flex size-11 shrink-0 items-center justify-center text-foreground min-[1760px]:hidden"
           >
-            {open ? (
-              <X aria-hidden="true" className="size-4" />
-            ) : (
-              <Menu aria-hidden="true" className="size-4" />
-            )}
+            {open ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
           </button>
         </div>
       </div>
@@ -291,10 +250,10 @@ export function AppHeader() {
       {open ? (
         <div
           id="site-mobile-navigation"
-          className="mgp-mobile-panel max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t border-border bg-surface px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] min-[1760px]:hidden"
+          className="mgp-mobile-panel max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t border-[var(--impar-line)] bg-surface px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] min-[1760px]:hidden"
         >
-          <nav aria-label={t("navigation.menu")} className="flex flex-col gap-1">
-            {NAV.map((item) => (
+          <nav aria-label={t("navigation.menu")} className="grid grid-cols-2 gap-1 sm:flex sm:flex-col">
+            {nav.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
@@ -303,7 +262,7 @@ export function AppHeader() {
                 activeProps={{ className: "mgp-nav-link-active" }}
                 className="mgp-nav-link rounded-lg px-3 py-2.5 text-sm font-medium text-foreground"
               >
-                {t(item.key)}
+                {item.label}
               </Link>
             ))}
           </nav>
@@ -316,69 +275,30 @@ export function AppHeader() {
             </div>
             {!loading && !user ? (
               <div className="flex flex-col gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => void handleGoogleSignIn()}
-                  disabled={googleLoading}
-                >
-                  <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-black">
-                    G
-                  </span>
-                  {googleLoading
-                    ? t("common.loading")
-                    : locale === "pt-BR"
-                      ? "Continuar com Google"
-                      : locale === "es"
-                        ? "Continuar con Google"
-                        : "Continue with Google"}
+                <Button type="button" variant="outline" onClick={() => void handleGoogleSignIn()} disabled={googleLoading}>
+                  <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-black">G</span>
+                  {googleLoading ? t("common.loading") : copy("Continuar com Google", "Continue with Google", "Continuar con Google")}
                 </Button>
-                <Button asChild>
-                  <Link to="/register" onClick={() => setOpen(false)}>
-                    {t("auth.register")}
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link to="/login" onClick={() => setOpen(false)}>
-                    {t("auth.login")}
-                  </Link>
-                </Button>
+                <Button asChild><Link to="/register" onClick={() => setOpen(false)}>{t("auth.register")}</Link></Button>
+                <Button variant="outline" asChild><Link to="/login" onClick={() => setOpen(false)}>{t("auth.login")}</Link></Button>
               </div>
             ) : null}
             {!loading && user ? (
               <div className="flex flex-col gap-2">
                 {profileUsername ? (
                   <Button variant="outline" asChild>
-                    <Link
-                      to="/u/$username"
-                      params={{ username: profileUsername }}
-                      onClick={() => setOpen(false)}
-                    >
-                      <UserRound className="mr-2 size-4" />
-                      {profileLabel}
+                    <Link to="/u/$username" params={{ username: profileUsername }} onClick={() => setOpen(false)}>
+                      <UserRound className="mr-2 size-4" />{profileLabel}
                     </Link>
                   </Button>
                 ) : (
-                  <Button variant="outline" disabled>
-                    <UserRound className="mr-2 size-4" />
-                    {profileLoading ? profileLabel : profileUnavailableLabel}
-                  </Button>
+                  <Button variant="outline" disabled><UserRound className="mr-2 size-4" />{profileLoading ? profileLabel : profileUnavailableLabel}</Button>
                 )}
                 <Button variant="outline" asChild>
-                  <Link to="/settings/profile" onClick={() => setOpen(false)}>
-                    <Settings className="mr-2 size-4" />
-                    {t("navigation.settings")}
-                  </Link>
+                  <Link to="/settings/profile" onClick={() => setOpen(false)}><Settings className="mr-2 size-4" />{t("navigation.settings")}</Link>
                 </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    void signOut();
-                    setOpen(false);
-                  }}
-                >
-                  <LogOut className="mr-2 size-4" />
-                  {t("auth.logout")}
+                <Button variant="destructive" onClick={() => { void signOut(); setOpen(false); }}>
+                  <LogOut className="mr-2 size-4" />{t("auth.logout")}
                 </Button>
               </div>
             ) : null}

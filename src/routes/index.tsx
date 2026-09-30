@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
+  BookOpen,
   Gamepad2,
+  LibraryBig,
   MessagesSquare,
-  Compass,
+  Sparkles,
   UsersRound,
   HeartHandshake,
 } from "lucide-react";
@@ -18,7 +20,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { listPosts } from "@/lib/posts.functions";
 import { PostCard } from "@/components/posts/PostCard";
 import { PostComposer } from "@/components/posts/PostComposer";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Carousel,
   CarouselContent,
@@ -37,273 +38,244 @@ export const Route = createFileRoute("/")({
   loader: async () => ({ posts: await listPosts({ data: {} }) }),
   head: () =>
     buildSeo({
-      title: "ÍMPAR — Seu próximo jogo começa aqui",
+      title: "ÍMPAR — Seu jogo. Seu perfil. Do seu jeito.",
       description:
-        "Explore jogos, guias, builds, setups do competitivo, comunidades e encontre jogadores no ÍMPAR.",
+        "Construa sua identidade gamer no ÍMPAR: perfis, jogos, Códice, Guildas, conteúdo e pessoas para jogar do seu jeito.",
       path: "/",
     }),
   component: Home,
 });
 
 function Home() {
-  const { t, locale } = useI18n();
+  const { locale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const { user } = useAuth();
   const { posts: initialPosts } = Route.useLoaderData();
   const [posts, setPosts] = useState(initialPosts);
   const [visiblePosts, setVisiblePosts] = useState(6);
+
   const destinations = [
     {
       to: "/games" as const,
-      icon: Gamepad2,
-      title: copy("Escolha seu universo", "Pick your world", "Elige tu universo"),
+      icon: LibraryBig,
+      title: copy("Arquivos", "Archives", "Archivos"),
       body: copy(
-        "Guias, coleções e os detalhes que mudam sua partida.",
-        "Guides, collections and the details that change your game.",
-        "Guías, colecciones y los detalles que cambian tu partida.",
+        "Jogos, personagens, itens, mapas e sistemas organizados para consulta.",
+        "Games, characters, items, maps and systems organized for discovery.",
+        "Juegos, personajes, objetos, mapas y sistemas organizados para consultar.",
       ),
+      index: "01",
+    },
+    {
+      to: "/codice" as const,
+      icon: BookOpen,
+      title: copy("Códice", "Codex", "Códice"),
+      body: copy(
+        "Builds, guias, estratégias e conhecimento criado para ajudar na próxima partida.",
+        "Builds, guides, strategies and knowledge built for your next game.",
+        "Builds, guías, estrategias y conocimiento para tu próxima partida.",
+      ),
+      index: "02",
     },
     {
       to: "/communities" as const,
       icon: MessagesSquare,
-      title: copy("Encontre sua comunidade", "Find your community", "Encuentra tu comunidad"),
+      title: copy("Guildas", "Guilds", "Guildas"),
       body: copy(
-        "Troque ideias com quem joga os mesmos jogos.",
-        "Trade ideas with people who play your games.",
-        "Comparte ideas con quienes juegan a lo mismo.",
+        "Espaços sociais por jogo para conversar, criar e encontrar gente com a mesma vibe.",
+        "Game-based social spaces to talk, create and meet people with the same vibe.",
+        "Espacios sociales por juego para hablar, crear y conocer gente con la misma vibra.",
       ),
+      index: "03",
     },
     {
       to: "/lfg" as const,
       icon: UsersRound,
-      title: copy("Complete o grupo", "Find your squad", "Completa tu equipo"),
+      title: copy("Encontrar grupo", "Find a group", "Encontrar grupo"),
       body: copy(
-        "Procure companhia por jogo, plataforma e região.",
-        "Find players by game, platform and region.",
-        "Busca compañía por juego, plataforma y región.",
+        "LFG por jogo, plataforma e região quando você só precisa completar o squad.",
+        "LFG by game, platform and region when you just need to complete the squad.",
+        "LFG por juego, plataforma y región cuando solo falta completar el squad.",
       ),
+      index: "04",
     },
   ];
+
   return (
-    <div className="pb-16">
-      <section className="relative isolate overflow-hidden border-b border-border bg-surface">
-        <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,var(--color-gold-soft),transparent_65%)] opacity-50"
-          aria-hidden="true"
-        />
-        <div className="relative mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-12">
+    <div className="impar-shell pb-16">
+      <section className="impar-grid relative isolate overflow-hidden border-b border-border/70">
+        <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12 lg:py-16">
           <div className="animate-fade-in">
-            <p className="section-kicker">
-              MG PROFILE / {copy("ENTRE NO JOGO", "GET INTO THE GAME", "ENTRA EN EL JUEGO")}
-            </p>
-            <h1 className="mt-5 max-w-2xl text-balance font-display text-[clamp(2.25rem,5vw,4.5rem)] font-bold leading-[1.08] tracking-tight text-foreground">
+            <p className="impar-kicker">ÍMPAR / {copy("SUA FORMA DE JOGAR", "YOUR WAY TO PLAY", "TU FORMA DE JUGAR")}</p>
+            <h1 className="mt-5 max-w-3xl text-balance font-display text-[clamp(2.7rem,6vw,5.35rem)] font-bold leading-[0.98] tracking-[-0.045em] text-foreground">
               {copy(
-                "Seu próximo jogo começa aqui.",
-                "Your next game starts here.",
-                "Tu próxima partida empieza aquí.",
+                "Seu jogo. Seu perfil. Do seu jeito.",
+                "Your game. Your profile. Your way.",
+                "Tu juego. Tu perfil. A tu manera.",
               )}
             </h1>
-            <p className="mt-5 max-w-lg text-base leading-7 text-muted-foreground">
+            <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
               {copy(
-                "Da build ao time que você acompanha. Explore seus jogos, confira setups e encontre gente para a próxima partida.",
-                "From your next build to the team you follow. Explore your games, check out setups and find people for the next match.",
-                "De tu próxima build al equipo que sigues. Explora tus juegos, descubre setups y encuentra gente para la próxima partida.",
+                "O que você joga faz parte da história. A forma como você monta seu perfil, cria conteúdo, encontra pessoas e vive cada jogo é ÍMPAR.",
+                "What you play is part of the story. The way you build your profile, create, meet people and experience each game is ÍMPAR.",
+                "Lo que juegas forma parte de la historia. La manera en que construyes tu perfil, creas, conoces gente y vives cada juego es ÍMPAR.",
               )}
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link to="/games" className="brand-button min-h-11 gap-2">
-                {t("home.cta.exploreGames")}
-                <ArrowRight className="size-4" aria-hidden="true" />
-              </Link>
               {user ? (
-                <Link to="/settings/profile" className="brand-button-secondary min-h-11">
-                  {copy("Editar meu perfil", "Edit my profile", "Editar mi perfil")}
+                <Link to="/settings/profile" className="brand-button min-h-11 gap-2">
+                  {copy("Dar meu toque ao perfil", "Shape my profile", "Dar mi toque al perfil")}
+                  <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               ) : (
-                <Link to="/register" className="brand-button-secondary min-h-11">
-                  {t("home.cta.createProfile")}
+                <Link to="/register" className="brand-button min-h-11 gap-2">
+                  {copy("Criar meu perfil", "Create my profile", "Crear mi perfil")}
+                  <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               )}
+              <Link to="/codice" className="brand-button-secondary min-h-11 gap-2">
+                {copy("Abrir o Códice", "Open the Codex", "Abrir el Códice")}
+                <BookOpen className="size-4" aria-hidden="true" />
+              </Link>
             </div>
           </div>
-          <div
-            className="grid grid-cols-2 gap-3"
-            aria-label={copy("Atalhos para os jogos", "Game shortcuts", "Accesos a los juegos")}
-          >
-            {SORTED_GAMES.map((game, index) => (
-              <Link
-                key={game.slug}
-                to="/games/$slug"
-                params={{ slug: game.slug }}
-                className="group relative isolate min-h-32 overflow-hidden rounded-2xl border border-border bg-black sm:min-h-40 motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
-              >
-                <GameArtwork
-                  game={game}
-                  variant="hero"
-                  loading={index < 2 ? "eager" : "lazy"}
-                  className="absolute inset-0 h-full w-full opacity-70 motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-                <div className="relative flex h-full min-h-32 flex-col justify-end p-4 sm:min-h-40">
-                  <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-white/70">
-                    {game.genre}
-                  </span>
-                  <span className="mt-1 flex items-center justify-between gap-2 text-sm font-semibold text-white">
-                    {game.name}
-                    <ArrowRight className="size-4 shrink-0 text-gold" aria-hidden="true" />
-                  </span>
+
+          <div className="impar-card relative min-h-[20rem] overflow-hidden rounded-[2rem_2rem_0.8rem_2rem] p-5 sm:min-h-[23rem] sm:p-7">
+            <div className="impar-noctis-halo absolute inset-0" aria-hidden="true" />
+            <div className="impar-sigil absolute right-4 top-4 size-24 opacity-60" aria-hidden="true" />
+            <div className="relative z-10 flex h-full min-h-[18rem] flex-col justify-between sm:min-h-[20rem]">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--impar-line)] bg-black/20 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--impar-spectral)] backdrop-blur">
+                  <Sparkles className="size-3.5" aria-hidden="true" />
+                  Noctis · {copy("guardião do ÍMPAR", "guardian of ÍMPAR", "guardián de ÍMPAR")}
                 </div>
-              </Link>
-            ))}
+                <h2 className="mt-4 max-w-sm font-display text-2xl font-semibold leading-tight sm:text-3xl">
+                  {copy("Um guia para o seu próprio caminho.", "A guide for your own path.", "Un guía para tu propio camino.")}
+                </h2>
+                <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
+                  {copy(
+                    "Pergunte sobre jogos, builds, sistemas ou o próprio ÍMPAR. Noctis continua sendo a IA da plataforma — agora com uma casa que combina com ele.",
+                    "Ask about games, builds, systems or ÍMPAR itself. Noctis remains the platform AI — now with a home that matches him.",
+                    "Pregunta sobre juegos, builds, sistemas o el propio ÍMPAR. Noctis sigue siendo la IA de la plataforma, ahora con una casa a su altura.",
+                  )}
+                </p>
+              </div>
+              <div className="flex items-end justify-between gap-4">
+                <Link to="/nexus" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)]">
+                  {copy("Falar com Noctis", "Talk to Noctis", "Hablar con Noctis")}
+                  <ArrowRight className="size-4" />
+                </Link>
+                <img
+                  src="/assets/noctis/noctis-idle.webp"
+                  alt="Noctis, mascote e IA do ÍMPAR"
+                  width={180}
+                  height={180}
+                  loading="eager"
+                  className="max-h-40 w-auto max-w-[46%] object-contain drop-shadow-[0_18px_30px_rgba(0,0,0,.45)] sm:max-h-48"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
+      <section className="mx-auto w-full max-w-7xl px-4 pt-7 sm:px-6 sm:pt-9">
+        <div className="impar-destination-grid">
+          {destinations.map(({ to, icon: Icon, title, body, index }) => (
+            <Link key={to} to={to} className="impar-card impar-card-interactive group rounded-2xl p-4 sm:p-5">
+              <div className="flex items-center justify-between gap-3">
+                <div className="grid size-9 place-items-center rounded-xl bg-[var(--impar-spectral-soft)] text-[var(--impar-spectral)]">
+                  <Icon className="size-4" aria-hidden="true" />
+                </div>
+                <span className="font-mono text-[0.65rem] text-muted-foreground">{index}</span>
+              </div>
+              <h2 className="mt-4 font-display text-base font-semibold sm:text-lg">{title}</h2>
+              <p className="mt-2 hidden text-sm leading-6 text-muted-foreground sm:block">{body}</p>
+              <ArrowRight className="mt-4 size-4 text-[var(--impar-amber)] transition-transform group-hover:translate-x-1" />
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <AdReadyLayout
-        className="mx-auto w-full max-w-[92rem] px-4 pt-6 sm:px-6 sm:pt-8"
+        className="mx-auto w-full max-w-[92rem] px-4 pt-10 sm:px-6 sm:pt-12"
         rail={<AdSlot id="home-rail" format="rail" />}
       >
-        <Tabs defaultValue="games" className="w-full">
-          <TabsList
-            className="grid h-auto w-full grid-cols-3 gap-1 rounded-2xl p-1.5 sm:max-w-lg"
-            aria-label={copy("Explore o ÍMPAR", "Explore ÍMPAR", "Explora ÍMPAR")}
-          >
-            <TabsTrigger value="games" className="min-h-11 gap-2">
-              <Gamepad2 className="hidden size-4 sm:block" aria-hidden="true" />
-              {t("navigation.games")}
-            </TabsTrigger>
-            <TabsTrigger value="community" className="min-h-11 gap-2">
-              <MessagesSquare className="hidden size-4 sm:block" aria-hidden="true" />
-              {copy("Comunidade", "Community", "Comunidad")}
-            </TabsTrigger>
-            <TabsTrigger value="discover" className="min-h-11 gap-2">
-              <Compass className="hidden size-4 sm:block" aria-hidden="true" />
-              {copy("Descobrir", "Discover", "Descubrir")}
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="games" className="pt-6 motion-safe:animate-fade-in">
-            <Carousel
-              opts={{ align: "start", containScroll: "trimSnaps", loop: false, slidesToScroll: 1 }}
-              aria-label={t("home.featured.title")}
-            >
-              <div className="mb-5 flex items-center justify-between gap-3">
-                <h2 className="font-display text-xl font-semibold sm:text-2xl">
-                  {t("home.featured.title")}
-                </h2>
-                <div className="flex shrink-0 gap-2">
-                  <CarouselPrevious
-                    aria-label={copy("Jogo anterior", "Previous game", "Juego anterior")}
-                    className="static size-11 translate-y-0"
-                  />
-                  <CarouselNext
-                    aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")}
-                    className="static size-11 translate-y-0"
-                  />
-                </div>
-              </div>
-              <CarouselContent>
-                {SORTED_GAMES.map((game) => (
-                  <CarouselItem key={game.slug} className="basis-[88%] sm:basis-[68%] lg:basis-1/2">
-                    <GameCard game={game} />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          </TabsContent>
-          <TabsContent value="community" className="pt-6 motion-safe:animate-fade-in">
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]">
-              <section className="space-y-4" aria-label={t("home.activity.title")}>
-                <h2 className="font-display text-xl font-semibold">{t("home.activity.title")}</h2>
-                {user && <PostComposer onCreated={(post) => setPosts((prev) => [post, ...prev])} />}
-                {posts.length === 0 ? (
-                  <EmptyState title={t("home.activity.empty")} />
-                ) : (
-                  posts.slice(0, visiblePosts).map((post) => <PostCard key={post.id} post={post} />)
-                )}
-                {visiblePosts < posts.length && (
-                  <button
-                    type="button"
-                    className="brand-button-secondary min-h-11"
-                    onClick={() => setVisiblePosts((n) => n + 6)}
-                  >
-                    {copy(
-                      "Mostrar mais publicações",
-                      "Show more posts",
-                      "Mostrar más publicaciones",
-                    )}
-                  </button>
-                )}
-              </section>
-              <aside className="surface-panel h-fit p-5">
-                <UsersRound className="size-5 text-gold-strong" aria-hidden="true" />
-                <h2 className="mt-3 font-semibold">
-                  {copy(
-                    "Falta alguém no grupo?",
-                    "Need one more player?",
-                    "¿Falta alguien en el equipo?",
-                  )}
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {destinations[2]?.body}
-                </p>
-                <Link
-                  to="/lfg"
-                  search={{ compose: false, game: "" }}
-                  className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-gold-strong"
-                >
-                  {copy("Buscar grupo", "Find a group", "Buscar grupo")}
-                  <ArrowRight className="size-4" />
-                </Link>
-              </aside>
+        <section>
+          <div className="mb-5 flex items-end justify-between gap-3">
+            <div>
+              <p className="impar-kicker">{copy("ARQUIVOS EM DESTAQUE", "FEATURED ARCHIVES", "ARCHIVOS DESTACADOS")}</p>
+              <h2 className="mt-2 font-display text-2xl font-semibold sm:text-3xl">
+                {copy("Entre por um jogo", "Start with a game", "Entra por un juego")}
+              </h2>
             </div>
-          </TabsContent>
-          <TabsContent value="discover" className="pt-6 motion-safe:animate-fade-in">
-            <h2 className="font-display text-xl font-semibold">
-              {copy("Qual é o próximo passo?", "Where to next?", "¿Cuál es el siguiente paso?")}
-            </h2>
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
-              {destinations.map(({ to, icon: Icon, title, body }, i) => (
-                <Link
-                  key={to}
-                  to={to}
-                  className="surface-panel group p-6 transition-colors hover:border-gold/50"
-                >
-                  <div className="flex items-center justify-between">
-                    <Icon className="size-6 text-gold-strong" aria-hidden="true" />
-                    <span className="font-mono text-xs text-muted-foreground">0{i + 1}</span>
-                  </div>
-                  <h3 className="mt-5 font-display text-lg font-semibold">{title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{body}</p>
-                  <ArrowRight
-                    className="mt-5 size-5 text-gold-strong motion-safe:transition-transform motion-safe:group-hover:translate-x-1"
-                    aria-hidden="true"
-                  />
-                </Link>
+            <div className="flex shrink-0 gap-2">
+              <CarouselPrevious aria-label={copy("Jogo anterior", "Previous game", "Juego anterior")} className="static size-11 translate-y-0" />
+              <CarouselNext aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")} className="static size-11 translate-y-0" />
+            </div>
+          </div>
+          <Carousel opts={{ align: "start", containScroll: "trimSnaps", loop: false, slidesToScroll: 1 }}>
+            <CarouselContent>
+              {SORTED_GAMES.map((game) => (
+                <CarouselItem key={game.slug} className="basis-[88%] sm:basis-[68%] lg:basis-1/2">
+                  <GameCard game={game} />
+                </CarouselItem>
               ))}
+            </CarouselContent>
+          </Carousel>
+        </section>
+
+        <section className="mt-12 grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]" aria-label={copy("Atividade da Comunidade ÍMPAR", "ÍMPAR community activity", "Actividad de la Comunidad ÍMPAR")}>
+          <div className="space-y-4">
+            <div>
+              <p className="impar-kicker">{copy("COMUNIDADE ÍMPAR", "ÍMPAR COMMUNITY", "COMUNIDAD ÍMPAR")}</p>
+              <h2 className="mt-2 font-display text-2xl font-semibold">{copy("O que a galera está criando", "What people are creating", "Lo que la gente está creando")}</h2>
             </div>
-          </TabsContent>
-        </Tabs>
+            {user && <PostComposer onCreated={(post) => setPosts((prev) => [post, ...prev])} />}
+            {posts.length === 0 ? (
+              <EmptyState title={copy("Nenhum post ainda. Seja o primeiro a publicar.", "No posts yet. Be the first to publish.", "Todavía no hay posts. Sé el primero en publicar.")} />
+            ) : (
+              posts.slice(0, visiblePosts).map((post) => <PostCard key={post.id} post={post} />)
+            )}
+            {visiblePosts < posts.length && (
+              <button type="button" className="brand-button-secondary min-h-11" onClick={() => setVisiblePosts((n) => n + 6)}>
+                {copy("Mostrar mais publicações", "Show more posts", "Mostrar más publicaciones")}
+              </button>
+            )}
+          </div>
+          <aside className="impar-card h-fit rounded-2xl p-5">
+            <UsersRound className="size-5 text-[var(--impar-spectral)]" aria-hidden="true" />
+            <h2 className="mt-3 font-semibold">{copy("Falta alguém no grupo?", "Need one more player?", "¿Falta alguien en el equipo?")}</h2>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              {copy("Abra o LFG e encontre companhia por jogo, plataforma, região e faixa de grupo.", "Open LFG and find players by game, platform and region.", "Abre el LFG y encuentra gente por juego, plataforma y región.")}
+            </p>
+            <Link to="/lfg" search={{ compose: false, game: "" }} className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)]">
+              {copy("Encontrar grupo", "Find a group", "Encontrar grupo")}
+              <ArrowRight className="size-4" />
+            </Link>
+          </aside>
+        </section>
+
         <AdSlot id="home-after-explore" format="leaderboard" className="mt-8" />
       </AdReadyLayout>
 
       <section className="mx-auto mt-10 w-full max-w-7xl px-4 sm:px-6">
         <div className="flex flex-col gap-4 rounded-[1.15rem_1.15rem_0.5rem_1.15rem] border border-border bg-muted/15 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div className="max-w-2xl">
-            <div className="flex items-center gap-2 text-gold-strong">
+            <div className="flex items-center gap-2 text-[var(--impar-amber)]">
               <HeartHandshake className="size-4" aria-hidden="true" />
-              <p className="text-xs font-bold uppercase tracking-[0.12em]">
-                {copy("Projeto independente", "Independent project", "Proyecto independiente")}
-              </p>
+              <p className="text-xs font-bold uppercase tracking-[0.12em]">{copy("Projeto independente brasileiro", "Independent Brazilian project", "Proyecto brasileño independiente")}</p>
             </div>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {copy(
-                "O ÍMPAR está sendo construído por uma pessoa, com orçamento enxuto. Se a ideia fizer sentido pra você, dá para conhecer a história do projeto e ajudar no desenvolvimento.",
-                "ÍMPAR is being built by one person on a small budget. If the idea resonates with you, you can read the project's story and help its development.",
-                "ÍMPAR está siendo construido por una sola persona con un presupuesto pequeño. Si la idea te interesa, puedes conocer la historia y ayudar al desarrollo.",
+                "O ÍMPAR está sendo construído por uma pessoa, com orçamento enxuto. Se a ideia fizer sentido pra você, dá para conhecer a história e ajudar o projeto a continuar crescendo.",
+                "ÍMPAR is being built by one person on a small budget. If the idea resonates with you, you can read its story and help it keep growing.",
+                "ÍMPAR está siendo construido por una sola persona con un presupuesto pequeño. Si la idea te interesa, puedes conocer su historia y ayudar al proyecto a crecer.",
               )}
             </p>
           </div>
           <Link to="/support" className="brand-button-secondary min-h-11 shrink-0 gap-2">
-            {copy("Apoie o ÍMPAR", "Support MGP", "Apoya MGP")}
+            {copy("Apoie o ÍMPAR", "Support ÍMPAR", "Apoya ÍMPAR")}
             <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
         </div>

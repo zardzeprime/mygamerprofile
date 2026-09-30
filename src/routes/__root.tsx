@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import responsiveCss from "../responsive.css?url";
 import routeTransitionCss from "../route-transition.css?url";
 import profileBackgroundCss from "../profile-backgrounds.css?url";
+import imparBrandCss from "../impar-brand.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../i18n";
 import { ThemeProvider, themeBootstrapScript } from "../lib/theme";
@@ -26,19 +27,20 @@ import { DEFAULT_OG_IMAGE, SITE_STRUCTURED_DATA } from "../lib/seo";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="impar-shell flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-display text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <p className="impar-kicker">ÍMPAR / ARQUIVO PERDIDO</p>
+        <h1 className="mt-3 font-display text-7xl font-bold text-foreground">404</h1>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Página não encontrada</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+          Esse registro não existe, foi movido ou ainda não faz parte dos Arquivos.
         </p>
         <div className="mt-6">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
-            Go home
+            Voltar ao ÍMPAR
           </Link>
         </div>
       </div>
@@ -55,11 +57,12 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+        <p className="impar-kicker">ÍMPAR / FALHA DE ROTA</p>
+        <h1 className="mt-3 text-xl font-semibold tracking-tight text-foreground">
+          Esta página não carregou
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+          Algo falhou por aqui. Você pode tentar novamente ou voltar para o início.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -69,13 +72,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             }}
             className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
-            Try again
+            Tentar novamente
           </button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-full border border-input bg-surface px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
           >
-            Go home
+            Ir para o início
           </a>
         </div>
       </div>
@@ -88,14 +91,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ÍMPAR — ÍMPAR" },
+      { title: "ÍMPAR — Sua identidade gamer" },
       {
         name: "description",
         content:
-          "MGP é a plataforma de identidade gamer: perfil, jogos, Game Profiles, comunidades e LFG.",
+          "ÍMPAR é uma plataforma brasileira de identidade gamer: perfis, jogos, Códice, Guildas, conteúdo e LFG do seu jeito.",
       },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
-      { name: "theme-color", content: "#0b0b0d" },
+      { name: "theme-color", content: "#0a0e17" },
       { property: "og:site_name", content: "ÍMPAR" },
       { property: "og:type", content: "website" },
       { property: "og:image", content: DEFAULT_OG_IMAGE },
@@ -103,16 +106,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:image", content: DEFAULT_OG_IMAGE },
       { name: "google-adsense-account", content: "ca-pub-7774329183197175" },
     ],
-    scripts: [
-      { type: "application/ld+json", children: SITE_STRUCTURED_DATA },
-    ],
+    scripts: [{ type: "application/ld+json", children: SITE_STRUCTURED_DATA }],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "stylesheet", href: responsiveCss },
       { rel: "stylesheet", href: routeTransitionCss },
       { rel: "stylesheet", href: profileBackgroundCss },
-      { rel: "icon", href: "/brand/mgp-logo.png", type: "image/png" },
-      { rel: "apple-touch-icon", href: "/brand/mgp-logo.png" },
+      { rel: "stylesheet", href: imparBrandCss },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "apple-touch-icon", href: "/brand/impar-logo.svg" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -173,9 +175,8 @@ function RootComponent() {
 
       image.removeAttribute("srcset");
 
-      // Some external media hosts reject no-referrer hotlinks or unstable redirect URLs.
-      // Retry once with the browser's normal cross-origin referrer policy and a stable
-      // MediaWiki file-path alias before falling back to a same-origin MGP asset.
+      // Technical mgp-* data attributes are intentionally preserved as stable
+      // compatibility identifiers during the public ÍMPAR rebrand.
       if (image.dataset["mgpExternalRetry"] !== "1") {
         image.dataset["mgpExternalRetry"] = "1";
         image.referrerPolicy = "strict-origin-when-cross-origin";
@@ -213,7 +214,6 @@ function RootComponent() {
             <AppHeader />
             <div aria-hidden="true" className="h-[4.25rem] shrink-0" />
             <main className="flex-1">
-              {/* Required: nested routes render here. */}
               <Outlet />
             </main>
             <AppFooter />
