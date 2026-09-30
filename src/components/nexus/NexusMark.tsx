@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import "./NexusMark.css";
 
 type NexusMarkProps = {
   className?: string;
