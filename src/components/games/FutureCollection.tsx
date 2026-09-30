@@ -27,6 +27,7 @@ import { LeagueEsportsPanel } from "@/components/games/LeagueEsportsPanel";
 import { LeagueNews } from "@/components/games/LeagueNews";
 import { SoulsBossExplorer } from "@/components/games/SoulsBossExplorer";
 import { SoulsGameGuides } from "@/components/games/SoulsGameGuides";
+import { WarframeDatabase } from "@/components/games/WarframeDatabase";
 import { WarframeExplorer } from "@/components/games/WarframeExplorer";
 
 export function FutureCollection({
@@ -68,6 +69,8 @@ export function FutureCollection({
 
   if (gameSlug === "warframe") {
     if (moduleKey === "warframes") return <WarframeExplorer mode="warframes" locale={locale} />;
+    if (moduleKey === "weapons") return <WarframeDatabase mode="weapons" locale={locale} />;
+    if (moduleKey === "items") return <WarframeDatabase mode="items" locale={locale} />;
     if (moduleKey === "guides") return <WarframeExplorer mode="guides" locale={locale} />;
   }
 
