@@ -15,7 +15,7 @@ export const Route = createFileRoute("/forgot-password")({
   head: () => ({
     meta: [
       { title: "Recuperar senha — MGP" },
-      { name: "description", content: "Recupere sua senha do My Gamer Profile." },
+      { name: "description", content: "Recupere sua senha do ÍMPAR." },
       { name: "robots", content: "noindex, follow" },
     ],
   }),
@@ -65,7 +65,7 @@ function ForgotPasswordPage() {
         <CardHeader className="text-center">
           <BrandLogoPlaceholder size="lg" className="mx-auto mb-4" />
           <CardTitle className="font-display text-2xl">{t("auth.forgotPassword")}</CardTitle>
-          <CardDescription>MGP — {t("brand.full")}</CardDescription>
+          <CardDescription>ÍMPAR — {t("brand.full")}</CardDescription>
         </CardHeader>
         <CardContent>
           {sent ? (

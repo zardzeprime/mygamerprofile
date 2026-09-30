@@ -15,7 +15,7 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Entrar — MGP" },
-      { name: "description", content: "Entre na sua conta do My Gamer Profile." },
+      { name: "description", content: "Entre na sua conta do ÍMPAR." },
       { name: "robots", content: "noindex, follow" },
     ],
   }),
@@ -88,7 +88,7 @@ function LoginPage() {
         <CardHeader className="text-center">
           <BrandLogoPlaceholder size="lg" className="mx-auto mb-4" />
           <CardTitle className="font-display text-2xl">{t("auth.login")}</CardTitle>
-          <CardDescription>MGP — {t("brand.full")}</CardDescription>
+          <CardDescription>ÍMPAR — {t("brand.full")}</CardDescription>
         </CardHeader>
         <CardContent>
           <Button

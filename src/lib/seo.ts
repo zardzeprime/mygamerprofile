@@ -1,6 +1,6 @@
 export const SITE_ORIGIN = "https://mgprofile.online";
-export const SITE_NAME = "MG Profile";
-export const SITE_FULL_NAME = "MG Profile — My Gamer Profile";
+export const SITE_NAME = "ÍMPAR";
+export const SITE_FULL_NAME = "ÍMPAR — ÍMPAR";
 export const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/brand/mgp-logo.png`;
 
 type SeoOptions = {

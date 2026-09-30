@@ -264,7 +264,7 @@ function SettingsConnectionsPage() {
       setSteamBusy(false);
       setConnectionError(
         copy(
-          "Não foi possível abrir o login oficial da Steam. A conexão segura foi reiniciada no backend do MGP; tente novamente em alguns segundos.",
+          "Não foi possível abrir o login oficial da Steam. A conexão segura foi reiniciada no backend do ÍMPAR; tente novamente em alguns segundos.",
           "Could not open the official Steam sign-in. The secure connection now runs through MGP's backend; try again in a few seconds.",
           "No se pudo abrir el acceso oficial de Steam. La conexión segura ahora se ejecuta en el backend de MGP; inténtalo de nuevo en unos segundos.",
         ),
@@ -394,9 +394,9 @@ function SettingsConnectionsPage() {
     if (steamBusy) return;
     const confirmed = window.confirm(
       copy(
-        "Desconectar sua conta Steam do MG Profile?",
-        "Disconnect your Steam account from MG Profile?",
-        "¿Desconectar tu cuenta de Steam de MG Profile?",
+        "Desconectar sua conta Steam do ÍMPAR?",
+        "Disconnect your Steam account from ÍMPAR?",
+        "¿Desconectar tu cuenta de Steam de ÍMPAR?",
       ),
     );
     if (!confirmed) return;
@@ -436,13 +436,13 @@ function SettingsConnectionsPage() {
         <section className="surface-panel rounded-xl p-5 sm:p-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="section-kicker">MGP / CONNECT</p>
+              <p className="section-kicker">ÍMPAR / CONNECT</p>
               <h2 className="mt-2 font-display text-2xl font-semibold text-foreground">
                 {copy("Contas conectadas", "Connected accounts", "Cuentas conectadas")}
               </h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
                 {copy(
-                  "Conecte serviços oficiais para transformar dados declarados em informações verificadas no seu Game Profile. O MGP nunca pede sua senha Steam, Riot ou Google.",
+                  "Conecte serviços oficiais para transformar dados declarados em informações verificadas no seu Game Profile. O ÍMPAR nunca pede sua senha Steam, Riot ou Google.",
                   "Connect official services to turn declared data into verified Game Profile information. MGP never asks for your Steam, Riot or Google password.",
                   "Conecta servicios oficiales para convertir datos declarados en información verificada. MGP nunca solicita tu contraseña de Steam, Riot o Google.",
                 )}
@@ -505,7 +505,7 @@ function SettingsConnectionsPage() {
                 <ShieldCheck className="size-5" />
               </div>
               <div>
-                <p className="section-kicker">MGP / AGE ASSURANCE</p>
+                <p className="section-kicker">ÍMPAR / AGE ASSURANCE</p>
                 <h2 className="mt-1 font-display text-xl font-semibold text-foreground">
                   {copy("Verificação reforçada de idade · futura", "Stronger age verification · future", "Verificación reforzada de edad · futura")}
                 </h2>
@@ -529,7 +529,7 @@ function SettingsConnectionsPage() {
                 </p>
                 <p className="mt-2">
                   {copy(
-                    "O fluxo será feito por um provedor especializado. O MGP guarda apenas o resultado da checagem, a referência do provedor, a faixa/idade necessária para aplicar as regras e as datas de validade. RG, CNH, passaporte, selfie e biometria não devem ser armazenados no banco comum do MGP.",
+                    "O fluxo será feito por um provedor especializado. O ÍMPAR guarda apenas o resultado da checagem, a referência do provedor, a faixa/idade necessária para aplicar as regras e as datas de validade. RG, CNH, passaporte, selfie e biometria não devem ser armazenados no banco comum do ÍMPAR.",
                     "The flow will use a specialized provider. MGP stores only the verification verdict, provider reference, the age/band needed to apply access rules and validity dates. ID documents, selfies and biometrics must not be stored in MGP's regular database.",
                     "El flujo utilizará un proveedor especializado. MGP guarda solo el resultado, la referencia del proveedor, la edad/franja necesaria para aplicar las reglas y las fechas de validez. Documentos, selfies y biometría no deben almacenarse en la base común de MGP.",
                   )}
@@ -553,9 +553,9 @@ function SettingsConnectionsPage() {
               </Button>
               <p className="mt-2 text-center text-[0.7rem] leading-4 text-muted-foreground">
                 {copy(
-                  "Esse passo não é necessário para participar da beta atual. Ele ficará disponível quando o MGP puder contratar/configurar um provedor externo.",
+                  "Esse passo não é necessário para participar da beta atual. Ele ficará disponível quando o ÍMPAR puder contratar/configurar um provedor externo.",
                   "This step is not required for the current beta. It will become available when MGP can configure an external provider.",
-                  "Este paso no es obligatorio para la beta actual. Estará disponible cuando MGP pueda configurar un proveedor externo.",
+                  "Este paso no es obligatorio para la beta actual. Estará disponible cuando ÍMPAR pueda configurar un proveedor externo.",
                 )}
               </p>
             </div>
@@ -778,7 +778,7 @@ function SteamDataPanel({
     <section className="surface-panel rounded-xl p-5 sm:p-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <p className="section-kicker">MGP / STEAM SYNC</p>
+          <p className="section-kicker">ÍMPAR / STEAM SYNC</p>
           <h2 className="mt-2 font-display text-xl font-semibold">
             {copy("Dados Steam no Game Profile", "Steam data in your Game Profile", "Datos de Steam en tu Game Profile")}
           </h2>
@@ -943,8 +943,8 @@ function VerificationStatus({
         <p className="mt-1 text-sm leading-5 text-muted-foreground">
           {verified
             ? verification?.verified_over_18
-              ? copy("Sua idade foi confirmada e a conta também pode cumprir gates 18+, respeitando as demais regras do MGP.", "Your age is confirmed and the account can also satisfy 18+ gates, subject to the rest of MGP rules.", "Tu edad está confirmada y la cuenta también puede cumplir gates 18+, respetando las demás reglas de MGP.")
-              : copy("Sua idade foi confirmada. O MGP pode aplicar faixas etárias no LFG sem expor sua data de nascimento aos outros usuários.", "Your age is confirmed. MGP can enforce LFG age ranges without exposing your birth date to other users.", "Tu edad está confirmada. MGP puede aplicar rangos de edad en el LFG sin exponer tu fecha de nacimiento a otros usuarios.")
+              ? copy("Sua idade foi confirmada e a conta também pode cumprir gates 18+, respeitando as demais regras do ÍMPAR.", "Your age is confirmed and the account can also satisfy 18+ gates, subject to the rest of MGP rules.", "Tu edad está confirmada y la cuenta también puede cumplir gates 18+, respetando las demás reglas de MGP.")
+              : copy("Sua idade foi confirmada. O ÍMPAR pode aplicar faixas etárias no LFG sem expor sua data de nascimento aos outros usuários.", "Your age is confirmed. MGP can enforce LFG age ranges without exposing your birth date to other users.", "Tu edad está confirmada. MGP puede aplicar rangos de edad en el LFG sin exponer tu fecha de nacimiento a otros usuarios.")
             : pending
               ? copy("A liberação só acontece quando o verificador concluir a checagem.", "Access unlocks only after the verifier completes the check.", "El acceso solo se libera cuando finalice la comprobación.")
               : copy("A beta atual não depende dessa verificação para usar o LFG. Ela fica reservada para recursos futuros que realmente precisem de uma checagem mais forte.", "The current beta does not require this verification to use LFG. It is reserved for future features that genuinely need stronger age assurance.", "La beta actual no requiere esta verificación para usar el LFG. Queda reservada para funciones futuras que realmente necesiten una comprobación más fuerte.")}

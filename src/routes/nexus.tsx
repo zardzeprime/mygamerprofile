@@ -6,7 +6,7 @@ export const Route = createFileRoute("/nexus")({
   },
   head: () => ({
     meta: [
-      { title: "MG Profile" },
+      { title: "ÍMPAR" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

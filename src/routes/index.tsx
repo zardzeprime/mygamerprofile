@@ -37,9 +37,9 @@ export const Route = createFileRoute("/")({
   loader: async () => ({ posts: await listPosts({ data: {} }) }),
   head: () =>
     buildSeo({
-      title: "MG Profile — Seu próximo jogo começa aqui",
+      title: "ÍMPAR — Seu próximo jogo começa aqui",
       description:
-        "Explore jogos, guias, builds, setups do competitivo, comunidades e encontre jogadores no MG Profile.",
+        "Explore jogos, guias, builds, setups do competitivo, comunidades e encontre jogadores no ÍMPAR.",
       path: "/",
     }),
   component: Home,
@@ -165,7 +165,7 @@ function Home() {
         <Tabs defaultValue="games" className="w-full">
           <TabsList
             className="grid h-auto w-full grid-cols-3 gap-1 rounded-2xl p-1.5 sm:max-w-lg"
-            aria-label={copy("Explore o MG Profile", "Explore MG Profile", "Explora MG Profile")}
+            aria-label={copy("Explore o ÍMPAR", "Explore ÍMPAR", "Explora ÍMPAR")}
           >
             <TabsTrigger value="games" className="min-h-11 gap-2">
               <Gamepad2 className="hidden size-4 sm:block" aria-hidden="true" />
@@ -296,14 +296,14 @@ function Home() {
             </div>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {copy(
-                "O MGP está sendo construído por uma pessoa, com orçamento enxuto. Se a ideia fizer sentido pra você, dá para conhecer a história do projeto e ajudar no desenvolvimento.",
-                "MGP is being built by one person on a small budget. If the idea resonates with you, you can read the project's story and help its development.",
-                "MGP está siendo construido por una sola persona con un presupuesto pequeño. Si la idea te interesa, puedes conocer la historia y ayudar al desarrollo.",
+                "O ÍMPAR está sendo construído por uma pessoa, com orçamento enxuto. Se a ideia fizer sentido pra você, dá para conhecer a história do projeto e ajudar no desenvolvimento.",
+                "ÍMPAR is being built by one person on a small budget. If the idea resonates with you, you can read the project's story and help its development.",
+                "ÍMPAR está siendo construido por una sola persona con un presupuesto pequeño. Si la idea te interesa, puedes conocer la historia y ayudar al desarrollo.",
               )}
             </p>
           </div>
           <Link to="/support" className="brand-button-secondary min-h-11 shrink-0 gap-2">
-            {copy("Apoie o MGP", "Support MGP", "Apoya MGP")}
+            {copy("Apoie o ÍMPAR", "Support MGP", "Apoya MGP")}
             <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
         </div>

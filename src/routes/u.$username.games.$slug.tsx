@@ -33,15 +33,15 @@ export const Route = createFileRoute("/u/$username/games/$slug")({
     if (!loaderData) {
       return {
         meta: [
-          { title: `${params.slug} — @${params.username} — MG Profile` },
+          { title: `${params.slug} — @${params.username} — ÍMPAR` },
           { name: "robots", content: "noindex, follow" },
         ],
       };
     }
     const { config, profile } = loaderData;
     return buildSeo({
-      title: `${config.name} — ${profile.display_name} (@${profile.username}) — MG Profile`,
-      description: `Game Profile público de @${profile.username} para ${config.name} no MG Profile.`,
+      title: `${config.name} — ${profile.display_name} (@${profile.username}) — ÍMPAR`,
+      description: `Game Profile público de @${profile.username} para ${config.name} no ÍMPAR.`,
       path: `/u/${profile.username}/games/${config.slug}`,
       image: profile.avatar_url ?? config.visual.coverImage,
       type: "profile",

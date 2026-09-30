@@ -51,7 +51,7 @@ export const Route = createFileRoute("/_authenticated/admin/feedback")({
   head: () => ({
     meta: [
       { title: "Admin — Feedback — MGP" },
-      { name: "description", content: "Caixa administrativa de feedback do MG Profile." },
+      { name: "description", content: "Caixa administrativa de feedback do ÍMPAR." },
     ],
   }),
   component: AdminFeedbackPage,

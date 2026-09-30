@@ -12,15 +12,15 @@ export const LOCALE_LABELS: Record<AppLocale, string> = {
 };
 
 const ptBR = {
-  "brand.name": "MGP",
-  "brand.full": "My Gamer Profile",
-  "brand.tagline": "Sua identidade nos jogos.",
+  "brand.name": "ÍMPAR",
+  "brand.full": "Identidade gamer",
+  "brand.tagline": "Seu jogo. Seu perfil. Do seu jeito.",
 
   "navigation.home": "Início",
-  "navigation.games": "Jogos",
-  "navigation.communities": "Comunidades",
+  "navigation.games": "Arquivos",
+  "navigation.communities": "Guildas",
   "navigation.lfg": "LFG",
-  "navigation.nexus": "NEXUS",
+  "navigation.nexus": "Noctis",
   "navigation.menu": "Menu",
   "navigation.openMenu": "Abrir menu",
   "navigation.closeMenu": "Fechar menu",
@@ -44,7 +44,7 @@ const ptBR = {
   "auth.needAccount": "Não tem uma conta? Crie uma",
   "auth.backToLogin": "Voltar para o login",
   "auth.onboarding.title": "Complete seu perfil",
-  "auth.onboarding.subtitle": "Escolha como você quer aparecer no MGP.",
+  "auth.onboarding.subtitle": "Escolha como você quer aparecer no ÍMPAR.",
   "auth.onboarding.finish": "Concluir",
   "auth.errors.invalidCredentials": "E-mail ou senha incorretos.",
   "auth.errors.usernameTaken": "Esse nome de usuário já está em uso.",
@@ -56,16 +56,16 @@ const ptBR = {
 
   "home.hero.title": "Sua identidade nos jogos.",
   "home.hero.subtitle":
-    "O MGP reúne seu perfil, seus jogos, suas conquistas e sua comunidade em um só lugar.",
+    "ÍMPAR reúne seu perfil, seus jogos, suas conquistas e suas guildas em um só lugar.",
   "home.cta.createProfile": "Criar perfil",
   "home.cta.login": "Entrar",
-  "home.cta.exploreGames": "Explorar jogos",
+  "home.cta.exploreGames": "Explorar Arquivos",
   "home.cta.myProfile": "Ver meu perfil",
   "home.cta.createPost": "Criar post",
   "home.featured.title": "Jogos em destaque",
   "home.activity.title": "Atividade da comunidade",
   "home.activity.empty": "Nenhum post ainda. Seja o primeiro a publicar.",
-  "home.discover.title": "Descubra o MGP",
+  "home.discover.title": "Descubra o ÍMPAR",
   "home.discover.profiles.title": "Game Profiles",
   "home.discover.profiles.body":
     "Monte um perfil por jogo com suas armas, builds, mapas e notas pessoais.",
@@ -75,8 +75,8 @@ const ptBR = {
   "home.discover.lfg.title": "LFG",
   "home.discover.lfg.body": "Encontre grupo por jogo, plataforma, região e idioma.",
 
-  "games.title": "Catálogo de jogos",
-  "games.subtitle": "Os jogos oficialmente suportados pelo MGP nesta versão.",
+  "games.title": "Arquivos",
+  "games.subtitle": "O registro de jogos, personagens, itens, mapas e experiências do ÍMPAR.",
   "games.search": "Buscar jogos",
   "games.hoursPlayed": "Horas jogadas",
   "games.ageRating": "Classificação",
@@ -189,15 +189,15 @@ const ptBR = {
 export type TranslationKey = keyof typeof ptBR;
 
 const en: Record<TranslationKey, string> = {
-  "brand.name": "MGP",
-  "brand.full": "My Gamer Profile",
-  "brand.tagline": "Your identity across games.",
+  "brand.name": "ÍMPAR",
+  "brand.full": "Identidade gamer",
+  "brand.tagline": "Your game. Your profile. Your way.",
 
   "navigation.home": "Home",
-  "navigation.games": "Games",
-  "navigation.communities": "Communities",
+  "navigation.games": "Archives",
+  "navigation.communities": "Guilds",
   "navigation.lfg": "LFG",
-  "navigation.nexus": "NEXUS",
+  "navigation.nexus": "Noctis",
   "navigation.menu": "Menu",
   "navigation.openMenu": "Open menu",
   "navigation.closeMenu": "Close menu",
@@ -221,7 +221,7 @@ const en: Record<TranslationKey, string> = {
   "auth.needAccount": "Need an account? Create one",
   "auth.backToLogin": "Back to sign in",
   "auth.onboarding.title": "Complete your profile",
-  "auth.onboarding.subtitle": "Choose how you want to appear on MGP.",
+  "auth.onboarding.subtitle": "Choose how you want to appear on ÍMPAR.",
   "auth.onboarding.finish": "Finish",
   "auth.errors.invalidCredentials": "Incorrect email or password.",
   "auth.errors.usernameTaken": "That username is already taken.",
@@ -233,7 +233,7 @@ const en: Record<TranslationKey, string> = {
 
   "home.hero.title": "Your identity across games.",
   "home.hero.subtitle":
-    "MGP brings your profile, your games, your achievements and your community together.",
+    "ÍMPAR brings your profile, games, achievements and guilds together.",
   "home.cta.createProfile": "Create profile",
   "home.cta.login": "Sign in",
   "home.cta.exploreGames": "Explore games",
@@ -242,7 +242,7 @@ const en: Record<TranslationKey, string> = {
   "home.featured.title": "Featured games",
   "home.activity.title": "Community activity",
   "home.activity.empty": "No posts yet. Be the first to publish.",
-  "home.discover.title": "Discover MGP",
+  "home.discover.title": "Discover ÍMPAR",
   "home.discover.profiles.title": "Game Profiles",
   "home.discover.profiles.body":
     "Build a profile per game with your weapons, builds, maps and personal notes.",
@@ -253,7 +253,7 @@ const en: Record<TranslationKey, string> = {
   "home.discover.lfg.body": "Find a group by game, platform, region and language.",
 
   "games.title": "Game catalog",
-  "games.subtitle": "Games officially supported by MGP in this version.",
+  "games.subtitle": "ÍMPAR’s archive of games, characters, items, maps and experiences.",
   "games.search": "Search games",
   "games.hoursPlayed": "Hours played",
   "games.ageRating": "Age rating",
@@ -364,15 +364,15 @@ const en: Record<TranslationKey, string> = {
 };
 
 const es: Record<TranslationKey, string> = {
-  "brand.name": "MGP",
-  "brand.full": "My Gamer Profile",
-  "brand.tagline": "Tu identidad en los juegos.",
+  "brand.name": "ÍMPAR",
+  "brand.full": "Identidade gamer",
+  "brand.tagline": "Tu juego. Tu perfil. A tu manera.",
 
   "navigation.home": "Inicio",
-  "navigation.games": "Juegos",
-  "navigation.communities": "Comunidades",
+  "navigation.games": "Archivos",
+  "navigation.communities": "Guildas",
   "navigation.lfg": "LFG",
-  "navigation.nexus": "NEXUS",
+  "navigation.nexus": "Noctis",
   "navigation.menu": "Menú",
   "navigation.openMenu": "Abrir menú",
   "navigation.closeMenu": "Cerrar menú",
@@ -396,7 +396,7 @@ const es: Record<TranslationKey, string> = {
   "auth.needAccount": "¿No tienes una cuenta? Crea una",
   "auth.backToLogin": "Volver al inicio de sesión",
   "auth.onboarding.title": "Completa tu perfil",
-  "auth.onboarding.subtitle": "Elige cómo quieres aparecer en MGP.",
+  "auth.onboarding.subtitle": "Elige cómo quieres aparecer en ÍMPAR.",
   "auth.onboarding.finish": "Finalizar",
   "auth.errors.invalidCredentials": "Correo o contraseña incorrectos.",
   "auth.errors.usernameTaken": "Ese nombre de usuario ya está en uso.",
@@ -408,7 +408,7 @@ const es: Record<TranslationKey, string> = {
 
   "home.hero.title": "Tu identidad en los juegos.",
   "home.hero.subtitle":
-    "MGP reúne tu perfil, tus juegos, tus logros y tu comunidad en un solo lugar.",
+    "ÍMPAR reúne tu perfil, tus juegos, tus logros y tus guildas en un solo lugar.",
   "home.cta.createProfile": "Crear perfil",
   "home.cta.login": "Iniciar sesión",
   "home.cta.exploreGames": "Explorar juegos",
@@ -417,7 +417,7 @@ const es: Record<TranslationKey, string> = {
   "home.featured.title": "Juegos destacados",
   "home.activity.title": "Actividad de la comunidad",
   "home.activity.empty": "Todavía no hay publicaciones. Sé la primera persona en publicar.",
-  "home.discover.title": "Descubre MGP",
+  "home.discover.title": "Descubre ÍMPAR",
   "home.discover.profiles.title": "Game Profiles",
   "home.discover.profiles.body":
     "Crea un perfil por juego con tus armas, builds, mapas y notas personales.",
@@ -428,7 +428,7 @@ const es: Record<TranslationKey, string> = {
   "home.discover.lfg.body": "Encuentra un grupo por juego, plataforma, región e idioma.",
 
   "games.title": "Catálogo de juegos",
-  "games.subtitle": "Juegos compatibles oficialmente con MGP en esta versión.",
+  "games.subtitle": "El archivo de juegos, personajes, objetos, mapas y experiencias de ÍMPAR.",
   "games.search": "Buscar juegos",
   "games.hoursPlayed": "Horas jugadas",
   "games.ageRating": "Clasificación",

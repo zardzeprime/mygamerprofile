@@ -9,7 +9,7 @@ import { buildSeo } from "@/lib/seo";
 export const Route = createFileRoute("/communities/")({
   head: () =>
     buildSeo({
-      title: "Comunidades gamer — MG Profile",
+      title: "Comunidades gamer — ÍMPAR",
       description:
         "Encontre comunidades de Valorant, League of Legends, Dark Souls e outros jogos para posts, discussões, builds e LFG.",
       path: "/communities",
@@ -24,13 +24,13 @@ function CommunitiesCatalog() {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
       <div className="max-w-3xl">
-        <p className="section-kicker">MGP / SOCIAL</p>
+        <p className="section-kicker">ÍMPAR / SOCIAL</p>
         <h1 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-5xl">
           {copy("Comunidades", "Communities", "Comunidades")}
         </h1>
         <p className="mt-3 text-sm leading-7 text-muted-foreground sm:text-base">
           {copy(
-            "Aqui ficam os espaços sociais do MGP. O catálogo de Jogos explica e organiza cada jogo; Comunidades é onde entram conversas, criadores, posts, discussões e conteúdo feito por quem joga.",
+            "Aqui ficam os espaços sociais do ÍMPAR. O catálogo de Jogos explica e organiza cada jogo; Comunidades é onde entram conversas, criadores, posts, discussões e conteúdo feito por quem joga.",
             "This is where MGP's social spaces live. The Games catalog explains and organizes each game; Communities is where conversations, creators, posts, discussions and player-made content belong.",
             "Aquí viven los espacios sociales de MGP. El catálogo de Juegos explica y organiza cada juego; Comunidades es donde entran conversaciones, creadores, publicaciones, debates y contenido hecho por jugadores.",
           )}
@@ -57,7 +57,7 @@ function CommunitiesCatalog() {
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-white backdrop-blur">
                     <ShieldCheck className="size-3.5" />
-                    {copy("Comunidade MGP", "MGP community", "Comunidad MGP")}
+                    {copy("Comunidade ÍMPAR", "ÍMPAR community", "Comunidad ÍMPAR")}
                   </span>
                   <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-emerald-200">
                     {copy("Aberta", "Open", "Abierta")}

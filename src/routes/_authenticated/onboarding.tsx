@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
       { title: "Complete seu perfil — MGP" },
-      { name: "description", content: "Finalize seu perfil no My Gamer Profile." },
+      { name: "description", content: "Finalize seu perfil no ÍMPAR." },
     ],
   }),
 });
@@ -129,9 +129,9 @@ function OnboardingPage() {
     if (calculatedAge < 13) {
       setError(
         copy(
-          "O MGP não permite criação de conta para menores de 13 anos.",
-          "MGP does not allow account creation for users under 13.",
-          "MGP no permite crear cuentas a menores de 13 años.",
+          "O ÍMPAR não permite criação de conta para menores de 13 anos.",
+          "ÍMPAR does not allow account creation for users under 13.",
+          "ÍMPAR no permite crear cuentas a menores de 13 años.",
         ),
       );
       return;
@@ -242,7 +242,7 @@ function OnboardingPage() {
           <CardTitle className="font-display text-2xl sm:text-3xl">{t("auth.onboarding.title")}</CardTitle>
           <CardDescription className="mx-auto max-w-xl">
             {copy(
-              "Escolha seu nome no MGP e marque os jogos que já fazem parte da sua identidade gamer.",
+              "Escolha seu nome no ÍMPAR e marque os jogos que já fazem parte da sua identidade gamer.",
               "Choose your MGP name and mark the games that are already part of your gamer identity.",
               "Elige tu nombre en MGP y marca los juegos que ya forman parte de tu identidad gamer.",
             )}

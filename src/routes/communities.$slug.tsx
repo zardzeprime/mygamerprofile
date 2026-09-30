@@ -30,8 +30,8 @@ export const Route = createFileRoute("/communities/$slug")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) return { meta: [{ title: "Comunidade não encontrada — MGP" }, { name: "robots", content: "noindex" }] };
-    const title = `${loaderData.game.name} — Comunidade MGP`;
-    const description = `Comunidade de ${loaderData.game.name} no My Gamer Profile.`;
+    const title = `${loaderData.game.name} — Comunidade ÍMPAR`;
+    const description = `Comunidade de ${loaderData.game.name} no ÍMPAR.`;
     return buildSeo({
       title,
       description,
@@ -60,7 +60,7 @@ function GameCommunityPage() {
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-black/45 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-white backdrop-blur">
                 <ShieldCheck className="size-3.5" />
-                {copy("Comunidade MGP", "MGP community", "Comunidad MGP")}
+                {copy("Comunidade ÍMPAR", "ÍMPAR community", "Comunidad ÍMPAR")}
               </span>
               <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-emerald-200 backdrop-blur">
                 {copy("Aberta", "Open", "Abierta")}
@@ -115,7 +115,7 @@ function GameCommunityPage() {
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/25 bg-gold/10 px-2.5 py-1 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-gold-strong">
                   <BadgeCheck className="size-3.5" />
-                  MGP Editorial
+                  ÍMPAR Editorial
                 </span>
                 <span className="rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                   {ageLabel}
@@ -224,8 +224,8 @@ function GameCommunityPage() {
             </div>
             <p className="mt-3 text-xs leading-5 text-muted-foreground">
               {copy(
-                "A classificação do post é um controle de apresentação, não uma autorização para conteúdo proibido. Contas de adolescentes seguem as regras de supervisão do MGP.",
-                "A post rating is a presentation control, not permission for prohibited content. Teen accounts remain subject to MGP supervision rules.",
+                "A classificação do post é um controle de apresentação, não uma autorização para conteúdo proibido. Contas de adolescentes seguem as regras de supervisão do ÍMPAR.",
+                "A post rating is a presentation control, not permission for prohibited content. Teen accounts remain subject to ÍMPAR supervision rules.",
                 "La clasificación del post es un control de presentación, no un permiso para contenido prohibido. Las cuentas adolescentes siguen las reglas de supervisión de MGP.",
               )}
             </p>

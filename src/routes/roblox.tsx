@@ -11,7 +11,7 @@ import { buildSeo } from "@/lib/seo";
 export const Route = createFileRoute("/roblox")({
   head: () =>
     buildSeo({
-      title: "Roblox: códigos, tier lists e guias — MG Profile",
+      title: "Roblox: códigos, tier lists e guias — ÍMPAR",
       description:
         "Explore hubs de Blox Fruits, Project Slayers 2 e outras experiências Roblox com códigos, tier lists, guias, builds e progressão.",
       path: "/roblox",
@@ -42,14 +42,14 @@ function RobloxCatalog() {
     >
       <div className="flex items-center gap-2">
         <Gamepad2 className="size-4 text-gold-strong" />
-        <p className="section-kicker">MGP / ROBLOX EXPERIENCES</p>
+        <p className="section-kicker">ÍMPAR / ROBLOX EXPERIENCES</p>
       </div>
       <h1 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-5xl">
         {copy("Hubs de Roblox", "Roblox hubs", "Hubs de Roblox")}
       </h1>
       <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
         {copy(
-          "Aqui cada experiência funciona como um jogo do MGP: Blox Fruits, Project Slayers 2 e os outros têm página própria, hero, abas, conteúdo e navegação própria.",
+          "Aqui cada experiência funciona como um jogo do ÍMPAR: Blox Fruits, Project Slayers 2 e os outros têm página própria, hero, abas, conteúdo e navegação própria.",
           "Each experience works like an MGP game here: Blox Fruits, Project Slayers 2 and the others get their own page, hero, tabs, content and navigation.",
           "Aquí cada experiencia funciona como un juego de MGP: Blox Fruits, Project Slayers 2 y las demás tienen página propia, hero, pestañas, contenido y navegación.",
         )}

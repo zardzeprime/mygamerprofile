@@ -33,7 +33,7 @@ function IdentitySettingsPage() {
     <SettingsLayout>
       <div className="space-y-5">
         <div>
-          <p className="section-kicker">MGP / 0.1.9</p>
+          <p className="section-kicker">ÍMPAR / 0.1.9</p>
           <h2 className="mt-2 font-display text-2xl font-semibold text-foreground">
             {copy("Dados opcionais & privacidade", "Optional data & privacy", "Datos opcionales y privacidad")}
           </h2>

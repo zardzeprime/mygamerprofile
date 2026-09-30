@@ -187,7 +187,7 @@ export function NexusChat() {
     if (!user || messages.length === 0 || typeof window === "undefined") return;
     const title = mode === "development" ? "Noctis Development" : "Noctis Gamer";
     const body = [
-      `${title} · MG Profile`,
+      `${title} · ÍMPAR`,
       new Date().toLocaleString(locale),
       "",
       ...messages.map((message) =>
@@ -313,20 +313,20 @@ export function NexusChat() {
     content:
       mode === "development"
         ? copy(
-            "Noctis na área. Manda o que você quer construir, revisar ou consertar no MGP. Eu organizo o problema e aciono o Conselho quando precisar.",
+            "Noctis na área. Manda o que você quer construir, revisar ou consertar no ÍMPAR. Eu organizo o problema e aciono o Conselho quando precisar.",
             "Noctis here. Tell me what you want to build, review or fix in MGP. I'll organize the problem and call in the Council when needed.",
             "Noctis por aquí. Dime qué quieres construir, revisar o arreglar en MGP. Organizo el problema y activo al Consejo cuando haga falta.",
           )
         : user
           ? copy(
-              "Oi! Eu sou o Noctis, Guardião do MG Profile. Pode chegar com boss, build, lore, competitivo, setup ou só pra trocar ideia. Eu tô por aqui pra te ajudar no MGP. 🎮",
-              "Hey! I'm Noctis, Guardian of MG Profile. Hit me with bosses, builds, lore, competitive play, setups or just come hang out. I'm here to help around MGP. 🎮",
-              "¡Hey! Soy Noctis, Guardián de MG Profile. Puedes venir con bosses, builds, lore, competitivo, setup o simplemente a charlar. Estoy aquí para ayudarte en MGP. 🎮",
+              "Oi! Eu sou o Noctis, Guardião do ÍMPAR. Pode chegar com boss, build, lore, competitivo, setup ou só pra trocar ideia. Eu tô por aqui pra te ajudar no ÍMPAR. 🎮",
+              "Hey! I'm Noctis, Guardian of ÍMPAR. Hit me with bosses, builds, lore, competitive play, setups or just come hang out. I'm here to help around MGP. 🎮",
+              "¡Hey! Soy Noctis, Guardián de ÍMPAR. Puedes venir con bosses, builds, lore, competitivo, setup o simplemente a charlar. Estoy aquí para ayudarte en MGP. 🎮",
             )
           : copy(
-              "Oi! Eu sou o Noctis, Guardião do MG Profile. Pode chegar com boss, build, lore, competitivo, setup ou só pra trocar ideia. Eu tô por aqui pra te ajudar no MGP. 🎮 Sem login, você tem 10 respostas grátis comigo.",
-              "Hey! I'm Noctis, Guardian of MG Profile. Hit me with bosses, builds, lore, competitive play, setups or just come hang out. I'm here to help around MGP. 🎮 You get 10 free replies before signing in.",
-              "¡Hey! Soy Noctis, Guardián de MG Profile. Puedes venir con bosses, builds, lore, competitivo, setup o simplemente a charlar. Estoy aquí para ayudarte en MGP. 🎮 Tienes 10 respuestas gratis antes de iniciar sesión.",
+              "Oi! Eu sou o Noctis, Guardião do ÍMPAR. Pode chegar com boss, build, lore, competitivo, setup ou só pra trocar ideia. Eu tô por aqui pra te ajudar no ÍMPAR. 🎮 Sem login, você tem 10 respostas grátis comigo.",
+              "Hey! I'm Noctis, Guardian of ÍMPAR. Hit me with bosses, builds, lore, competitive play, setups or just come hang out. I'm here to help around MGP. 🎮 You get 10 free replies before signing in.",
+              "¡Hey! Soy Noctis, Guardián de ÍMPAR. Puedes venir con bosses, builds, lore, competitivo, setup o simplemente a charlar. Estoy aquí para ayudarte en MGP. 🎮 Tienes 10 respuestas gratis antes de iniciar sesión.",
             ),
   };
 
@@ -382,9 +382,9 @@ export function NexusChat() {
                           )
                       : !status
                         ? copy(
-                            "Noctis está acordando o motor do MGP...",
-                            "Noctis is waking up the MGP engine...",
-                            "Noctis está activando el motor de MGP...",
+                            "Noctis está acordando o motor do ÍMPAR...",
+                            "Noctis is waking up the ÍMPAR engine...",
+                            "Noctis está activando el motor de ÍMPAR...",
                           )
                         : configuredProviders.length
                           ? copy(
@@ -393,8 +393,8 @@ export function NexusChat() {
                               `${configuredProviders.length} proveedor(es) disponible(s)`,
                             )
                           : copy(
-                              "Motor do MGP sem provedor conectado",
-                              "MGP engine has no provider connected",
+                              "Motor do ÍMPAR sem provedor conectado",
+                              "ÍMPAR engine has no provider connected",
                               "Motor de MGP sin proveedor conectado",
                             )}
                   </p>
@@ -565,7 +565,7 @@ export function NexusChat() {
                     </p>
                     <p className="mt-1 text-xs leading-5 text-muted-foreground">
                       {copy(
-                        "Entra no MGP para continuar a conversa e manter seu histórico na conta.",
+                        "Entra no ÍMPAR para continuar a conversa e manter seu histórico na conta.",
                         "Sign in to keep chatting and save your NEXUS history to your account.",
                         "Inicia sesión para seguir hablando y guardar tu historial de NEXUS en tu cuenta.",
                       )}
@@ -654,12 +654,12 @@ export function NexusChat() {
               <p>
                 {user
                   ? copy(
-                      "As mensagens podem ser processadas por provedores oficiais de IA configurados pelo MGP.",
+                      "As mensagens podem ser processadas por provedores oficiais de IA configurados pelo ÍMPAR.",
                       "Messages may be processed by official AI providers configured by MGP.",
                       "Los mensajes pueden ser procesados por proveedores oficiales de IA configurados por MGP.",
                     )
                   : copy(
-                      "Teste guest: até 10 respostas. As mensagens podem ser processadas por provedores oficiais de IA do MGP.",
+                      "Teste guest: até 10 respostas. As mensagens podem ser processadas por provedores oficiais de IA do ÍMPAR.",
                       "Guest trial: up to 10 replies. Messages may be processed by MGP's configured official AI providers.",
                       "Prueba invitada: hasta 10 respuestas. Los mensajes pueden ser procesados por proveedores oficiales de IA de MGP.",
                     )}
@@ -697,7 +697,7 @@ function formatNexusError(
     raw.includes("All configured NEXUS providers failed")
   ) {
     return copy(
-      "O Noctis teve uma falha temporária nos provedores do MGP. Sua mensagem voltou para a caixa — tente enviar de novo em alguns segundos.",
+      "O Noctis teve uma falha temporária nos provedores do ÍMPAR. Sua mensagem voltou para a caixa — tente enviar de novo em alguns segundos.",
       "Noctis hit a temporary MGP provider failure. Your message is back in the box — try sending it again in a few seconds.",
       "Noctis tuvo una falla temporal con los proveedores de MGP. Tu mensaje volvió a la caja — intenta enviarlo otra vez en unos segundos.",
     );
@@ -708,9 +708,9 @@ function formatNexusError(
     raw.includes("no official model API configured")
   ) {
     return copy(
-      "O Noctis está pronto, mas ainda falta conectar um provedor de IA ao motor do MGP.",
-      "Noctis is ready, but an AI provider still needs to be connected to the MGP engine.",
-      "Noctis está listo, pero todavía falta conectar un proveedor de IA al motor de MGP.",
+      "O Noctis está pronto, mas ainda falta conectar um provedor de IA ao motor do ÍMPAR.",
+      "Noctis is ready, but an AI provider still needs to be connected to the ÍMPAR engine.",
+      "Noctis está listo, pero todavía falta conectar un proveedor de IA al motor de ÍMPAR.",
     );
   }
 

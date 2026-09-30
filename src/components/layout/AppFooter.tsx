@@ -55,7 +55,7 @@ export function AppFooter() {
           </div>
         </div>
         <p className="mt-5 max-w-4xl border-t border-border pt-4 text-[0.68rem] leading-5 text-muted-foreground/75">
-          MG Profile was created under Riot Games&apos; &quot;Legal Jibber Jabber&quot;
+          ÍMPAR was created under Riot Games&apos; &quot;Legal Jibber Jabber&quot;
           policy using assets owned by Riot Games. Riot Games does not endorse
           or sponsor this project.
         </p>

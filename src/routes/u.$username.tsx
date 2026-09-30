@@ -71,17 +71,17 @@ export const Route = createFileRoute("/u/$username")({
     if (!loaderData) {
       return {
         meta: [
-          { title: `@${params.username} — MG Profile` },
+          { title: `@${params.username} — ÍMPAR` },
           { name: "robots", content: "noindex, follow" },
         ],
       };
     }
 
     const { profile } = loaderData;
-    const title = `${profile.display_name} (@${profile.username}) — MG Profile`;
+    const title = `${profile.display_name} (@${profile.username}) — ÍMPAR`;
     const description =
       profile.bio?.trim() ||
-      `Perfil gamer de @${profile.username} no MG Profile: jogos, atividades e Game Profiles.`;
+      `Perfil gamer de @${profile.username} no ÍMPAR: jogos, atividades e Game Profiles.`;
     const url = absoluteSiteUrl(`/u/${profile.username}`);
     const seo = buildSeo({
       title,
@@ -210,7 +210,7 @@ function ProfilePage() {
           ) : null}
           <div className="absolute inset-0 profile-hero-scrim" />
           <div className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-white/75 backdrop-blur sm:left-6 sm:top-6">
-            MG Profile
+            ÍMPAR
           </div>
         </div>
 
@@ -575,7 +575,7 @@ function SteamActivityCard({
             </div>
           ))}
           <p className="pt-1 text-[0.67rem] text-muted-foreground">
-            {postCount} {copy("posts no MGP", "MGP posts", "posts en MGP")}
+            {postCount} {copy("posts no ÍMPAR", "MGP posts", "posts en MGP")}
           </p>
         </div>
       ) : (
@@ -588,7 +588,7 @@ function SteamActivityCard({
               )
             : steam
               ? copy(
-                  "Nenhum jogo recente público encontrado. A atividade social do MGP continua aparecendo normalmente.",
+                  "Nenhum jogo recente público encontrado. A atividade social do ÍMPAR continua aparecendo normalmente.",
                   "No public recent games were found. MGP social activity still appears normally.",
                   "No se encontraron juegos recientes públicos. La actividad social de MGP sigue apareciendo normalmente.",
                 )
