@@ -186,11 +186,13 @@
   }
 }
 
-/* Large public mascot art stays anchored. The WebP supplies the character motion. */
+/* Large public mascot art stays anchored. The WebP supplies the character motion.
+ * The source canvas is intentionally small/pixel-art; preserve hard edges when enlarged. */
 img[src$="/assets/noctis/noctis-idle.webp"]:not(.noctis-mark__sprite) {
   transform: none;
   animation: none;
-  image-rendering: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 
 @keyframes noctis-thinking-glow {
