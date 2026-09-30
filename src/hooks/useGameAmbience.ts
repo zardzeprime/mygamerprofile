@@ -4,6 +4,12 @@ import { useSound } from "@/lib/sound";
 export function useGameAmbience(source?: string) {
   const { ambienceEnabled, ambienceVolume } = useSound();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const ambienceVolumeRef = useRef(ambienceVolume);
+
+  useEffect(() => {
+    ambienceVolumeRef.current = ambienceVolume;
+    if (audioRef.current) audioRef.current.volume = Math.min(1, ambienceVolume / 100);
+  }, [ambienceVolume]);
 
   useEffect(() => {
     if (!source || !ambienceEnabled) return;
@@ -13,7 +19,7 @@ export function useGameAmbience(source?: string) {
     audio.volume = 0;
     audioRef.current = audio;
     void audio.play().catch(() => undefined);
-    const target = Math.min(1, ambienceVolume / 100);
+    const target = Math.min(1, ambienceVolumeRef.current / 100);
     const interval = window.setInterval(() => {
       audio.volume = Math.min(target, audio.volume + 0.02);
       if (audio.volume >= target) window.clearInterval(interval);
@@ -31,8 +37,4 @@ export function useGameAmbience(source?: string) {
       audioRef.current = null;
     };
   }, [ambienceEnabled, source]);
-
-  useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = Math.min(1, ambienceVolume / 100);
-  }, [ambienceVolume]);
 }
