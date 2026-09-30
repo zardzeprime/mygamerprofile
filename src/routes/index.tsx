@@ -140,36 +140,42 @@ function Home() {
 
           <div className="impar-card relative min-h-[20rem] overflow-hidden rounded-[2rem_2rem_0.8rem_2rem] p-5 sm:min-h-[23rem] sm:p-7">
             <div className="impar-noctis-halo absolute inset-0" aria-hidden="true" />
-            <div className="impar-sigil absolute right-4 top-4 size-24 opacity-60" aria-hidden="true" />
-            <div className="relative z-10 flex h-full min-h-[18rem] flex-col justify-between sm:min-h-[20rem]">
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-[var(--impar-line)] bg-black/20 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--impar-spectral)] backdrop-blur">
-                  <Sparkles className="size-3.5" aria-hidden="true" />
-                  Noctis · {copy("guardião do ÍMPAR", "guardian of ÍMPAR", "guardián de ÍMPAR")}
+            <div className="relative z-10 grid min-h-[18rem] gap-5 sm:min-h-[20rem] sm:grid-cols-[minmax(0,1fr)_10.5rem] sm:gap-6">
+              <div className="flex min-w-0 flex-col justify-between">
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[var(--impar-line)] bg-black/20 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--impar-spectral)] backdrop-blur">
+                    <Sparkles className="size-3.5" aria-hidden="true" />
+                    Noctis · {copy("guardião do ÍMPAR", "guardian of ÍMPAR", "guardián de ÍMPAR")}
+                  </div>
+                  <h2 className="mt-4 max-w-sm font-display text-2xl font-semibold leading-tight sm:text-3xl">
+                    {copy("Um guia para o seu próprio caminho.", "A guide for your own path.", "Un guía para tu propio camino.")}
+                  </h2>
+                  <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
+                    {copy(
+                      "Pergunte sobre jogos, builds, sistemas ou o próprio ÍMPAR. Noctis continua sendo a IA da plataforma — agora com uma casa que combina com ele.",
+                      "Ask about games, builds, systems or ÍMPAR itself. Noctis remains the platform AI — now with a home that matches him.",
+                      "Pregunta sobre juegos, builds, sistemas o el propio ÍMPAR. Noctis sigue siendo la IA de la plataforma, ahora con una casa a su altura.",
+                    )}
+                  </p>
                 </div>
-                <h2 className="mt-4 max-w-sm font-display text-2xl font-semibold leading-tight sm:text-3xl">
-                  {copy("Um guia para o seu próprio caminho.", "A guide for your own path.", "Un guía para tu propio camino.")}
-                </h2>
-                <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
-                  {copy(
-                    "Pergunte sobre jogos, builds, sistemas ou o próprio ÍMPAR. Noctis continua sendo a IA da plataforma — agora com uma casa que combina com ele.",
-                    "Ask about games, builds, systems or ÍMPAR itself. Noctis remains the platform AI — now with a home that matches him.",
-                    "Pregunta sobre juegos, builds, sistemas o el propio ÍMPAR. Noctis sigue siendo la IA de la plataforma, ahora con una casa a su altura.",
-                  )}
-                </p>
-              </div>
-              <div className="flex items-end justify-between gap-4">
-                <Link to="/nexus" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)]">
+                <Link to="/nexus" className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)]">
                   {copy("Falar com Noctis", "Talk to Noctis", "Hablar con Noctis")}
                   <ArrowRight className="size-4" />
                 </Link>
+              </div>
+
+              <div className="relative flex min-h-40 items-end justify-center sm:min-h-0 sm:justify-end">
+                <div
+                  className="absolute bottom-2 left-1/2 h-5 w-28 -translate-x-1/2 rounded-full bg-black/35 blur-xl sm:bottom-5 sm:w-32"
+                  aria-hidden="true"
+                />
                 <img
                   src="/assets/noctis/noctis-idle.webp"
                   alt="Noctis, mascote e IA do ÍMPAR"
-                  width={180}
-                  height={180}
+                  width={168}
+                  height={168}
                   loading="eager"
-                  className="max-h-40 w-auto max-w-[46%] object-contain drop-shadow-[0_18px_30px_rgba(0,0,0,.45)] sm:max-h-48"
+                  className="relative z-10 h-auto w-36 max-w-full object-contain drop-shadow-[0_12px_20px_rgba(0,0,0,.38)] sm:w-[10.5rem]"
                 />
               </div>
             </div>
