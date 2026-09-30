@@ -15,6 +15,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { toggleReaction, updatePost, deletePost, createComment, listComments } from "@/lib/posts.functions";
 import { useServerFn } from "@tanstack/react-start";
 
+type CommentItem = Awaited<ReturnType<typeof createComment>>;
+
 interface PostCardProps {
   post: {
     id: string;
@@ -39,7 +41,7 @@ export function PostCard({ post }: PostCardProps) {
   const [editing, setEditing] = useState(false);
   const [body, setBody] = useState(post.body);
   const [commentsOpen, setCommentsOpen] = useState(false);
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<CommentItem[]>([]);
   const [commentBody, setCommentBody] = useState("");
 
   const doToggle = useServerFn(toggleReaction);
