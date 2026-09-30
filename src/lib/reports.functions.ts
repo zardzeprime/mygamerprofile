@@ -33,7 +33,7 @@ const blockUserSchema = z.object({ userId: z.string().uuid() });
 
 export const createReport = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => createReportSchema.parse(data))
+  .validator((data) => createReportSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { error } = await context.supabase.from("reports").insert({
       reporter_id: context.userId,
@@ -49,7 +49,7 @@ export const createReport = createServerFn({ method: "POST" })
 
 export const blockUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => blockUserSchema.parse(data))
+  .validator((data) => blockUserSchema.parse(data))
   .handler(async ({ context, data }) => {
     if (data.userId === context.userId) throw new Error("CANNOT_BLOCK_SELF");
 
@@ -66,7 +66,7 @@ export const blockUser = createServerFn({ method: "POST" })
 
 export const unblockUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => blockUserSchema.parse(data))
+  .validator((data) => blockUserSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { error } = await context.supabase
       .from("user_blocks")
@@ -79,7 +79,7 @@ export const unblockUser = createServerFn({ method: "POST" })
 
 export const listReports = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => listReportsSchema.parse(data ?? {}))
+  .validator((data) => listReportsSchema.parse(data ?? {}))
   .handler(async ({ context, data }) => {
     const pageSize = 50;
     const from = ((data.page ?? 1) - 1) * pageSize;
@@ -97,7 +97,7 @@ export const listReports = createServerFn({ method: "GET" })
 
 export const updateReportStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => updateReportSchema.parse(data))
+  .validator((data) => updateReportSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { data: report, error } = await context.supabase
       .from("reports")
