@@ -1,172 +1,44 @@
-.noctis-vector {
-  transform-origin: 50% 88%;
-  overflow: visible;
-}
-
-.noctis-vector__body {
-  transform-origin: 60px 92px;
-  animation: noctis-breathe 4.8s ease-in-out infinite;
-}
-
-.noctis-vector__eyes {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: noctis-blink 6.2s ease-in-out infinite;
-}
-
-.noctis-vector__ear {
-  transform-box: fill-box;
-}
-
-.noctis-vector__ear--left {
-  transform-origin: 48px 35px;
-  animation: noctis-ear-left 7.5s ease-in-out infinite;
-}
-
-.noctis-vector__ear--right {
-  transform-origin: 72px 35px;
-  animation: noctis-ear-right 8.2s ease-in-out infinite;
-}
-
-.noctis-vector__pupil {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.noctis-vector__pupil--left {
-  animation: noctis-look-left 5.6s ease-in-out infinite;
-}
-
-.noctis-vector__pupil--right {
-  animation: noctis-look-right 5.6s ease-in-out infinite;
-}
-
 .noctis-mark {
   transition: transform 180ms ease, filter 180ms ease;
 }
 
-.noctis-mark:hover .noctis-vector__body {
-  animation-duration: 2.6s;
+.noctis-mark__work {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgb(0 0 0 / 0.28));
 }
 
 .noctis-mark:hover {
   transform: translateY(-2px) scale(1.035);
-  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--impar-spectral) 20%, transparent));
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--impar-spectral) 18%, transparent));
 }
 
-/* The home card still uses the old hidden img node as a hook for the vector
- * fallback. Animate that fallback as a single crisp layer. */
+/* The Work asset already contains the character animation. The wrapper only
+ * adds a very small float so it feels integrated into the interface. */
 @supports selector(:has(*)) {
   :where(div, span):has(> img[src*="noctis-idle.webp"])::after {
-    animation: noctis-hero-float 5.4s ease-in-out infinite;
-    transform-origin: 50% 82%;
+    animation: noctis-work-hero-float 5.6s ease-in-out infinite;
+    transform-origin: 50% 88%;
   }
 }
 
-@keyframes noctis-breathe {
+@keyframes noctis-work-hero-float {
   0%,
   100% {
-    transform: translateY(0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-2.4px) scale(1.018);
-  }
-}
-
-@keyframes noctis-blink {
-  0%,
-  43%,
-  46%,
-  74%,
-  77%,
-  100% {
-    transform: scaleY(1);
-  }
-  44.5%,
-  75.5% {
-    transform: scaleY(0.08);
-  }
-}
-
-@keyframes noctis-ear-left {
-  0%,
-  70%,
-  100% {
-    transform: rotate(0deg);
-  }
-  74% {
-    transform: rotate(-4deg);
-  }
-  78% {
-    transform: rotate(2deg);
-  }
-}
-
-@keyframes noctis-ear-right {
-  0%,
-  64%,
-  100% {
-    transform: rotate(0deg);
-  }
-  68% {
-    transform: rotate(4deg);
-  }
-  72% {
-    transform: rotate(-2deg);
-  }
-}
-
-@keyframes noctis-look-left {
-  0%,
-  35%,
-  100% {
-    transform: translateX(0);
-  }
-  45%,
-  58% {
-    transform: translateX(1.8px);
-  }
-}
-
-@keyframes noctis-look-right {
-  0%,
-  35%,
-  100% {
-    transform: translateX(0);
-  }
-  45%,
-  58% {
-    transform: translateX(-1.8px);
-  }
-}
-
-@keyframes noctis-hero-float {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(-0.35deg);
-  }
-  48% {
-    transform: translate3d(0, -7px, 0) rotate(0.35deg);
-  }
-  72% {
-    transform: translate3d(0, -3px, 0) rotate(0deg);
+    transform: translate3d(0, -5px, 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .noctis-vector__body,
-  .noctis-vector__eyes,
-  .noctis-vector__ear--left,
-  .noctis-vector__ear--right,
-  .noctis-vector__pupil--left,
-  .noctis-vector__pupil--right,
+  .noctis-mark,
   :where(div, span):has(> img[src*="noctis-idle.webp"])::after {
     animation: none !important;
     transform: none !important;
-  }
-
-  .noctis-mark:hover {
-    transform: none;
-    filter: none;
+    transition: none !important;
   }
 }
