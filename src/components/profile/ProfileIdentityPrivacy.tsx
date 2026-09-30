@@ -77,8 +77,7 @@ export function ProfileIdentityPrivacy({ userId, locale }: { userId: string; loc
 
     const load = async () => {
       setLoading(true);
-      const db = supabase as any;
-      const { data, error: loadError } = await db
+      const { data, error: loadError } = await supabase
         .from("profile_identity_details")
         .select(
           "gender_label,country_code,subdivision_code,gender_visibility,country_visibility,subdivision_visibility",
@@ -120,8 +119,7 @@ export function ProfileIdentityPrivacy({ userId, locale }: { userId: string; loc
       return;
     }
 
-    const db = supabase as any;
-    const { error: saveError } = await db.from("profile_identity_details").upsert(
+    const { error: saveError } = await supabase.from("profile_identity_details").upsert(
       {
         user_id: userId,
         gender_label: state.genderLabel.trim() || null,
