@@ -81,7 +81,7 @@ function WarframeRoster({ locale }: { locale: Locale }) {
 
         <div className="grid min-w-0 lg:grid-cols-[16rem_minmax(0,1fr)]">
           <aside className="border-b border-border p-3 lg:border-b-0 lg:border-r">
-            <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
+            <div className="grid grid-cols-2 gap-2 min-[520px]:grid-cols-3 lg:grid-cols-1">
               {filtered.map((frame) => {
                 const active = selected.slug === frame.slug;
                 return (
@@ -115,7 +115,7 @@ function WarframeRoster({ locale }: { locale: Locale }) {
             ) : null}
           </aside>
 
-          <article className="min-w-0 p-5 sm:p-6">
+          <article className="min-w-0 p-3.5 min-[420px]:p-4 sm:p-6">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
               <div>
                 <p className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-gold-strong">
@@ -141,7 +141,7 @@ function WarframeRoster({ locale }: { locale: Locale }) {
               {selected.summary[locale]}
             </p>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div className="mt-6 grid grid-cols-2 gap-2.5 min-[520px]:gap-4">
               {selected.abilities.map((ability) => (
                 <AbilityCard key={ability.slot} ability={ability} locale={locale} />
               ))}
@@ -157,17 +157,17 @@ function AbilityCard({ ability, locale }: { ability: WarframeAbility; locale: Lo
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-border bg-muted/10">
+    <section className="min-w-0 overflow-hidden rounded-xl border border-border bg-muted/10 sm:rounded-2xl">
       <AbilityMedia ability={ability} locale={locale} />
-      <div className="p-4">
-        <div className="flex items-center gap-2">
+      <div className="p-3 min-[520px]:p-4">
+        <div className="flex min-w-0 items-center gap-2">
           <span className="grid size-7 place-items-center rounded-lg border border-gold/25 bg-gold/[0.07] text-xs font-bold text-gold-strong">
             {ability.slot}
           </span>
-          <h4 className="font-display text-lg font-semibold text-foreground">{ability.name[locale]}</h4>
+          <h4 className="min-w-0 text-balance font-display text-sm font-semibold leading-tight text-foreground min-[420px]:text-base sm:text-lg">{ability.name[locale]}</h4>
         </div>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">{ability.description[locale]}</p>
-        <p className="mt-3 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+        <p className="mt-2 text-xs leading-5 text-muted-foreground min-[520px]:mt-3 min-[520px]:text-sm min-[520px]:leading-6">{ability.description[locale]}</p>
+        <p className="mt-2 hidden text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground min-[520px]:block">
           {copy("Resumo editorial MGP", "MGP editorial summary", "Resumen editorial MGP")}
         </p>
       </div>
@@ -207,13 +207,13 @@ function AbilityMedia({ ability, locale }: { ability: WarframeAbility; locale: L
   }
 
   return (
-    <div className="grid aspect-video place-items-center bg-[radial-gradient(circle_at_top,rgba(212,167,44,0.10),transparent_60%),hsl(var(--muted)/0.25)] p-4 text-center">
+    <div className="grid aspect-[4/3] place-items-center bg-[radial-gradient(circle_at_top,rgba(212,167,44,0.10),transparent_60%),hsl(var(--muted)/0.25)] p-2 text-center min-[520px]:aspect-video min-[520px]:p-4">
       <div>
-        <PlayCircle className="mx-auto size-8 text-gold-strong" />
+        <PlayCircle className="mx-auto size-6 text-gold-strong min-[520px]:size-8" />
         <p className="mt-2 text-xs font-semibold text-foreground">
           {copy("Slot de vídeo preparado", "Video slot ready", "Espacio de video preparado")}
         </p>
-        <p className="mt-1 max-w-xs text-[0.7rem] leading-5 text-muted-foreground">
+        <p className="mt-1 hidden max-w-xs text-[0.7rem] leading-5 text-muted-foreground min-[520px]:block">
           {copy(
             "Entrará quando tivermos um clipe próprio ou uma fonte oficial que possa ser incorporada.",
             "It will go live when we have an owned clip or an official source that can be embedded.",
@@ -247,10 +247,10 @@ function WarframeGuides({ locale }: { locale: Locale }) {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-2 gap-2.5 min-[520px]:gap-4">
         {WARFRAME_GUIDE_SEEDS.map((guide) => (
-          <article key={guide.slug} className="surface-panel p-5 sm:p-6">
-            <div className="flex items-center justify-between gap-3">
+          <article key={guide.slug} className="surface-panel min-w-0 p-3 min-[520px]:p-5 sm:p-6">
+            <div className="flex items-center justify-between gap-2 min-[520px]:gap-3">
               <Wrench className="size-5 text-gold-strong" />
               <span className="rounded-full border border-border bg-muted/20 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                 {guide.status === "foundation"
@@ -258,10 +258,10 @@ function WarframeGuides({ locale }: { locale: Locale }) {
                   : copy("Rascunho", "Draft", "Borrador")}
               </span>
             </div>
-            <h3 className="mt-4 font-display text-xl font-semibold text-foreground">
+            <h3 className="mt-3 text-balance font-display text-base font-semibold leading-tight text-foreground min-[520px]:mt-4 min-[520px]:text-xl">
               {guide.title[locale]}
             </h3>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">{guide.description[locale]}</p>
+            <p className="mt-2 line-clamp-4 text-xs leading-5 text-muted-foreground min-[520px]:line-clamp-none min-[520px]:text-sm min-[520px]:leading-6">{guide.description[locale]}</p>
           </article>
         ))}
       </div>
