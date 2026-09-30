@@ -21,7 +21,7 @@ const deleteCommentSchema = z.object({ id: z.string().uuid() });
 const reactionSchema = z.object({ post_id: z.string().uuid() });
 
 export const listPosts = createServerFn({ method: "GET" })
-  .inputValidator((data) => listPostsSchema.parse(data ?? {}))
+  .validator((data) => listPostsSchema.parse(data ?? {}))
   .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
     const pageSize = 20;
@@ -43,7 +43,7 @@ export const listPosts = createServerFn({ method: "GET" })
 
 export const createPost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => createPostSchema.parse(data))
+  .validator((data) => createPostSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { data: post, error } = await context.supabase
       .from("posts")
@@ -63,7 +63,7 @@ export const createPost = createServerFn({ method: "POST" })
 
 export const updatePost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => updatePostSchema.parse(data))
+  .validator((data) => updatePostSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { data: post, error } = await context.supabase
       .from("posts")
@@ -78,7 +78,7 @@ export const updatePost = createServerFn({ method: "POST" })
 
 export const deletePost = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => deletePostSchema.parse(data))
+  .validator((data) => deletePostSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { error } = await context.supabase
       .from("posts")
@@ -90,7 +90,7 @@ export const deletePost = createServerFn({ method: "POST" })
   });
 
 export const listComments = createServerFn({ method: "GET" })
-  .inputValidator((data) => listCommentsSchema.parse(data))
+  .validator((data) => listCommentsSchema.parse(data))
   .handler(async ({ data }) => {
     const supabase = getSupabasePublic();
     const { data: rows, error } = await supabase
@@ -107,7 +107,7 @@ export const listComments = createServerFn({ method: "GET" })
 
 export const createComment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => createCommentSchema.parse(data))
+  .validator((data) => createCommentSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { data: comment, error } = await context.supabase
       .from("comments")
@@ -126,7 +126,7 @@ export const createComment = createServerFn({ method: "POST" })
 
 export const deleteComment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => deleteCommentSchema.parse(data))
+  .validator((data) => deleteCommentSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { error } = await context.supabase
       .from("comments")
@@ -139,7 +139,7 @@ export const deleteComment = createServerFn({ method: "POST" })
 
 export const toggleReaction = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => reactionSchema.parse(data))
+  .validator((data) => reactionSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { data: existing, error: lookupError } = await context.supabase
       .from("reactions")
@@ -166,7 +166,7 @@ export const toggleReaction = createServerFn({ method: "POST" })
 
 export const getUserReactions = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data) => reactionSchema.parse(data))
+  .validator((data) => reactionSchema.parse(data))
   .handler(async ({ context, data }) => {
     const { data: rows, error } = await context.supabase
       .from("reactions")
