@@ -33,9 +33,9 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     name: "NEXUS",
     legacyName: "NEXUS",
     epithet: "A Regente",
-    reportLabel: "NEXUS (Coordenação e IA)",
+    reportLabel: "Noctis (Coordenação e IA)",
     letter: "N",
-    accent: "#C9A95D",
+    accent: "#83E9A6",
     parentId: null,
     executionModel: "orchestrated-specialization",
     kind: "orchestrator",
@@ -259,8 +259,10 @@ export function getSpecialistCores() {
   return Object.values(AI_CORE_REGISTRY).filter((core) => core.kind === "specialist");
 }
 
-export const AI_COUNCIL_NAME = "Os Sete — Conselho da NEXUS" as const;
-export const AI_REPORT_MASTHEAD = "MG PROFILE · OS SETE" as const;
+// Public council naming follows the ÍMPAR brand. Stable IDs/nexus internals above
+// remain unchanged for routing, storage and compatibility.
+export const AI_COUNCIL_NAME = "Os Sete — Conselho do ÍMPAR" as const;
+export const AI_REPORT_MASTHEAD = "ÍMPAR · OS SETE" as const;
 
 export function getAiCoreReportLabel(id: AiCoreId) {
   return AI_CORE_REGISTRY[id].reportLabel;

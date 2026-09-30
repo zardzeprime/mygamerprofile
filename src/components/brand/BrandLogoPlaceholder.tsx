@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/i18n";
+import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
 
 export function BrandLogoPlaceholder({
@@ -11,7 +12,8 @@ export function BrandLogoPlaceholder({
   size?: "sm" | "md" | "lg";
   className?: string;
 }) {
-  const { t } = useI18n();
+  const { locale } = useI18n();
+  const fullName = localeCopy(locale, "Identidade gamer", "Gaming identity", "Identidad gamer");
 
   const markSize = size === "lg" ? "size-12" : size === "sm" ? "size-7" : "size-9";
   const textSize = size === "lg" ? "text-xl" : size === "sm" ? "text-sm" : "text-base";
@@ -19,7 +21,7 @@ export function BrandLogoPlaceholder({
   return (
     <Link
       to="/"
-      aria-label={`${t("brand.name")} — ${t("brand.full")}`}
+      aria-label={`ÍMPAR — ${fullName}`}
       className={cn("group inline-flex items-center gap-2.5", className)}
     >
       <span
@@ -40,12 +42,10 @@ export function BrandLogoPlaceholder({
         />
       </span>
       <span className="flex flex-col leading-none">
-        <span className={cn("font-display font-bold tracking-tight text-foreground", textSize)}>
-          {t("brand.name")}
-        </span>
+        <span className={cn("font-display font-bold tracking-tight text-foreground", textSize)}>ÍMPAR</span>
         {withFullName ? (
           <span className="mt-0.5 text-[0.6rem] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            {t("brand.full")}
+            {fullName}
           </span>
         ) : null}
       </span>
