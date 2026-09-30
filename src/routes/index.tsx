@@ -101,7 +101,7 @@ function Home() {
 
   return (
     <div className="impar-shell pb-16">
-      <section className="impar-grid relative isolate overflow-hidden border-b border-border/70">
+      <section className="impar-grid impar-home-hero relative isolate overflow-hidden border-b border-border/70">
         <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12 lg:py-16">
           <div className="animate-fade-in">
             <p className="impar-kicker">ÍMPAR / {copy("SUA FORMA DE JOGAR", "YOUR WAY TO PLAY", "TU FORMA DE JUGAR")}</p>
@@ -138,7 +138,7 @@ function Home() {
             </div>
           </div>
 
-          <div className="impar-card relative min-h-[20rem] overflow-hidden rounded-[2rem_2rem_0.8rem_2rem] p-5 sm:min-h-[23rem] sm:p-7">
+          <div className="impar-card impar-home-noctis-card relative min-h-[20rem] overflow-hidden rounded-[2rem_2rem_0.8rem_2rem] p-5 sm:min-h-[23rem] sm:p-7">
             <div className="impar-noctis-halo absolute inset-0" aria-hidden="true" />
             <div className="relative z-10 grid min-h-[18rem] gap-5 sm:min-h-[20rem] sm:grid-cols-[minmax(0,1fr)_10.5rem] sm:gap-6">
               <div className="flex min-w-0 flex-col justify-between">
@@ -169,14 +169,21 @@ function Home() {
                   className="absolute bottom-2 left-1/2 h-5 w-28 -translate-x-1/2 rounded-full bg-black/35 blur-xl sm:bottom-5 sm:w-32"
                   aria-hidden="true"
                 />
-                <img
-                  src="/assets/noctis/noctis-idle.webp"
-                  alt="Noctis, mascote e IA do ÍMPAR"
-                  width={168}
-                  height={168}
-                  loading="eager"
-                  className="relative z-10 h-auto w-36 max-w-full object-contain drop-shadow-[0_12px_20px_rgba(0,0,0,.38)] sm:w-[10.5rem]"
-                />
+                <picture className="relative z-10 block w-36 max-w-full drop-shadow-[0_12px_20px_rgba(0,0,0,.38)] sm:w-[11.5rem]">
+                  <source
+                    media="(prefers-reduced-motion: reduce)"
+                    srcSet="/assets/noctis/noctis-impar-web-4x.webp"
+                  />
+                  <img
+                    src="/assets/noctis/noctis-animacoes.gif"
+                    alt="Noctis, mascote e IA do ÍMPAR"
+                    width={320}
+                    height={272}
+                    loading="eager"
+                    decoding="async"
+                    className="block h-auto w-full object-contain"
+                  />
+                </picture>
               </div>
             </div>
           </div>
@@ -186,7 +193,7 @@ function Home() {
       <section className="mx-auto w-full max-w-7xl px-4 pt-7 sm:px-6 sm:pt-9">
         <div className="impar-destination-grid">
           {destinations.map(({ to, icon: Icon, title, body, index }) => (
-            <Link key={to} to={to} className="impar-card impar-card-interactive group rounded-2xl p-4 sm:p-5">
+            <Link key={to} to={to} className="impar-card impar-card-interactive impar-home-destination group rounded-2xl p-4 sm:p-5">
               <div className="flex items-center justify-between gap-3">
                 <div className="grid size-9 place-items-center rounded-xl bg-[var(--impar-spectral-soft)] text-[var(--impar-spectral)]">
                   <Icon className="size-4" aria-hidden="true" />
