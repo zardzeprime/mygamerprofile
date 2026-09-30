@@ -125,6 +125,121 @@
     radial-gradient(circle at 66% 58%, color-mix(in srgb, var(--impar-amber) 16%, transparent), transparent 42%);
 }
 
+/* Noctis motion system -----------------------------------------------------
+ * The WebP already contains the sprite loop. CSS only adds physical presence:
+ * breathing, a tiny hover response and a distinct thinking state.
+ */
+.noctis-mark {
+  isolation: isolate;
+  transform-origin: 50% 82%;
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.noctis-mark__sprite {
+  width: 132%;
+  height: 132%;
+  max-width: none;
+  object-fit: contain;
+  transform-origin: 50% 84%;
+  filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.28));
+  will-change: transform;
+  animation: noctis-idle-drift 4.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.noctis-mark:hover {
+  transform: translateY(-1px) scale(1.055);
+}
+
+.noctis-mark:active {
+  transform: translateY(0) scale(0.95);
+}
+
+/* In the chat typing row, the spinner is the direct sibling of the mark. */
+@supports selector(:has(*)) {
+  .noctis-mark:has(+ .animate-spin) .noctis-mark__sprite {
+    animation: noctis-thinking 0.92s ease-in-out infinite;
+  }
+
+  button[aria-label$="Noctis"]:has(.noctis-mark)::before {
+    content: "";
+    position: absolute;
+    inset: -0.32rem;
+    z-index: -1;
+    border: 1px solid color-mix(in srgb, var(--impar-spectral) 48%, transparent);
+    border-radius: inherit;
+    pointer-events: none;
+    animation: noctis-launcher-ring 2.7s ease-out infinite;
+  }
+}
+
+/* Large public mascot art receives a slower float than the compact mark. */
+img[src$="/assets/noctis/noctis-idle.webp"]:not(.noctis-mark__sprite) {
+  transform-origin: 50% 88%;
+  will-change: transform;
+  animation: noctis-hero-float 5.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes noctis-idle-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-0.35deg) scale(1);
+  }
+  46% {
+    transform: translate3d(0, -1.6px, 0) rotate(0.35deg) scale(1.012);
+  }
+  72% {
+    transform: translate3d(0, -0.6px, 0) rotate(0deg) scale(0.997);
+  }
+}
+
+@keyframes noctis-thinking {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-0.8deg) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -2.7px, 0) rotate(0.8deg) scale(1.025);
+  }
+}
+
+@keyframes noctis-hero-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-0.25deg);
+  }
+  48% {
+    transform: translate3d(0, -7px, 0) rotate(0.45deg);
+  }
+  72% {
+    transform: translate3d(0, -3px, 0) rotate(0deg);
+  }
+}
+
+@keyframes noctis-launcher-ring {
+  0% {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  28% {
+    opacity: 0.52;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.16);
+  }
+}
+
+/* Keep the floating assistant usable around mobile browser chrome/safe areas. */
+button[aria-label$="Noctis"] {
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  right: max(1rem, env(safe-area-inset-right));
+}
+
+button[aria-label$="Noctis"] + section {
+  bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 4.5rem);
+  max-height: calc(100dvh - 6.5rem);
+}
+
 .impar-destination-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -137,12 +252,29 @@
   }
 }
 
+@media (max-width: 639px) {
+  button[aria-label$="Noctis"] + section {
+    right: 0.5rem;
+    width: calc(100dvw - 1rem);
+    border-radius: 1.35rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .impar-card-interactive {
+  .impar-card-interactive,
+  .noctis-mark {
     transition: none;
   }
 
-  .impar-card-interactive:hover {
+  .impar-card-interactive:hover,
+  .noctis-mark:hover,
+  .noctis-mark:active {
     transform: none;
+  }
+
+  .noctis-mark__sprite,
+  img[src$="/assets/noctis/noctis-idle.webp"]:not(.noctis-mark__sprite),
+  button[aria-label$="Noctis"]::before {
+    animation: none !important;
   }
 }
