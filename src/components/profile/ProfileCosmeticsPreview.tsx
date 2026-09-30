@@ -25,8 +25,7 @@ export function ProfileCosmeticsPreview({ locale }: { locale: Locale }) {
   useEffect(() => {
     let active = true;
     const load = async () => {
-      const db = supabase as any;
-      const { data } = await db
+      const { data } = await supabase
         .from("profile_cosmetics")
         .select("slug,kind,name,description,css_class,rarity,animated,game_slug")
         .eq("active", true)
