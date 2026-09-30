@@ -42,6 +42,24 @@ const patch = (
 
 // Vassago snapshot: only Riot Games / LoL Esports official sources.
 export const LEAGUE_NEWS: LeagueNewsItem[] = [
+  {
+    id: "lcp-2027-wild-card-open-invitation",
+    category: "esports",
+    publishedAt: "2026-09-23T00:00:00.000Z",
+    official: true,
+    title: localized(
+      "LCP 2027 abre convite para organizadores de Wild Card",
+      "LCP 2027 opens Wild Card organizer invitation",
+      "LCP 2027 abre invitación para organizadores de Wild Card",
+    ),
+    summary: localized(
+      "O LoL Esports abriu manifestação de interesse para organizações que queiram operar torneios Wild Card em regiões da APAC, ampliando o caminho competitivo para o LCP em 2027. Apenas candidatos selecionados serão contatados enquanto o formato final ainda é definido.",
+      "LoL Esports opened expressions of interest for organizations that want to run Wild Card tournaments in APAC regions, expanding the competitive path into the LCP in 2027. Only shortlisted applicants will be contacted while the final format is still being defined.",
+      "LoL Esports abrió expresiones de interés para organizaciones que quieran operar torneos Wild Card en regiones de APAC, ampliando la ruta competitiva hacia el LCP en 2027. Solo se contactará a los candidatos seleccionados mientras se define el formato final.",
+    ),
+    url: "https://lolesports.com/en-ph/news/lcp-2027-wild-card-open-invitation",
+    sourceLabel: "LoL Esports",
+  },
   patch(
     "26.19",
     "2026-09-22T18:00:00.000Z",
