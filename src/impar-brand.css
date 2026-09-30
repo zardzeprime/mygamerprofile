@@ -140,8 +140,8 @@
 
 .impar-noctis-halo {
   background:
-    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--impar-spectral) 13%, transparent), transparent 39%),
-    linear-gradient(145deg, transparent 55%, color-mix(in srgb, var(--impar-spectral) 4%, transparent));
+    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--impar-spectral) 15%, transparent), transparent 43%),
+    linear-gradient(145deg, transparent 53%, color-mix(in srgb, var(--impar-spectral) 5%, transparent));
 }
 
 /* The animated source asset is temporarily disabled everywhere. It is only
@@ -171,31 +171,31 @@ img[src*="noctis-idle.webp"] {
 
   :where(div, span):has(> img[src*="noctis-idle.webp"])::after {
     content: "";
-    position: relative;
+    position: absolute;
     z-index: 10;
+    right: -1.25rem;
+    bottom: -0.75rem;
     display: block;
-    width: min(13.75rem, 132%);
+    width: 16rem;
     aspect-ratio: 1;
-    margin-inline: auto;
-    transform: translateX(0.45rem);
     background-image: var(--noctis-vector);
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
-    filter: drop-shadow(0 15px 28px rgb(0 0 0 / 0.38));
+    filter: drop-shadow(0 18px 34px rgb(0 0 0 / 0.42));
   }
 
   button[aria-label$="Noctis"]:has(.noctis-mark) {
-    width: 4rem;
-    height: 4rem;
+    width: 4.25rem;
+    height: 4.25rem;
     background: color-mix(in srgb, var(--impar-night-raised) 94%, black);
-    border-color: color-mix(in srgb, var(--impar-spectral) 38%, transparent);
-    box-shadow: 0 14px 34px rgb(0 0 0 / 0.36);
+    border-color: color-mix(in srgb, var(--impar-spectral) 42%, transparent);
+    box-shadow: 0 15px 36px rgb(0 0 0 / 0.38);
   }
 
   button[aria-label$="Noctis"]:has(.noctis-mark) .noctis-mark {
-    width: 2.8rem;
-    height: 2.8rem;
+    width: 3rem;
+    height: 3rem;
   }
 
   button[aria-label$="Noctis"]:has(> svg) {
@@ -214,8 +214,8 @@ button[aria-label$="Noctis"] {
 }
 
 button[aria-label$="Noctis"] + section {
-  bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 5rem);
-  max-height: calc(100dvh - 7rem);
+  bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 5.25rem);
+  max-height: calc(100dvh - 7.25rem);
 }
 
 .impar-destination-grid {
@@ -239,18 +239,21 @@ button[aria-label$="Noctis"] + section {
 
   @supports selector(:has(*)) {
     :where(div, span):has(> img[src*="noctis-idle.webp"])::after {
-      width: min(10.75rem, 100%);
-      transform: none;
+      position: relative;
+      right: auto;
+      bottom: auto;
+      width: min(11.5rem, 100%);
+      margin-inline: auto;
     }
 
     button[aria-label$="Noctis"]:has(.noctis-mark) {
-      width: 3.75rem;
-      height: 3.75rem;
+      width: 3.85rem;
+      height: 3.85rem;
     }
 
     button[aria-label$="Noctis"]:has(.noctis-mark) .noctis-mark {
-      width: 2.55rem;
-      height: 2.55rem;
+      width: 2.65rem;
+      height: 2.65rem;
     }
   }
 }
