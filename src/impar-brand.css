@@ -23,6 +23,11 @@
   --color-gold: var(--impar-prestige);
   --color-gold-strong: var(--impar-spectral);
   --color-gold-soft: color-mix(in srgb, var(--impar-spectral) 13%, transparent);
+  --primary: var(--impar-spectral);
+  --primary-foreground: #07120c;
+  --ring: var(--impar-spectral);
+  --accent: color-mix(in srgb, var(--impar-spectral) 14%, var(--impar-night-raised));
+  --accent-foreground: var(--foreground);
 }
 
 ::selection {
@@ -97,6 +102,20 @@
   transform: translateY(-2px);
 }
 
+/* Public ÍMPAR actions are spectral. Gold stays available as a prestige token. */
+.brand-button {
+  background-color: var(--impar-spectral);
+  color: #07120c;
+}
+
+.brand-button:hover {
+  background-color: var(--impar-spectral-strong);
+}
+
+.brand-button-secondary:hover {
+  background-color: color-mix(in srgb, var(--impar-spectral) 13%, var(--impar-night-raised));
+}
+
 .impar-sigil {
   position: relative;
   display: grid;
@@ -160,6 +179,19 @@
     animation: noctis-thinking 0.92s ease-in-out infinite;
   }
 
+  button[aria-label$="Noctis"]:has(.noctis-mark) {
+    background: color-mix(in srgb, var(--impar-night-raised) 92%, black);
+    border-color: color-mix(in srgb, var(--impar-spectral) 45%, transparent);
+    box-shadow:
+      0 14px 38px rgb(0 0 0 / 0.42),
+      inset 0 0 0 1px color-mix(in srgb, var(--impar-spectral) 9%, transparent);
+  }
+
+  button[aria-label$="Noctis"]:has(.noctis-mark) .noctis-mark__sprite {
+    width: 172%;
+    height: 172%;
+  }
+
   button[aria-label$="Noctis"]:has(.noctis-mark)::before {
     content: "";
     position: absolute;
@@ -170,9 +202,18 @@
     pointer-events: none;
     animation: noctis-launcher-ring 2.7s ease-out infinite;
   }
+
+  button[aria-label$="Noctis"]:has(> svg) {
+    background: var(--impar-spectral);
+    border-color: var(--impar-spectral);
+  }
+
+  button[aria-label$="Noctis"]:has(> svg) > svg {
+    color: var(--impar-night) !important;
+  }
 }
 
-/* Large public mascot art receives a slower float than the compact mark. */
+/* Large public mascot art gets more presence than the compact chat mark. */
 img[src$="/assets/noctis/noctis-idle.webp"]:not(.noctis-mark__sprite) {
   transform-origin: 50% 88%;
   will-change: transform;
@@ -205,13 +246,13 @@ img[src$="/assets/noctis/noctis-idle.webp"]:not(.noctis-mark__sprite) {
 @keyframes noctis-hero-float {
   0%,
   100% {
-    transform: translate3d(0, 0, 0) rotate(-0.25deg);
+    transform: translate3d(-2px, -2px, 0) rotate(-0.25deg) scale(1.52);
   }
   48% {
-    transform: translate3d(0, -7px, 0) rotate(0.45deg);
+    transform: translate3d(-2px, -10px, 0) rotate(0.45deg) scale(1.56);
   }
   72% {
-    transform: translate3d(0, -3px, 0) rotate(0deg);
+    transform: translate3d(-2px, -5px, 0) rotate(0deg) scale(1.5);
   }
 }
 
@@ -258,6 +299,16 @@ button[aria-label$="Noctis"] + section {
     width: calc(100dvw - 1rem);
     border-radius: 1.35rem;
   }
+
+  @keyframes noctis-hero-float {
+    0%,
+    100% {
+      transform: translate3d(-1px, -1px, 0) rotate(-0.2deg) scale(1.3);
+    }
+    50% {
+      transform: translate3d(-1px, -6px, 0) rotate(0.35deg) scale(1.34);
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -276,5 +327,6 @@ button[aria-label$="Noctis"] + section {
   img[src$="/assets/noctis/noctis-idle.webp"]:not(.noctis-mark__sprite),
   button[aria-label$="Noctis"]::before {
     animation: none !important;
+    transform: none !important;
   }
 }
