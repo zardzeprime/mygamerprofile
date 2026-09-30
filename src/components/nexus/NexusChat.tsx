@@ -185,20 +185,20 @@ export function NexusChat() {
 
   const exportCurrentChat = () => {
     if (!user || messages.length === 0 || typeof window === "undefined") return;
-    const title = mode === "development" ? "NEXUS Development" : "NEXUS Gamer";
+    const title = mode === "development" ? "Noctis Development" : "Noctis Gamer";
     const body = [
       `${title} · MG Profile`,
       new Date().toLocaleString(locale),
       "",
       ...messages.map((message) =>
-        `${message.role === "user" ? copy("Você", "You", "Tú") : "NEXUS"}: ${message.content}`,
+        `${message.role === "user" ? copy("Você", "You", "Tú") : "Noctis"}: ${message.content}`,
       ),
     ].join("\n\n");
     const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `mg-profile-nexus-${mode}-${new Date().toISOString().slice(0, 10)}.txt`;
+    link.download = `mg-profile-noctis-${mode}-${new Date().toISOString().slice(0, 10)}.txt`;
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -209,9 +209,9 @@ export function NexusChat() {
     if (!user || !threadId || sending) return;
     const confirmed = window.confirm(
       copy(
-        "Excluir esta conversa da NEXUS? Essa ação não pode ser desfeita.",
-        "Delete this NEXUS conversation? This cannot be undone.",
-        "¿Eliminar esta conversación de NEXUS? Esta acción no se puede deshacer.",
+        "Excluir esta conversa com o Noctis? Essa ação não pode ser desfeita.",
+        "Delete this Noctis conversation? This cannot be undone.",
+        "¿Eliminar esta conversación con Noctis? Esta acción no se puede deshacer.",
       ),
     );
     if (!confirmed) return;
@@ -313,20 +313,20 @@ export function NexusChat() {
     content:
       mode === "development"
         ? copy(
-            "NEXUS online. Manda o que você quer construir, revisar ou consertar no MGP. Eu organizo o problema e puxo os núcleos certos quando precisar.",
-            "NEXUS online. Tell me what you want to build, review or fix in MGP. I'll organize the problem and pull in the right cores when needed.",
-            "NEXUS en línea. Dime qué quieres construir, revisar o arreglar en MGP. Organizo el problema y activo los núcleos adecuados cuando haga falta.",
+            "Noctis na área. Manda o que você quer construir, revisar ou consertar no MGP. Eu organizo o problema e aciono o Conselho quando precisar.",
+            "Noctis here. Tell me what you want to build, review or fix in MGP. I'll organize the problem and call in the Council when needed.",
+            "Noctis por aquí. Dime qué quieres construir, revisar o arreglar en MGP. Organizo el problema y activo al Consejo cuando haga falta.",
           )
         : user
           ? copy(
-              "E aí! Eu sou a NEXUS, a IA gamer do MGP. Pode chegar com boss, build, lore, competitivo, setup ou só pra trocar ideia. 🎮",
-              "Yo! I'm NEXUS, MGP's gamer AI. Hit me with bosses, builds, lore, competitive play, setups or just come hang out. 🎮",
-              "¡Hey! Soy NEXUS, la IA gamer de MGP. Puedes venir con bosses, builds, lore, competitivo, setup o simplemente a charlar. 🎮",
+              "Oi! Eu sou o Noctis, Guardião do MG Profile. Pode chegar com boss, build, lore, competitivo, setup ou só pra trocar ideia. Eu tô por aqui pra te ajudar no MGP. 🎮",
+              "Hey! I'm Noctis, Guardian of MG Profile. Hit me with bosses, builds, lore, competitive play, setups or just come hang out. I'm here to help around MGP. 🎮",
+              "¡Hey! Soy Noctis, Guardián de MG Profile. Puedes venir con bosses, builds, lore, competitivo, setup o simplemente a charlar. Estoy aquí para ayudarte en MGP. 🎮",
             )
           : copy(
-              "E aí! Eu sou a NEXUS, a IA gamer do MGP. Pode chegar com boss, build, lore, competitivo, setup ou só pra trocar ideia. 🎮 Sem login, você tem 10 respostas grátis comigo.",
-              "Yo! I'm NEXUS, MGP's gamer AI. Hit me with bosses, builds, lore, competitive play, setups or just come hang out. 🎮 You get 10 free replies before signing in.",
-              "¡Hey! Soy NEXUS, la IA gamer de MGP. Puedes venir con bosses, builds, lore, competitivo, setup o simplemente a charlar. 🎮 Tienes 10 respuestas gratis antes de iniciar sesión.",
+              "Oi! Eu sou o Noctis, Guardião do MG Profile. Pode chegar com boss, build, lore, competitivo, setup ou só pra trocar ideia. Eu tô por aqui pra te ajudar no MGP. 🎮 Sem login, você tem 10 respostas grátis comigo.",
+              "Hey! I'm Noctis, Guardian of MG Profile. Hit me with bosses, builds, lore, competitive play, setups or just come hang out. I'm here to help around MGP. 🎮 You get 10 free replies before signing in.",
+              "¡Hey! Soy Noctis, Guardián de MG Profile. Puedes venir con bosses, builds, lore, competitivo, setup o simplemente a charlar. Estoy aquí para ayudarte en MGP. 🎮 Tienes 10 respuestas gratis antes de iniciar sesión.",
             ),
   };
 
@@ -347,7 +347,7 @@ export function NexusChat() {
         type="button"
         onClick={() => setOpen((value) => !value)}
         className="fixed bottom-5 right-5 z-[70] grid size-14 place-items-center rounded-full border border-gold/45 bg-foreground text-gold shadow-lift transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
-        aria-label={copy("Abrir NEXUS", "Open NEXUS", "Abrir NEXUS")}
+        aria-label={copy("Abrir Noctis", "Open Noctis", "Abrir Noctis")}
       >
         {open ? <X className="size-5 text-background" /> : <NexusMark className="size-7" />}
       </button>
@@ -358,11 +358,11 @@ export function NexusChat() {
             <div className="flex items-center justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
                 <div className="grid size-10 shrink-0 place-items-center rounded-2xl border border-gold/20 bg-gold/10 text-gold-strong">
-                  <NexusMark className="size-6" title="NEXUS" />
+                  <NexusMark className="size-6" title="Noctis" />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <h2 className="font-display text-base font-bold text-foreground">NEXUS</h2>
+                    <h2 className="font-display text-base font-bold text-foreground">Noctis</h2>
                     <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                       {mode === "development" ? "DEV" : "GAMER"}
                     </span>
@@ -382,9 +382,9 @@ export function NexusChat() {
                           )
                       : !status
                         ? copy(
-                            "Verificando motor da NEXUS...",
-                            "Checking NEXUS engine...",
-                            "Verificando motor de NEXUS...",
+                            "Noctis está acordando o motor do MGP...",
+                            "Noctis is waking up the MGP engine...",
+                            "Noctis está activando el motor de MGP...",
                           )
                         : configuredProviders.length
                           ? copy(
@@ -393,9 +393,9 @@ export function NexusChat() {
                               `${configuredProviders.length} proveedor(es) disponible(s)`,
                             )
                           : copy(
-                              "NEXUS sem provedor conectado",
-                              "NEXUS has no provider connected",
-                              "NEXUS sin proveedor conectado",
+                              "Motor do MGP sem provedor conectado",
+                              "MGP engine has no provider connected",
+                              "Motor de MGP sin proveedor conectado",
                             )}
                   </p>
                 </div>
@@ -637,7 +637,7 @@ export function NexusChat() {
                           "Sign in to keep chatting",
                           "Inicia sesión para continuar",
                         )
-                      : copy("Fale com a NEXUS...", "Talk to NEXUS...", "Habla con NEXUS...")
+                      : copy("Fale com o Noctis...", "Talk to Noctis...", "Habla con Noctis...")
                 }
                 className="max-h-32 min-h-11 flex-1 resize-none rounded-2xl border border-input bg-background px-3.5 py-3 text-sm text-foreground outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-gold/30 disabled:opacity-50"
               />
@@ -697,9 +697,9 @@ function formatNexusError(
     raw.includes("All configured NEXUS providers failed")
   ) {
     return copy(
-      "A NEXUS teve uma falha temporária nos provedores. Sua mensagem voltou para a caixa — tente enviar de novo em alguns segundos.",
-      "NEXUS hit a temporary provider failure. Your message is back in the box — try sending it again in a few seconds.",
-      "NEXUS tuvo una falla temporal con los proveedores. Tu mensaje volvió a la caja — intenta enviarlo otra vez en unos segundos.",
+      "O Noctis teve uma falha temporária nos provedores do MGP. Sua mensagem voltou para a caixa — tente enviar de novo em alguns segundos.",
+      "Noctis hit a temporary MGP provider failure. Your message is back in the box — try sending it again in a few seconds.",
+      "Noctis tuvo una falla temporal con los proveedores de MGP. Tu mensaje volvió a la caja — intenta enviarlo otra vez en unos segundos.",
     );
   }
 
@@ -708,9 +708,9 @@ function formatNexusError(
     raw.includes("no official model API configured")
   ) {
     return copy(
-      "A NEXUS está instalada, mas ainda falta conectar um provedor de IA no servidor.",
-      "NEXUS is installed, but an AI provider still needs to be connected on the server.",
-      "NEXUS está instalada, pero todavía falta conectar un proveedor de IA en el servidor.",
+      "O Noctis está pronto, mas ainda falta conectar um provedor de IA ao motor do MGP.",
+      "Noctis is ready, but an AI provider still needs to be connected to the MGP engine.",
+      "Noctis está listo, pero todavía falta conectar un proveedor de IA al motor de MGP.",
     );
   }
 
@@ -720,25 +720,25 @@ function formatNexusError(
     raw.includes("NEXUS_RUNTIME_ERROR")
   ) {
     return copy(
-      "Não consegui verificar a NEXUS agora. Tente novamente — isso não significa que o motor de IA esteja desconectado.",
-      "I couldn't verify NEXUS right now. Try again — this does not mean the AI engine is disconnected.",
-      "No pude verificar NEXUS ahora. Inténtalo de nuevo; esto no significa que el motor de IA esté desconectado.",
+      "Não consegui acordar o Noctis agora. Tente novamente — isso não significa que o motor de IA esteja desconectado.",
+      "I couldn't wake Noctis right now. Try again — this does not mean the AI engine is disconnected.",
+      "No pude activar a Noctis ahora. Inténtalo de nuevo; esto no significa que el motor de IA esté desconectado.",
     );
   }
 
   if (raw.includes("NEXUS_AUTH_SESSION_MISSING") || raw.includes("NEXUS_AUTH_INVALID")) {
     return copy(
-      "Sua sessão precisa ser renovada para abrir a NEXUS. Entre novamente se o problema continuar.",
-      "Your session needs to be refreshed to open NEXUS. Sign in again if the problem continues.",
-      "Tu sesión necesita renovarse para abrir NEXUS. Inicia sesión de nuevo si el problema continúa.",
+      "Sua sessão precisa ser renovada para abrir o Noctis. Entre novamente se o problema continuar.",
+      "Your session needs to be refreshed to open Noctis. Sign in again if the problem continues.",
+      "Tu sesión necesita renovarse para abrir Noctis. Inicia sesión de nuevo si el problema continúa.",
     );
   }
 
   if (!authenticated) {
     return copy(
-      "A NEXUS tropeçou nessa mensagem. Tenta de novo em alguns segundos.",
-      "NEXUS stumbled on that message. Try again in a few seconds.",
-      "NEXUS tropezó con ese mensaje. Inténtalo de nuevo en unos segundos.",
+      "O Noctis tropeçou nessa mensagem. Tenta de novo em alguns segundos.",
+      "Noctis stumbled on that message. Try again in a few seconds.",
+      "Noctis tropezó con ese mensaje. Inténtalo de nuevo en unos segundos.",
     );
   }
 
