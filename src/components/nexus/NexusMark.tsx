@@ -23,14 +23,20 @@ export function NexusMark({ className, title = "Noctis" }: NexusMarkProps) {
       aria-label={title}
       title={title}
     >
-      <img
-        src="/assets/noctis/noctis-idle-work.webp"
-        alt=""
-        aria-hidden="true"
-        draggable={false}
-        decoding="async"
-        className="noctis-mark__work pointer-events-none size-full select-none object-contain"
-      />
+      <picture className="pointer-events-none size-full">
+        <source
+          media="(prefers-reduced-motion: reduce)"
+          srcSet="/assets/noctis/noctis-idle-work.webp"
+        />
+        <img
+          src="/assets/noctis/noctis-animacoes.gif"
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          decoding="async"
+          className="noctis-mark__work pointer-events-none size-full select-none object-contain"
+        />
+      </picture>
     </span>
   );
 }
