@@ -43,6 +43,25 @@ const patch = (
 // Vassago snapshot: only Riot Games / LoL Esports official sources.
 export const LEAGUE_NEWS: LeagueNewsItem[] = [
   {
+    id: "worlds-2026-anthem-true-damage",
+    category: "esports",
+    publishedAt: "2026-09-29T00:00:00.000Z",
+    upcoming: true,
+    official: true,
+    title: localized(
+      "True Damage retorna com o hino do Worlds 2026",
+      "True Damage returns with the Worlds 2026 anthem",
+      "True Damage regresa con el himno de Worlds 2026",
+    ),
+    summary: localized(
+      "O LoL Esports confirmou True Damage em Know My Name, o hino do Mundial 2026. A música e o videoclipe oficial estreiam em 8 de outubro às 18h PDT e o vídeo celebra Faker.",
+      "LoL Esports confirmed True Damage for Know My Name, the 2026 Worlds anthem. The track and official music video premiere October 8 at 6 PM PDT, with the video celebrating Faker.",
+      "LoL Esports confirmó a True Damage para Know My Name, el himno de Worlds 2026. La canción y el video oficial se estrenan el 8 de octubre a las 18:00 PDT y el video celebra a Faker.",
+    ),
+    url: "https://lolesports.com/en-gb/news/worlds-anthem-presented-by-true-damage",
+    sourceLabel: "LoL Esports",
+  },
+  {
     id: "lcp-2027-wild-card-open-invitation",
     category: "esports",
     publishedAt: "2026-09-23T00:00:00.000Z",
@@ -142,5 +161,26 @@ export const LEAGUE_NEWS: LeagueNewsItem[] = [
     "Atualizações de Campeões e sistemas, além da chegada de novos conteúdos ao League Classic.",
     "Champion and system updates alongside new League Classic content.",
     "Actualizaciones de campeones y sistemas junto con nuevo contenido de League Classic.",
+  ),
+  patch(
+    "26.15",
+    "2026-07-28T18:00:00.000Z",
+    "Lote oficial de balanceamento da Riot para campeões, itens e runas, incorporado ao arquivo histórico do MGP.",
+    "Riot's official balance batch for champions, items and runes, added to the MGP historical archive.",
+    "Lote oficial de balance de Riot para campeones, objetos y runas, incorporado al archivo histórico de MGP.",
+  ),
+  patch(
+    "26.14",
+    "2026-07-14T18:00:00.000Z",
+    "Atualização oficial com mudanças de jogo e conteúdo competitivo, preservada na cronologia do hub.",
+    "Official game update with gameplay and competitive content changes, preserved in the hub chronology.",
+    "Actualización oficial con cambios de juego y contenido competitivo, preservada en la cronología del hub.",
+  ),
+  patch(
+    "26.13",
+    "2026-06-30T18:00:00.000Z",
+    "Atualização oficial da Riot adicionada ao backfill cronológico do MGP.",
+    "Official Riot update added to MGP's chronological backfill.",
+    "Actualización oficial de Riot añadida al backfill cronológico de MGP.",
   ),
 ];
