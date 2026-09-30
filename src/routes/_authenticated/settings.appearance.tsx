@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/settings/appearance")({
   head: () => ({
     meta: [
       { title: "Aparência — MGP" },
-      { name: "description", content: "Personalize a aparência do My Gamer Profile." },
+      { name: "description", content: "Personalize a aparência do ÍMPAR." },
     ],
   }),
   component: SettingsAppearancePage,
@@ -36,7 +36,7 @@ function SettingsAppearancePage() {
           <h2 className="mt-1 font-display text-2xl font-semibold">{t("settings.appearance")}</h2>
           <p className="mt-2 max-w-xl text-sm text-muted-foreground">
             {copy(
-              "Dê o seu tom ao MGP. A cor principal da interface pode mudar com você, sem perder a estrutura da marca.",
+              "Dê o seu tom ao ÍMPAR. A cor principal da interface pode mudar com você, sem perder a estrutura da marca.",
               "Make MGP feel like you. The interface signal color can change with you without losing the brand structure.",
               "Dale tu tono a MGP. El color principal de la interfaz puede cambiar contigo sin perder la estructura de la marca.",
             )}
@@ -128,7 +128,7 @@ function SettingsAppearancePage() {
           </p>
           <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
             {([
-              ["classic", copy("MGP padrão", "MGP default", "MGP estándar"), MousePointer2],
+              ["classic", copy("MGP padrão", "MGP default", "ÍMPAR estándar"), MousePointer2],
               ["sword", copy("Espada", "Sword", "Espada"), Sword],
               ["axe", copy("Machado", "Axe", "Hacha"), Axe],
               ["reticle", copy("Mira", "Reticle", "Mira"), Crosshair],

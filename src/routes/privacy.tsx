@@ -16,9 +16,9 @@ export const Route = createFileRoute("/privacy")({
   component: PrivacyPage,
   head: () =>
     buildSeo({
-      title: "Política de Privacidade — MG Profile",
+      title: "Política de Privacidade — ÍMPAR",
       description:
-        "Saiba como o MG Profile coleta, usa, compartilha e protege dados pessoais.",
+        "Saiba como o ÍMPAR coleta, usa, compartilha e protege dados pessoais.",
       path: "/privacy",
     }),
 });
@@ -34,10 +34,10 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          O My Gamer Profile (MGP) é um projeto independente de comunidade
+          O ÍMPAR (MGP) é um projeto independente de comunidade
           gamer, mantido no Brasil por{" "}
           <strong className="text-foreground">{LEGAL_OPERATOR_NAME}</strong>.
-          Para os tratamentos descritos nesta Política, o responsável pelo MGP
+          Para os tratamentos descritos nesta Política, o responsável pelo ÍMPAR
           determina as finalidades e os meios de uso dos dados e atua como
           controlador nos termos da Lei Geral de Proteção de Dados Pessoais
           (LGPD).
@@ -59,13 +59,13 @@ const sections: LegalSection[] = [
     title: "Dados que tratamos",
     content: (
       <>
-        <p>Dependendo de como você usa o MGP, podemos tratar:</p>
+        <p>Dependendo de como você usa o ÍMPAR, podemos tratar:</p>
         <ul className={listClassName}>
           <li>
             <strong className="text-foreground">Conta e autenticação:</strong>{" "}
             e-mail, identificador de usuário, estado da sessão e registro da
             versão dos documentos aceita no cadastro. A senha é processada pelo
-            provedor de autenticação e não fica disponível ao MGP em texto
+            provedor de autenticação e não fica disponível ao ÍMPAR em texto
             legível.
           </li>
           <li>
@@ -184,7 +184,7 @@ const sections: LegalSection[] = [
         <p>
           Não publicamos seu e-mail de acesso nem sua data de nascimento. Antes
           de postar, considere que outras pessoas podem copiar ou compartilhar
-          conteúdo público fora do MGP. Configurações de privacidade reduzem a
+          conteúdo público fora do ÍMPAR. Configurações de privacidade reduzem a
           exposição futura, mas não apagam cópias já feitas por terceiros.
         </p>
         <p>
@@ -203,14 +203,14 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          O MGP permite autenticação opcional com Google e conexão de serviços
+          O ÍMPAR permite autenticação opcional com Google e conexão de serviços
           de jogos como Steam; integrações futuras, como Riot Games, dependem
           das políticas, aprovações e capacidades técnicas de cada fornecedor.
-          Nenhum desses fluxos deve exigir que você entregue ao MGP a senha do
+          Nenhum desses fluxos deve exigir que você entregue ao ÍMPAR a senha do
           serviço; a autenticação deve ocorrer pelo fluxo oficial do provedor.
         </p>
         <p>
-          Antes da conexão, o MGP informará quais dados pretende acessar e para
+          Antes da conexão, o ÍMPAR informará quais dados pretende acessar e para
           qual finalidade. Você poderá desconectar a integração e interromper
           novas sincronizações. Tokens e credenciais de integração são mantidos
           no servidor e não devem ser expostos em perfis, código cliente ou
@@ -260,7 +260,7 @@ const sections: LegalSection[] = [
         </ul>
         <p>
           Cada fornecedor trata dados de acordo com seus próprios termos e
-          medidas de segurança. O MGP busca limitar o compartilhamento ao
+          medidas de segurança. O ÍMPAR busca limitar o compartilhamento ao
           necessário para cada finalidade.
         </p>
       </>
@@ -272,21 +272,21 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          O MGP usa armazenamento local e tecnologias equivalentes para manter
+          O ÍMPAR usa armazenamento local e tecnologias equivalentes para manter
           login, idioma, tema e preferências essenciais. Você pode limpar esses
           dados no navegador, mas algumas funções podem deixar de operar
           corretamente.
         </p>
         <p>
-          O MGP possui integração técnica preparada com o Google AdSense,
+          O ÍMPAR possui integração técnica preparada com o Google AdSense,
           incluindo código de verificação/carregamento necessário ao serviço.
           A exibição efetiva de anúncios e eventual personalização dependem da
-          aprovação, configuração e consentimentos aplicáveis. O MGP não usa
+          aprovação, configuração e consentimentos aplicáveis. O ÍMPAR não usa
           dados de idade do cadastro para criar perfis publicitários.
         </p>
         <p>
           Crianças e adolescentes não receberão publicidade comercial baseada
-          em perfilamento comportamental por parte do MGP. Quando a plataforma
+          em perfilamento comportamental por parte do ÍMPAR. Quando a plataforma
           identificar uma conta como pertencente a menor, solicitações de
           publicidade deverão receber tratamento adequado à idade e sem
           personalização comportamental, de acordo com a legislação e as
@@ -295,7 +295,7 @@ const sections: LegalSection[] = [
         <p>
           Onde a lei ou a política do fornecedor exigir consentimento prévio,
           a veiculação publicitária que dependa desse consentimento deve
-          permanecer desativada até que o MGP tenha configurado uma ferramenta
+          permanecer desativada até que o ÍMPAR tenha configurado uma ferramenta
           adequada de gestão de consentimento. Recusar publicidade personalizada
           não bloqueará o acesso gratuito ao conteúdo principal.
         </p>
@@ -384,7 +384,7 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          O MGP não permite criação de conta por menores de 13 anos. Usuários
+          O ÍMPAR não permite criação de conta por menores de 13 anos. Usuários
           de 13 a 17 anos são tratados como adolescentes para fins de segurança.
           Na beta pública, a data de nascimento informada no onboarding é usada
           para aplicar faixas automáticas de compatibilidade no LFG e reduzir
@@ -393,7 +393,7 @@ const sections: LegalSection[] = [
         </p>
         <p>
           Essa data é uma informação declarada pelo usuário e não equivale a
-          verificação documental ou biométrica. O MGP poderá adicionar
+          verificação documental ou biométrica. O ÍMPAR poderá adicionar
           mecanismos mais fortes de aferição, supervisão ou participação de
           responsável quando isso for necessário pelo risco da funcionalidade,
           pela evolução do produto ou pela legislação aplicável. As faixas do
@@ -401,7 +401,7 @@ const sections: LegalSection[] = [
           obrigação legal de verificação ou consentimento.
         </p>
         <p>
-          O MGP proíbe conteúdo sexual explícito/pornográfico e gore gratuito
+          O ÍMPAR proíbe conteúdo sexual explícito/pornográfico e gore gratuito
           para todos os usuários. Discussões legítimas sobre jogos com temas
           maduros podem receber aviso, desfoque ou restrição etária. Um botão de
           confirmação para revelar conteúdo permitido pode ser usado como aviso
@@ -424,11 +424,11 @@ const sections: LegalSection[] = [
     title: "Links, jogos e serviços de terceiros",
     content: (
       <p>
-        O MGP pode exibir links, vídeos, capas e referências a jogos ou serviços
+        O ÍMPAR pode exibir links, vídeos, capas e referências a jogos ou serviços
         de terceiros. Ao sair da plataforma, aplicam-se os termos e políticas do
         destino. Riot Games, Valve/Steam, Electronic Arts, Bandai Namco,
         FromSoftware, Google, Supabase e Lovable não controlam esta Política e
-        não são responsáveis pelas práticas do MGP.
+        não são responsáveis pelas práticas do ÍMPAR.
       </p>
     ),
   },
@@ -458,7 +458,7 @@ function PrivacyPage() {
     <LegalDocument
       eyebrow="Privacidade e proteção de dados"
       title="Política de Privacidade"
-      summary="Este documento explica, em linguagem direta, quais dados o MGP trata, para quais finalidades e quais escolhas e direitos você possui."
+      summary="Este documento explica, em linguagem direta, quais dados o ÍMPAR trata, para quais finalidades e quais escolhas e direitos você possui."
       effectiveDate={LEGAL_EFFECTIVE_DATE}
       version={LEGAL_VERSION}
       sections={sections}

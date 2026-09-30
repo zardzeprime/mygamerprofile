@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_authenticated/admin/reports")({
   head: () => ({
     meta: [
       { title: "Admin — Denúncias — MGP" },
-      { name: "description", content: "Fila de denúncias do My Gamer Profile." },
+      { name: "description", content: "Fila de denúncias do ÍMPAR." },
     ],
   }),
   component: AdminReportsPage,

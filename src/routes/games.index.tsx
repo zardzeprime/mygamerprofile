@@ -19,9 +19,9 @@ const SORTED_GAMES = [...ACTIVE_GAMES].sort((first, second) =>
 export const Route = createFileRoute("/games/")({
   head: () =>
     buildSeo({
-      title: "Jogos, guias e builds — MG Profile",
+      title: "Jogos, guias e builds — ÍMPAR",
       description:
-        "Explore Warframe, Valorant, League of Legends, Dark Souls e outros hubs com guias, builds, informações e ferramentas no MG Profile.",
+        "Explore Warframe, Valorant, League of Legends, Dark Souls e outros hubs com guias, builds, informações e ferramentas no ÍMPAR.",
       path: "/games",
     }),
   component: GamesCatalog,
@@ -63,7 +63,7 @@ function GamesCatalog() {
 
   return (
     <AdReadyLayout className="mx-auto w-full max-w-[92rem] px-4 py-10 sm:px-6 sm:py-16" rail={<AdSlot id="games-catalog-rail" format="rail" />}>
-      <p className="section-kicker">MGP / 0.1.9</p>
+      <p className="section-kicker">ÍMPAR / 0.1.9</p>
       <h1 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-5xl">{t("games.title")}</h1>
       <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">{t("games.subtitle")}</p>
       <p className="mt-2 max-w-2xl text-xs leading-5 text-muted-foreground">

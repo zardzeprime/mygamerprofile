@@ -43,7 +43,7 @@ export const Route = createFileRoute("/roblox/$slug")({
     }
 
     const title = `${loaderData.experience.name} — MGP`;
-    const description = `Códigos, tier lists, guias, builds e progressão de ${loaderData.experience.name} no MGP.`;
+    const description = `Códigos, tier lists, guias, builds e progressão de ${loaderData.experience.name} no ÍMPAR.`;
     return buildSeo({
       title,
       description,
@@ -273,7 +273,7 @@ function RobloxExperienceHub() {
               {active === "tier-list" ? (
                 <TopicPanel
                   icon={Trophy}
-                  kicker="MGP / TIER LISTS"
+                  kicker="ÍMPAR / TIER LISTS"
                   title="Tier Lists"
                   description={copy(
                     "Listas separadas por finalidade para não misturar PvE, PvP, farm e bossing sem contexto.",
@@ -287,7 +287,7 @@ function RobloxExperienceHub() {
               {active === "guides" ? (
                 <TopicPanel
                   icon={BookOpen}
-                  kicker="MGP / GUIDES"
+                  kicker="ÍMPAR / GUIDES"
                   title={copy("Guias", "Guides", "Guías")}
                   description={copy(
                     "Rotas de progressão, farm, bosses, desbloqueios e sistemas importantes da experiência.",
@@ -301,10 +301,10 @@ function RobloxExperienceHub() {
               {active === "builds" ? (
                 <TopicPanel
                   icon={Swords}
-                  kicker="MGP / BUILDS"
+                  kicker="ÍMPAR / BUILDS"
                   title={copy("Builds e presets", "Builds and presets", "Builds y presets")}
                   description={copy(
-                    "Presets organizados por objetivo. Essa área pode receber o mesmo fluxo NEXUS usado nos outros criadores do MGP.",
+                    "Presets organizados por objetivo. Essa área pode receber o mesmo fluxo NEXUS usado nos outros criadores do ÍMPAR.",
                     "Goal-based presets. This area can use the same NEXUS flow as the other MGP builders.",
                     "Presets organizados por objetivo. Esta área puede usar el mismo flujo NEXUS que los otros creadores de MGP.",
                   )}
@@ -447,7 +447,7 @@ function CodesPanel({
       <section className="surface-panel p-6 sm:p-8">
         <div className="flex items-center gap-2">
           <Code2 className="size-5 text-gold-strong" />
-          <span className="section-kicker">MGP / CODES</span>
+          <span className="section-kicker">ÍMPAR / CODES</span>
         </div>
         <h2 className="mt-3 font-display text-2xl font-semibold text-foreground">
           {copy("Códigos de", "Codes for", "Códigos de")} {experience.name}

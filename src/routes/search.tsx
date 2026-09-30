@@ -22,10 +22,10 @@ export const Route = createFileRoute("/search")({
   }),
   head: () => ({
     meta: [
-      { title: "Busca — MG Profile" },
+      { title: "Busca — ÍMPAR" },
       {
         name: "description",
-        content: "Busca unificada do MG Profile para jogos, comunidades e perfis.",
+        content: "Busca unificada do ÍMPAR para jogos, comunidades e perfis.",
       },
       { name: "robots", content: "noindex, follow" },
     ],
@@ -74,9 +74,9 @@ function SearchPage() {
 
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
-      <p className="section-kicker">MGP / SEARCH</p>
+      <p className="section-kicker">ÍMPAR / SEARCH</p>
       <h1 className="mt-2 font-display text-3xl font-bold sm:text-4xl">
-        {copy("Busca no MG Profile", "Search MG Profile", "Buscar en MG Profile")}
+        {copy("Busca no ÍMPAR", "Search ÍMPAR", "Buscar en ÍMPAR")}
       </h1>
       <p className="mt-2 text-sm text-muted-foreground">
         {query
@@ -162,7 +162,7 @@ function SearchPage() {
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-semibold">{game.name}</span>
                   <span className="block truncate text-xs text-muted-foreground">
-                    {copy("Comunidade MGP", "MGP community", "Comunidad MGP")}
+                    {copy("Comunidade ÍMPAR", "ÍMPAR community", "Comunidad ÍMPAR")}
                   </span>
                 </span>
               </Link>

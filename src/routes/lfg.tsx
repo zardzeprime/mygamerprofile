@@ -90,9 +90,9 @@ export const Route = createFileRoute("/lfg")({
   },
   head: () =>
     buildSeo({
-      title: "LFG: encontre jogadores e grupos — MG Profile",
+      title: "LFG: encontre jogadores e grupos — ÍMPAR",
       description:
-        "Encontre jogadores e monte grupos por jogo, plataforma, idioma e região no LFG do MG Profile.",
+        "Encontre jogadores e monte grupos por jogo, plataforma, idioma e região no LFG do ÍMPAR.",
       path: "/lfg",
     }),
   component: LfgPage,
@@ -329,7 +329,7 @@ function LfgPage() {
     <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
       <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="section-kicker">MGP / LFG</p>
+          <p className="section-kicker">ÍMPAR / LFG</p>
           <h1 className="mt-2 font-display text-3xl font-semibold">{t("lfg.title")}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {copy(

@@ -120,7 +120,7 @@ export function GlobalSearch({
             setQuery(event.target.value);
             setOpen(true);
           }}
-          placeholder={copy("Buscar no MGP", "Search MGP", "Buscar en MGP")}
+          placeholder={copy("Buscar no ÍMPAR", "Search MGP", "Buscar en MGP")}
           aria-label={copy("Buscar jogos, comunidades e pessoas", "Search games, communities and people", "Buscar juegos, comunidades y personas")}
           className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
         />
@@ -204,7 +204,7 @@ export function GlobalSearch({
                   params={{ slug: game.slug }}
                   image={game.visual.coverImage}
                   title={game.name}
-                  subtitle={copy("Comunidade MGP", "MGP community", "Comunidad MGP")}
+                  subtitle={copy("Comunidade ÍMPAR", "ÍMPAR community", "Comunidad ÍMPAR")}
                   onNavigate={() => {
                     setOpen(false);
                     onNavigate?.();

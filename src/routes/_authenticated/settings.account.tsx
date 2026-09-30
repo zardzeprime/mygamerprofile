@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_authenticated/settings/account")({
   head: () => ({
     meta: [
       { title: "Configurações de conta — MGP" },
-      { name: "description", content: "Gerencie sua conta no My Gamer Profile." },
+      { name: "description", content: "Gerencie sua conta no ÍMPAR." },
     ],
   }),
   component: SettingsAccountPage,

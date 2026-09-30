@@ -37,13 +37,13 @@ export const Route = createFileRoute("/games/$slug")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "Jogo não encontrado — MG Profile" },
+          { title: "Jogo não encontrado — ÍMPAR" },
           { name: "robots", content: "noindex" },
         ],
       };
     }
-    const title = `${loaderData.game.name} — MG Profile`;
-    const description = `Informações, guias, builds e conteúdo editorial de ${loaderData.game.name} no MG Profile.`;
+    const title = `${loaderData.game.name} — ÍMPAR`;
+    const description = `Informações, guias, builds e conteúdo editorial de ${loaderData.game.name} no ÍMPAR.`;
     return buildSeo({
       title,
       description,
@@ -141,7 +141,7 @@ function GameHub() {
           </div>
           <div className="max-w-2xl">
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-hero-muted">
-              <span>MG Profile</span>
+              <span>ÍMPAR</span>
               <ChevronRight className="size-3" />
               <span>{game.genre}</span>
             </div>

@@ -76,7 +76,7 @@ export const Route = createFileRoute("/_authenticated/settings/profile")({
   head: () => ({
     meta: [
       { title: "Configurações de perfil — MGP" },
-      { name: "description", content: "Edite seu perfil no My Gamer Profile." },
+      { name: "description", content: "Edite seu perfil no ÍMPAR." },
     ],
   }),
   component: SettingsProfilePage,
@@ -192,7 +192,7 @@ function SettingsProfilePage() {
       }
 
       // Keep the persistent header in sync with the MGP profile avatar/name.
-      // Google metadata remains only as a fallback when no MGP avatar is configured.
+      // Google metadata remains only as a fallback when no ÍMPAR avatar is configured.
       window.dispatchEvent(new Event("mgp:profile-updated"));
       setLocale(language);
       setSaved(true);

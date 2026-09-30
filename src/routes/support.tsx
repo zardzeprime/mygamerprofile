@@ -35,9 +35,9 @@ export const Route = createFileRoute("/support")({
   component: SupportPage,
   head: () =>
     buildSeo({
-      title: "Apoie o MG Profile",
+      title: "Apoie o ÍMPAR",
       description:
-        "Conheça a história do MG Profile e veja como apoiar o desenvolvimento independente da plataforma gamer.",
+        "Conheça a história do ÍMPAR e veja como apoiar o desenvolvimento independente da plataforma gamer.",
       path: "/support",
     }),
 });
@@ -79,17 +79,17 @@ function SupportPage() {
 
             <h1 className="mt-5 font-display text-3xl font-bold leading-tight text-foreground sm:text-5xl">
               {copy(
-                "Ajude o MG Profile a continuar crescendo.",
-                "Help MG Profile keep growing.",
-                "Ayuda a MG Profile a seguir creciendo.",
+                "Ajude o ÍMPAR a continuar crescendo.",
+                "Help ÍMPAR keep growing.",
+                "Ayuda a ÍMPAR a seguir creciendo.",
               )}
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground">
               {copy(
-                "O MGP está sendo desenvolvido com orçamento enxuto, por uma pessoa, com apoio de ferramentas de IA e infraestrutura acessível. Nesta fase inicial, o projeto não tem receita recorrente e qualquer apoio ajuda a manter domínio, hospedagem, integrações e tempo de desenvolvimento.",
-                "MGP is being built on a very small budget by one person, with help from AI tools and accessible infrastructure. At this early stage the project has no recurring revenue, and support helps cover the domain, hosting, integrations and development time.",
-                "MGP se está desarrollando con un presupuesto muy pequeño por una sola persona, con ayuda de herramientas de IA e infraestructura accesible. En esta fase inicial no hay ingresos recurrentes y cualquier apoyo ayuda con dominio, alojamiento, integraciones y tiempo de desarrollo.",
+                "O ÍMPAR está sendo desenvolvido com orçamento enxuto, por uma pessoa, com apoio de ferramentas de IA e infraestrutura acessível. Nesta fase inicial, o projeto não tem receita recorrente e qualquer apoio ajuda a manter domínio, hospedagem, integrações e tempo de desenvolvimento.",
+                "ÍMPAR is being built on a very small budget by one person, with help from AI tools and accessible infrastructure. At this early stage the project has no recurring revenue, and support helps cover the domain, hosting, integrations and development time.",
+                "ÍMPAR se está desarrollando con un presupuesto muy pequeño por una sola persona, con ayuda de herramientas de IA e infraestructura accesible. En esta fase inicial no hay ingresos recurrentes y cualquier apoyo ayuda con dominio, alojamiento, integraciones y tiempo de desarrollo.",
               )}
             </p>
           </div>
@@ -125,7 +125,7 @@ function SupportPage() {
         <div className="flex items-center gap-2 text-gold-strong">
           <Sparkles className="size-4" />
           <span className="section-kicker">
-            {copy("POR QUE O MGP EXISTE", "WHY MGP EXISTS", "POR QUÉ EXISTE MGP")}
+            {copy("POR QUE O ÍMPAR EXISTE", "WHY MGP EXISTS", "POR QUÉ EXISTE MGP")}
           </span>
         </div>
         <h2 className="mt-3 max-w-3xl font-display text-2xl font-semibold leading-tight text-foreground sm:text-3xl">
@@ -140,9 +140,9 @@ function SupportPage() {
           <div className="space-y-4">
             <p>
               {copy(
-                "A ideia do MG Profile é criar uma rede social em que você consiga conhecer pessoas para jogar, sem transformar isso em obrigação de manter contato o tempo todo. Tem gente que prefere jogar sozinha, gente que gosta de companhia, gente que entra em grupo só para uma sessão. O MGP foi pensado para caber nesses jeitos diferentes de viver os games.",
-                "MG Profile is meant to be a social network where you can meet people to play with without turning that into an obligation to stay in constant contact. Some people prefer playing alone, some like company, and some only want a group for one session. MGP is designed to fit those different ways of enjoying games.",
-                "MG Profile está pensado como una red social donde puedas conocer gente para jugar sin convertirlo en una obligación de mantener contacto constante. Hay quienes prefieren jugar solos, quienes disfrutan de compañía y quienes solo buscan grupo para una sesión. MGP fue pensado para encajar en esas distintas formas de vivir los videojuegos.",
+                "A ideia do ÍMPAR é criar uma rede social em que você consiga conhecer pessoas para jogar, sem transformar isso em obrigação de manter contato o tempo todo. Tem gente que prefere jogar sozinha, gente que gosta de companhia, gente que entra em grupo só para uma sessão. O ÍMPAR foi pensado para caber nesses jeitos diferentes de viver os games.",
+                "ÍMPAR is meant to be a social network where you can meet people to play with without turning that into an obligation to stay in constant contact. Some people prefer playing alone, some like company, and some only want a group for one session. ÍMPAR is designed to fit those different ways of enjoying games.",
+                "ÍMPAR está pensado como una red social donde puedas conocer gente para jugar sin convertirlo en una obligación de mantener contacto constante. Hay quienes prefieren jugar solos, quienes disfrutan de compañía y quienes solo buscan grupo para una sesión. MGP fue pensado para encajar en esas distintas formas de vivir los videojuegos.",
               )}
             </p>
             <p>
@@ -156,16 +156,16 @@ function SupportPage() {
           <div className="space-y-4">
             <p>
               {copy(
-                "Isso vem de experiência pessoal. Eu já passei pela dificuldade de montar build, descobrir o que fazer em cada parte, entender quem era cada boss, onde ficava cada mapa ou simplesmente saber qual caminho seguir. O MG Profile nasceu para juntar comunidades em um ambiente só, mas também para ajudar quem está chegando agora ou quem ainda tem dificuldade de entender certos conteúdos.",
-                "That comes from personal experience. I have dealt with the difficulty of making builds, figuring out what to do next, understanding who each boss was, where maps were or simply knowing which path to follow. MG Profile was born to bring communities together, but also to help newcomers and people who still struggle to understand certain game content.",
-                "Eso viene de experiencia personal. Yo también pasé por la dificultad de montar builds, descubrir qué hacer en cada parte, entender quién era cada boss, dónde estaba cada mapa o simplemente saber qué camino seguir. MG Profile nació para reunir comunidades, pero también para ayudar a quienes están empezando o todavía tienen dificultad con ciertos contenidos.",
+                "Isso vem de experiência pessoal. Eu já passei pela dificuldade de montar build, descobrir o que fazer em cada parte, entender quem era cada boss, onde ficava cada mapa ou simplesmente saber qual caminho seguir. O ÍMPAR nasceu para juntar comunidades em um ambiente só, mas também para ajudar quem está chegando agora ou quem ainda tem dificuldade de entender certos conteúdos.",
+                "That comes from personal experience. I have dealt with the difficulty of making builds, figuring out what to do next, understanding who each boss was, where maps were or simply knowing which path to follow. ÍMPAR was born to bring communities together, but also to help newcomers and people who still struggle to understand certain game content.",
+                "Eso viene de experiencia personal. Yo también pasé por la dificultad de montar builds, descubrir qué hacer en cada parte, entender quién era cada boss, dónde estaba cada mapa o simplemente saber qué camino seguir. ÍMPAR nació para reunir comunidades, pero también para ayudar a quienes están empezando o todavía tienen dificultad con ciertos contenidos.",
               )}
             </p>
             <p>
               {copy(
-                "Também existe uma parte de identidade. Em outras redes, o perfil gira em torno do seu nome, suas fotos e sua rotina. O MGP é focado em jogos: uma foto jogando, uma conquista, um momento com amigos, namorado, noivo, família ou squad, um guia que você criou ou o jogo que marcou sua vida. A intenção é dar mais liberdade para expressar sua personalidade gamer em um lugar feito especificamente para isso.",
-                "There is also an identity side to it. On other networks, your profile revolves around your name, photos and daily life. MGP is focused on games: a screenshot while playing, an achievement, a moment with friends, a partner, family or squad, a guide you made or a game that marked your life. The goal is to give people more freedom to express their gaming identity in a place built specifically for it.",
-                "También hay una parte de identidad. En otras redes, el perfil gira alrededor de tu nombre, tus fotos y tu rutina. MGP está centrado en juegos: una foto jugando, un logro, un momento con amigos, pareja, familia o squad, una guía que creaste o el juego que marcó tu vida. La intención es dar más libertad para expresar tu identidad gamer en un espacio creado específicamente para eso.",
+                "Também existe uma parte de identidade. Em outras redes, o perfil gira em torno do seu nome, suas fotos e sua rotina. O ÍMPAR é focado em jogos: uma foto jogando, uma conquista, um momento com amigos, namorado, noivo, família ou squad, um guia que você criou ou o jogo que marcou sua vida. A intenção é dar mais liberdade para expressar sua personalidade gamer em um lugar feito especificamente para isso.",
+                "There is also an identity side to it. On other networks, your profile revolves around your name, photos and daily life. ÍMPAR is focused on games: a screenshot while playing, an achievement, a moment with friends, a partner, family or squad, a guide you made or a game that marked your life. The goal is to give people more freedom to express their gaming identity in a place built specifically for it.",
+                "También hay una parte de identidad. En otras redes, el perfil gira alrededor de tu nombre, tus fotos y tu rutina. ÍMPAR está centrado en juegos: una foto jugando, un logro, un momento con amigos, pareja, familia o squad, una guía que creaste o el juego que marcó tu vida. La intención es dar más libertad para expresar tu identidad gamer en un espacio creado específicamente para eso.",
               )}
             </p>
           </div>
@@ -174,9 +174,9 @@ function SupportPage() {
         <div className="mt-5 rounded-xl border border-gold/20 bg-gold/[0.04] p-4">
           <p className="text-sm leading-6 text-foreground/90">
             {copy(
-              "O objetivo final é simples de explicar, mesmo que seja difícil de construir: fazer o MG Profile virar um hub interativo em que comunidade, descoberta de pessoas, guias, conhecimento e identidade gamer convivam dentro da mesma plataforma. O projeto começou com quatro jogos e vai crescer aos poucos. Como hoje ele é tocado por uma equipe de uma pessoa só, esse crescimento precisa ser gradual, testado e guiado por quem realmente usa.",
-              "The final goal is simple to explain even if it is difficult to build: make MG Profile an interactive hub where community, finding people, guides, knowledge and gaming identity live on the same platform. The project started with four games and will expand gradually. Since it is currently run by a one-person team, that growth needs to be gradual, tested and guided by the people who actually use it.",
-              "El objetivo final es sencillo de explicar aunque sea difícil de construir: convertir MG Profile en un hub interactivo donde comunidad, descubrimiento de personas, guías, conocimiento e identidad gamer convivan en una misma plataforma. El proyecto comenzó con cuatro juegos y crecerá poco a poco. Como hoy lo lleva un equipo de una sola persona, ese crecimiento debe ser gradual, probado y guiado por quienes realmente lo usan.",
+              "O objetivo final é simples de explicar, mesmo que seja difícil de construir: fazer o ÍMPAR virar um hub interativo em que comunidade, descoberta de pessoas, guias, conhecimento e identidade gamer convivam dentro da mesma plataforma. O projeto começou com quatro jogos e vai crescer aos poucos. Como hoje ele é tocado por uma equipe de uma pessoa só, esse crescimento precisa ser gradual, testado e guiado por quem realmente usa.",
+              "The final goal is simple to explain even if it is difficult to build: make ÍMPAR an interactive hub where community, finding people, guides, knowledge and gaming identity live on the same platform. The project started with four games and will expand gradually. Since it is currently run by a one-person team, that growth needs to be gradual, tested and guided by the people who actually use it.",
+              "El objetivo final es sencillo de explicar aunque sea difícil de construir: convertir ÍMPAR en un hub interactivo donde comunidad, descubrimiento de personas, guías, conocimiento e identidad gamer convivan en una misma plataforma. El proyecto comenzó con cuatro juegos y crecerá poco a poco. Como hoy lo lleva un equipo de una sola persona, ese crecimiento debe ser gradual, probado y guiado por quienes realmente lo usan.",
             )}
           </p>
         </div>
@@ -245,7 +245,7 @@ function SupportPage() {
                       <div className="rounded-xl border border-border bg-white p-3 shadow-sm">
                         <img
                           src={pix.pixQrImageUrl}
-                          alt={copy("QR Code Pix do MG Profile", "MG Profile Pix QR code", "Código QR Pix de MG Profile")}
+                          alt={copy("QR Code Pix do ÍMPAR", "ÍMPAR Pix QR code", "Código QR Pix de ÍMPAR")}
                           className="mx-auto aspect-square w-full"
                         />
                       </div>
@@ -291,7 +291,7 @@ function SupportPage() {
             title={recurring?.provider ?? "Ko-fi"}
             badge={copy("Para apoio mensal", "For monthly support", "Para apoyo mensual")}
             description={copy(
-              "Uma campanha recorrente permite que quem quiser ajude com um valor mensal, sem transformar o MGP em assinatura obrigatória.",
+              "Uma campanha recorrente permite que quem quiser ajude com um valor mensal, sem transformar o ÍMPAR em assinatura obrigatória.",
               "A recurring campaign lets supporters contribute monthly without turning MGP into a required subscription.",
               "Una campaña recurrente permite apoyar mensualmente sin convertir MGP en una suscripción obligatoria.",
             )}
@@ -308,8 +308,8 @@ function SupportPage() {
         </h2>
         <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
           {copy(
-            "O MGP ainda é pequeno e gerido por uma pessoa. Mais adiante, podem existir formas internas de monetização, como cosméticos e personalizações exclusivas, comunidades ou áreas especiais para apoiadores e conteúdos produzidos em colaboração com criadores, influenciadores ou jogadores do cenário quando isso for viável. Nada disso está sendo vendido ou garantido nesta fase.",
-            "MGP is still small and run by one person. Later, internal monetization may include exclusive cosmetics and customization, supporter-only community spaces, or content produced with creators, influencers or competitive-scene players when feasible. None of those future ideas are being sold or guaranteed at this stage.",
+            "O ÍMPAR ainda é pequeno e gerido por uma pessoa. Mais adiante, podem existir formas internas de monetização, como cosméticos e personalizações exclusivas, comunidades ou áreas especiais para apoiadores e conteúdos produzidos em colaboração com criadores, influenciadores ou jogadores do cenário quando isso for viável. Nada disso está sendo vendido ou garantido nesta fase.",
+            "ÍMPAR is still small and run by one person. Later, internal monetization may include exclusive cosmetics and customization, supporter-only community spaces, or content produced with creators, influencers or competitive-scene players when feasible. None of those future ideas are being sold or guaranteed at this stage.",
             "MGP todavía es pequeño y está gestionado por una sola persona. Más adelante podrían existir formas internas de monetización como cosméticos y personalización exclusiva, espacios especiales para seguidores o contenido con creadores, influencers o jugadores del escenario competitivo cuando sea viable. Nada de eso se vende ni se garantiza en esta fase.",
           )}
         </p>
@@ -340,9 +340,9 @@ function SupportPage() {
             icon={Share2}
             title={copy("Compartilhar", "Share it", "Compartir")}
             body={copy(
-              "Quando o MGP estiver pronto para teste público, mostrar a plataforma para outros jogadores já será uma ajuda enorme.",
-              "When MGP is ready for public testing, showing it to other players will already be a huge help.",
-              "Cuando MGP esté listo para pruebas públicas, enseñarlo a otros jugadores ya será una gran ayuda.",
+              "Quando o ÍMPAR estiver pronto para teste público, mostrar a plataforma para outros jogadores já será uma ajuda enorme.",
+              "When ÍMPAR is ready for public testing, showing it to other players will already be a huge help.",
+              "Cuando ÍMPAR esté listo para pruebas públicas, enseñarlo a otros jugadores ya será una gran ayuda.",
             )}
           />
         </div>
@@ -354,9 +354,9 @@ function SupportPage() {
         </p>
         <h2 className="mt-2 font-display text-2xl font-semibold text-foreground">
           {copy(
-            "Feedback pode ficar dentro do próprio MGP.",
+            "Feedback pode ficar dentro do próprio ÍMPAR.",
             "Feedback can stay inside MGP itself.",
-            "El feedback puede quedarse dentro del propio MGP.",
+            "El feedback puede quedarse dentro del propio ÍMPAR.",
           )}
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
@@ -399,7 +399,7 @@ function SupportPage() {
 
       <div className="mt-8 flex flex-wrap gap-3">
         <Link to="/games" className="brand-button-secondary min-h-11">
-          {copy("Continuar explorando o MGP", "Keep exploring MGP", "Seguir explorando MGP")}
+          {copy("Continuar explorando o ÍMPAR", "Keep exploring MGP", "Seguir explorando ÍMPAR")}
         </Link>
         <a href={"mailto:" + SUPPORT_EMAIL} className="brand-button-secondary min-h-11">
           {copy("Falar com o projeto", "Contact the project", "Contactar el proyecto")}

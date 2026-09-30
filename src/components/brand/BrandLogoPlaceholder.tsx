@@ -30,7 +30,7 @@ export function BrandLogoPlaceholder({
         )}
       >
         <img
-          src="/brand/mgp-logo.png"
+          src="/brand/impar-logo.svg"
           alt=""
           width={256}
           height={256}

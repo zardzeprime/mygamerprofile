@@ -16,9 +16,9 @@ export const Route = createFileRoute("/terms")({
   component: TermsPage,
   head: () =>
     buildSeo({
-      title: "Termos de Uso — MG Profile",
+      title: "Termos de Uso — ÍMPAR",
       description:
-        "Regras para criar uma conta, publicar conteúdo e usar o MG Profile.",
+        "Regras para criar uma conta, publicar conteúdo e usar o ÍMPAR.",
       path: "/terms",
     }),
 });
@@ -34,7 +34,7 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          Estes Termos regulam o uso do My Gamer Profile (MGP), um hub gamer
+          Estes Termos regulam o uso do ÍMPAR (MGP), um hub gamer
           independente mantido no Brasil por{" "}
           <strong className="text-foreground">{LEGAL_OPERATOR_NAME}</strong>. Ao
           criar uma conta ou continuar usando a plataforma, você declara que leu
@@ -69,13 +69,13 @@ const sections: LegalSection[] = [
           apresentada como verificação documental. Informar uma data falsa para
           contornar regras de segurança é proibido e pode ser denunciado,
           bloqueado e resultar em restrições. Quando uma funcionalidade ou a lei
-          exigir mecanismo mais forte de aferição, o MGP poderá exigir
+          exigir mecanismo mais forte de aferição, o ÍMPAR poderá exigir
           verificação adicional antes de liberar o recurso.
         </p>
         <p>
           Cada jogo pode possuir classificação indicativa própria. Ter acesso ao
           MGP não substitui as regras de idade do jogo, da plataforma ou da
-          conta de terceiros correspondente. O MGP poderá aplicar avisos,
+          conta de terceiros correspondente. O ÍMPAR poderá aplicar avisos,
           desfoque e limitações adicionais a discussões legítimas sobre temas
           maduros mesmo quando o conteúdo não for proibido.
         </p>
@@ -101,17 +101,17 @@ const sections: LegalSection[] = [
           Não tente alterar, apagar ou falsificar informações de idade,
           supervisão ou verificação para contornar controles de segurança.
         </li>
-        <li>Avise o MGP se suspeitar de acesso indevido ou falha de segurança.</li>
+        <li>Avise o ÍMPAR se suspeitar de acesso indevido ou falha de segurança.</li>
       </ul>
     ),
   },
   {
     id: "servico",
-    title: "O que o MGP oferece",
+    title: "O que o ÍMPAR oferece",
     content: (
       <>
         <p>
-          O MGP permite criar um perfil gamer, selecionar jogos, preencher Game
+          O ÍMPAR permite criar um perfil gamer, selecionar jogos, preencher Game
           Profiles, publicar e interagir com conteúdo da comunidade e buscar
           grupos por LFG. No LFG, anúncios e DMs de matches podem ser
           temporários; o prazo aparece na interface e mensagens expiradas podem
@@ -123,13 +123,13 @@ const sections: LegalSection[] = [
           Dados informados manualmente — como rank, função, personagem, build ou
           experiência — são declarações do próprio usuário e não representam
           verificação oficial. Quando uma integração aprovada importar dados de
-          Steam, Riot Games ou outro provedor de jogos, o MGP deverá indicar a
+          Steam, Riot Games ou outro provedor de jogos, o ÍMPAR deverá indicar a
           procedência e distinguir informação importada de informação declarada.
           Google é usado como método opcional de autenticação, não como fonte de
           dados de desempenho em jogos.
         </p>
         <p>
-          O MGP não promete que uma plataforma externa fornecerá todo dado que o
+          O ÍMPAR não promete que uma plataforma externa fornecerá todo dado que o
           usuário deseja. Informações como horas jogadas, conquistas, partidas e
           biblioteca dependem das APIs, permissões e configurações de privacidade
           do provedor. Datas como “quando começou a jogar” podem ser derivadas de
@@ -141,7 +141,7 @@ const sections: LegalSection[] = [
   },
   {
     id: "conteudo",
-    title: "Seu conteúdo e a licença ao MGP",
+    title: "Seu conteúdo e a licença ao ÍMPAR",
     content: (
       <>
         <p>
@@ -151,7 +151,7 @@ const sections: LegalSection[] = [
           direitos de terceiros.
         </p>
         <p>
-          Ao publicar conteúdo, você concede ao MGP uma licença não exclusiva,
+          Ao publicar conteúdo, você concede ao ÍMPAR uma licença não exclusiva,
           mundial, gratuita, sublicenciável apenas a fornecedores técnicos, para
           hospedar, armazenar, reproduzir, adaptar ao formato, exibir e
           distribuir esse material na medida necessária para operar, proteger,
@@ -161,7 +161,7 @@ const sections: LegalSection[] = [
         </p>
         <p>
           Comentários e sugestões sobre o produto podem ser usados para
-          aprimorar o MGP sem obrigação de remuneração, sem que isso transfira
+          aprimorar o ÍMPAR sem obrigação de remuneração, sem que isso transfira
           conteúdo protegido que você tenha publicado.
         </p>
       </>
@@ -173,7 +173,7 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          O MGP pode hospedar comunidades de jogos com classificação indicativa
+          O ÍMPAR pode hospedar comunidades de jogos com classificação indicativa
           alta. Isso não significa que qualquer conteúdo permitido no jogo possa
           ser republicado sem limites no fórum. Discussões sobre violência,
           narrativa, personagens, cenas ou mecânicas maduras podem ser aceitas
@@ -182,7 +182,7 @@ const sections: LegalSection[] = [
         </p>
         <p>
           Pornografia, sexo explícito, exploração sexual e gore gratuito ou
-          usado apenas para chocar não são permitidos no MGP, independentemente
+          usado apenas para chocar não são permitidos no ÍMPAR, independentemente
           da idade do usuário. Conteúdo permitido, mas sensível, poderá aparecer
           borrado e exigir uma ação consciente para revelar; esse gesto funciona
           como aviso de experiência, não como prova legal de maioridade.
@@ -195,7 +195,7 @@ const sections: LegalSection[] = [
     title: "Condutas proibidas",
     content: (
       <>
-        <p>Ao usar o MGP, você não pode:</p>
+        <p>Ao usar o ÍMPAR, você não pode:</p>
         <ul className={listClassName}>
           <li>
             praticar ato ilegal, fraudulento, ameaçador, assediante,
@@ -236,7 +236,7 @@ const sections: LegalSection[] = [
             uso que comprometa a integridade de um jogo;
           </li>
           <li>
-            usar o MGP para infringir os termos de um jogo, console, loja ou
+            usar o ÍMPAR para infringir os termos de um jogo, console, loja ou
             serviço de terceiros.
           </li>
         </ul>
@@ -249,7 +249,7 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          O MGP pode analisar denúncias e remover, limitar, ocultar, desfocar,
+          O ÍMPAR pode analisar denúncias e remover, limitar, ocultar, desfocar,
           classificar ou preservar conteúdo; restringir funções; suspender ou
           encerrar contas; e cooperar com autoridades quando necessário. As
           medidas considerarão contexto, faixa etária, gravidade, reincidência,
@@ -257,7 +257,7 @@ const sections: LegalSection[] = [
         </p>
         <p>
           Não garantimos revisão prévia de tudo que usuários publicam. A
-          presença de um conteúdo não significa aprovação pelo MGP. Denúncias de
+          presença de um conteúdo não significa aprovação pelo ÍMPAR. Denúncias de
           boa-fé não devem ser usadas para assediar ou silenciar outros
           usuários.
         </p>
@@ -270,7 +270,7 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          MGP was created under Riot Games&apos; &quot;Legal Jibber Jabber&quot;
+          ÍMPAR was created under Riot Games&apos; &quot;Legal Jibber Jabber&quot;
           policy using assets owned by Riot Games. Riot Games does not endorse
           or sponsor this project.
         </p>
@@ -278,13 +278,13 @@ const sections: LegalSection[] = [
           VALORANT, League of Legends, Riot Games, Steam/Valve, EA SPORTS FC,
           Electronic Arts, Dark Souls, Elden Ring, Bandai Namco, FromSoftware e
           demais nomes, imagens, marcas e conteúdos de jogos pertencem aos seus
-          respectivos titulares. O uso no MGP é informativo, editorial e
+          respectivos titulares. O uso no ÍMPAR é informativo, editorial e
           comunitário e não cria afiliação, patrocínio ou aprovação oficial.
         </p>
         <p>
           Integrações com dados de jogadores dependem das APIs, termos,
           registros e aprovações aplicáveis de cada fornecedor e da autorização
-          do usuário quando necessária. O MGP não solicitará a senha de Steam,
+          do usuário quando necessária. O ÍMPAR não solicitará a senha de Steam,
           Riot, EA ou Google para conectar uma conta; a autenticação deve ocorrer
           pelo fluxo oficial disponibilizado pelo provedor.
         </p>
@@ -304,7 +304,7 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          O MGP pode usar automação ou modelos de IA para auxiliar a criação de
+          O ÍMPAR pode usar automação ou modelos de IA para auxiliar a criação de
           rascunhos editoriais, resumos e curiosidades sobre jogos. Conteúdo
           automatizado deve ser identificado por procedência interna e submetido
           a controles de segurança, duplicidade e fonte. Durante a fase inicial,
@@ -325,7 +325,7 @@ const sections: LegalSection[] = [
       <p>
         Vídeos, imagens, links, APIs, autenticação, banco de dados e hospedagem
         podem depender de serviços de terceiros. O uso desses serviços está
-        sujeito aos termos deles. O MGP não controla a disponibilidade,
+        sujeito aos termos deles. O ÍMPAR não controla a disponibilidade,
         segurança, conteúdo ou mudanças de plataformas externas.
       </p>
     ),
@@ -356,7 +356,7 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          Você pode deixar de usar o MGP e solicitar a exclusão da conta.
+          Você pode deixar de usar o ÍMPAR e solicitar a exclusão da conta.
           Podemos suspender ou encerrar o acesso em caso de violação destes
           Termos, risco à comunidade, obrigação legal, descontinuação do serviço
           ou exigência de um titular de direitos ou fornecedor essencial.
@@ -376,7 +376,7 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          Dentro dos limites permitidos pela legislação, o MGP não responde por
+          Dentro dos limites permitidos pela legislação, o ÍMPAR não responde por
           conduta de usuários, negociações ou encontros organizados por LFG,
           dados declarados por terceiros, perda decorrente de serviço externo ou
           danos indiretos e imprevisíveis. Nada nestes Termos exclui direitos ou

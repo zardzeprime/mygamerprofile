@@ -11,7 +11,7 @@ export const Route = createFileRoute("/connect/steam/callback")({
   component: SteamCallbackPage,
   head: () => ({
     meta: [
-      { title: "Steam — MG Profile" },
+      { title: "Steam — ÍMPAR" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -73,9 +73,9 @@ function SteamCallbackPage() {
                 `Steam conectada como ${result.displayName}.`,
               )
             : copy(
-                "Sua conta Steam foi conectada ao MG Profile.",
-                "Your Steam account is now connected to MG Profile.",
-                "Tu cuenta de Steam ya está conectada a MG Profile.",
+                "Sua conta Steam foi conectada ao ÍMPAR.",
+                "Your Steam account is now connected to ÍMPAR.",
+                "Tu cuenta de Steam ya está conectada a ÍMPAR.",
               ),
         );
 
@@ -105,7 +105,7 @@ function SteamCallbackPage() {
           )}
         </div>
 
-        <p className="section-kicker mt-5">MGP / STEAM</p>
+        <p className="section-kicker mt-5">ÍMPAR / STEAM</p>
         <h1 className="mt-2 font-display text-2xl font-semibold">
           {status === "working"
             ? copy("Confirmando sua Steam", "Confirming your Steam account", "Confirmando tu cuenta de Steam")
@@ -141,9 +141,9 @@ function formatSteamError(
 ) {
   if (raw.includes("STEAM_ACCOUNT_ALREADY_LINKED")) {
     return copy(
-      "Essa conta Steam já está vinculada a outro perfil do MG Profile.",
-      "This Steam account is already linked to another MG Profile account.",
-      "Esta cuenta de Steam ya está vinculada a otro perfil de MG Profile.",
+      "Essa conta Steam já está vinculada a outro perfil do ÍMPAR.",
+      "This Steam account is already linked to another ÍMPAR account.",
+      "Esta cuenta de Steam ya está vinculada a otro perfil de ÍMPAR.",
     );
   }
   if (raw.includes("STEAM_LINK_STATE_EXPIRED")) {
