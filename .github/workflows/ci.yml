@@ -39,7 +39,8 @@ jobs:
         run: bun run build
 
       - name: Full source lint
-        run: bun run lint -- --rule 'prettier/prettier: off'
+        run: |
+          bun run lint -- --rule 'prettier/prettier: off'
 
       - name: Lint changed source files
         shell: bash
@@ -58,4 +59,3 @@ jobs:
 
           printf 'Linting changed files:\n%s\n' "${files[*]}"
           bunx eslint "${files[@]}" --rule 'prettier/prettier: off'
-
