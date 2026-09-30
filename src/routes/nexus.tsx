@@ -11,7 +11,7 @@ export const Route = createFileRoute("/nexus")({
       title: "Noctis — ÍMPAR",
       description: "Converse com Noctis, mascote e assistente do ÍMPAR.",
       path: "/nexus",
-      noIndex: true,
+      robots: "noindex, nofollow",
     }),
   component: NoctisRoute,
 });
@@ -40,7 +40,7 @@ function NoctisRoute() {
 
   return (
     <div className="impar-shell min-h-[calc(100dvh-4.25rem)] px-4 py-10 sm:px-6 sm:py-16">
-      <section className="impar-card mx-auto flex w-full max-w-3xl flex-col items-center overflow-hidden rounded-[2rem_2rem_0.8rem_2rem] px-5 py-9 text-center sm:px-10 sm:py-12">
+      <section className="impar-card relative mx-auto flex w-full max-w-3xl flex-col items-center overflow-hidden rounded-[2rem_2rem_0.8rem_2rem] px-5 py-9 text-center sm:px-10 sm:py-12">
         <div className="impar-noctis-halo pointer-events-none absolute inset-0 opacity-80" aria-hidden="true" />
         <div className="relative z-10 flex flex-col items-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--impar-line)] bg-[var(--impar-spectral-soft)] px-3 py-1.5 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[var(--impar-spectral)]">
