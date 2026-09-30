@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   BookOpen,
-  Gamepad2,
   LibraryBig,
   MessagesSquare,
   Sparkles,
@@ -12,7 +11,6 @@ import {
 import { EmptyState } from "@/components/common/EmptyState";
 import { AdReadyLayout, AdSlot } from "@/components/common/AdSlot";
 import { GameCard } from "@/components/games/GameCard";
-import { GameArtwork } from "@/components/games/GameArtwork";
 import { ACTIVE_GAMES } from "@/config/gameAvailability";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
@@ -202,19 +200,19 @@ function Home() {
         rail={<AdSlot id="home-rail" format="rail" />}
       >
         <section>
-          <div className="mb-5 flex items-end justify-between gap-3">
-            <div>
-              <p className="impar-kicker">{copy("ARQUIVOS EM DESTAQUE", "FEATURED ARCHIVES", "ARCHIVOS DESTACADOS")}</p>
-              <h2 className="mt-2 font-display text-2xl font-semibold sm:text-3xl">
-                {copy("Entre por um jogo", "Start with a game", "Entra por un juego")}
-              </h2>
-            </div>
-            <div className="flex shrink-0 gap-2">
-              <CarouselPrevious aria-label={copy("Jogo anterior", "Previous game", "Juego anterior")} className="static size-11 translate-y-0" />
-              <CarouselNext aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")} className="static size-11 translate-y-0" />
-            </div>
-          </div>
           <Carousel opts={{ align: "start", containScroll: "trimSnaps", loop: false, slidesToScroll: 1 }}>
+            <div className="mb-5 flex items-end justify-between gap-3">
+              <div>
+                <p className="impar-kicker">{copy("ARQUIVOS EM DESTAQUE", "FEATURED ARCHIVES", "ARCHIVOS DESTACADOS")}</p>
+                <h2 className="mt-2 font-display text-2xl font-semibold sm:text-3xl">
+                  {copy("Entre por um jogo", "Start with a game", "Entra por un juego")}
+                </h2>
+              </div>
+              <div className="flex shrink-0 gap-2">
+                <CarouselPrevious aria-label={copy("Jogo anterior", "Previous game", "Juego anterior")} className="static size-11 translate-y-0" />
+                <CarouselNext aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")} className="static size-11 translate-y-0" />
+              </div>
+            </div>
             <CarouselContent>
               {SORTED_GAMES.map((game) => (
                 <CarouselItem key={game.slug} className="basis-[88%] sm:basis-[68%] lg:basis-1/2">
