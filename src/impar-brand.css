@@ -14,6 +14,7 @@
   --impar-mystic: #7567ff;
   --impar-prestige: #d6a84b;
   --impar-line: color-mix(in srgb, var(--impar-spectral) 18%, transparent);
+  --noctis-vector: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'%3E%3Cpath d='M28 41 34 18l19 14c2-1 5-1 7-1s5 0 7 1l19-14 6 23c7 8 11 18 11 30 0 25-19 39-43 39S17 96 17 71c0-12 4-22 11-30Z' fill='%23111823' stroke='%2383e9a6' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M38 56c7-8 16-10 22-4-5 14-15 18-24 10 0-2 1-4 2-6Zm44 0c-7-8-16-10-22-4 5 14 15 18 24 10 0-2-1-4-2-6Z' fill='%230a0e17' stroke='%23a1f4bb' stroke-width='3' stroke-linejoin='round'/%3E%3Ccircle cx='47' cy='58' r='5' fill='%2383e9a6'/%3E%3Ccircle cx='73' cy='58' r='5' fill='%23f5c451'/%3E%3Cpath d='M55 70h10l-5 6-5-6Zm-13 13c6 6 12 8 18 8s12-2 18-8' stroke='%23d6a84b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M30 43c7 1 12 4 16 9M90 43c-7 1-12 4-16 9' stroke='%237567ff' stroke-width='2.5' stroke-linecap='round' opacity='.85'/%3E%3C/svg%3E");
 }
 
 .dark {
@@ -138,31 +139,56 @@
   transform: rotate(0deg);
 }
 
-/* Noctis is already animated inside the WebP. Keep the surrounding UI still
- * so the character reads as a mascot, not as a bouncing sticker. */
 .impar-noctis-halo {
   background:
     radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--impar-spectral) 10%, transparent), transparent 33%),
     linear-gradient(145deg, transparent 58%, color-mix(in srgb, var(--impar-spectral) 3%, transparent));
 }
 
+/* The source WebP currently flickers between compressed color states and is only
+ * 96x104. Keep it in the repository, but never render it publicly. The vector
+ * fallback below is intentionally static until the final mascot asset arrives. */
 .noctis-mark {
   isolation: isolate;
-  transform-origin: 50% 82%;
 }
 
-.noctis-mark__sprite {
+.noctis-mark__sprite,
+img[src$="/assets/noctis/noctis-idle.webp"]:not(.noctis-mark__sprite) {
+  display: none !important;
+}
+
+.noctis-mark::after {
+  content: "";
+  display: block;
   width: 100%;
   height: 100%;
-  max-width: none;
-  object-fit: contain;
+  background-image: var(--noctis-vector);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
   filter: drop-shadow(0 3px 8px rgb(0 0 0 / 0.26));
 }
 
-/* Thinking feedback is intentionally optical only. Never move/scale the sprite. */
+/* Replace any standalone Noctis WebP (hero/cards) with the same crisp vector.
+ * :has() is already part of this UI's browser baseline. */
 @supports selector(:has(*)) {
-  .noctis-mark:has(+ .animate-spin) {
-    animation: noctis-thinking-glow 1.4s ease-in-out infinite;
+  :where(div, span):has(> img[src$="/assets/noctis/noctis-idle.webp"]:not(.noctis-mark__sprite))::after {
+    content: "";
+    position: relative;
+    z-index: 10;
+    display: block;
+    width: min(10.5rem, 100%);
+    aspect-ratio: 1;
+    margin-inline: auto;
+    background-image: var(--noctis-vector);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    filter: drop-shadow(0 12px 20px rgb(0 0 0 / 0.34));
+  }
+
+  .noctis-mark:has(+ .animate-spin)::after {
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--impar-spectral) 28%, transparent));
   }
 
   button[aria-label$="Noctis"]:has(.noctis-mark) {
@@ -183,27 +209,6 @@
 
   button[aria-label$="Noctis"]:has(> svg) > svg {
     color: var(--impar-night) !important;
-  }
-}
-
-/* Large public mascot art stays anchored. The WebP supplies the character motion.
- * The source canvas is intentionally small/pixel-art; preserve hard edges when enlarged. */
-img[src$="/assets/noctis/noctis-idle.webp"]:not(.noctis-mark__sprite) {
-  transform: none;
-  animation: none;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-}
-
-@keyframes noctis-thinking-glow {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 0 color-mix(in srgb, var(--impar-spectral) 0%, transparent));
-    opacity: 0.86;
-  }
-  50% {
-    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--impar-spectral) 36%, transparent));
-    opacity: 1;
   }
 }
 
@@ -236,6 +241,12 @@ button[aria-label$="Noctis"] + section {
     width: calc(100dvw - 1rem);
     border-radius: 1.35rem;
   }
+
+  @supports selector(:has(*)) {
+    :where(div, span):has(> img[src$="/assets/noctis/noctis-idle.webp"]:not(.noctis-mark__sprite))::after {
+      width: min(8.5rem, 100%);
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -245,12 +256,5 @@ button[aria-label$="Noctis"] + section {
 
   .impar-card-interactive:hover {
     transform: none;
-  }
-
-  .noctis-mark,
-  .noctis-mark__sprite,
-  img[src$="/assets/noctis/noctis-idle.webp"]:not(.noctis-mark__sprite) {
-    animation: none !important;
-    transform: none !important;
   }
 }
