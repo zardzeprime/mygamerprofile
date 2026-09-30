@@ -14,7 +14,6 @@
   --impar-mystic: #7567ff;
   --impar-prestige: #d6a84b;
   --impar-line: color-mix(in srgb, var(--impar-spectral) 18%, transparent);
-  --noctis-vector: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'%3E%3Cpath d='M28 41 34 18l19 14c2-1 5-1 7-1s5 0 7 1l19-14 6 23c7 8 11 18 11 30 0 25-19 39-43 39S17 96 17 71c0-12 4-22 11-30Z' fill='%23111823' stroke='%2383e9a6' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M38 56c7-8 16-10 22-4-5 14-15 18-24 10 0-2 1-4 2-6Zm44 0c-7-8-16-10-22-4 5 14 15 18 24 10 0-2-1-4-2-6Z' fill='%230a0e17' stroke='%23a1f4bb' stroke-width='3' stroke-linejoin='round'/%3E%3Ccircle cx='47' cy='58' r='5' fill='%2383e9a6'/%3E%3Ccircle cx='73' cy='58' r='5' fill='%23f5c451'/%3E%3Cpath d='M55 70h10l-5 6-5-6Zm-13 13c6 6 12 8 18 8s12-2 18-8' stroke='%23d6a84b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M30 43c7 1 12 4 16 9M90 43c-7 1-12 4-16 9' stroke='%237567ff' stroke-width='2.5' stroke-linecap='round' opacity='.85'/%3E%3C/svg%3E");
 }
 
 .dark {
@@ -140,13 +139,13 @@
 
 .impar-noctis-halo {
   background:
-    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--impar-spectral) 15%, transparent), transparent 43%),
-    linear-gradient(145deg, transparent 53%, color-mix(in srgb, var(--impar-spectral) 5%, transparent));
+    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--impar-spectral) 12%, transparent), transparent 43%),
+    linear-gradient(145deg, transparent 53%, color-mix(in srgb, var(--impar-spectral) 4%, transparent));
 }
 
-/* The animated source asset is temporarily disabled everywhere. It is only
- * 96x104 and its frames shift palette/alpha, which produced the visible pixel
- * flicker. The UI uses a static vector fallback until the final mascot arrives. */
+/* The original 96x104 experimental WebP is kept only as a DOM hook on the
+ * home route. It is hidden and replaced by the cleaned Noctis animation that
+ * was created in Work, preserving the original hat, wings, tail and eyes. */
 img[src*="noctis-idle.webp"] {
   display: none !important;
   visibility: hidden !important;
@@ -157,11 +156,10 @@ img[src*="noctis-idle.webp"] {
   isolation: isolate;
 }
 
-.noctis-mark > svg {
-  display: block;
+.noctis-mark__work {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 3px 8px rgb(0 0 0 / 0.26));
+  object-fit: contain;
 }
 
 @supports selector(:has(*)) {
@@ -173,13 +171,13 @@ img[src*="noctis-idle.webp"] {
     content: "";
     position: absolute;
     z-index: 10;
-    right: -1.25rem;
-    bottom: -0.75rem;
+    right: -0.4rem;
+    bottom: -1rem;
     display: block;
-    width: 16rem;
-    aspect-ratio: 1;
-    background-image: var(--noctis-vector);
-    background-position: center;
+    width: 13.5rem;
+    height: 17.25rem;
+    background-image: url("/assets/noctis/noctis-idle-work.webp");
+    background-position: center bottom;
     background-repeat: no-repeat;
     background-size: contain;
     filter: drop-shadow(0 18px 34px rgb(0 0 0 / 0.42));
@@ -194,8 +192,8 @@ img[src*="noctis-idle.webp"] {
   }
 
   button[aria-label$="Noctis"]:has(.noctis-mark) .noctis-mark {
-    width: 3rem;
-    height: 3rem;
+    width: 3.15rem;
+    height: 3.15rem;
   }
 
   button[aria-label$="Noctis"]:has(> svg) {
@@ -242,7 +240,8 @@ button[aria-label$="Noctis"] + section {
       position: relative;
       right: auto;
       bottom: auto;
-      width: min(11.5rem, 100%);
+      width: min(10rem, 100%);
+      height: 12.8rem;
       margin-inline: auto;
     }
 
@@ -252,8 +251,8 @@ button[aria-label$="Noctis"] + section {
     }
 
     button[aria-label$="Noctis"]:has(.noctis-mark) .noctis-mark {
-      width: 2.65rem;
-      height: 2.65rem;
+      width: 2.8rem;
+      height: 2.8rem;
     }
   }
 }
