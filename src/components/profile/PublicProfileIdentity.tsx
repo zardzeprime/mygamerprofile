@@ -23,8 +23,7 @@ export function PublicProfileIdentity({ userId, locale }: { userId: string; loca
   useEffect(() => {
     let active = true;
     const load = async () => {
-      const db = supabase as any;
-      const { data, error } = await db.rpc("get_public_profile_identity", { p_user_id: userId });
+      const { data, error } = await supabase.rpc("get_public_profile_identity", { p_user_id: userId });
       if (!active || error) return;
       setIdentity((data?.[0] ?? null) as PublicIdentity | null);
     };
