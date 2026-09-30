@@ -8,15 +8,15 @@ type NexusMarkProps = {
 /**
  * Public Noctis mascot.
  *
- * NEXUS remains the internal runtime/orchestration name, while public surfaces
- * use the animated Noctis asset created for MG Profile. The source WebP is a
- * lightweight 6-frame idle loop derived from the approved Noctis sprite atlas.
+ * NEXUS remains the internal runtime/orchestration name for compatibility.
+ * Public surfaces use Noctis and let the shared brand stylesheet handle motion
+ * so the mascot behaves consistently across chat, loading states and cards.
  */
 export function NexusMark({ className, title = "Noctis" }: NexusMarkProps) {
   return (
     <span
       className={cn(
-        "group/noctis relative inline-grid size-6 shrink-0 place-items-center overflow-visible",
+        "noctis-mark relative inline-grid size-6 shrink-0 place-items-center overflow-visible",
         className,
       )}
       role="img"
@@ -29,7 +29,7 @@ export function NexusMark({ className, title = "Noctis" }: NexusMarkProps) {
         aria-hidden="true"
         draggable={false}
         decoding="async"
-        className="pointer-events-none size-[150%] max-w-none select-none object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.28)] transition-transform duration-300 ease-out group-hover/noctis:-translate-y-0.5 group-hover/noctis:scale-110 group-active/noctis:translate-y-0 group-active/noctis:scale-95"
+        className="noctis-mark__sprite pointer-events-none select-none object-contain"
       />
     </span>
   );
