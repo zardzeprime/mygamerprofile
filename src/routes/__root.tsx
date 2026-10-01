@@ -22,7 +22,7 @@ import { SoundProvider } from "../lib/sound";
 import { RouteTransitionLoader } from "../components/common/RouteTransitionLoader";
 import { AppHeader } from "../components/layout/AppHeader";
 import { AppFooter } from "../components/layout/AppFooter";
-import { NexusChat } from "../components/nexus/NexusChat";
+import { NoctisChat } from "../components/noctis/NoctisChat";
 import { DEFAULT_OG_IMAGE, SITE_STRUCTURED_DATA } from "../lib/seo";
 
 function NotFoundComponent() {
@@ -218,7 +218,7 @@ function RootComponent() {
             </main>
             <AppFooter />
           </div>
-          <NexusChat />
+          <NoctisChat />
         </SoundProvider>
       </ThemeProvider>
     </QueryClientProvider>

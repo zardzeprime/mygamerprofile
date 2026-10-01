@@ -158,7 +158,7 @@ function Home() {
                     )}
                   </p>
                 </div>
-                <Link to="/nexus" className="mt-4 inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)] sm:mt-6">
+                <Link to="/noctis" className="mt-4 inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)] sm:mt-6">
                   {copy("Falar com Noctis", "Talk to Noctis", "Hablar con Noctis")}
                   <ArrowRight className="size-4" />
                 </Link>

@@ -178,7 +178,7 @@ function parseBlocks(rawContent: string): Block[] {
   return blocks;
 }
 
-export function NexusMarkdown({ content }: { content: string }) {
+export function NoctisMarkdown({ content }: { content: string }) {
   const blocks = parseBlocks(content);
 
   return (

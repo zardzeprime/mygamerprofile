@@ -30,10 +30,10 @@ export type AiCoreDefinition = {
 export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
   nexus: {
     id: "nexus",
-    name: "NEXUS",
+    name: "Noctis",
     legacyName: "NEXUS",
-    epithet: "A Regente",
-    reportLabel: "Noctis (Coordenação e IA)",
+    epithet: "O Guardião",
+    reportLabel: "Noctis (Assistente do ÍMPAR)",
     letter: "N",
     accent: "#83E9A6",
     parentId: null,

@@ -1,7 +1,7 @@
 import { Loader2, Sparkles, WandSparkles } from "lucide-react";
 import { useState } from "react";
 
-import { NexusMark } from "@/components/nexus/NexusMark";
+import { NoctisMark } from "@/components/noctis/NoctisMark";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,14 +9,14 @@ import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { assistNexusBuild } from "@/lib/nexus.functions";
 
-export type NexusBuildSuggestion = {
+export type NoctisBuildSuggestion = {
   title?: string;
   summary?: string;
   reason?: string;
   [key: string]: unknown;
 };
 
-export function NexusBuildAssistant({
+export function NoctisBuildAssistant({
   gameSlug,
   locale,
   context,
@@ -27,11 +27,11 @@ export function NexusBuildAssistant({
   locale: Locale;
   context: Record<string, unknown>;
   quickPrompts?: string[];
-  onApply: (suggestion: NexusBuildSuggestion) => void;
+  onApply: (suggestion: NoctisBuildSuggestion) => void;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [request, setRequest] = useState("");
-  const [suggestion, setSuggestion] = useState<NexusBuildSuggestion | null>(null);
+  const [suggestion, setSuggestion] = useState<NoctisBuildSuggestion | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -64,7 +64,7 @@ export function NexusBuildAssistant({
           context,
         },
       })) as {
-        suggestion?: NexusBuildSuggestion;
+        suggestion?: NoctisBuildSuggestion;
       };
 
       if (!response.suggestion || typeof response.suggestion !== "object") {
@@ -74,7 +74,7 @@ export function NexusBuildAssistant({
       setRequest(prompt);
       setSuggestion(response.suggestion);
     } catch (reason) {
-      console.error("[NexusBuildAssistant] build assist failed", reason);
+      console.error("[NoctisBuildAssistant] build assist failed", reason);
       setError(
         copy(
           "O Noctis não conseguiu montar o preset agora. Tente novamente em instantes.",
@@ -91,7 +91,7 @@ export function NexusBuildAssistant({
     <section className="rounded-2xl border border-[var(--impar-line)] bg-[var(--impar-spectral-soft)]/40 p-4 sm:p-5">
       <div className="flex items-start gap-3">
         <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-[var(--impar-line)] bg-background/55">
-          <NexusMark className="size-7" title="Noctis" />
+          <NoctisMark className="size-7" title="Noctis" />
         </span>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">

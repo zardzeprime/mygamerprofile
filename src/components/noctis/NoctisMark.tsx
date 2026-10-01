@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
-import "./NexusMark.css";
+import "./NoctisMark.css";
 
-type NexusMarkProps = {
+type NoctisMarkProps = {
   className?: string;
   title?: string;
   calmMotion?: boolean;
@@ -13,7 +13,7 @@ type NexusMarkProps = {
  * NEXUS remains the internal runtime/orchestration name for compatibility.
  * Public surfaces use the cleaned animation generated for Noctis in Work.
  */
-export function NexusMark({ className, title = "Noctis", calmMotion = false }: NexusMarkProps) {
+export function NoctisMark({ className, title = "Noctis", calmMotion = false }: NoctisMarkProps) {
   return (
     <span
       className={cn(
