@@ -169,21 +169,15 @@ function Home() {
                   className="absolute bottom-2 left-1/2 h-5 w-28 -translate-x-1/2 rounded-full bg-black/35 blur-xl sm:bottom-5 sm:w-32"
                   aria-hidden="true"
                 />
-                <picture className="relative z-10 block w-[6.5rem] max-w-full drop-shadow-[0_12px_20px_rgba(0,0,0,.38)] sm:w-[11.5rem]">
-                  <source
-                    media="(prefers-reduced-motion: reduce)"
-                    srcSet="/assets/noctis/noctis-impar-web-4x.webp"
-                  />
-                  <img
-                    src="/assets/noctis/noctis-animacoes.gif"
-                    alt="Noctis, mascote e IA do ÍMPAR"
-                    width={320}
-                    height={272}
-                    loading="eager"
-                    decoding="async"
-                    className="block h-auto w-full object-contain"
-                  />
-                </picture>
+                <img
+                  src="/assets/noctis/noctis-impar-web-4x.webp"
+                  alt="Noctis, mascote e IA do ÍMPAR"
+                  width={4820}
+                  height={5224}
+                  loading="eager"
+                  decoding="async"
+                  className="impar-home-mascot relative z-10 block h-auto w-[6.5rem] max-w-full object-contain drop-shadow-[0_12px_20px_rgba(0,0,0,.38)] sm:w-[11.5rem]"
+                />
               </div>
             </div>
           </div>

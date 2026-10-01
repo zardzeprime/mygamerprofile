@@ -338,7 +338,7 @@ export function NexusChat() {
         className="fixed bottom-5 right-5 z-[70] grid size-14 place-items-center rounded-full border border-[var(--impar-spectral)]/45 bg-foreground text-[var(--impar-spectral)] shadow-lift transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--impar-spectral)]"
         aria-label={copy("Abrir Noctis", "Open Noctis", "Abrir Noctis")}
       >
-        {open ? <X className="size-5 text-background" /> : <NexusMark className="size-7" />}
+        {open ? <X className="size-5 text-background" /> : <NexusMark className="size-7" calmMotion />}
       </button>
 
       {open ? (

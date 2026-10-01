@@ -349,3 +349,25 @@ button[aria-label$="Noctis"] + section {
     letter-spacing: 0.07em;
   }
 }
+
+
+.impar-home-mascot {
+  transform-origin: 50% 82%;
+  animation: impar-noctis-breathe 7.5s ease-in-out infinite;
+}
+
+@keyframes impar-noctis-breathe {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .impar-home-mascot {
+    animation: none;
+    transform: none;
+  }
+}
