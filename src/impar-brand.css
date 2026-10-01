@@ -344,7 +344,7 @@ body {
   box-shadow: 0 0 9px color-mix(in srgb, var(--impar-spectral) 52%, transparent);
   transform: rotate(-28deg);
   transform-origin: left center;
-  animation: impar-shooting-star 22s ease-in-out infinite;
+  animation: impar-shooting-star 24s ease-in-out infinite;
 }
 
 @keyframes impar-star-twinkle {
@@ -358,10 +358,9 @@ body {
 }
 
 @keyframes impar-shooting-star {
-  0%, 82% { opacity: 0; transform: translate3d(0, 0, 0) rotate(-28deg); }
-  84% { opacity: 0.8; }
-  88% { opacity: 0; transform: translate3d(125vw, 68vh, 0) rotate(-28deg); }
-  100% { opacity: 0; transform: translate3d(125vw, 68vh, 0) rotate(-28deg); }
+  0%, 5%, 100% { opacity: 0; transform: translate3d(0, 0, 0) rotate(-28deg); }
+  7% { opacity: 0.8; transform: translate3d(46vw, 25vh, 0) rotate(-28deg); }
+  10% { opacity: 0; transform: translate3d(125vw, 68vh, 0) rotate(-28deg); }
 }
 
 @media (max-width: 639px) {
