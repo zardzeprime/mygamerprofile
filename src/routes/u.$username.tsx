@@ -87,7 +87,7 @@ export const Route = createFileRoute("/u/$username")({
       title,
       description,
       path: `/u/${profile.username}`,
-      image: profile.avatar_url ?? undefined,
+      ...(profile.avatar_url ? { image: profile.avatar_url } : {}),
       type: "profile",
     });
 
