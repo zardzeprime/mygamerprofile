@@ -10,11 +10,11 @@ import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import {
   deleteNexusThread,
-  getNoctisGuestStatus,
+  getNexusGuestStatus,
   getNexusMemberBootstrap,
-  listNoctisMessages,
+  listNexusMessages,
   sendNexusGuestMessage,
-  sendNoctisMessage,
+  sendNexusMessage,
 } from "@/lib/nexus.functions";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -101,7 +101,7 @@ export function NoctisChat() {
     const load = async () => {
       if (!user) {
         const storedGuestId = readStoredGuestId();
-        const nextGuest = (await getNoctisGuestStatus({
+        const nextGuest = (await getNexusGuestStatus({
           data: storedGuestId ? { guestId: storedGuestId } : {},
         })) as NoctisGuestStatus;
         if (!active) return;
@@ -130,7 +130,7 @@ export function NoctisChat() {
       const preferred = bootstrap.threads.find((thread) => thread.mode === mode);
       if (!preferred) return;
 
-      const history = (await listNoctisMessages({
+      const history = (await listNexusMessages({
         data: { threadId: preferred.id, accessToken },
       })) as NoctisMessage[];
       if (!active) return;
@@ -242,7 +242,7 @@ export function NoctisChat() {
         let activeGuest = guestStatus;
         if (!activeGuest) {
           const storedGuestId = readStoredGuestId();
-          activeGuest = (await getNoctisGuestStatus({
+          activeGuest = (await getNexusGuestStatus({
             data: storedGuestId ? { guestId: storedGuestId } : {},
           })) as NoctisGuestStatus;
           persistGuestId(activeGuest.guestId);
@@ -272,7 +272,7 @@ export function NoctisChat() {
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData.session?.access_token;
       if (!accessToken) throw new Error("NEXUS_AUTH_SESSION_MISSING");
-      const response = await sendNoctisMessage({
+      const response = await sendNexusMessage({
         data: { ...(threadId ? { threadId } : {}), mode, message, locale, accessToken },
       });
       setThreadId(response.threadId);
