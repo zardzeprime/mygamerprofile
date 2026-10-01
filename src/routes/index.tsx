@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/carousel";
 import { useState } from "react";
 import { buildSeo } from "@/lib/seo";
+import { requestNoctisOpen } from "@/lib/noctis-dialog";
 
 const SORTED_GAMES = [...ACTIVE_GAMES].sort((a, b) =>
   a.name.localeCompare(b.name, "en", { sensitivity: "base" }),

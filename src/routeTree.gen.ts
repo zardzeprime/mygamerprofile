@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as CodiceRouteImport } from './routes/codice'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LfgRouteImport } from './routes/lfg'
 import { Route as LoginRouteImport } from './routes/login'
@@ -48,6 +49,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CodiceRoute = CodiceRouteImport.update({
+  id: '/codice',
+  path: '/codice',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -206,10 +212,12 @@ const UUsernameGamesSlugRoute = UUsernameGamesSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/codice': typeof CodiceRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
   '/nexus': typeof NexusRoute
+  '/noctis': typeof NoctisRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/roblox': typeof RobloxRouteWithChildren
@@ -237,10 +245,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/codice': typeof CodiceRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
   '/nexus': typeof NexusRoute
+  '/noctis': typeof NoctisRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/roblox': typeof RobloxRouteWithChildren
@@ -270,10 +280,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/codice': typeof CodiceRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/lfg': typeof LfgRoute
   '/login': typeof LoginRoute
   '/nexus': typeof NexusRoute
+  '/noctis': typeof NoctisRoute
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/roblox': typeof RobloxRouteWithChildren
@@ -303,10 +315,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/codice'
     | '/forgot-password'
     | '/lfg'
     | '/login'
     | '/nexus'
+    | '/noctis'
     | '/privacy'
     | '/register'
     | '/roblox'
@@ -334,10 +348,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/codice'
     | '/forgot-password'
     | '/lfg'
     | '/login'
     | '/nexus'
+    | '/noctis'
     | '/privacy'
     | '/register'
     | '/roblox'
@@ -366,10 +382,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/codice'
     | '/forgot-password'
     | '/lfg'
     | '/login'
     | '/nexus'
+    | '/noctis'
     | '/privacy'
     | '/register'
     | '/roblox'
@@ -399,6 +417,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  CodiceRoute: typeof CodiceRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LfgRoute: typeof LfgRoute
   LoginRoute: typeof LoginRoute
@@ -433,6 +452,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/codice': {
+      id: '/codice'
+      path: '/codice'
+      fullPath: '/codice'
+      preLoaderRoute: typeof CodiceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -704,6 +730,7 @@ const UUsernameRouteWithChildren = UUsernameRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  CodiceRoute: CodiceRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LfgRoute: LfgRoute,
   LoginRoute: LoginRoute,
