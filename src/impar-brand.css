@@ -466,16 +466,22 @@ body {
 
 
 .impar-home-mascot {
-  transform-origin: 50% 82%;
-  animation: impar-noctis-breathe 7.5s ease-in-out infinite;
+  transform-origin: 50% 84%;
+  animation: impar-noctis-idle 8.2s ease-in-out infinite;
 }
 
-@keyframes impar-noctis-breathe {
+@keyframes impar-noctis-idle {
   0%, 100% {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0) rotate(0) scale(1);
+  }
+  25% {
+    transform: translate3d(0, -2px, 0) rotate(-0.2deg) scale(1.006);
   }
   50% {
-    transform: translateY(-4px);
+    transform: translate3d(0, -5px, 0) rotate(0) scale(1.012);
+  }
+  75% {
+    transform: translate3d(0, -2px, 0) rotate(0.2deg) scale(1.006);
   }
 }
 

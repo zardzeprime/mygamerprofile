@@ -172,8 +172,8 @@ function Home() {
                 <img
                   src="/assets/noctis/noctis-impar-web-hd.webp"
                   alt="Noctis, mascote e IA do ÍMPAR"
-                  width={4820}
-                  height={5224}
+                  width={1206}
+                  height={1304}
                   loading="eager"
                   decoding="async"
                   className="impar-home-mascot relative z-10 block h-auto w-[6.5rem] max-w-full object-contain drop-shadow-[0_12px_20px_rgba(0,0,0,.38)] sm:w-[11.5rem]"
