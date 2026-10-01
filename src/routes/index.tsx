@@ -140,17 +140,17 @@ function Home() {
 
           <div className="impar-card impar-home-noctis-card relative min-h-[20rem] overflow-hidden rounded-[2rem_2rem_0.8rem_2rem] p-5 sm:min-h-[23rem] sm:p-7">
             <div className="impar-noctis-halo absolute inset-0" aria-hidden="true" />
-            <div className="relative z-10 grid min-h-[18rem] gap-5 sm:min-h-[20rem] sm:grid-cols-[minmax(0,1fr)_10.5rem] sm:gap-6">
+            <div className="relative z-10 grid min-h-[18rem] grid-cols-[minmax(0,1fr)_7rem] gap-3 sm:min-h-[20rem] sm:grid-cols-[minmax(0,1fr)_10.5rem] sm:gap-6">
               <div className="flex min-w-0 flex-col justify-between">
                 <div>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[var(--impar-line)] bg-black/20 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--impar-spectral)] backdrop-blur">
+                  <div className="impar-home-noctis-badge inline-flex items-center gap-2 rounded-full border border-[var(--impar-line)] bg-black/20 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--impar-spectral)] backdrop-blur">
                     <Sparkles className="size-3.5" aria-hidden="true" />
                     Noctis · {copy("guardião do ÍMPAR", "guardian of ÍMPAR", "guardián de ÍMPAR")}
                   </div>
-                  <h2 className="mt-4 max-w-sm font-display text-2xl font-semibold leading-tight sm:text-3xl">
+                  <h2 className="mt-3 max-w-sm font-display text-xl font-semibold leading-tight sm:mt-4 sm:text-3xl">
                     {copy("Um guia para o seu próprio caminho.", "A guide for your own path.", "Un guía para tu propio camino.")}
                   </h2>
-                  <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
+                  <p className="mt-2 max-w-sm text-[0.8rem] leading-5 text-muted-foreground sm:mt-3 sm:text-sm sm:leading-6">
                     {copy(
                       "Pergunte sobre jogos, builds, sistemas ou o próprio ÍMPAR. Noctis continua sendo a IA da plataforma — agora com uma casa que combina com ele.",
                       "Ask about games, builds, systems or ÍMPAR itself. Noctis remains the platform AI — now with a home that matches him.",
@@ -158,7 +158,7 @@ function Home() {
                     )}
                   </p>
                 </div>
-                <Link to="/nexus" className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)]">
+                <Link to="/nexus" className="mt-4 inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)] sm:mt-6">
                   {copy("Falar com Noctis", "Talk to Noctis", "Hablar con Noctis")}
                   <ArrowRight className="size-4" />
                 </Link>
@@ -169,7 +169,7 @@ function Home() {
                   className="absolute bottom-2 left-1/2 h-5 w-28 -translate-x-1/2 rounded-full bg-black/35 blur-xl sm:bottom-5 sm:w-32"
                   aria-hidden="true"
                 />
-                <picture className="relative z-10 block w-36 max-w-full drop-shadow-[0_12px_20px_rgba(0,0,0,.38)] sm:w-[11.5rem]">
+                <picture className="relative z-10 block w-[6.5rem] max-w-full drop-shadow-[0_12px_20px_rgba(0,0,0,.38)] sm:w-[11.5rem]">
                   <source
                     media="(prefers-reduced-motion: reduce)"
                     srcSet="/assets/noctis/noctis-impar-web-4x.webp"

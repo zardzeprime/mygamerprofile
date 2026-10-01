@@ -339,3 +339,13 @@ button[aria-label$="Noctis"] + section {
     min-height: 10.5rem;
   }
 }
+
+
+@media (max-width: 639px) {
+  .impar-home-noctis-badge {
+    gap: 0.3rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.52rem;
+    letter-spacing: 0.07em;
+  }
+}
