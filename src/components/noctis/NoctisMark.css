@@ -11,6 +11,19 @@
   filter: drop-shadow(0 3px 8px rgb(0 0 0 / 0.28));
 }
 
+.noctis-mark--face {
+  overflow: hidden;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--impar-spectral) 18%, var(--impar-night-raised)), var(--impar-night));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--impar-spectral) 28%, transparent);
+}
+
+.noctis-mark--face .noctis-mark__work {
+  transform: scale(2.6);
+  transform-origin: 50% 21%;
+}
+
 .noctis-mark--calm-motion {
   animation: noctis-calm-float 6.8s ease-in-out infinite;
 }

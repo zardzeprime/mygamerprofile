@@ -38,7 +38,7 @@ export const Route = createFileRoute("/")({
     buildSeo({
       title: "ÍMPAR — Seu jogo. Seu perfil. Do seu jeito.",
       description:
-        "Construa sua identidade gamer no ÍMPAR: perfis, jogos, Códice, Guildas, conteúdo e pessoas para jogar do seu jeito.",
+        "Construa sua identidade gamer no ÍMPAR: perfis, jogos, Códice, Comunidades, conteúdo e pessoas para jogar do seu jeito.",
       path: "/",
     }),
   component: Home,
@@ -78,7 +78,7 @@ function Home() {
     {
       to: "/communities" as const,
       icon: MessagesSquare,
-      title: copy("Guildas", "Guilds", "Guildas"),
+      title: copy("Comunidades", "Communities", "Comunidades"),
       body: copy(
         "Espaços sociais por jogo para conversar, criar e encontrar gente com a mesma vibe.",
         "Game-based social spaces to talk, create and meet people with the same vibe.",

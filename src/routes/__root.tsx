@@ -95,7 +95,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "ÍMPAR é uma plataforma brasileira de identidade gamer: perfis, jogos, Códice, Guildas, conteúdo e LFG do seu jeito.",
+          "ÍMPAR é uma plataforma brasileira de identidade gamer: perfis, jogos, Códice, Comunidades, conteúdo e LFG do seu jeito.",
       },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
       { name: "theme-color", content: "#0a0e17" },
@@ -209,8 +209,9 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <SoundProvider>
+          <div className="impar-starry-sky" aria-hidden="true" />
           <RouteTransitionLoader />
-          <div className="flex min-h-screen flex-col bg-background">
+          <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
             <AppHeader />
             <div aria-hidden="true" className="h-[4.25rem] shrink-0" />
             <main className="flex-1">

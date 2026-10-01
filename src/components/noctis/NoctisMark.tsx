@@ -5,6 +5,7 @@ type NoctisMarkProps = {
   className?: string;
   title?: string;
   calmMotion?: boolean;
+  faceOnly?: boolean;
 };
 
 /**
@@ -13,12 +14,13 @@ type NoctisMarkProps = {
  * NEXUS remains the internal runtime/orchestration name for compatibility.
  * Public surfaces use the cleaned animation generated for Noctis in Work.
  */
-export function NoctisMark({ className, title = "Noctis", calmMotion = false }: NoctisMarkProps) {
+export function NoctisMark({ className, title = "Noctis", calmMotion = false, faceOnly = false }: NoctisMarkProps) {
   return (
     <span
       className={cn(
         "noctis-mark relative inline-grid size-6 shrink-0 place-items-center overflow-visible",
         calmMotion && "noctis-mark--calm-motion",
+        faceOnly && "noctis-mark--face",
         className,
       )}
       role="img"
