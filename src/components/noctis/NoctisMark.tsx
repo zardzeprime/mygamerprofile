@@ -28,7 +28,7 @@ export function NoctisMark({ className, title = "Noctis", calmMotion = false, fa
       title={title}
     >
       <img
-        src="/assets/noctis/noctis-impar-web-4x.webp"
+        src="/assets/noctis/noctis-impar-web-hd.webp"
         alt=""
         aria-hidden="true"
         draggable={false}

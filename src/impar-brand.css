@@ -176,7 +176,7 @@ img[src*="noctis-idle.webp"] {
     display: block;
     width: 13.5rem;
     height: 17.25rem;
-    background-image: url("/assets/noctis/noctis-idle-work.webp");
+    background-image: url("/assets/noctis/noctis-impar-web-hd.webp");
     background-position: center bottom;
     background-repeat: no-repeat;
     background-size: contain;
@@ -269,6 +269,41 @@ button[aria-label$="Noctis"] + section {
 
 
 
+
+/* The body itself carries a slow-moving star field so it stays visible under
+   transparent page areas, even when route backgrounds create new layers. */
+body {
+  background-color: var(--color-background);
+  background-image:
+    radial-gradient(circle at 8% 14%, rgb(236 246 255 / 58%) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 17% 73%, rgb(131 233 166 / 46%) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 25% 31%, rgb(255 255 255 / 42%) 0 0.8px, transparent 1.7px),
+    radial-gradient(circle at 37% 12%, rgb(236 246 255 / 40%) 0 0.8px, transparent 1.7px),
+    radial-gradient(circle at 46% 62%, rgb(131 233 166 / 40%) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 53% 23%, rgb(255 255 255 / 44%) 0 0.8px, transparent 1.7px),
+    radial-gradient(circle at 64% 82%, rgb(236 246 255 / 46%) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 72% 38%, rgb(131 233 166 / 34%) 0 0.8px, transparent 1.7px),
+    radial-gradient(circle at 82% 16%, rgb(255 255 255 / 48%) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 92% 58%, rgb(236 246 255 / 38%) 0 0.8px, transparent 1.7px),
+    radial-gradient(circle at 11% 91%, rgb(255 255 255 / 38%) 0 0.8px, transparent 1.7px),
+    radial-gradient(circle at 34% 89%, rgb(131 233 166 / 34%) 0 0.8px, transparent 1.7px),
+    radial-gradient(circle at 88% 90%, rgb(255 255 255 / 40%) 0 0.8px, transparent 1.7px);
+  background-position: 0 0;
+  background-size: 100vw 100vh;
+  background-repeat: repeat;
+  background-attachment: fixed;
+  animation: impar-body-star-drift 88s linear infinite alternate;
+}
+
+@keyframes impar-body-star-drift {
+  from { background-position: 0 0; }
+  to { background-position: 42px -56px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body { animation: none; }
+}
+
 /* Star field shared by every route. The glow stays low enough to preserve
    text contrast; motion is slow and disappears for reduced-motion users. */
 .impar-starry-sky {
@@ -293,7 +328,7 @@ button[aria-label$="Noctis"] + section {
     radial-gradient(circle at 88% 90%, rgb(255 255 255 / 45%) 0 0.8px, transparent 1.7px);
   background-repeat: no-repeat;
   opacity: 0.34;
-  animation: impar-star-twinkle 8s ease-in-out infinite alternate;
+  animation: impar-star-twinkle 8s ease-in-out infinite alternate, impar-star-drift 72s linear infinite;
 }
 
 .impar-starry-sky::after {
@@ -315,6 +350,11 @@ button[aria-label$="Noctis"] + section {
 @keyframes impar-star-twinkle {
   from { opacity: 0.22; }
   to { opacity: 0.4; }
+}
+
+@keyframes impar-star-drift {
+  from { background-position: 0 0; }
+  to { background-position: 36px -42px; }
 }
 
 @keyframes impar-shooting-star {
@@ -344,7 +384,12 @@ button[aria-label$="Noctis"] + section {
   background:
     radial-gradient(ellipse at 82% 13%, color-mix(in srgb, var(--impar-mystic) 15%, transparent), transparent 34rem),
     radial-gradient(ellipse at 8% 86%, color-mix(in srgb, var(--impar-spectral) 10%, transparent), transparent 34rem),
-    linear-gradient(145deg, #0d151a 0%, var(--impar-night) 54%, #111322 100%);
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, #0d151a 91%, transparent) 0%,
+      color-mix(in srgb, var(--impar-night) 88%, transparent) 54%,
+      color-mix(in srgb, #111322 90%, transparent) 100%
+    );
 }
 
 .impar-home-hero::before {

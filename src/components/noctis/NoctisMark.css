@@ -11,7 +11,7 @@
   filter: drop-shadow(0 3px 8px rgb(0 0 0 / 0.28));
 }
 
-.noctis-mark--face {
+.noctis-mark.noctis-mark--face {
   overflow: hidden;
   border-radius: 50%;
   background:
@@ -20,8 +20,8 @@
 }
 
 .noctis-mark--face .noctis-mark__work {
-  transform: scale(2.6);
-  transform-origin: 50% 21%;
+  transform: scale(1.8);
+  transform-origin: 50% 28%;
 }
 
 .noctis-mark--calm-motion {
