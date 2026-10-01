@@ -17,6 +17,7 @@ import {
   sendNexusMessage,
 } from "@/lib/nexus.functions";
 import { cn } from "@/lib/utils";
+import { NOCTIS_OPEN_EVENT } from "@/lib/noctis-dialog";
 import { supabase } from "@/integrations/supabase/client";
 
 type NoctisMode = "gaming" | "development";
@@ -90,6 +91,12 @@ export function NoctisChat() {
     setMode("gaming");
     setError("");
   }, [user?.id]);
+
+  useEffect(() => {
+    const handleOpen = () => setOpen(true);
+    window.addEventListener(NOCTIS_OPEN_EVENT, handleOpen);
+    return () => window.removeEventListener(NOCTIS_OPEN_EVENT, handleOpen);
+  }, []);
 
   useEffect(() => {
     if (!open || authLoading) return;

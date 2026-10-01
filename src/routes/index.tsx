@@ -158,10 +158,14 @@ function Home() {
                     )}
                   </p>
                 </div>
-                <Link to="/noctis" className="mt-4 inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)] sm:mt-6">
+                <button
+                  type="button"
+                  onClick={requestNoctisOpen}
+                  className="mt-4 inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)] sm:mt-6"
+                >
                   {copy("Falar com Noctis", "Talk to Noctis", "Hablar con Noctis")}
                   <ArrowRight className="size-4" />
-                </Link>
+                </button>
               </div>
 
               <div className="relative flex min-h-40 items-end justify-center sm:min-h-0 sm:justify-end">
