@@ -15,6 +15,7 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LfgRouteImport } from './routes/lfg'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NexusRouteImport } from './routes/nexus'
+import { Route as NoctisRouteImport } from './routes/noctis'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as RobloxRouteImport } from './routes/roblox'
@@ -67,6 +68,11 @@ const LoginRoute = LoginRouteImport.update({
 const NexusRoute = NexusRouteImport.update({
   id: '/nexus',
   path: '/nexus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoctisRoute = NoctisRouteImport.update({
+  id: '/noctis',
+  path: '/noctis',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -397,6 +403,7 @@ export interface RootRouteChildren {
   LfgRoute: typeof LfgRoute
   LoginRoute: typeof LoginRoute
   NexusRoute: typeof NexusRoute
+  NoctisRoute: typeof NoctisRoute
   PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
   RobloxRoute: typeof RobloxRouteWithChildren
@@ -454,6 +461,13 @@ declare module '@tanstack/react-router' {
       path: '/nexus'
       fullPath: '/nexus'
       preLoaderRoute: typeof NexusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noctis': {
+      id: '/noctis'
+      path: '/noctis'
+      fullPath: '/noctis'
+      preLoaderRoute: typeof NoctisRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -694,6 +708,7 @@ const rootRouteChildren: RootRouteChildren = {
   LfgRoute: LfgRoute,
   LoginRoute: LoginRoute,
   NexusRoute: NexusRoute,
+  NoctisRoute: NoctisRoute,
   PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
   RobloxRoute: RobloxRouteWithChildren,

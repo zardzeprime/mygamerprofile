@@ -11,9 +11,9 @@ import {
   WandSparkles,
 } from "lucide-react";
 import {
-  NexusBuildAssistant,
-  type NexusBuildSuggestion,
-} from "@/components/nexus/NexusBuildAssistant";
+  NoctisBuildAssistant,
+  type NoctisBuildSuggestion,
+} from "@/components/noctis/NoctisBuildAssistant";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import type { Locale } from "@/i18n";
@@ -251,7 +251,7 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
     },
   };
 
-  const applyNexusPreset = (suggestion: NexusBuildSuggestion) => {
+  const applyNexusPreset = (suggestion: NoctisBuildSuggestion) => {
     if (typeof suggestion.title === "string") {
       setCustomName(suggestion.title.slice(0, 100));
     }
@@ -451,7 +451,7 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
         </p>
 
         <div className="mt-5">
-          <NexusBuildAssistant
+          <NoctisBuildAssistant
             gameSlug="dark-souls-iii"
             locale={locale}
             context={nexusContext}

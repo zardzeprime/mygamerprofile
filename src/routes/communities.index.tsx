@@ -9,9 +9,9 @@ import { buildSeo } from "@/lib/seo";
 export const Route = createFileRoute("/communities/")({
   head: () =>
     buildSeo({
-      title: "Guildas — espaços sociais por jogo — ÍMPAR",
+      title: "Comunidades — espaços sociais por jogo — ÍMPAR",
       description:
-        "Entre nas Guildas do ÍMPAR para conversar, publicar, compartilhar builds e encontrar jogadores de Valorant, League of Legends, Dark Souls e outros jogos.",
+        "Entre nas Comunidades do ÍMPAR para conversar, publicar, compartilhar builds e encontrar jogadores de Valorant, League of Legends, Dark Souls e outros jogos.",
       path: "/communities",
     }),
   component: CommunitiesCatalog,
@@ -24,15 +24,15 @@ function CommunitiesCatalog() {
   return (
     <div className="impar-shell mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
       <div className="max-w-3xl">
-        <p className="impar-kicker">ÍMPAR / GUILDAS</p>
+        <p className="impar-kicker">ÍMPAR / COMUNIDADES</p>
         <h1 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-5xl">
-          {copy("Guildas", "Guilds", "Guildas")}
+          {copy("Comunidades", "Communities", "Comunidades")}
         </h1>
         <p className="mt-3 text-sm leading-7 text-muted-foreground sm:text-base">
           {copy(
-            "Os Arquivos organizam os jogos. O Códice guarda conhecimento. As Guildas são onde as pessoas entram: conversas, criadores, posts, builds, discussões e LFG em torno do que vocês jogam.",
-            "Archives organize games. The Codex holds knowledge. Guilds are where people step in: conversations, creators, posts, builds, discussions and LFG around what you play.",
-            "Los Archivos organizan los juegos. El Códice guarda conocimiento. Las Guildas son donde entra la gente: conversaciones, creadores, posts, builds, debates y LFG alrededor de lo que juegan.",
+            "Os Arquivos organizam os jogos. O Códice guarda conhecimento. As Comunidades são onde as pessoas se encontram: conversas, criadores, posts, builds, discussões e LFG em torno do que vocês jogam.",
+            "Archives organize games. The Codex holds knowledge. Communities are where people meet: conversations, creators, posts, builds, discussions and LFG around what you play.",
+            "Los Archivos organizan los juegos. El Códice guarda conocimiento. Las Comunidades son donde se encuentra la gente: conversaciones, creadores, posts, builds, debates y LFG alrededor de lo que juegan.",
           )}
         </p>
         <p className="mt-3 inline-flex rounded-full border border-[var(--impar-line)] bg-[var(--impar-spectral-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--impar-spectral)]">
@@ -55,7 +55,7 @@ function CommunitiesCatalog() {
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-white backdrop-blur">
                     <ShieldCheck className="size-3.5" />
-                    {copy("Guilda ÍMPAR", "ÍMPAR Guild", "Guilda ÍMPAR")}
+                    {copy("Comunidade ÍMPAR", "ÍMPAR Community", "Comunidad ÍMPAR")}
                   </span>
                   <span className="rounded-full border border-[var(--impar-spectral)]/20 bg-[var(--impar-spectral-soft)] px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-[var(--impar-spectral)]">
                     {copy("Aberta", "Open", "Abierta")}
@@ -85,7 +85,7 @@ function CommunitiesCatalog() {
                 params={{ slug: game.slug }}
                 className="mt-5 inline-flex w-full items-center justify-between rounded-xl border border-border bg-muted/20 px-4 py-3 text-sm font-semibold text-foreground transition hover:border-[var(--impar-spectral)]/35 hover:bg-[var(--impar-spectral-soft)]"
               >
-                <span>{copy("Entrar na guilda", "Enter guild", "Entrar en la guilda")}</span>
+                <span>{copy("Entrar na comunidade", "Open community", "Entrar en la comunidad")}</span>
                 <ArrowRight className="size-4 text-[var(--impar-amber)] transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>

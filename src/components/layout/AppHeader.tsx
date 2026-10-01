@@ -28,7 +28,7 @@ export function AppHeader() {
     { to: "/", label: copy("Início", "Home", "Inicio") },
     { to: "/games", label: copy("Arquivos", "Archives", "Archivos") },
     { to: "/codice", label: copy("Códice", "Codex", "Códice") },
-    { to: "/communities", label: copy("Guildas", "Guilds", "Guildas") },
+    { to: "/communities", label: copy("Comunidades", "Communities", "Comunidades") },
     { to: "/lfg", label: copy("LFG", "LFG", "LFG") },
   ];
   const { user, loading, signOut } = useAuth();

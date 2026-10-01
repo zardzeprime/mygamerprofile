@@ -38,7 +38,7 @@ export const Route = createFileRoute("/")({
     buildSeo({
       title: "ÍMPAR — Seu jogo. Seu perfil. Do seu jeito.",
       description:
-        "Construa sua identidade gamer no ÍMPAR: perfis, jogos, Códice, Guildas, conteúdo e pessoas para jogar do seu jeito.",
+        "Construa sua identidade gamer no ÍMPAR: perfis, jogos, Códice, Comunidades, conteúdo e pessoas para jogar do seu jeito.",
       path: "/",
     }),
   component: Home,
@@ -78,7 +78,7 @@ function Home() {
     {
       to: "/communities" as const,
       icon: MessagesSquare,
-      title: copy("Guildas", "Guilds", "Guildas"),
+      title: copy("Comunidades", "Communities", "Comunidades"),
       body: copy(
         "Espaços sociais por jogo para conversar, criar e encontrar gente com a mesma vibe.",
         "Game-based social spaces to talk, create and meet people with the same vibe.",
@@ -101,7 +101,7 @@ function Home() {
 
   return (
     <div className="impar-shell pb-16">
-      <section className="impar-grid relative isolate overflow-hidden border-b border-border/70">
+      <section className="impar-grid impar-home-hero relative isolate overflow-hidden border-b border-border/70">
         <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12 lg:py-16">
           <div className="animate-fade-in">
             <p className="impar-kicker">ÍMPAR / {copy("SUA FORMA DE JOGAR", "YOUR WAY TO PLAY", "TU FORMA DE JUGAR")}</p>
@@ -138,19 +138,19 @@ function Home() {
             </div>
           </div>
 
-          <div className="impar-card relative min-h-[20rem] overflow-hidden rounded-[2rem_2rem_0.8rem_2rem] p-5 sm:min-h-[23rem] sm:p-7">
+          <div className="impar-card impar-home-noctis-card relative min-h-[20rem] overflow-hidden rounded-[2rem_2rem_0.8rem_2rem] p-5 sm:min-h-[23rem] sm:p-7">
             <div className="impar-noctis-halo absolute inset-0" aria-hidden="true" />
-            <div className="relative z-10 grid min-h-[18rem] gap-5 sm:min-h-[20rem] sm:grid-cols-[minmax(0,1fr)_10.5rem] sm:gap-6">
+            <div className="relative z-10 grid min-h-[18rem] grid-cols-[minmax(0,1fr)_7rem] gap-3 sm:min-h-[20rem] sm:grid-cols-[minmax(0,1fr)_10.5rem] sm:gap-6">
               <div className="flex min-w-0 flex-col justify-between">
                 <div>
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[var(--impar-line)] bg-black/20 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--impar-spectral)] backdrop-blur">
+                  <div className="impar-home-noctis-badge inline-flex items-center gap-2 rounded-full border border-[var(--impar-line)] bg-black/20 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[var(--impar-spectral)] backdrop-blur">
                     <Sparkles className="size-3.5" aria-hidden="true" />
                     Noctis · {copy("guardião do ÍMPAR", "guardian of ÍMPAR", "guardián de ÍMPAR")}
                   </div>
-                  <h2 className="mt-4 max-w-sm font-display text-2xl font-semibold leading-tight sm:text-3xl">
+                  <h2 className="mt-3 max-w-sm font-display text-xl font-semibold leading-tight sm:mt-4 sm:text-3xl">
                     {copy("Um guia para o seu próprio caminho.", "A guide for your own path.", "Un guía para tu propio camino.")}
                   </h2>
-                  <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
+                  <p className="mt-2 max-w-sm text-[0.8rem] leading-5 text-muted-foreground sm:mt-3 sm:text-sm sm:leading-6">
                     {copy(
                       "Pergunte sobre jogos, builds, sistemas ou o próprio ÍMPAR. Noctis continua sendo a IA da plataforma — agora com uma casa que combina com ele.",
                       "Ask about games, builds, systems or ÍMPAR itself. Noctis remains the platform AI — now with a home that matches him.",
@@ -158,7 +158,7 @@ function Home() {
                     )}
                   </p>
                 </div>
-                <Link to="/nexus" className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)]">
+                <Link to="/noctis" className="mt-4 inline-flex min-h-11 w-fit items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)] sm:mt-6">
                   {copy("Falar com Noctis", "Talk to Noctis", "Hablar con Noctis")}
                   <ArrowRight className="size-4" />
                 </Link>
@@ -170,12 +170,13 @@ function Home() {
                   aria-hidden="true"
                 />
                 <img
-                  src="/assets/noctis/noctis-idle.webp"
+                  src="/assets/noctis/noctis-impar-web-hd.webp"
                   alt="Noctis, mascote e IA do ÍMPAR"
-                  width={168}
-                  height={168}
+                  width={1206}
+                  height={1304}
                   loading="eager"
-                  className="relative z-10 h-auto w-36 max-w-full object-contain drop-shadow-[0_12px_20px_rgba(0,0,0,.38)] sm:w-[10.5rem]"
+                  decoding="async"
+                  className="impar-home-mascot relative z-10 block h-auto w-[6.5rem] max-w-full object-contain drop-shadow-[0_12px_20px_rgba(0,0,0,.38)] sm:w-[11.5rem]"
                 />
               </div>
             </div>
@@ -186,7 +187,7 @@ function Home() {
       <section className="mx-auto w-full max-w-7xl px-4 pt-7 sm:px-6 sm:pt-9">
         <div className="impar-destination-grid">
           {destinations.map(({ to, icon: Icon, title, body, index }) => (
-            <Link key={to} to={to} className="impar-card impar-card-interactive group rounded-2xl p-4 sm:p-5">
+            <Link key={to} to={to} className="impar-card impar-card-interactive impar-home-destination group rounded-2xl p-4 sm:p-5">
               <div className="flex items-center justify-between gap-3">
                 <div className="grid size-9 place-items-center rounded-xl bg-[var(--impar-spectral-soft)] text-[var(--impar-spectral)]">
                   <Icon className="size-4" aria-hidden="true" />

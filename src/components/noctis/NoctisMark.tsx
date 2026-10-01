@@ -1,22 +1,26 @@
 import { cn } from "@/lib/utils";
-import "./NexusMark.css";
+import "./NoctisMark.css";
 
-type NexusMarkProps = {
+type NoctisMarkProps = {
   className?: string;
   title?: string;
+  calmMotion?: boolean;
+  faceOnly?: boolean;
 };
 
 /**
  * Public Noctis mascot.
  *
  * NEXUS remains the internal runtime/orchestration name for compatibility.
- * Public surfaces use the cleaned animation generated for Noctis in Work.
+ * Public surfaces use a crisp, high-resolution Noctis illustration.
  */
-export function NexusMark({ className, title = "Noctis" }: NexusMarkProps) {
+export function NoctisMark({ className, title = "Noctis", calmMotion = false, faceOnly = false }: NoctisMarkProps) {
   return (
     <span
       className={cn(
         "noctis-mark relative inline-grid size-6 shrink-0 place-items-center overflow-visible",
+        calmMotion && "noctis-mark--calm-motion",
+        faceOnly && "noctis-mark--face",
         className,
       )}
       role="img"
@@ -24,7 +28,7 @@ export function NexusMark({ className, title = "Noctis" }: NexusMarkProps) {
       title={title}
     >
       <img
-        src="/assets/noctis/noctis-idle-work.webp"
+        src="/assets/noctis/noctis-impar-web-hd.webp"
         alt=""
         aria-hidden="true"
         draggable={false}

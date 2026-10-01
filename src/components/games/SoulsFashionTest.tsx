@@ -73,16 +73,16 @@ export function SoulsFashionTest({
   const [maxEquipLoad, setMaxEquipLoad] = useState(gameSlug === "dark-souls-iii" ? 60 : 50);
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
-  const [nexusLoading, setNexusLoading] = useState(false);
-  const [nexusText, setNexusText] = useState("");
-  const [nexusError, setNexusError] = useState("");
+  const [noctisLoading, setNoctisLoading] = useState(false);
+  const [noctisText, setNoctisText] = useState("");
+  const [noctisError, setNoctisError] = useState("");
 
   useEffect(() => {
     let active = true;
     setLoading(true);
     setLoadFailed(false);
     setSelection(EMPTY_SELECTION);
-    setNexusText("");
+    setNoctisText("");
     void loadSoulsArmorTechnical(gameSlug)
       .then((entries) => {
         if (!active) return;
@@ -189,13 +189,13 @@ export function SoulsFashionTest({
               "La combinación está en un rango equilibrado entre movilidad y protección. Compara resistencias según la zona o el jefe.",
             );
 
-  const askNexus = async () => {
-    if (!complete || nexusLoading || mode !== "casual") return;
-    setNexusLoading(true);
-    setNexusError("");
+  const askNoctis = async () => {
+    if (!complete || noctisLoading || mode !== "casual") return;
+    setNoctisLoading(true);
+    setNoctisError("");
     const selected = pieces.map((piece) => `${piece.slot}: ${piece.name}`).join(", ");
     const prompt = [
-      "Você é a NEXUS do MG Profile. Analise esta combinação de armadura de forma curta, prática e sem inventar dados.",
+      "Você é Noctis, a IA do ÍMPAR. Analise esta combinação de armadura de forma curta, prática e sem inventar dados.",
       `Jogo: ${gameSlug === "dark-souls-iii" ? "Dark Souls III" : "Dark Souls Remastered"}.`,
       `Peças: ${selected}.`,
       `Peso: ${totals.weight.toFixed(2)} / ${maxEquipLoad.toFixed(2)} (${(loadRatio * 100).toFixed(1)}%).`,
@@ -213,7 +213,7 @@ export function SoulsFashionTest({
         const response = await sendNexusMessage({
           data: { accessToken, mode: "gaming", locale, message: prompt },
         });
-        setNexusText(String(response?.message?.content ?? ""));
+        setNoctisText(String(response?.message?.content ?? ""));
       } else {
         const guestId =
           typeof window !== "undefined" ? window.localStorage.getItem(FASHION_GUEST_KEY) ?? undefined : undefined;
@@ -228,19 +228,19 @@ export function SoulsFashionTest({
         if (typeof window !== "undefined" && response?.guestId) {
           window.localStorage.setItem(FASHION_GUEST_KEY, response.guestId);
         }
-        setNexusText(String(response?.message?.content ?? ""));
+        setNoctisText(String(response?.message?.content ?? ""));
       }
     } catch (error) {
-      console.warn("[SoulsFashionTest] NEXUS analysis failed", error);
-      setNexusError(
+      console.warn("[SoulsFashionTest] Noctis analysis failed", error);
+      setNoctisError(
         copy(
-          "A NEXUS não conseguiu analisar agora. Os cálculos locais continuam disponíveis.",
-          "NEXUS could not analyze this right now. Local calculations remain available.",
-          "NEXUS no pudo analizar esto ahora. Los cálculos locales siguen disponibles.",
+          "Noctis não conseguiu analisar agora. Os cálculos locais continuam disponíveis.",
+          "Noctis could not analyze this right now. Local calculations remain available.",
+          "Noctis no pudo analizar esto ahora. Los cálculos locales siguen disponibles.",
         ),
       );
     } finally {
-      setNexusLoading(false);
+      setNoctisLoading(false);
     }
   };
 
@@ -312,9 +312,9 @@ export function SoulsFashionTest({
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
-              "Escolha capacete, peitoral, luvas e pernas. O Casual traduz peso e proteção e pode chamar a NEXUS; o Avançado mostra os números completos sem assistência.",
-              "Choose head, chest, arms and legs. Casual translates load and protection and can call NEXUS; Advanced shows full numbers without assistance.",
-              "Elige casco, pecho, guantes y piernas. Casual traduce carga y protección y puede llamar a NEXUS; Avanzado muestra todos los números sin asistencia.",
+              "Escolha capacete, peitoral, luvas e pernas. O Casual traduz peso e proteção e pode chamar o Noctis; o Avançado mostra os números completos sem assistência.",
+              "Choose head, chest, arms and legs. Casual translates load and protection and can call Noctis; Advanced shows full numbers without assistance.",
+              "Elige casco, pecho, guantes y piernas. Casual traduce carga y protección y puede llamar a Noctis; Avanzado muestra todos los números sin asistencia.",
             )}
           </p>
         </div>
@@ -325,8 +325,8 @@ export function SoulsFashionTest({
               type="button"
               onClick={() => {
                 setMode(value);
-                setNexusText("");
-                setNexusError("");
+                setNoctisText("");
+                setNoctisError("");
               }}
               className={cn(
                 "min-h-10 rounded-xl border px-4 text-sm font-bold transition",
@@ -355,8 +355,8 @@ export function SoulsFashionTest({
                   value={selection[slot]}
                   onChange={(event) => {
                     setSelection((current) => ({ ...current, [slot]: event.target.value }));
-                    setNexusText("");
-                    setNexusError("");
+                    setNoctisText("");
+                    setNoctisError("");
                   }}
                   className="mt-2 h-11 w-full rounded-xl border border-border bg-background px-3 text-sm font-semibold text-foreground outline-none focus:border-gold/50"
                 >
@@ -451,24 +451,24 @@ export function SoulsFashionTest({
                 <div className="flex items-center gap-2">
                   <Sparkles className="size-4 text-gold-strong" />
                   <h3 className="font-display text-lg font-bold text-foreground">
-                    {copy("Análise da NEXUS", "NEXUS analysis", "Análisis de NEXUS")}
+                    {copy("Análise do Noctis", "Noctis analysis", "Análisis de Noctis")}
                   </h3>
                 </div>
                 <p className="mt-2 text-xs leading-5 text-muted-foreground">
                   {copy(
-                    "A NEXUS recebe somente os números desta combinação para sugerir ajustes. A análise é opcional e só aparece no modo Casual.",
-                    "NEXUS receives only the numbers from this combination to suggest adjustments. Analysis is optional and appears only in Casual mode.",
-                    "NEXUS recibe solo los números de esta combinación para sugerir ajustes. El análisis es opcional y solo aparece en modo Casual.",
+                    "Noctis recebe somente os números desta combinação para sugerir ajustes. A análise é opcional e só aparece no modo Casual.",
+                    "Noctis receives only the numbers from this combination to suggest adjustments. Analysis is optional and appears only in Casual mode.",
+                    "Noctis recibe solo los números de esta combinación para sugerir ajustes. El análisis es opcional y solo aparece en modo Casual.",
                   )}
                 </p>
                 <Button
                   type="button"
                   variant="outline"
                   className="mt-4"
-                  disabled={!complete || nexusLoading}
-                  onClick={() => void askNexus()}
+                  disabled={!complete || noctisLoading}
+                  onClick={() => void askNoctis()}
                 >
-                  {nexusLoading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Sparkles className="mr-2 size-4" />}
+                  {noctisLoading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Sparkles className="mr-2 size-4" />}
                   {copy("Analisar combinação", "Analyze combination", "Analizar combinación")}
                 </Button>
                 {!complete ? (
@@ -480,12 +480,12 @@ export function SoulsFashionTest({
                     )}
                   </p>
                 ) : null}
-                {nexusText ? (
+                {noctisText ? (
                   <div className="mt-4 rounded-xl border border-gold/20 bg-background/55 p-4 text-sm leading-6 text-muted-foreground">
-                    {nexusText}
+                    {noctisText}
                   </div>
                 ) : null}
-                {nexusError ? <p className="mt-3 text-xs text-destructive">{nexusError}</p> : null}
+                {noctisError ? <p className="mt-3 text-xs text-destructive">{noctisError}</p> : null}
               </div>
             </div>
           )}

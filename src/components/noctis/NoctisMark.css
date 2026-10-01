@@ -7,7 +7,34 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+  image-rendering: auto;
   filter: drop-shadow(0 3px 8px rgb(0 0 0 / 0.28));
+}
+
+.noctis-mark.noctis-mark--face {
+  overflow: hidden;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--impar-spectral) 18%, var(--impar-night-raised)), var(--impar-night));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--impar-spectral) 28%, transparent);
+}
+
+.noctis-mark--face .noctis-mark__work {
+  transform: scale(1.8);
+  transform-origin: 50% 28%;
+}
+
+.noctis-mark--calm-motion {
+  animation: noctis-calm-float 6.8s ease-in-out infinite;
+}
+
+@keyframes noctis-calm-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
 }
 
 .noctis-mark:hover {
@@ -36,6 +63,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .noctis-mark,
+  .noctis-mark--calm-motion,
   :where(div, span):has(> img[src*="noctis-idle.webp"])::after {
     animation: none !important;
     transform: none !important;

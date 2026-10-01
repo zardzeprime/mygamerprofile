@@ -17,9 +17,9 @@ import { useEffect, useMemo, useState } from "react";
 
 import { LeagueRuneSelector } from "@/components/games/LeagueRuneSelector";
 import {
-  NexusBuildAssistant,
-  type NexusBuildSuggestion,
-} from "@/components/nexus/NexusBuildAssistant";
+  NoctisBuildAssistant,
+  type NoctisBuildSuggestion,
+} from "@/components/noctis/NoctisBuildAssistant";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import type { Locale } from "@/i18n";
@@ -356,7 +356,7 @@ export function LeagueBuildCreator({
     ],
   );
 
-  const applyNexusPreset = (suggestion: NexusBuildSuggestion) => {
+  const applyNexusPreset = (suggestion: NoctisBuildSuggestion) => {
     const suggestedRole = suggestion["role"];
     if (typeof suggestedRole === "string" && ROLE_OPTIONS.includes(suggestedRole as Role)) {
       setRole(suggestedRole as Role);
@@ -623,7 +623,7 @@ export function LeagueBuildCreator({
         </div>
 
         <div className="space-y-7 p-5 sm:p-7">
-          <NexusBuildAssistant
+          <NoctisBuildAssistant
             gameSlug="league-of-legends"
             locale={locale}
             context={nexusContext}

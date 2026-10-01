@@ -18,7 +18,7 @@ const ptBR = {
 
   "navigation.home": "Início",
   "navigation.games": "Arquivos",
-  "navigation.communities": "Guildas",
+  "navigation.communities": "Comunidades",
   "navigation.lfg": "LFG",
   "navigation.nexus": "Noctis",
   "navigation.menu": "Menu",
@@ -56,7 +56,7 @@ const ptBR = {
 
   "home.hero.title": "Sua identidade nos jogos.",
   "home.hero.subtitle":
-    "ÍMPAR reúne seu perfil, seus jogos, suas conquistas e suas guildas em um só lugar.",
+    "ÍMPAR reúne seu perfil, seus jogos, suas conquistas e suas comunidades em um só lugar.",
   "home.cta.createProfile": "Criar perfil",
   "home.cta.login": "Entrar",
   "home.cta.exploreGames": "Explorar Arquivos",
@@ -195,7 +195,7 @@ const en: Record<TranslationKey, string> = {
 
   "navigation.home": "Home",
   "navigation.games": "Archives",
-  "navigation.communities": "Guilds",
+  "navigation.communities": "Communities",
   "navigation.lfg": "LFG",
   "navigation.nexus": "Noctis",
   "navigation.menu": "Menu",
@@ -233,7 +233,7 @@ const en: Record<TranslationKey, string> = {
 
   "home.hero.title": "Your identity across games.",
   "home.hero.subtitle":
-    "ÍMPAR brings your profile, games, achievements and guilds together.",
+    "ÍMPAR brings your profile, games, achievements and communities together.",
   "home.cta.createProfile": "Create profile",
   "home.cta.login": "Sign in",
   "home.cta.exploreGames": "Explore games",
@@ -370,7 +370,7 @@ const es: Record<TranslationKey, string> = {
 
   "navigation.home": "Inicio",
   "navigation.games": "Archivos",
-  "navigation.communities": "Guildas",
+  "navigation.communities": "Comunidades",
   "navigation.lfg": "LFG",
   "navigation.nexus": "Noctis",
   "navigation.menu": "Menú",
@@ -408,7 +408,7 @@ const es: Record<TranslationKey, string> = {
 
   "home.hero.title": "Tu identidad en los juegos.",
   "home.hero.subtitle":
-    "ÍMPAR reúne tu perfil, tus juegos, tus logros y tus guildas en un solo lugar.",
+    "ÍMPAR reúne tu perfil, tus juegos, tus logros y tus comunidades en un solo lugar.",
   "home.cta.createProfile": "Crear perfil",
   "home.cta.login": "Iniciar sesión",
   "home.cta.exploreGames": "Explorar juegos",

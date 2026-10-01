@@ -2,8 +2,8 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Code2, Download, Gamepad2, Loader2, LockKeyhole, Plus, Send, Trash2, X } from "lucide-react";
 
-import { NexusMark } from "@/components/nexus/NexusMark";
-import { NexusMarkdown } from "@/components/nexus/NexusMarkdown";
+import { NoctisMark } from "@/components/noctis/NoctisMark";
+import { NoctisMarkdown } from "@/components/noctis/NoctisMarkdown";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useI18n } from "@/i18n";
@@ -19,9 +19,9 @@ import {
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
-type NexusMode = "gaming" | "development";
+type NoctisMode = "gaming" | "development";
 
-type NexusMessage = {
+type NoctisMessage = {
   id?: string;
   role: "user" | "assistant";
   content: string;
@@ -30,21 +30,21 @@ type NexusMessage = {
   core_ids?: string[];
 };
 
-type NexusStatus = {
+type NoctisStatus = {
   isAdmin: boolean;
   aiReady: boolean;
   providers: Array<{ id: string; configured: boolean; model: string }>;
   tools: Array<{ id: string; name: string; status: string }>;
 };
 
-type NexusGuestStatus = {
+type NoctisGuestStatus = {
   guestId: string;
   responsesUsed: number;
   maxResponses: number;
   remaining: number;
   locked: boolean;
   aiReady: boolean;
-  messages: NexusMessage[];
+  messages: NoctisMessage[];
 };
 
 // Stable technical key retained so existing guest sessions survive the rebrand.
@@ -60,16 +60,16 @@ function persistGuestId(guestId?: string) {
   window.localStorage.setItem(GUEST_STORAGE_KEY, guestId);
 }
 
-export function NexusChat() {
+export function NoctisChat() {
   const { user, loading: authLoading } = useAuth();
   const { locale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<NexusMode>("gaming");
+  const [mode, setMode] = useState<NoctisMode>("gaming");
   const [threadId, setThreadId] = useState<string | undefined>();
-  const [messages, setMessages] = useState<NexusMessage[]>([]);
-  const [status, setStatus] = useState<NexusStatus | null>(null);
-  const [guestStatus, setGuestStatus] = useState<NexusGuestStatus | null>(null);
+  const [messages, setMessages] = useState<NoctisMessage[]>([]);
+  const [status, setStatus] = useState<NoctisStatus | null>(null);
+  const [guestStatus, setGuestStatus] = useState<NoctisGuestStatus | null>(null);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
@@ -103,7 +103,7 @@ export function NexusChat() {
         const storedGuestId = readStoredGuestId();
         const nextGuest = (await getNexusGuestStatus({
           data: storedGuestId ? { guestId: storedGuestId } : {},
-        })) as NexusGuestStatus;
+        })) as NoctisGuestStatus;
         if (!active) return;
         persistGuestId(nextGuest.guestId);
         setGuestStatus(nextGuest);
@@ -121,8 +121,8 @@ export function NexusChat() {
       const bootstrap = (await getNexusMemberBootstrap({
         data: { accessToken },
       })) as {
-        status: NexusStatus;
-        threads: Array<{ id: string; mode: NexusMode }>;
+        status: NoctisStatus;
+        threads: Array<{ id: string; mode: NoctisMode }>;
       };
       if (!active) return;
       setStatus(bootstrap.status);
@@ -132,7 +132,7 @@ export function NexusChat() {
 
       const history = (await listNexusMessages({
         data: { threadId: preferred.id, accessToken },
-      })) as NexusMessage[];
+      })) as NoctisMessage[];
       if (!active) return;
       setThreadId(preferred.id);
       setMessages(history.filter((message) => message.role === "user" || message.role === "assistant"));
@@ -148,7 +148,7 @@ export function NexusChat() {
       }),
     ])
       .catch((reason) => {
-        if (active) setError(formatNexusError(reason, Boolean(user), copy));
+        if (active) setError(formatNoctisError(reason, Boolean(user), copy));
       })
       .finally(() => {
         if (timeoutId) clearTimeout(timeoutId);
@@ -174,7 +174,7 @@ export function NexusChat() {
     setError("");
   };
 
-  const changeMode = (nextMode: NexusMode) => {
+  const changeMode = (nextMode: NoctisMode) => {
     if (!user) return;
     if (nextMode === "development" && !status?.isAdmin) return;
     startNewChat(nextMode);
@@ -221,7 +221,7 @@ export function NexusChat() {
       await deleteNexusThread({ data: { threadId, accessToken } });
       startNewChat(mode);
     } catch (reason) {
-      setError(formatNexusError(reason, true, copy));
+      setError(formatNoctisError(reason, true, copy));
     }
   };
 
@@ -244,7 +244,7 @@ export function NexusChat() {
           const storedGuestId = readStoredGuestId();
           activeGuest = (await getNexusGuestStatus({
             data: storedGuestId ? { guestId: storedGuestId } : {},
-          })) as NexusGuestStatus;
+          })) as NoctisGuestStatus;
           persistGuestId(activeGuest.guestId);
           setGuestStatus(activeGuest);
         }
@@ -256,7 +256,7 @@ export function NexusChat() {
         });
 
         persistGuestId(response.guestId);
-        if (response.message) setMessages((current) => [...current, response.message as NexusMessage]);
+        if (response.message) setMessages((current) => [...current, response.message as NoctisMessage]);
         setGuestStatus((current) => ({
           guestId: response.guestId,
           responsesUsed: response.maxResponses - response.remaining,
@@ -279,7 +279,7 @@ export function NexusChat() {
       setMessages((current) => [
         ...current,
         {
-          ...(response.message as NexusMessage),
+          ...(response.message as NoctisMessage),
           role: "assistant",
           provider: response.provider,
           model: response.model,
@@ -293,14 +293,14 @@ export function NexusChat() {
         return current;
       });
       setInput((current) => (current.trim() ? current : message));
-      setError(formatNexusError(reason, Boolean(user), copy));
+      setError(formatNoctisError(reason, Boolean(user), copy));
     } finally {
       setSending(false);
     }
   };
 
-  const greeting: NexusMessage = {
-    id: `nexus-greeting-${mode}-${user ? "member" : "guest"}`,
+  const greeting: NoctisMessage = {
+    id: `noctis-greeting-${mode}-${user ? "member" : "guest"}`,
     role: "assistant",
     content:
       mode === "development"
@@ -338,7 +338,7 @@ export function NexusChat() {
         className="fixed bottom-5 right-5 z-[70] grid size-14 place-items-center rounded-full border border-[var(--impar-spectral)]/45 bg-foreground text-[var(--impar-spectral)] shadow-lift transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--impar-spectral)]"
         aria-label={copy("Abrir Noctis", "Open Noctis", "Abrir Noctis")}
       >
-        {open ? <X className="size-5 text-background" /> : <NexusMark className="size-7" />}
+        {open ? <X className="size-5 text-background" /> : <NoctisMark className="size-full rounded-full" faceOnly />}
       </button>
 
       {open ? (
@@ -347,7 +347,7 @@ export function NexusChat() {
             <div className="flex items-center justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
                 <div className="grid size-10 shrink-0 place-items-center rounded-2xl border border-[var(--impar-line)] bg-[var(--impar-spectral-soft)] text-[var(--impar-spectral)]">
-                  <NexusMark className="size-6" title="Noctis" />
+                  <NoctisMark className="size-6" title="Noctis" />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
@@ -426,10 +426,10 @@ export function NexusChat() {
                   <article key={message.id ?? `${message.role}-${index}`} className={cn("max-w-[88%] rounded-2xl px-3.5 py-3 text-sm leading-6", message.role === "user" ? "ml-auto bg-foreground text-background" : "mr-auto border border-border bg-surface text-foreground")}>
                     {message.role === "assistant" ? (
                       <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--impar-spectral)]">
-                        <NexusMark className="size-3.5" /> Noctis
+                        <NoctisMark className="size-3.5" /> Noctis
                       </div>
                     ) : null}
-                    {message.role === "assistant" ? <NexusMarkdown content={message.content} /> : <p className="whitespace-pre-wrap">{message.content}</p>}
+                    {message.role === "assistant" ? <NoctisMarkdown content={message.content} /> : <p className="whitespace-pre-wrap">{message.content}</p>}
                     {message.role === "assistant" && (message.model || message.provider) ? (
                       <p className="mt-2 text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{[message.provider, message.model].filter(Boolean).join(" · ")}</p>
                     ) : null}
@@ -438,7 +438,7 @@ export function NexusChat() {
 
                 {sending ? (
                   <div className="mr-auto flex items-center gap-2 rounded-2xl border border-border bg-surface px-3.5 py-3 text-sm text-muted-foreground">
-                    <NexusMark className="size-4 text-[var(--impar-spectral)]" />
+                    <NoctisMark className="size-4 text-[var(--impar-spectral)]" />
                     <Loader2 className="size-3.5 animate-spin" />
                     Noctis...
                   </div>
@@ -446,7 +446,7 @@ export function NexusChat() {
 
                 {providerStatusKnown && !aiReady ? (
                   <div className="mt-4 rounded-2xl border border-border bg-muted/40 p-4 text-center">
-                    <NexusMark className="mx-auto mb-2 size-8 text-[var(--impar-spectral)]" />
+                    <NoctisMark className="mx-auto mb-2 size-8 text-[var(--impar-spectral)]" />
                     <p className="font-semibold text-foreground">
                       {copy(
                         "O Noctis respondeu, mas nenhum provedor de IA ficou disponível nesta verificação.",
@@ -556,7 +556,7 @@ export function NexusChat() {
   );
 }
 
-function formatNexusError(
+function formatNoctisError(
   reason: unknown,
   authenticated: boolean,
   copy: (pt: string, en: string, es: string) => string,
