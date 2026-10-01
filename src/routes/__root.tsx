@@ -143,7 +143,7 @@ function RootShell({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
-        <I18nProvider>{children}</I18nProvider>
+        {children}
         <Scripts />
       </body>
     </html>
@@ -207,22 +207,24 @@ function RootComponent() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <SoundProvider>
-          <div className="impar-starry-sky" aria-hidden="true" />
-          <RouteTransitionLoader />
-          <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
-            <AppHeader />
-            <div aria-hidden="true" className="h-[4.25rem] shrink-0" />
-            <main className="flex-1">
-              <Outlet />
-            </main>
-            <AppFooter />
-          </div>
-          <NoctisChat />
-        </SoundProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <I18nProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <SoundProvider>
+            <div className="impar-starry-sky" aria-hidden="true" />
+            <RouteTransitionLoader />
+            <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
+              <AppHeader />
+              <div aria-hidden="true" className="h-[4.25rem] shrink-0" />
+              <main className="flex-1">
+                <Outlet />
+              </main>
+              <AppFooter />
+            </div>
+            <NoctisChat />
+          </SoundProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </I18nProvider>
   );
 }
