@@ -143,4 +143,25 @@ export const LEAGUE_NEWS: LeagueNewsItem[] = [
     "Champion and system updates alongside new League Classic content.",
     "Actualizaciones de campeones y sistemas junto con nuevo contenido de League Classic.",
   ),
+  patch(
+    "26.15",
+    "2026-07-28T18:00:00.000Z",
+    "Ajustes de balanceamento em Campeões e sistemas, mudanças no ranqueado e continuação das atualizações de Arena e ARAM: Desordem.",
+    "Champion and system balance changes, Ranked updates, and continued Arena and ARAM: Mayhem tuning.",
+    "Ajustes de balance de campeones y sistemas, cambios en clasificatorias y más ajustes para Arena y ARAM: Mayhem.",
+  ),
+  patch(
+    "26.14",
+    "2026-07-14T18:00:00.000Z",
+    "Ajustes em Campeões, itens e sistemas, incluindo mudanças no Buff Azul e em itens como Explocinturão Hextec; também trouxe as skins da T1 e Rengar Vitorioso.",
+    "Champion, item and system tuning including Blue Buff and Hextech Rocketbelt changes, alongside the T1 skins and Victorious Rengar.",
+    "Ajustes de campeones, objetos y sistemas, incluidos cambios al Buff Azul y al Cintomisil Hextech, además de las skins de T1 y Rengar Victorioso.",
+  ),
+  patch(
+    "26.13",
+    "2026-06-23T18:00:00.000Z",
+    "Locke, o Exorcista Ceniciento, estreia em 24 de junho. A atualização também ajusta Campeões e itens, leva Indicadores de Último Golpe ao Normal Draft, adiciona Locke como Convidado de Honra da Arena e traz de volta as Ranqueadas 5v5.",
+    "Locke, the Ashen Exorcist, arrives June 24. The patch also tunes Champions and items, expands Last Hit Indicators to Normal Draft, adds Locke as an Arena Guest of Honor, and brings back Ranked 5s.",
+    "Locke, el Exorcista Ceniciento, llega el 24 de junio. La versión también ajusta campeones y objetos, amplía los indicadores de último golpe a Normal Draft, añade a Locke como invitado de honor de Arena y trae de vuelta las clasificatorias 5v5.",
+  ),
 ];
