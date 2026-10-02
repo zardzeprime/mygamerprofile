@@ -426,7 +426,7 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
   ),
 
   // No stable, boss-specific still from the supplied sources was reliable enough for
-  // Demon Firesage. The MGP placeholder remains preferable to reusing another demon.
+  // Demon Firesage. The ÍMPAR placeholder remains preferable to reusing another demon.
 };
 
 const localMirrorLabel: LocalizedText = {

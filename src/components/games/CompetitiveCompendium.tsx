@@ -672,9 +672,9 @@ function PlayerPanel({
             </div>
             <p className="mt-3 text-xs leading-5 text-muted-foreground">
               {copy(
-                "O MGP não publica configurações pessoais de jogadores de LoL sem uma fonte pública confiável. Nesta fase, o diretório prioriza time, posição, status e procedência.",
-                "MGP does not publish LoL player settings without a reliable public source. At this stage the directory prioritizes team, position, status and provenance.",
-                "MGP no publica configuraciones personales de jugadores de LoL sin una fuente pública fiable. En esta fase el directorio prioriza equipo, posición, estado y procedencia.",
+                "O ÍMPAR não publica configurações pessoais de jogadores de LoL sem uma fonte pública confiável. Nesta fase, o diretório prioriza time, posição, status e procedência.",
+                "ÍMPAR does not publish LoL player settings without a reliable public source. At this stage the directory prioritizes team, position, status and provenance.",
+                "ÍMPAR no publica configuraciones personales de jugadores de LoL sin una fuente pública fiable. En esta fase el directorio prioriza equipo, posición, estado y procedencia.",
               )}
             </p>
           </div>

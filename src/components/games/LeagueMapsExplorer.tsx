@@ -104,7 +104,7 @@ export function LeagueMapsExplorer({ locale }: { locale: Locale }) {
 
       <div className="flex gap-3 rounded-2xl border border-border bg-muted/15 p-4 text-xs leading-5 text-muted-foreground">
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-gold-strong" />
-        <p>{copy("Dados e imagens desta seção vêm do Riot Data Dragon. O MGP é independente e não é endossado pela Riot Games.", "Data and images in this section come from Riot Data Dragon. MGP is independent and is not endorsed by Riot Games.", "Los datos e imágenes de esta sección provienen de Riot Data Dragon. MGP es independiente y no está respaldado por Riot Games.")}</p>
+        <p>{copy("Dados e imagens desta seção vêm do Riot Data Dragon. O ÍMPAR é independente e não é endossado pela Riot Games.", "Data and images in this section come from Riot Data Dragon. ÍMPAR is independent and is not endorsed by Riot Games.", "Los datos e imágenes de esta sección provienen de Riot Data Dragon. ÍMPAR es independiente y no está respaldado por Riot Games.")}</p>
       </div>
     </section>
   );

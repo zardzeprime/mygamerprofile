@@ -74,7 +74,7 @@ export function ProfileCustomizationStudio({ locale }: { locale: Locale }) {
           </div>
           <span className="inline-flex items-center gap-1.5 rounded-lg border border-gold/20 bg-gold-soft/40 px-2.5 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-gold-strong">
             <CircleUserRound className="size-3.5" aria-hidden="true" />
-            My Gamer Profile
+            ÍMPAR
           </span>
         </div>
       </div>
@@ -145,9 +145,9 @@ export function ProfileCustomizationStudio({ locale }: { locale: Locale }) {
             <p className="mt-2 text-xs leading-5 text-muted-foreground">{slot.description[locale]}</p>
             <p className="mt-3 text-[0.68rem] leading-5 text-muted-foreground">
               {copy(
-                "Os assets inspirados em jogos só serão liberados quando houver material original do MGP, licença, autorização ou procedência de reutilização suficientemente clara.",
-                "Game-inspired assets will only ship when MGP has original material, a license, permission or sufficiently clear reuse provenance.",
-                "Los recursos inspirados en juegos solo se publicarán con material original de MGP, licencia, permiso o procedencia de reutilización suficientemente clara.",
+                "Os assets inspirados em jogos só serão liberados quando houver material original do ÍMPAR, licença, autorização ou procedência de reutilização suficientemente clara.",
+                "Game-inspired assets will only ship when ÍMPAR has original material, a license, permission or sufficiently clear reuse provenance.",
+                "Los recursos inspirados en juegos solo se publicarán con material original de ÍMPAR, licencia, permiso o procedencia de reutilización suficientemente clara.",
               )}
             </p>
           </div>
@@ -199,7 +199,7 @@ export function ProfileCustomizationStudio({ locale }: { locale: Locale }) {
                 </span>
                 <div>
                   <div className="size-12 rounded-full border-2 border-white/55 bg-black/25 shadow-lg" />
-                  <p className="mt-2 font-display text-base font-bold">MGP Player</p>
+                  <p className="mt-2 font-display text-base font-bold">ÍMPAR Player</p>
                   <p className="text-[0.68rem] text-white/65">@username</p>
                 </div>
               </div>

@@ -215,9 +215,9 @@ export function LeagueEsportsPanel({
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
           {copy(
-            "A área competitiva agora combina calendário, eventos internacionais e o diretório MGP de times/jogadores. Configurações pessoais não são inventadas: o perfil mostra função e dados profissionais apenas quando existe fonte.",
-            "The competitive area now combines schedule, international events and MGP's team/player directory. Personal settings are never invented: profiles show role and professional data only when a source exists.",
-            "El área competitiva combina calendario, eventos internacionales y el directorio MGP de equipos/jugadores. Las configuraciones personales nunca se inventan: el perfil muestra rol y datos profesionales solo cuando existe una fuente.",
+            "A área competitiva agora combina calendário, eventos internacionais e o diretório ÍMPAR de times/jogadores. Configurações pessoais não são inventadas: o perfil mostra função e dados profissionais apenas quando existe fonte.",
+            "The competitive area now combines schedule, international events and ÍMPAR's team/player directory. Personal settings are never invented: profiles show role and professional data only when a source exists.",
+            "El área competitiva combina calendario, eventos internacionales y el directorio ÍMPAR de equipos/jugadores. Las configuraciones personales nunca se inventan: el perfil muestra rol y datos profesionales solo cuando existe una fuente.",
           )}
         </p>
       </div>

@@ -48,7 +48,7 @@ export function AdSlot({ id, format = "fluid", className, label = "Publicidade" 
       window.adsbygoogle = window.adsbygoogle || [];
       window.adsbygoogle.push({});
     } catch (error) {
-      console.warn("[MGP] AdSense unit could not be requested.", error);
+      console.warn("[ÍMPAR] AdSense unit could not be requested.", error);
     }
   }, [unitSlot]);
 

@@ -857,7 +857,7 @@ export function calculateDs1Estimate(
       numericAvailable: false,
       notes: [
         `Rota ${pathProfile.label}: ${pathProfile.description}`,
-        "No beta, as rotas especiais do DS1 usam leitura qualitativa de scaling/upgrade. O MGP não inventa um AR exato sem uma curva por arma validada.",
+        "No beta, as rotas especiais do DS1 usam leitura qualitativa de scaling/upgrade. O ÍMPAR não inventa um AR exato sem uma curva por arma validada.",
         ...(path === "chaos" ? [`Humanidade considerada: ${humanityValue}/10.`] : []),
         ...(reqMet
           ? []

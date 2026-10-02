@@ -25,13 +25,13 @@ export const Route = createFileRoute("/roblox/$slug/$section")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "Conteúdo Roblox não encontrado — MGP" },
+          { title: "Conteúdo Roblox não encontrado — ÍMPAR" },
           { name: "robots", content: "noindex" },
         ],
       };
     }
 
-    const title = `${loaderData.section.label["pt-BR"]} · ${loaderData.experience.name} — MGP`;
+    const title = `${loaderData.section.label["pt-BR"]} · ${loaderData.experience.name} — ÍMPAR`;
     const description = loaderData.section.description["pt-BR"];
     return buildSeo({
       title,
@@ -140,10 +140,10 @@ function RobloxExperienceSectionPage() {
               />
               <ProgressCard
                 icon={WandSparkles}
-                title="NEXUS"
+                title="Noctis · Guardião do ÍMPAR"
                 text={copy(
-                  "Contexto preparado para a NEXUS ajudar com recomendações e presets quando os dados verificáveis estiverem carregados.",
-                  "Context is prepared for NEXUS recommendations and presets once verifiable data is loaded.",
+                  "Contexto preparado para o Noctis ajudar com recomendações e presets quando os dados verificáveis estiverem carregados.",
+                  "Context is prepared for Noctis recommendations and presets once verifiable data is loaded.",
                   "El contexto queda preparado para recomendaciones y presets de NEXUS cuando los datos verificables estén cargados.",
                 )}
                 locale={locale}

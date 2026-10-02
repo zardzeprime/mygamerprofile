@@ -315,9 +315,9 @@ export function LeagueItemsExplorer({ locale }: { locale: Locale }) {
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-gold-strong" />
         <p>
           {copy(
-            "Dados e imagens desta seção vêm do Riot Data Dragon. Variantes de outros modos e entradas ocultas da loja são removidas do catálogo principal. O MGP é independente e não é endossado pela Riot Games.",
-            "Data and images in this section come from Riot Data Dragon. Other-mode variants and hidden store entries are removed from the main catalog. MGP is independent and is not endorsed by Riot Games.",
-            "Los datos e imágenes de esta sección provienen de Riot Data Dragon. Las variantes de otros modos y entradas ocultas se eliminan del catálogo principal. MGP es independiente y no está respaldado por Riot Games.",
+            "Dados e imagens desta seção vêm do Riot Data Dragon. Variantes de outros modos e entradas ocultas da loja são removidas do catálogo principal. O ÍMPAR é independente e não é endossado pela Riot Games.",
+            "Data and images in this section come from Riot Data Dragon. Other-mode variants and hidden store entries are removed from the main catalog. ÍMPAR is independent and is not endorsed by Riot Games.",
+            "Los datos e imágenes de esta sección provienen de Riot Data Dragon. Las variantes de otros modos y entradas ocultas se eliminan del catálogo principal. ÍMPAR es independiente y no está respaldado por Riot Games.",
           )}
         </p>
       </div>
@@ -482,9 +482,9 @@ function OrnnMasterworkCard({ item, locale }: { item: LeagueItem; locale: Locale
             <p className="mt-1 font-display text-lg font-semibold text-foreground">{item.name}</p>
             <p className="mt-2 text-xs leading-5 text-muted-foreground">
               {copy(
-                "No sistema atual do LoL, o item aprimorado pelo Ornn mantém o próprio nome e recebe o estado Magistral com atributos adicionais. O MGP mostra esse estado com a borda do Ornn em vez de criar uma cópia com um nome antigo.",
-                "In the current LoL system, an Ornn-upgraded item keeps its own name and gains Masterwork status with additional stats. MGP represents that state with the Ornn border instead of creating a duplicate with an old legacy name.",
-                "En el sistema actual de LoL, un objeto mejorado por Ornn conserva su nombre y obtiene el estado Magistral con atributos adicionales. MGP representa ese estado con el borde de Ornn en lugar de crear un duplicado con un nombre antiguo.",
+                "No sistema atual do LoL, o item aprimorado pelo Ornn mantém o próprio nome e recebe o estado Magistral com atributos adicionais. O ÍMPAR mostra esse estado com a borda do Ornn em vez de criar uma cópia com um nome antigo.",
+                "In the current LoL system, an Ornn-upgraded item keeps its own name and gains Masterwork status with additional stats. ÍMPAR represents that state with the Ornn border instead of creating a duplicate with an old legacy name.",
+                "En el sistema actual de LoL, un objeto mejorado por Ornn conserva su nombre y obtiene el estado Magistral con atributos adicionales. ÍMPAR representa ese estado con el borde de Ornn en lugar de crear un duplicado con un nombre antiguo.",
               )}
             </p>
           </div>

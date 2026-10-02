@@ -435,7 +435,7 @@ function PausedGameHub({ game, locale }: { game: GameConfig; locale: Locale }) {
           <div className="max-w-2xl rounded-3xl border border-hero-border bg-hero-surface p-6 shadow-hero backdrop-blur-xl sm:p-9">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-gold-strong">
               <Clock3 className="size-4" />
-              MGP 0.1.9
+              ÍMPAR 0.1.9
             </div>
             <h1 className="mt-4 font-display text-4xl font-bold text-hero-foreground sm:text-5xl">
               {game.name}

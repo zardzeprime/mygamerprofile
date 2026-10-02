@@ -171,7 +171,7 @@ function ProviderError({ locale }: { locale: Locale }) {
   return (
     <div className="surface-panel rounded-2xl p-8 text-center">
       <p className="font-display text-xl font-semibold">{copy("Não foi possível carregar a coleção agora.", "The collection could not be loaded right now.", "No se pudo cargar la colección ahora.")}</p>
-      <p className="mt-2 text-sm text-muted-foreground">{copy("O MGP mantém a interface disponível e tenta novamente quando você recarregar a página.", "MGP keeps the interface available and retries when you reload the page.", "MGP mantiene la interfaz disponible y vuelve a intentarlo al recargar la página.")}</p>
+      <p className="mt-2 text-sm text-muted-foreground">{copy("O ÍMPAR mantém a interface disponível e tenta novamente quando você recarregar a página.", "ÍMPAR keeps the interface available and retries when you reload the page.", "ÍMPAR mantiene la interfaz disponible y vuelve a intentarlo al recargar la página.")}</p>
     </div>
   );
 }

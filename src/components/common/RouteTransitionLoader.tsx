@@ -62,10 +62,10 @@ export function RouteTransitionLoader() {
 
         <div className="mgp-route-loader__brand">
           <span className="mgp-route-loader__logo-wrap">
-            <img src="/brand/mgp-logo.png" alt="" className="mgp-route-loader__logo" />
+            <img src="/brand/impar-logo-official.webp" alt="" className="mgp-route-loader__logo" />
           </span>
           <div className="text-left">
-            <p className="font-display text-sm font-bold tracking-[0.16em] text-foreground">MGP</p>
+            <p className="font-display text-sm font-bold tracking-[0.16em] text-foreground">ÍMPAR</p>
             <p className="mt-1 text-xs font-semibold text-muted-foreground">
               {localeCopy(locale, "Carregando seu perfil gamer…", "Loading your gamer profile…", "Cargando tu perfil gamer…")}
             </p>

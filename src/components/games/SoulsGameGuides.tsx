@@ -125,9 +125,9 @@ export function SoulsGameGuides({ gameSlug, locale }: { gameSlug: SoulsGameSlug;
   return (
     <section className="space-y-6">
       <div className="surface-panel p-5 sm:p-6">
-        <div className="flex items-center gap-2 text-gold-strong"><BookOpen className="size-4" /><span className="section-kicker">MGP · GUIDES</span></div>
+        <div className="flex items-center gap-2 text-gold-strong"><BookOpen className="size-4" /><span className="section-kicker">ÍMPAR · GUIDES</span></div>
         <h2 className="mt-3 font-display text-2xl font-semibold text-foreground sm:text-3xl">{copy(`Fundamentos de ${title}`, `${title} fundamentals`, `Fundamentos de ${title}`)}</h2>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{copy("Guias editoriais próprios do MGP, escritos para explicar sistemas do jogo sem copiar texto de wiki. A ideia é evoluir isso depois para guias da comunidade com autoria.", "Original MGP editorial guides explaining game systems without copying wiki text. Later this can evolve into attributed community guides.", "Guías editoriales propias de MGP para explicar sistemas sin copiar texto de wikis. Más adelante podrán evolucionar a guías de la comunidad con autoría.")}</p>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{copy("Guias editoriais próprios do ÍMPAR, escritos para explicar sistemas do jogo sem copiar texto de wiki. A ideia é evoluir isso depois para guias da comunidade com autoria.", "Original ÍMPAR editorial guides explaining game systems without copying wiki text. Later this can evolve into attributed community guides.", "Guías editoriales propias de ÍMPAR para explicar sistemas sin copiar texto de wikis. Más adelante podrán evolucionar a guías de la comunidad con autoría.")}</p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -149,7 +149,7 @@ export function SoulsGameGuides({ gameSlug, locale }: { gameSlug: SoulsGameSlug;
       </div>
 
       <div className="rounded-2xl border border-border bg-muted/15 p-4 text-xs leading-5 text-muted-foreground">
-        {copy("Conteúdo editorial MGP. Para artes e vídeos promocionais dos jogos, o MGP usa apenas material oficial incorporável ou conteúdo com licença claramente documentada.", "MGP editorial content. For promotional game artwork and video, MGP only uses official embeddable material or content with clearly documented licensing.", "Contenido editorial de MGP. Para arte y vídeo promocional, MGP solo usa material oficial insertable o contenido con licencia claramente documentada.")}
+        {copy("Conteúdo editorial ÍMPAR. Para artes e vídeos promocionais dos jogos, o ÍMPAR usa apenas material oficial incorporável ou conteúdo com licença claramente documentada.", "ÍMPAR editorial content. For promotional game artwork and video, ÍMPAR only uses official embeddable material or content with clearly documented licensing.", "Contenido editorial de ÍMPAR. Para arte y vídeo promocional, ÍMPAR solo usa material oficial insertable o contenido con licencia claramente documentada.")}
       </div>
     </section>
   );

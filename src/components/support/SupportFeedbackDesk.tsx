@@ -69,7 +69,7 @@ export function SupportFeedbackDesk() {
 
       if (!active) return;
       if (error) {
-        console.error("[MGP] feedback history", error);
+        console.error("[ÍMPAR] feedback history", error);
         setRows([]);
       } else {
         setRows(data ?? []);
@@ -117,7 +117,7 @@ export function SupportFeedbackDesk() {
       .single();
 
     if (error) {
-      console.error("[MGP] feedback submit", error);
+      console.error("[ÍMPAR] feedback submit", error);
       setErrorMessage(
         copy(
           "Não consegui enviar agora. Tente novamente em instantes.",
@@ -155,7 +155,7 @@ export function SupportFeedbackDesk() {
           </div>
           <div>
             <p className="font-display text-lg font-semibold text-foreground">
-              {copy("Feedback direto pelo ÍMPAR", "Direct feedback through MGP", "Feedback directo por MGP")}
+              {copy("Feedback direto pelo ÍMPAR", "Direct feedback through ÍMPAR", "Feedback directo por ÍMPAR")}
             </p>
             <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">
               {copy(
@@ -244,8 +244,8 @@ export function SupportFeedbackDesk() {
             rows={6}
             placeholder={copy(
               "Conta o que você sentiu falta, o que ficou confuso, o que funcionou bem ou o que você gostaria de ver no ÍMPAR.",
-              "Tell us what felt missing, confusing, useful or what you would like to see in MGP.",
-              "Cuéntanos qué echaste en falta, qué resultó confuso, qué funcionó bien o qué te gustaría ver en MGP.",
+              "Tell us what felt missing, confusing, useful or what you would like to see in ÍMPAR.",
+              "Cuéntanos qué echaste en falta, qué resultó confuso, qué funcionó bien o qué te gustaría ver en ÍMPAR.",
             )}
             className="mt-2 w-full resize-y rounded-xl border border-border bg-background px-3 py-3 text-sm leading-6 text-foreground outline-none placeholder:text-muted-foreground focus:border-gold/50"
           />
@@ -317,7 +317,7 @@ export function SupportFeedbackDesk() {
                 {row.admin_reply ? (
                   <div className="mt-3 rounded-lg border border-gold/20 bg-gold/[0.05] p-3">
                     <p className="text-[0.62rem] font-black uppercase tracking-[0.08em] text-gold-strong">
-                      {copy("Resposta do ÍMPAR", "MGP reply", "Respuesta de MGP")}
+                      {copy("Resposta do ÍMPAR", "ÍMPAR reply", "Respuesta de ÍMPAR")}
                     </p>
                     <p className="mt-1 whitespace-pre-line text-xs leading-5 text-foreground/90">
                       {row.admin_reply}

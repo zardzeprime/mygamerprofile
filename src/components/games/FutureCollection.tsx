@@ -178,7 +178,7 @@ export function FutureCollection({
     ],
     lfg: [
       copy("Procurando grupo", "Looking for group", "Buscando grupo"),
-      copy("O LFG global do MG Profile poderá ser filtrado por este jogo.", "MG Profile's global LFG can be filtered by this game.", "El LFG global de MG Profile podrá filtrarse por este juego."),
+      copy("O LFG global do ÍMPAR poderá ser filtrado por este jogo.", "ÍMPAR's global LFG can be filtered by this game.", "El LFG global de ÍMPAR podrá filtrarse por este juego."),
     ],
   };
 
@@ -209,7 +209,7 @@ export function FutureCollection({
     },
     {
       icon: FlaskConical,
-      title: copy("Revisão MGP", "MGP review", "Revisión MGP"),
+      title: copy("Revisão ÍMPAR", "ÍMPAR review", "Revisión ÍMPAR"),
       text: copy(
         "Conteúdo incompleto fica identificado como desenvolvimento em vez de aparecer bloqueado.",
         "Incomplete content is labeled as development instead of appearing locked.",

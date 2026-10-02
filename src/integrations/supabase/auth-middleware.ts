@@ -34,9 +34,9 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server(
   async ({ next }) => {
     
-    // Auth must validate against the same canonical MGP project used by the
+    // Auth must validate against the same canonical ÍMPAR project used by the
     // browser. The hosting workspace injects a separate Supabase project whose
-    // tokens and user ids are not interchangeable with the MGP database.
+    // tokens and user ids are not interchangeable with the ÍMPAR database.
     const SUPABASE_URL = CANONICAL_SUPABASE_URL;
     const SUPABASE_PUBLISHABLE_KEY = CANONICAL_SUPABASE_PUBLISHABLE_KEY;
     

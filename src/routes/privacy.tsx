@@ -34,7 +34,7 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          O ÍMPAR (MGP) é um projeto independente de comunidade
+          O ÍMPAR (ÍMPAR) é um projeto independente de comunidade
           gamer, mantido no Brasil por{" "}
           <strong className="text-foreground">{LEGAL_OPERATOR_NAME}</strong>.
           Para os tratamentos descritos nesta Política, o responsável pelo ÍMPAR
@@ -446,7 +446,7 @@ const sections: LegalSection[] = [
         <p>
           Para exercer direitos ou esclarecer dúvidas, use o canal indicado na
           seção 1. Esta Política deve ser lida junto com os Termos de Uso do
-          MGP.
+          ÍMPAR.
         </p>
       </>
     ),

@@ -64,8 +64,8 @@ export const DARK_SOULS_BOSSES: DarkSoulsBoss[] = [
       en: "Uses leaps, overhead blows and long sweeps. Because the bridge is narrow, managing space and dodge direction is the main challenge.",
     },
     spoilerContext: {
-      "pt-BR": "Apesar de ser um encontro marcante do caminho tradicional, rotas alternativas permitem contorná-lo, por isso ele é tratado como opcional no MGP.",
-      en: "Although it is a memorable encounter on the traditional route, alternate paths can bypass it, so MGP classifies it as optional.",
+      "pt-BR": "Apesar de ser um encontro marcante do caminho tradicional, rotas alternativas permitem contorná-lo, por isso ele é tratado como opcional no ÍMPAR.",
+      en: "Although it is a memorable encounter on the traditional route, alternate paths can bypass it, so ÍMPAR classifies it as optional.",
     },
     weaknesses: [{ "pt-BR": "Raio", en: "Lightning" }],
     resistances: [],

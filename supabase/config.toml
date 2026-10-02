@@ -9,7 +9,7 @@ additional_redirect_urls = [
 ]
 
 [auth.email.template.confirmation]
-subject = "Confirme seu e-mail e monte seu perfil no MGP"
+subject = "Confirme seu e-mail e monte seu perfil no ÍMPAR"
 content_path = "./templates/confirmation.html"
 
 [functions.nexus-inference]

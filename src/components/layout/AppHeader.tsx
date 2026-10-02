@@ -94,7 +94,7 @@ export function AppHeader() {
 
       if (cancelled) return;
       if (error) {
-        console.error("[MGP] Failed to load current profile header data", error);
+        console.error("[ÍMPAR] Failed to load current profile header data", error);
         setProfileUsername(null);
         setProfileAvatarUrl(null);
         setProfileDisplayName(null);
@@ -121,7 +121,7 @@ export function AppHeader() {
     try {
       await signInWithGoogle("/onboarding");
     } catch (error) {
-      console.error("[MGP] Google sign-in:", error);
+      console.error("[ÍMPAR] Google sign-in:", error);
       setGoogleLoading(false);
       window.location.assign("/login");
     }

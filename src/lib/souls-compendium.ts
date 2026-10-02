@@ -94,10 +94,10 @@ export const SOULS_COMPENDIUM_SOURCE = {
   url: SOURCE_PAGE,
   rights: {
     "pt-BR":
-      "Ícones e textos de referência pertencem aos respectivos detentores de direitos da franquia Dark Souls, incluindo FromSoftware/Bandai Namco. O MGP os exibe no beta como referência com procedência registrada.",
+      "Ícones e textos de referência pertencem aos respectivos detentores de direitos da franquia Dark Souls, incluindo FromSoftware/Bandai Namco. O ÍMPAR os exibe no beta como referência com procedência registrada.",
     en:
-      "Reference icons and text belong to the respective Dark Souls rights holders, including FromSoftware/Bandai Namco. MGP displays them in beta as sourced reference material.",
+      "Reference icons and text belong to the respective Dark Souls rights holders, including FromSoftware/Bandai Namco. ÍMPAR displays them in beta as sourced reference material.",
     es:
-      "Los iconos y textos de referencia pertenecen a los respectivos titulares de derechos de Dark Souls, incluidos FromSoftware/Bandai Namco. MGP los muestra en la beta como material de referencia con procedencia identificada.",
+      "Los iconos y textos de referencia pertenecen a los respectivos titulares de derechos de Dark Souls, incluidos FromSoftware/Bandai Namco. ÍMPAR los muestra en la beta como material de referencia con procedencia identificada.",
   },
 };

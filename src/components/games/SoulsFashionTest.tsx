@@ -301,7 +301,7 @@ export function SoulsFashionTest({
         <div className="border-b border-border bg-[radial-gradient(circle_at_top_right,hsl(var(--gold)/0.12),transparent_48%)] p-5 sm:p-7">
           <div className="flex items-center gap-2 text-gold-strong">
             <Shield className="size-4" />
-            <span className="section-kicker">MGP · FASHION TEST</span>
+            <span className="section-kicker">ÍMPAR · FASHION TEST</span>
           </div>
           <h2 className="mt-3 font-display text-3xl font-bold text-foreground">
             {copy(
@@ -517,9 +517,9 @@ export function SoulsFashionTest({
           </div>
           <p className="mt-4 text-[0.66rem] leading-5 text-muted-foreground">
             {copy(
-              "Os cálculos usam datasets técnicos comunitários já documentados pelo MGP. Valores de carga dependem do personagem e devem ser conferidos no jogo.",
-              "Calculations use technical community datasets already documented by MGP. Equip-load values depend on the character and should be checked in game.",
-              "Los cálculos usan datasets técnicos comunitarios ya documentados por MGP. Los valores de carga dependen del personaje y deben verificarse en el juego.",
+              "Os cálculos usam datasets técnicos comunitários já documentados pelo ÍMPAR. Valores de carga dependem do personagem e devem ser conferidos no jogo.",
+              "Calculations use technical community datasets already documented by ÍMPAR. Equip-load values depend on the character and should be checked in game.",
+              "Los cálculos usan datasets técnicos comunitarios ya documentados por ÍMPAR. Los valores de carga dependen del personaje y deben verificarse en el juego.",
             )}
           </p>
         </aside>

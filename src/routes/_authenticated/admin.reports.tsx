@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_authenticated/admin/reports")({
   },
   head: () => ({
     meta: [
-      { title: "Admin — Denúncias — MGP" },
+      { title: "Admin — Denúncias — ÍMPAR" },
       { name: "description", content: "Fila de denúncias do ÍMPAR." },
     ],
   }),

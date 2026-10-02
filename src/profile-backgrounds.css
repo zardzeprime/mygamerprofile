@@ -113,7 +113,7 @@
   }
 }
 
-/* Profile identity-pack concept previews. Original MGP CSS; no third-party game artwork. */
+/* Profile identity-pack concept previews. Original ÍMPAR CSS; no third-party game artwork. */
 .customization-pack-mgp {
   background:
     radial-gradient(circle at 18% 18%, color-mix(in oklab, var(--color-gold) 34%, transparent), transparent 38%),
@@ -144,7 +144,7 @@
     linear-gradient(145deg, #17172b, #090a12 72%);
 }
 
-/* Identity loadout system — original MG Profile visuals. */
+/* Identity loadout system — original ÍMPAR visuals. */
 .mgp-identity-surface {
   isolation: isolate;
 }

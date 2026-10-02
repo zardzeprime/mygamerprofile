@@ -85,16 +85,16 @@ function WarframeGuides({ locale }: { locale: Locale }) {
       <div className="surface-panel p-5 sm:p-6">
         <div className="flex items-center gap-2">
           <BookOpen className="size-4 text-gold-strong" />
-          <span className="section-kicker">MGP / TENNO GUIDES</span>
+          <span className="section-kicker">ÍMPAR / TENNO GUIDES</span>
         </div>
         <h2 className="mt-3 font-display text-2xl font-bold text-foreground sm:text-3xl">
           {copy("Central de guias do Warframe", "Warframe guide center", "Centro de guías de Warframe")}
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
           {copy(
-            "Guias editoriais do MGP para progressão, Mods, dano, Status e farming. O banco de Warframes/Armas/Itens usa dados atuais e complementa estes guias.",
-            "MGP editorial guides for progression, Mods, damage, Status and farming. The live Warframes/Weapons/Items database complements these guides.",
-            "Guías editoriales de MGP para progresión, Mods, daño, Estado y farming. La base actual de Warframes/Armas/Objetos complementa estas guías.",
+            "Guias editoriais do ÍMPAR para progressão, Mods, dano, Status e farming. O banco de Warframes/Armas/Itens usa dados atuais e complementa estes guias.",
+            "ÍMPAR editorial guides for progression, Mods, damage, Status and farming. The live Warframes/Weapons/Items database complements these guides.",
+            "Guías editoriales de ÍMPAR para progresión, Mods, daño, Estado y farming. La base actual de Warframes/Armas/Objetos complementa estas guías.",
           )}
         </p>
       </div>

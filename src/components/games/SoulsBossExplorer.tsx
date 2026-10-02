@@ -101,16 +101,16 @@ export function SoulsBossExplorer({
             <div className="max-w-3xl">
               <p className="section-kicker flex items-center gap-2 text-gold-strong">
                 <BookOpen className="size-4" />
-                {copy("ENCICLOPÉDIA MGP", "MGP ENCYCLOPEDIA", "ENCICLOPEDIA MGP")}
+                {copy("ENCICLOPÉDIA ÍMPAR", "ÍMPAR ENCYCLOPEDIA", "ENCICLOPEDIA ÍMPAR")}
               </p>
               <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
                 {copy(`Chefes de ${game.name}`, `${game.name} bosses`, `Jefes de ${game.name}`)}
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
                 {copy(
-                  "Uma leitura editorial dos encontros, fases e sistemas de combate. As screenshots próprias do MGP ainda serão produzidas e padronizadas.",
-                  "An editorial reading of encounters, phases and combat systems. Original MGP gameplay screenshots are still being produced and standardized.",
-                  "Una lectura editorial de encuentros, fases y sistemas de combate. Las capturas propias de MGP aún se están produciendo y estandarizando.",
+                  "Uma leitura editorial dos encontros, fases e sistemas de combate. As screenshots próprias do ÍMPAR ainda serão produzidas e padronizadas.",
+                  "An editorial reading of encounters, phases and combat systems. Original ÍMPAR gameplay screenshots are still being produced and standardized.",
+                  "Una lectura editorial de encuentros, fases y sistemas de combate. Las capturas propias de ÍMPAR aún se están produciendo y estandarizando.",
                 )}
               </p>
             </div>
@@ -136,7 +136,7 @@ export function SoulsBossExplorer({
                 <p className="mt-1 text-sm font-semibold text-foreground">
                   {selectedImage
                     ? copy("Procedência registrada", "Provenance recorded", "Procedencia registrada")
-                    : copy("Fallback MGP", "MGP fallback", "Fallback MGP")}
+                    : copy("Fallback ÍMPAR", "ÍMPAR fallback", "Fallback ÍMPAR")}
                 </p>
               </div>
               <Sparkles className="size-5 text-gold-strong" />
@@ -338,9 +338,9 @@ export function SoulsBossExplorer({
 
       <p className="rounded-lg border border-border bg-muted/15 p-4 text-xs leading-5 text-muted-foreground">
         {copy(
-          "Nota editorial: os textos do MG Profile são resumos próprios baseados em fatos do jogo e fontes de pesquisa. Artes externas usadas no beta mantêm procedência visível; capturas próprias ainda poderão substituir essas referências depois.",
-          "Editorial note: MG Profile texts are original summaries based on game facts and research sources. External artwork used during beta retains visible provenance; original captures may replace those references later.",
-          "Nota editorial: los textos de MG Profile son resúmenes propios basados en hechos del juego y fuentes de investigación. El arte externo usado en beta mantiene procedencia visible; capturas propias podrán sustituir esas referencias después.",
+          "Nota editorial: os textos do ÍMPAR são resumos próprios baseados em fatos do jogo e fontes de pesquisa. Artes externas usadas no beta mantêm procedência visível; capturas próprias ainda poderão substituir essas referências depois.",
+          "Editorial note: ÍMPAR texts are original summaries based on game facts and research sources. External artwork used during beta retains visible provenance; original captures may replace those references later.",
+          "Nota editorial: los textos de ÍMPAR son resúmenes propios basados en hechos del juego y fuentes de investigación. El arte externo usado en beta mantiene procedencia visible; capturas propias podrán sustituir esas referencias después.",
         )}
       </p>
     </div>

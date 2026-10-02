@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
   component: OnboardingPage,
   head: () => ({
     meta: [
-      { title: "Complete seu perfil — MGP" },
+      { title: "Complete seu perfil — ÍMPAR" },
       { name: "description", content: "Finalize seu perfil no ÍMPAR." },
     ],
   }),
@@ -219,7 +219,7 @@ function OnboardingPage() {
         replace: true,
       });
     } catch (err) {
-      console.error("[MGP onboarding] profile creation:", err);
+      console.error("[ÍMPAR onboarding] profile creation:", err);
       setError(
         err instanceof Error && err.message
           ? err.message
@@ -243,8 +243,8 @@ function OnboardingPage() {
           <CardDescription className="mx-auto max-w-xl">
             {copy(
               "Escolha seu nome no ÍMPAR e marque os jogos que já fazem parte da sua identidade gamer.",
-              "Choose your MGP name and mark the games that are already part of your gamer identity.",
-              "Elige tu nombre en MGP y marca los juegos que ya forman parte de tu identidad gamer.",
+              "Choose your ÍMPAR name and mark the games that are already part of your gamer identity.",
+              "Elige tu nombre en ÍMPAR y marca los juegos que ya forman parte de tu identidad gamer.",
             )}
           </CardDescription>
         </CardHeader>

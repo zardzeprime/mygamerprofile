@@ -104,9 +104,9 @@ export function ValorantEsportsPanel({ locale }: { locale: Locale }) {
         <div className="mt-4 rounded-xl border border-dashed border-border px-3.5 py-3 text-[0.68rem] leading-5 text-muted-foreground">
           {broadcastProviderConfigured
             ? copy(
-                "Agenda editorial baseada no calendário oficial. O MGP já consulta o canal oficial do VCT para detectar transmissões ao vivo.",
-                "Editorial schedule based on the official calendar. MGP is already checking the official VCT channel for live broadcasts.",
-                "Agenda editorial basada en el calendario oficial. MGP ya consulta el canal oficial de VCT para detectar transmisiones en vivo.",
+                "Agenda editorial baseada no calendário oficial. O ÍMPAR já consulta o canal oficial do VCT para detectar transmissões ao vivo.",
+                "Editorial schedule based on the official calendar. ÍMPAR is already checking the official VCT channel for live broadcasts.",
+                "Agenda editorial basada en el calendario oficial. ÍMPAR ya consulta el canal oficial de VCT para detectar transmisiones en vivo.",
               )
             : copy(
                 "Agenda inicial baseada no calendário oficial do VALORANT Esports. A descoberta automática de lives fica pronta assim que a chave da API do YouTube for configurada no servidor.",

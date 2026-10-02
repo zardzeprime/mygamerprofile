@@ -125,7 +125,7 @@ export function LfgMatchCenter({
     <section className="mt-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="section-kicker">MGP / MATCHES</p>
+          <p className="section-kicker">ÍMPAR / MATCHES</p>
           <h2 className="mt-2 font-display text-2xl font-semibold">
             {copy("Seus matches do LFG", "Your LFG matches", "Tus matches del LFG")}
           </h2>

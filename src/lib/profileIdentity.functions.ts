@@ -161,7 +161,7 @@ export const getProfileIdentityStudio = createServerFn({ method: "POST" })
     const { db, userId } = await authenticate(data.accessToken);
 
     await db.rpc("evaluate_profile_unlocks", { target_user_id: userId }).then(({ error }) => {
-      if (error) console.warn("[MGP Identity] evaluation failed", error);
+      if (error) console.warn("[ÍMPAR Identity] evaluation failed", error);
     });
 
     const [
@@ -352,7 +352,7 @@ export const getPublicProfileLoadout = createServerFn({ method: "GET" })
     });
 
     if (!response.ok) {
-      console.warn("[MGP Identity] public loadout failed", response.status);
+      console.warn("[ÍMPAR Identity] public loadout failed", response.status);
       return null;
     }
 

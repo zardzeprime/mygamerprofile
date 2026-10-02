@@ -5,7 +5,7 @@ export type ValorantPromoAgent = {
 
 /**
  * Official agent key art delivered from Riot's public VALORANT CDN.
- * These are used only as decorative promotional artwork in MGP game surfaces.
+ * These are used only as decorative promotional artwork in ÍMPAR game surfaces.
  */
 export const VALORANT_PROMO_AGENTS: ValorantPromoAgent[] = [
   { name: "Jett", image: "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news/d41286dc9017bf79c0b4d907b7a260c27b0adb69-616x822.png?auto=format&fit=fill&q=82&w=440" },

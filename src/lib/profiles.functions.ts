@@ -76,7 +76,7 @@ async function fetchPublicProfilesRest(
 
       if (!response.ok) {
         console.error(
-          "[MGP] Public profiles REST candidate failed",
+          "[ÍMPAR] Public profiles REST candidate failed",
           candidateIndex,
           response.status,
         );
@@ -87,7 +87,7 @@ async function fetchPublicProfilesRest(
       const rows = (await response.json()) as Array<Record<string, unknown>>;
       if (rows.length > 0) return rows;
     } catch (error) {
-      console.error("[MGP] Public profiles REST candidate unavailable", candidateIndex, error);
+      console.error("[ÍMPAR] Public profiles REST candidate unavailable", candidateIndex, error);
     }
   }
 

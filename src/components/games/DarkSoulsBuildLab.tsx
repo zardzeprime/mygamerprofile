@@ -305,16 +305,16 @@ export function DarkSoulsBuildLab({ locale }: { locale: Locale }) {
         <div className="border-b border-border p-5 sm:p-7">
           <div className="flex items-center gap-2">
             <Anvil className="size-4 text-gold-strong" />
-            <span className="section-kicker">{copy("LABORATÓRIO MGP", "MGP BUILD LAB", "LABORATORIO MGP")}</span>
+            <span className="section-kicker">{copy("LABORATÓRIO ÍMPAR", "ÍMPAR BUILD LAB", "LABORATORIO ÍMPAR")}</span>
           </div>
           <h2 className="mt-3 font-display text-3xl font-bold text-foreground">
             {copy("Builds de Dark Souls Remastered", "Dark Souls Remastered builds", "Builds de Dark Souls Remastered")}
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
-              "Três pontos de partida revisados contra discussões recorrentes de jogadores em Steam/Reddit, com núcleos claros, variações e fontes. “MGP Verificada” indica consistência entre referências — não uma tier list.",
-              "Three starting points reviewed against recurring player discussions on Steam/Reddit, with clear cores, variants and sources. “MGP Verified” means consistency across references, not a tier list.",
-              "Tres puntos de partida revisados con discusiones recurrentes de jugadores en Steam/Reddit, con núcleos claros, variantes y fuentes. “MGP Verificada” indica consistencia entre referencias, no una tier list.",
+              "Três pontos de partida revisados contra discussões recorrentes de jogadores em Steam/Reddit, com núcleos claros, variações e fontes. “ÍMPAR Verificada” indica consistência entre referências — não uma tier list.",
+              "Three starting points reviewed against recurring player discussions on Steam/Reddit, with clear cores, variants and sources. “ÍMPAR Verified” means consistency across references, not a tier list.",
+              "Tres puntos de partida revisados con discusiones recurrentes de jugadores en Steam/Reddit, con núcleos claros, variantes y fuentes. “ÍMPAR Verificada” indica consistencia entre referencias, no una tier list.",
             )}
           </p>
         </div>
@@ -352,7 +352,7 @@ export function DarkSoulsBuildLab({ locale }: { locale: Locale }) {
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/[0.08] px-3 py-1 text-xs font-bold text-gold-strong">
                 <ShieldCheck className="size-3.5" />
-                {copy("MGP Verificada", "MGP Verified", "MGP Verificada")}
+                {copy("ÍMPAR Verificada", "ÍMPAR Verified", "ÍMPAR Verificada")}
               </span>
               <span className="rounded-full border border-border px-3 py-1 text-xs font-semibold text-muted-foreground">
                 {active.startingClass}
@@ -397,9 +397,9 @@ export function DarkSoulsBuildLab({ locale }: { locale: Locale }) {
             </div>
             <p className="mt-4 text-xs leading-5 text-muted-foreground">
               {copy(
-                "Os presets misturam dados do jogo e consenso de comunidade. O MGP mantém as explicações próprias e deixa a procedência visível.",
-                "Presets combine game data and community consensus. MGP keeps the explanations original and provenance visible.",
-                "Los presets combinan datos del juego y consenso de comunidad. MGP mantiene explicaciones propias y procedencia visible.",
+                "Os presets misturam dados do jogo e consenso de comunidade. O ÍMPAR mantém as explicações próprias e deixa a procedência visível.",
+                "Presets combine game data and community consensus. ÍMPAR keeps the explanations original and provenance visible.",
+                "Los presets combinan datos del juego y consenso de comunidad. ÍMPAR mantiene explicaciones propias y procedencia visible.",
               )}
             </p>
           </aside>

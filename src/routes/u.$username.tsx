@@ -575,7 +575,7 @@ function SteamActivityCard({
             </div>
           ))}
           <p className="pt-1 text-[0.67rem] text-muted-foreground">
-            {postCount} {copy("posts no ÍMPAR", "MGP posts", "posts en MGP")}
+            {postCount} {copy("posts no ÍMPAR", "ÍMPAR posts", "posts en ÍMPAR")}
           </p>
         </div>
       ) : (
@@ -589,8 +589,8 @@ function SteamActivityCard({
             : steam
               ? copy(
                   "Nenhum jogo recente público encontrado. A atividade social do ÍMPAR continua aparecendo normalmente.",
-                  "No public recent games were found. MGP social activity still appears normally.",
-                  "No se encontraron juegos recientes públicos. La actividad social de MGP sigue apareciendo normalmente.",
+                  "No public recent games were found. ÍMPAR social activity still appears normally.",
+                  "No se encontraron juegos recientes públicos. La actividad social de ÍMPAR sigue apareciendo normalmente.",
                 )
               : copy(
                   "Posts e perfis de jogo formam seu histórico. A Steam adiciona jogos recentes automaticamente.",

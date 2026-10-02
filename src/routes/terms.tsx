@@ -34,7 +34,7 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          Estes Termos regulam o uso do ÍMPAR (MGP), um hub gamer
+          Estes Termos regulam o uso do ÍMPAR (ÍMPAR), um hub gamer
           independente mantido no Brasil por{" "}
           <strong className="text-foreground">{LEGAL_OPERATOR_NAME}</strong>. Ao
           criar uma conta ou continuar usando a plataforma, você declara que leu
@@ -74,7 +74,7 @@ const sections: LegalSection[] = [
         </p>
         <p>
           Cada jogo pode possuir classificação indicativa própria. Ter acesso ao
-          MGP não substitui as regras de idade do jogo, da plataforma ou da
+          ÍMPAR não substitui as regras de idade do jogo, da plataforma ou da
           conta de terceiros correspondente. O ÍMPAR poderá aplicar avisos,
           desfoque e limitações adicionais a discussões legítimas sobre temas
           maduros mesmo quando o conteúdo não for proibido.
@@ -433,7 +433,7 @@ function TermsPage() {
     <LegalDocument
       eyebrow="Regras da comunidade"
       title="Termos de Uso"
-      summary="Estas regras protegem a comunidade, esclarecem o que você pode publicar e definem como o hub gamer independente MGP funciona."
+      summary="Estas regras protegem a comunidade, esclarecem o que você pode publicar e definem como o hub gamer independente ÍMPAR funciona."
       effectiveDate={LEGAL_EFFECTIVE_DATE}
       version={LEGAL_VERSION}
       sections={sections}

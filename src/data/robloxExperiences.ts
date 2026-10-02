@@ -40,11 +40,11 @@ function makeRobloxPlaceholder(label: string, subtitle: string, from: string, to
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
-const BLOX_FRUITS_ART = makeRobloxPlaceholder("BLOX FRUITS", "ROBLOX EXPERIENCE · MGP", "#071a2e", "#0a6385");
-const PROJECT_SLAYERS_2_ART = makeRobloxPlaceholder("PROJECT SLAYERS 2", "ROBLOX EXPERIENCE · MGP", "#160d1d", "#6f2437");
-const ANIME_VANGUARDS_ART = makeRobloxPlaceholder("ANIME VANGUARDS", "ROBLOX EXPERIENCE · MGP", "#0f1027", "#4f2f87");
-const ANIME_LAST_STAND_ART = makeRobloxPlaceholder("ANIME LAST STAND", "ROBLOX EXPERIENCE · MGP", "#16120e", "#84592e");
-const KING_LEGACY_ART = makeRobloxPlaceholder("KING LEGACY", "ROBLOX EXPERIENCE · MGP", "#071d1a", "#156a58");
+const BLOX_FRUITS_ART = makeRobloxPlaceholder("BLOX FRUITS", "ROBLOX EXPERIENCE · ÍMPAR", "#071a2e", "#0a6385");
+const PROJECT_SLAYERS_2_ART = makeRobloxPlaceholder("PROJECT SLAYERS 2", "ROBLOX EXPERIENCE · ÍMPAR", "#160d1d", "#6f2437");
+const ANIME_VANGUARDS_ART = makeRobloxPlaceholder("ANIME VANGUARDS", "ROBLOX EXPERIENCE · ÍMPAR", "#0f1027", "#4f2f87");
+const ANIME_LAST_STAND_ART = makeRobloxPlaceholder("ANIME LAST STAND", "ROBLOX EXPERIENCE · ÍMPAR", "#16120e", "#84592e");
+const KING_LEGACY_ART = makeRobloxPlaceholder("KING LEGACY", "ROBLOX EXPERIENCE · ÍMPAR", "#071d1a", "#156a58");
 
 export const ROBLOX_HUB_TABS: Array<{
   id: RobloxHubTab;

@@ -67,7 +67,7 @@ export function ValorantMaps({ locale }: { locale: Locale }) {
         <div className="flex items-center gap-2 text-gold-strong"><MapPinned className="size-4" /><span className="section-kicker">{copy("CAMPO DE BATALHA", "BATTLEFIELD", "CAMPO DE BATALLA")}</span></div>
         <h2 className="mt-3 font-display text-3xl font-bold">{copy("Mapas", "Maps", "Mapas")}</h2>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
-          {copy("Conheça a identidade tática de cada mapa, veja o minimapa e acompanhe a rotação competitiva atual do MGP.", "Learn each map's tactical identity, inspect its minimap and track the current competitive rotation in MGP.", "Conoce la identidad táctica de cada mapa, revisa el minimapa y sigue la rotación competitiva actual en MGP.")}
+          {copy("Conheça a identidade tática de cada mapa, veja o minimapa e acompanhe a rotação competitiva atual do ÍMPAR.", "Learn each map's tactical identity, inspect its minimap and track the current competitive rotation in ÍMPAR.", "Conoce la identidad táctica de cada mapa, revisa el minimapa y sigue la rotación competitiva actual en ÍMPAR.")}
         </p>
         <div className="mt-4 inline-flex rounded-full border border-gold/25 bg-gold/10 px-3 py-1.5 text-xs font-semibold text-muted-foreground">
           {copy("Rotação competitiva atual · Atualização 13.04", "Current competitive rotation · Patch 13.04", "Rotación competitiva actual · versión 13.04")}

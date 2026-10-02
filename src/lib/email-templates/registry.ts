@@ -16,8 +16,8 @@ export interface TemplateEntry {
 const avapgvPreviewData = {
   status: "+/-",
   severity: "warning",
-  title: "Revisão operacional do MG Profile",
-  owningCore: "NEXUS (Coordenação e IA)",
+  title: "Revisão operacional do ÍMPAR",
+  owningCore: "Noctis (Guardião do ÍMPAR)",
   changed:
     "Uma alteração relevante foi detectada e precisa de validação antes de ser considerada concluída.",
   reference: "main · commit fcd91c5",

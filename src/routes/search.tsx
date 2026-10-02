@@ -55,7 +55,7 @@ function SearchPage() {
         if (!cancelled) setProfiles(result);
       })
       .catch((error) => {
-        console.warn("[MGP Search] profile search page failed", error);
+        console.warn("[ÍMPAR Search] profile search page failed", error);
         if (!cancelled) setProfiles([]);
       })
       .finally(() => {

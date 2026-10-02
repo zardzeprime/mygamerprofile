@@ -192,9 +192,9 @@ function modeCopy(locale: Locale, key: ModeKey) {
         "Una experiencia oficial de LoL clásico mantenida y actualizada por Riot.",
       ),
       description: copy(
-        "Classic recria uma era antiga de League com kits, sistemas, runas e ritmo próprios. A Riot continua adicionando campeões clássicos e ajustes específicos, então o MGP mantém o modo separado do Summoner's Rift moderno.",
-        "Classic recreates an older League era with its own kits, systems, runes and pacing. Riot continues adding classic champions and mode-specific updates, so MGP keeps it separate from modern Summoner's Rift.",
-        "Classic recrea una era antigua de League con kits, sistemas, runas y ritmo propios. Riot sigue añadiendo campeones clásicos y ajustes específicos, así que MGP lo mantiene separado de la Grieta moderna.",
+        "Classic recria uma era antiga de League com kits, sistemas, runas e ritmo próprios. A Riot continua adicionando campeões clássicos e ajustes específicos, então o ÍMPAR mantém o modo separado do Summoner's Rift moderno.",
+        "Classic recreates an older League era with its own kits, systems, runes and pacing. Riot continues adding classic champions and mode-specific updates, so ÍMPAR keeps it separate from modern Summoner's Rift.",
+        "Classic recrea una era antigua de League con kits, sistemas, runas y ritmo propios. Riot sigue añadiendo campeones clásicos y ajustes específicos, así que ÍMPAR lo mantiene separado de la Grieta moderna.",
       ),
       objective: copy(
         "Jogar o Rift com as regras e kits da experiência Classic.",
@@ -216,9 +216,9 @@ function modeCopy(locale: Locale, key: ModeKey) {
       name: "Teamfight Tactics",
       short: copy("Auto battler separado do League tradicional.", "An auto battler separate from traditional League.", "Auto battler separado del League tradicional."),
       description: copy(
-        "TFT compartilha o universo e parte da infraestrutura de League, mas possui regras, sets, itens e progressão próprios. Por isso aparece em uma categoria separada no MGP.",
-        "TFT shares League's universe and some infrastructure but has its own rules, sets, items and progression, so MGP keeps it in a separate category.",
-        "TFT comparte el universo y parte de la infraestructura de League, pero tiene reglas, sets, objetos y progresión propios; por eso MGP lo mantiene separado.",
+        "TFT compartilha o universo e parte da infraestrutura de League, mas possui regras, sets, itens e progressão próprios. Por isso aparece em uma categoria separada no ÍMPAR.",
+        "TFT shares League's universe and some infrastructure but has its own rules, sets, items and progression, so ÍMPAR keeps it in a separate category.",
+        "TFT comparte el universo y parte de la infraestructura de League, pero tiene reglas, sets, objetos y progresión propios; por eso ÍMPAR lo mantiene separado.",
       ),
       objective: copy("Montar uma composição e sobreviver até o topo da sala.", "Build a composition and survive to the top of the lobby.", "Construir una composición y sobrevivir hasta lo alto de la sala."),
     },

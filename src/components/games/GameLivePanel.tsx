@@ -72,9 +72,9 @@ function FeaturedPanel({
 
           <div className="rounded-xl border border-dashed border-border px-4 py-3 text-xs leading-5 text-muted-foreground">
             {copy(
-              "Conteúdo editorial recebe o selo MGP verificado. Conteúdo de usuários aparecerá identificado como criação da comunidade.",
-              "Editorial content receives the MGP verified badge. User-made content will be identified as a community creation.",
-              "El contenido editorial recibe el sello MGP verificado. El contenido de usuarios se identificará como creación de la comunidad.",
+              "Conteúdo editorial recebe o selo ÍMPAR verificado. Conteúdo de usuários aparecerá identificado como criação da comunidade.",
+              "Editorial content receives the ÍMPAR verified badge. User-made content will be identified as a community creation.",
+              "El contenido editorial recibe el sello ÍMPAR verificado. El contenido de usuarios se identificará como creación de la comunidad.",
             )}
           </div>
         </div>
@@ -117,7 +117,7 @@ function FeaturedCard({
         </span>
         <span className={item.origin === "official" ? "inline-flex items-center gap-1 text-[0.66rem] font-bold uppercase tracking-[0.08em] text-gold-strong" : "inline-flex items-center gap-1 text-[0.66rem] font-bold uppercase tracking-[0.08em] text-muted-foreground"}>
           <OfficialIcon className="size-3.5" />
-          {item.origin === "official" ? copy("MGP verificado", "MGP verified", "MGP verificado") : copy("Comunidade", "Community", "Comunidad")}
+          {item.origin === "official" ? copy("ÍMPAR verificado", "ÍMPAR verified", "ÍMPAR verificado") : copy("Comunidade", "Community", "Comunidad")}
         </span>
       </div>
 

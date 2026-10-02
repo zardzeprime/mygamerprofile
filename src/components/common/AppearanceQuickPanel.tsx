@@ -8,7 +8,7 @@ import { DEFAULT_ACCENT_COLOR, useTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const QUICK_PALETTES = [
-  { name: "MGP", color: null },
+  { name: "ÍMPAR", color: null },
   { name: "Jade", color: "#22a875" },
   { name: "Íris", color: "#6488ea" },
   { name: "Ametista", color: "#ad78db" },
@@ -55,9 +55,9 @@ export function AppearanceQuickPanel() {
           </p>
           <h2 className="mt-1 font-display text-base font-semibold">
             {copy(
-              "Seu MGP, sem trocar de página",
-              "Your MGP, without leaving the page",
-              "Tu MGP, sin salir de la página",
+              "Seu ÍMPAR, sem trocar de página",
+              "Your ÍMPAR, without leaving the page",
+              "Tu ÍMPAR, sin salir de la página",
             )}
           </h2>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
@@ -83,7 +83,7 @@ export function AppearanceQuickPanel() {
                 const active = palette.color === accentColor;
                 const label =
                   palette.color === null
-                    ? copy("Original MGP", "Original MGP", "MGP original")
+                    ? copy("Original ÍMPAR", "Original ÍMPAR", "ÍMPAR original")
                     : palette.name;
                 return (
                   <button

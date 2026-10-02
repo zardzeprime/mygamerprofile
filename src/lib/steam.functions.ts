@@ -351,7 +351,7 @@ export const completeSteamConnection = createServerFn({ method: "POST" })
     try {
       player = await getSteamSummary(steamId);
     } catch (error) {
-      console.warn("[MGP Steam] Profile summary unavailable during OpenID link", error);
+      console.warn("[ÍMPAR Steam] Profile summary unavailable during OpenID link", error);
     }
 
     const now = new Date().toISOString();

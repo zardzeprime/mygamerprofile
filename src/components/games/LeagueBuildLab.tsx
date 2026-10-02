@@ -227,9 +227,9 @@ export function LeagueBuildLab({ locale }: { locale: Locale }) {
         ) : sourceError || !buildData?.builds.length ? (
           <div className="mt-5 rounded-2xl border border-border bg-muted/10 p-5 text-sm leading-6 text-muted-foreground">
             {copy(
-              "A fonte estatística não respondeu agora. O criador continua disponível e o MGP não inventa uma build para preencher espaço.",
-              "The statistical source is unavailable right now. The builder remains available and MGP does not invent a build to fill the gap.",
-              "La fuente estadística no respondió ahora. El creador sigue disponible y MGP no inventa una build para llenar el espacio.",
+              "A fonte estatística não respondeu agora. O criador continua disponível e o ÍMPAR não inventa uma build para preencher espaço.",
+              "The statistical source is unavailable right now. The builder remains available and ÍMPAR does not invent a build to fill the gap.",
+              "La fuente estadística no respondió ahora. El creador sigue disponible y ÍMPAR no inventa una build para llenar el espacio.",
             )}
           </div>
         ) : (

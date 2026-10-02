@@ -425,7 +425,7 @@ async function completeOpenRouter(
     model: serverEnv("NEXUS_OPENROUTER_MODEL") ?? "openrouter/free",
     extraHeaders: {
       ...(appUrl ? { "HTTP-Referer": appUrl } : {}),
-      "X-OpenRouter-Title": "MG Profile NEXUS",
+      "X-OpenRouter-Title": "ÍMPAR NEXUS",
     },
   });
 }

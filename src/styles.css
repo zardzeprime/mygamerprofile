@@ -3,7 +3,7 @@
 @import "tw-animate-css";
 
 /*
- * MGP — My Gamer Profile — design system.
+ * ÍMPAR — ÍMPAR — design system.
  * Institutional identity: gold + sophisticated neutrals.
  * Red is functional only (errors, danger, reports).
  * All colors are oklch semantic tokens. Never hardcode colors in components.
@@ -157,7 +157,7 @@
 
 /* Native cursors keep text editing and disabled affordances predictable.
  * Cursor body is tuned for the permanent dark interface.
- * A neutral keyline plus the active MGP accent keeps it readable.
+ * A neutral keyline plus the active ÍMPAR accent keeps it readable.
  * ThemeProvider may override the two CSS variables with accent-aware data URIs.
  */
 @media (hover: hover) and (pointer: fine) {
@@ -192,7 +192,7 @@
 
 /*
  * Personal signal color.
- * The default remains MGP gold. A chosen color becomes the interface signal
+ * The default remains ÍMPAR gold. A chosen color becomes the interface signal
  * (actions, rails, focus, tabs and highlights) while danger/success stay semantic.
  */
 :root {
@@ -341,7 +341,7 @@
   text-transform: uppercase;
 }
 
-/* MGP interaction language: restrained asymmetry + signal-line microinteractions. */
+/* ÍMPAR interaction language: restrained asymmetry + signal-line microinteractions. */
 .mgp-button {
   position: relative;
   isolation: isolate;
@@ -719,7 +719,7 @@
 
 .game-hub {
   min-height: 70vh;
-  /* Game artwork keeps its personality; interactive accents stay unmistakably MGP. */
+  /* Game artwork keeps its personality; interactive accents stay unmistakably ÍMPAR. */
   --game-accent: var(--color-gold);
   --color-ember: var(--color-gold);
   --color-tactical: var(--color-gold);
@@ -1070,7 +1070,7 @@
 }
 
 
-/* MGP premium dark shell */
+/* ÍMPAR premium dark shell */
 :root { color-scheme: dark; }
 html { background: #0b0d10; }
 body {

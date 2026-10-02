@@ -105,9 +105,9 @@ export function LeagueRunesExplorer({ locale }: { locale: Locale }) {
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
-              "Explore as árvores, runas essenciais e opções menores diretamente dos dados estáticos oficiais do jogo. A mesma estrutura é usada no criador de builds do MGP.",
-              "Explore rune trees, keystones and minor options directly from the game's official static data. The MGP build creator uses this same structure.",
-              "Explora los árboles, runas clave y opciones menores directamente desde los datos estáticos oficiales del juego. El creador de builds de MGP usa esta misma estructura.",
+              "Explore as árvores, runas essenciais e opções menores diretamente dos dados estáticos oficiais do jogo. A mesma estrutura é usada no criador de builds do ÍMPAR.",
+              "Explore rune trees, keystones and minor options directly from the game's official static data. The ÍMPAR build creator uses this same structure.",
+              "Explora los árboles, runas clave y opciones menores directamente desde los datos estáticos oficiales del juego. El creador de builds de ÍMPAR usa esta misma estructura.",
             )}
           </p>
         </div>

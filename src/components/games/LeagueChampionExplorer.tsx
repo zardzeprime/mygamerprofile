@@ -655,7 +655,7 @@ function ChampionBuildsView({
       const [buildResult, itemResult] = results;
       if (buildResult.status === "fulfilled") setBuildData(buildResult.value);
       else {
-        console.warn("[League] MGP verified build source failed", buildResult.reason);
+        console.warn("[League] ÍMPAR verified build source failed", buildResult.reason);
         setSourceError(true);
       }
 
@@ -702,7 +702,7 @@ function ChampionBuildsView({
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/35 bg-gold/10 px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.1em] text-gold-strong">
               <ShieldCheck className="size-3.5" />
-              {copy("MGP Verificada", "MGP Verified", "MGP Verificada")}
+              {copy("ÍMPAR Verificada", "ÍMPAR Verified", "ÍMPAR Verificada")}
             </span>
             <span className="rounded-full border border-white/15 bg-black/35 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white/70">
               {buildData?.patch ? `LoLalytics · ${buildData.patch}` : `Data Dragon · ${version}`}
@@ -724,9 +724,9 @@ function ChampionBuildsView({
             </DialogTitle>
             <DialogDescription className="max-w-2xl text-sm leading-6 text-white/65">
               {copy(
-                "O MGP combina dados atuais de build do LoLalytics com IDs, nomes, preços e ícones oficiais dos itens via Riot Data Dragon. O primeiro caminho segue a recomendação principal da fonte; o segundo usa as alternativas exibidas para os slots posteriores.",
-                "MGP combines current LoLalytics build data with official Riot Data Dragon item IDs, names, prices and icons. The first path follows the source's primary recommendation; the second uses the listed alternatives for later slots.",
-                "MGP combina datos actuales de build de LoLalytics con IDs, nombres, precios e iconos oficiales de Riot Data Dragon. El primer camino sigue la recomendación principal de la fuente; el segundo usa las alternativas mostradas para los slots posteriores.",
+                "O ÍMPAR combina dados atuais de build do LoLalytics com IDs, nomes, preços e ícones oficiais dos itens via Riot Data Dragon. O primeiro caminho segue a recomendação principal da fonte; o segundo usa as alternativas exibidas para os slots posteriores.",
+                "ÍMPAR combines current LoLalytics build data with official Riot Data Dragon item IDs, names, prices and icons. The first path follows the source's primary recommendation; the second uses the listed alternatives for later slots.",
+                "ÍMPAR combina datos actuales de build de LoLalytics con IDs, nombres, precios e iconos oficiales de Riot Data Dragon. El primer camino sigue la recomendación principal de la fuente; el segundo usa las alternativas mostradas para los slots posteriores.",
               )}
             </DialogDescription>
           </DialogHeader>
@@ -754,9 +754,9 @@ function ChampionBuildsView({
             </p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {copy(
-                "O MGP prefere esconder a recomendação a publicar uma build antiga ou inventada. Tente novamente em alguns instantes; o serviço usa cache e a fonte é revisada por patch.",
-                "MGP prefers hiding the recommendation over publishing an old or invented build. Try again shortly; the service is cached and reviewed by patch.",
-                "MGP prefiere ocultar la recomendación antes que publicar una build vieja o inventada. Inténtalo de nuevo en unos instantes; el servicio usa caché y se revisa por parche.",
+                "O ÍMPAR prefere esconder a recomendação a publicar uma build antiga ou inventada. Tente novamente em alguns instantes; o serviço usa cache e a fonte é revisada por patch.",
+                "ÍMPAR prefers hiding the recommendation over publishing an old or invented build. Try again shortly; the service is cached and reviewed by patch.",
+                "ÍMPAR prefiere ocultar la recomendación antes que publicar una build vieja o inventada. Inténtalo de nuevo en unos instantes; el servicio usa caché y se revisa por parche.",
               )}
             </p>
           </div>
@@ -808,17 +808,17 @@ function ChampionBuildsView({
           <div>
             <p>
               {copy(
-                "“MGP Verificada” significa que o caminho foi extraído de uma fonte estatística atual e conferido contra o patch; não significa endosso da Riot. Os itens e ícones são resolvidos pelo Data Dragon oficial.",
-                "“MGP Verified” means the path was extracted from a current statistical source and patch-checked; it does not mean Riot endorsement. Items and icons resolve through official Data Dragon.",
-                "“MGP Verificada” significa que el camino fue extraído de una fuente estadística actual y verificado contra el parche; no significa respaldo de Riot. Los objetos e iconos se resuelven mediante Data Dragon oficial.",
+                "“ÍMPAR Verificada” significa que o caminho foi extraído de uma fonte estatística atual e conferido contra o patch; não significa endosso da Riot. Os itens e ícones são resolvidos pelo Data Dragon oficial.",
+                "“ÍMPAR Verified” means the path was extracted from a current statistical source and patch-checked; it does not mean Riot endorsement. Items and icons resolve through official Data Dragon.",
+                "“ÍMPAR Verificada” significa que el camino fue extraído de una fuente estadística actual y verificado contra el parche; no significa respaldo de Riot. Los objetos e iconos se resuelven mediante Data Dragon oficial.",
               )}
             </p>
             {itemError ? (
               <p className="mt-1 text-destructive/80">
                 {copy(
-                  "Alguns metadados de item não carregaram; o MGP mantém os IDs da build e evita preencher dados no chute.",
-                  "Some item metadata did not load; MGP keeps the build IDs and avoids guessing missing data.",
-                  "Algunos metadatos de objetos no cargaron; MGP conserva los IDs de la build y evita inventar datos.",
+                  "Alguns metadados de item não carregaram; o ÍMPAR mantém os IDs da build e evita preencher dados no chute.",
+                  "Some item metadata did not load; ÍMPAR keeps the build IDs and avoids guessing missing data.",
+                  "Algunos metadatos de objetos no cargaron; ÍMPAR conserva los IDs de la build y evita inventar datos.",
                 )}
               </p>
             ) : null}
@@ -1481,9 +1481,9 @@ function RiotNotice({ locale }: { locale: Locale }) {
       <ShieldCheck className="mt-0.5 size-4 shrink-0 text-gold-strong" />
       <p>
         {copy(
-          "Dados, ícones e splash arts vêm do Riot Data Dragon. As prévias de habilidade usam o CDN de mídia utilizado pelas páginas oficiais de campeões e só são requisitadas no hover. MGP é independente e não é endossado pela Riot Games.",
-          "Data, icons and splash arts come from Riot Data Dragon. Ability previews use the media CDN used by official champion pages and are requested only on hover. MGP is independent and is not endorsed by Riot Games.",
-          "Datos, iconos y splash arts provienen de Riot Data Dragon. Las vistas previas usan el CDN de medios utilizado por las páginas oficiales de campeones y solo se solicitan al pasar el cursor. MGP es independiente y no está respaldado por Riot Games.",
+          "Dados, ícones e splash arts vêm do Riot Data Dragon. As prévias de habilidade usam o CDN de mídia utilizado pelas páginas oficiais de campeões e só são requisitadas no hover. ÍMPAR é independente e não é endossado pela Riot Games.",
+          "Data, icons and splash arts come from Riot Data Dragon. Ability previews use the media CDN used by official champion pages and are requested only on hover. ÍMPAR is independent and is not endorsed by Riot Games.",
+          "Datos, iconos y splash arts provienen de Riot Data Dragon. Las vistas previas usan el CDN de medios utilizado por las páginas oficiales de campeones y solo se solicitan al pasar el cursor. ÍMPAR es independiente y no está respaldado por Riot Games.",
         )}
       </p>
     </div>

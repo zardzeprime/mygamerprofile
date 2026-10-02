@@ -89,7 +89,7 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
             <div className="max-w-3xl">
               <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-gold-strong">
                 <BookOpen className="size-4" />
-                MGP Wiki · Dark Souls Remastered
+                ÍMPAR Wiki · Dark Souls Remastered
               </div>
               <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
                 {copy("Enciclopédia de chefes", "Boss encyclopedia", "Enciclopedia de jefes")}
@@ -125,7 +125,7 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                 <p className="mt-1 text-sm font-semibold text-foreground">
                   {selectedImage
                     ? copy("Procedência registrada", "Provenance recorded", "Procedencia registrada")
-                    : copy("Fallback MGP", "MGP fallback", "Fallback MGP")}
+                    : copy("Fallback ÍMPAR", "ÍMPAR fallback", "Fallback ÍMPAR")}
                 </p>
               </div>
               <Sparkles className="size-5 text-gold-strong" />
@@ -325,9 +325,9 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
 
       <p className="text-xs leading-relaxed text-muted-foreground">
         {copy(
-          "Nota editorial: os textos do MGP são resumos originais baseados em fatos do jogo e referências consolidadas. Artes e screenshots de terceiros usados no beta mantêm fonte visível e serão substituídos gradualmente por capturas próprias quando possível.",
-          "Editorial note: MGP copy is original summary text based on game facts and established references. Third-party art and screenshots used during beta retain visible sourcing and will be gradually replaced by original captures where possible.",
-          "Nota editorial: los textos de MGP son resúmenes originales basados en hechos del juego y referencias consolidadas. El arte y las capturas de terceros usados en beta mantienen su fuente visible y se sustituirán gradualmente por capturas propias cuando sea posible.",
+          "Nota editorial: os textos do ÍMPAR são resumos originais baseados em fatos do jogo e referências consolidadas. Artes e screenshots de terceiros usados no beta mantêm fonte visível e serão substituídos gradualmente por capturas próprias quando possível.",
+          "Editorial note: ÍMPAR copy is original summary text based on game facts and established references. Third-party art and screenshots used during beta retain visible sourcing and will be gradually replaced by original captures where possible.",
+          "Nota editorial: los textos de ÍMPAR son resúmenes originales basados en hechos del juego y referencias consolidadas. El arte y las capturas de terceros usados en beta mantienen su fuente visible y se sustituirán gradualmente por capturas propias cuando sea posible.",
         )}
       </p>
     </div>

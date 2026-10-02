@@ -72,7 +72,7 @@ export function DarkSoulsStatsGuide({ locale }: { locale: Locale }) {
         <div className="absolute -right-16 -top-16 size-44 rounded-full bg-orange-500/10 blur-3xl" aria-hidden="true" />
         <div className="relative max-w-4xl">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full border border-amber-700/35 bg-amber-950/35 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-amber-300">MGP Editorial · Guia 01</span>
+            <span className="rounded-full border border-amber-700/35 bg-amber-950/35 px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-amber-300">ÍMPAR Editorial · Guia 01</span>
             <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-stone-400">Dark Souls Remastered</span>
           </div>
           <h2 className="mt-5 font-display text-3xl font-bold leading-tight text-stone-50 sm:text-4xl">

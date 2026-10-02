@@ -14,7 +14,7 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({
     meta: [
-      { title: "Entrar — MGP" },
+      { title: "Entrar — ÍMPAR" },
       { name: "description", content: "Entre na sua conta do ÍMPAR." },
       { name: "robots", content: "noindex, follow" },
     ],

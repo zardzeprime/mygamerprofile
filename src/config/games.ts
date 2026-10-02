@@ -112,13 +112,13 @@ function makeMgpPlaceholder(label: string, subtitle: string, from: string, to: s
 
 const NIGHTREIGN_PLACEHOLDER = makeMgpPlaceholder(
   "ELDEN RING NIGHTREIGN",
-  "MGP · STANDALONE HUB",
+  "ÍMPAR · STANDALONE HUB",
   "#080f18",
   "#244e73",
 );
 const WARFRAME_PLACEHOLDER = makeMgpPlaceholder(
   "WARFRAME",
-  "MGP · TENNO DATABASE",
+  "ÍMPAR · TENNO DATABASE",
   "#061016",
   "#1a5663",
 );
@@ -218,7 +218,7 @@ export const GAMES: GameConfig[] = [
       trailerYoutubeId: "YWEk9TzLa50",
       trailerUrl: "https://www.youtube.com/watch?v=YWEk9TzLa50",
       assetSource: "Dark Souls Remastered public cover-art reference",
-      assetLicense: "Third-party promotional cover art; source attribution tracked by MGP",
+      assetLicense: "Third-party promotional cover art; source attribution tracked by ÍMPAR",
     },
   },
   {
@@ -478,8 +478,8 @@ export const GAMES: GameConfig[] = [
       backgroundImage: NIGHTREIGN_PLACEHOLDER,
       fallbackImage: darkSoulsAtmosphere,
       assetSource:
-        "MGP-generated placeholder; official Bandai Namco assets pending production asset review",
-      assetLicense: "MGP original placeholder; no third-party game artwork embedded",
+        "ÍMPAR-generated placeholder; official Bandai Namco assets pending production asset review",
+      assetLicense: "ÍMPAR original placeholder; no third-party game artwork embedded",
     },
   },
   {
@@ -543,8 +543,8 @@ export const GAMES: GameConfig[] = [
       fallbackImage: valorantAtmosphere,
       cardObjectPosition: "center",
       heroObjectPosition: "center",
-      assetSource: "MGP-generated Warframe placeholder; official media can replace it after asset review",
-      assetLicense: "MGP original placeholder; no third-party artwork embedded",
+      assetSource: "ÍMPAR-generated Warframe placeholder; official media can replace it after asset review",
+      assetLicense: "ÍMPAR original placeholder; no third-party artwork embedded",
     },
   },
   {
@@ -623,7 +623,7 @@ export const GAMES: GameConfig[] = [
       heroObjectPosition: "center",
       trailerYoutubeId: "e_E9W2vsRbQ",
       trailerUrl: "https://www.youtube.com/watch?v=e_E9W2vsRbQ",
-      assetSource: "User-provided VALORANT card artwork stored locally in the MGP repository; hub background retains its separately tracked promotional reference",
+      assetSource: "User-provided VALORANT card artwork stored locally in the ÍMPAR repository; hub background retains its separately tracked promotional reference",
       assetLicense: "User-provided project asset using the VALORANT brand mark; repository provenance retained",
     },
   },
@@ -701,7 +701,7 @@ export const GAMES: GameConfig[] = [
       heroImage: LOL_COVER,
       backgroundImage: LOL_COVER,
       fallbackImage: valorantAtmosphere,
-      assetSource: "User-provided League of Legends logo stored in the MGP repository",
+      assetSource: "User-provided League of Legends logo stored in the ÍMPAR repository",
       assetLicense: "User-provided project asset; provenance retained in repository history",
     },
   },

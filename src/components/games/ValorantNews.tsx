@@ -103,9 +103,9 @@ export function ValorantNews({ locale }: { locale: Locale }) {
 
       <div className="rounded-xl border border-dashed border-border bg-muted/10 px-4 py-3 text-[0.68rem] leading-5 text-muted-foreground">
         {copy(
-          "O arquivo editorial cresce por atualizações revisáveis no GitHub. Automação pode sugerir novos itens, mas nunca publica ou faz merge sem passar pelo fluxo de revisão do MGP.",
-          "The editorial archive grows through reviewable GitHub updates. Automation can suggest new items, but never publishes or merges without MGP's review flow.",
-          "El archivo editorial crece mediante actualizaciones revisables en GitHub. La automatización puede sugerir nuevos elementos, pero nunca publica ni hace merge sin pasar por la revisión de MGP.",
+          "O arquivo editorial cresce por atualizações revisáveis no GitHub. Automação pode sugerir novos itens, mas nunca publica ou faz merge sem passar pelo fluxo de revisão do ÍMPAR.",
+          "The editorial archive grows through reviewable GitHub updates. Automation can suggest new items, but never publishes or merges without ÍMPAR's review flow.",
+          "El archivo editorial crece mediante actualizaciones revisables en GitHub. La automatización puede sugerir nuevos elementos, pero nunca publica ni hace merge sin pasar por la revisión de ÍMPAR.",
         )}
       </div>
     </div>

@@ -334,16 +334,16 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
         <div className="border-b border-border p-5 sm:p-7">
           <div className="flex items-center gap-2">
             <Anvil className="size-4 text-gold-strong" />
-            <span className="section-kicker">MGP VERIFIED BUILDS</span>
+            <span className="section-kicker">ÍMPAR VERIFIED BUILDS</span>
           </div>
           <h2 className="mt-3 font-display text-3xl font-bold text-foreground">
             {copy("Builds de Dark Souls III", "Dark Souls III builds", "Builds de Dark Souls III")}
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
-              "Presets baseados em rotas repetidas por jogadores e discussões comunitárias. O selo MGP Verificada significa que cruzamos a lógica da build com múltiplas referências e não encontramos conflito material; não significa que exista uma única build correta.",
-              "Presets based on routes repeatedly used by players and community discussions. MGP Verified means the build logic was cross-checked across multiple references without a material conflict; it does not mean there is only one correct build.",
-              "Presets basados en rutas repetidas por jugadores y discusiones comunitarias. MGP Verificada significa que cruzamos la lógica con varias referencias sin conflicto material; no significa que exista una única build correcta.",
+              "Presets baseados em rotas repetidas por jogadores e discussões comunitárias. O selo ÍMPAR Verificada significa que cruzamos a lógica da build com múltiplas referências e não encontramos conflito material; não significa que exista uma única build correta.",
+              "Presets based on routes repeatedly used by players and community discussions. ÍMPAR Verified means the build logic was cross-checked across multiple references without a material conflict; it does not mean there is only one correct build.",
+              "Presets basados en rutas repetidas por jugadores y discusiones comunitarias. ÍMPAR Verificada significa que cruzamos la lógica con varias referencias sin conflicto material; no significa que exista una única build correcta.",
             )}
           </p>
         </div>
@@ -379,7 +379,7 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/[0.08] px-3 py-1 text-xs font-bold text-gold-strong">
                 <ShieldCheck className="size-3.5" />
-                {copy("MGP Verificada", "MGP Verified", "MGP Verificada")}
+                {copy("ÍMPAR Verificada", "ÍMPAR Verified", "ÍMPAR Verificada")}
               </span>
               <span className="rounded-full border border-border px-3 py-1 text-xs font-semibold text-muted-foreground">
                 {active.startingClass}
@@ -425,9 +425,9 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
             </div>
             <p className="mt-4 text-xs leading-5 text-muted-foreground">
               {copy(
-                "As fontes refletem experiência de jogadores e discussões recorrentes. O MGP resume, compara e sinaliza variações; valores podem ser adaptados ao seu nível e ao NG.",
-                "Sources reflect player experience and recurring community discussions. MGP summarizes, compares and flags variants; values can be adapted to your level and NG cycle.",
-                "Las fuentes reflejan experiencia de jugadores y discusiones recurrentes. MGP resume, compara y señala variantes; los valores pueden adaptarse a tu nivel y ciclo NG.",
+                "As fontes refletem experiência de jogadores e discussões recorrentes. O ÍMPAR resume, compara e sinaliza variações; valores podem ser adaptados ao seu nível e ao NG.",
+                "Sources reflect player experience and recurring community discussions. ÍMPAR summarizes, compares and flags variants; values can be adapted to your level and NG cycle.",
+                "Las fuentes reflejan experiencia de jugadores y discusiones recurrentes. ÍMPAR resume, compara y señala variantes; los valores pueden adaptarse a tu nivel y ciclo NG.",
               )}
             </p>
           </aside>

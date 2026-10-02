@@ -154,9 +154,9 @@ async function persistAccountPreference(patch: {
       };
     };
     const { error } = await p.update(patch).eq("id", user.id);
-    if (error) console.warn("[MGP] appearance sync", error.message);
+    if (error) console.warn("[ÍMPAR] appearance sync", error.message);
   } catch (e) {
-    console.warn("[MGP] appearance local only", e);
+    console.warn("[ÍMPAR] appearance local only", e);
   }
 }
 export const themeBootstrapScript = `(function(){var r=document.documentElement;r.classList.add("dark");r.style.colorScheme="dark";try{localStorage.setItem("mgp-theme","dark");var a=localStorage.getItem("mgp-accent-color");if(a&&/^#[0-9a-f]{6}$/i.test(a)){r.style.setProperty("--mgp-user-accent",a.toLowerCase());r.dataset.accent="custom"}else{r.style.removeProperty("--mgp-user-accent");delete r.dataset.accent}}catch(e){}})();`;

@@ -33,7 +33,7 @@ export function LegalDocument({
         className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-gold-strong"
       >
         <ArrowLeft className="size-4" aria-hidden="true" />
-        Voltar ao MGP
+        Voltar ao ÍMPAR
       </Link>
 
       <article className="overflow-hidden rounded-3xl border border-border bg-surface shadow-lift">

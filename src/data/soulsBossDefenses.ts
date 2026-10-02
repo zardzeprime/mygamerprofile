@@ -72,7 +72,7 @@ export const DARK_SOULS_III_BOSS_DEFENSES: Record<string, SoulsBossDefenseProfil
         note: "A luta é baseada nos sacos vulneráveis; o valor de fogo abaixo representa essas regiões, não o corpo inteiro.",
       },
     ],
-    note: "Boss com hitzones muito diferentes. O MGP evita exibir um único número global que esconderia a mecânica do encontro.",
+    note: "Boss com hitzones muito diferentes. O ÍMPAR evita exibir um único número global que esconderia a mecânica do encontro.",
   },
   "crystal-sage": base(
     {
@@ -163,7 +163,7 @@ export const DARK_SOULS_III_BOSS_DEFENSES: Record<string, SoulsBossDefenseProfil
         label: "Corpo / cauda",
         absorption: {},
         status: { poison: "immune" },
-        note: "Absorções variam por hitzone; o MGP não mistura essas regiões em uma média artificial.",
+        note: "Absorções variam por hitzone; o ÍMPAR não mistura essas regiões em uma média artificial.",
       },
     ],
   },

@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/_authenticated/settings/account")({
   head: () => ({
     meta: [
-      { title: "Configurações de conta — MGP" },
+      { title: "Configurações de conta — ÍMPAR" },
       { name: "description", content: "Gerencie sua conta no ÍMPAR." },
     ],
   }),

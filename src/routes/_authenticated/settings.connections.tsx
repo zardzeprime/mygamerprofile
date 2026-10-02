@@ -34,10 +34,10 @@ import {
 export const Route = createFileRoute("/_authenticated/settings/connections")({
   head: () => ({
     meta: [
-      { title: "Contas conectadas e verificação — MGP" },
+      { title: "Contas conectadas e verificação — ÍMPAR" },
       {
         name: "description",
-        content: "Gerencie Steam, Riot, Google e o estado de verificação etária da sua conta MGP.",
+        content: "Gerencie Steam, Riot, Google e o estado de verificação etária da sua conta ÍMPAR.",
       },
     ],
   }),
@@ -260,13 +260,13 @@ function SettingsConnectionsPage() {
 
       window.location.assign(data.url);
     } catch (error) {
-      console.error("[MGP Steam] Could not start OpenID link", error);
+      console.error("[ÍMPAR Steam] Could not start OpenID link", error);
       setSteamBusy(false);
       setConnectionError(
         copy(
           "Não foi possível abrir o login oficial da Steam. A conexão segura foi reiniciada no backend do ÍMPAR; tente novamente em alguns segundos.",
-          "Could not open the official Steam sign-in. The secure connection now runs through MGP's backend; try again in a few seconds.",
-          "No se pudo abrir el acceso oficial de Steam. La conexión segura ahora se ejecuta en el backend de MGP; inténtalo de nuevo en unos segundos.",
+          "Could not open the official Steam sign-in. The secure connection now runs through ÍMPAR's backend; try again in a few seconds.",
+          "No se pudo abrir el acceso oficial de Steam. La conexión segura ahora se ejecuta en el backend de ÍMPAR; inténtalo de nuevo en unos segundos.",
         ),
       );
     }
@@ -347,7 +347,7 @@ function SettingsConnectionsPage() {
             ),
       );
     } catch (error) {
-      console.error("[MGP Steam] Full sync failed", error);
+      console.error("[ÍMPAR Steam] Full sync failed", error);
       setConnectionError(
         copy(
           "A sincronização da Steam falhou. Confira a privacidade do perfil/biblioteca e tente novamente.",
@@ -379,7 +379,7 @@ function SettingsConnectionsPage() {
           : current,
       );
     } catch (error) {
-      console.error("[MGP Steam] Sharing preference failed", error);
+      console.error("[ÍMPAR Steam] Sharing preference failed", error);
       setConnectionError(
         copy(
           "Não foi possível salvar essa preferência de exibição.",
@@ -417,7 +417,7 @@ function SettingsConnectionsPage() {
 
       setAccounts((current) => current.filter((account) => account.provider !== "steam"));
     } catch (error) {
-      console.error("[MGP Steam] Could not disconnect account", error);
+      console.error("[ÍMPAR Steam] Could not disconnect account", error);
       setConnectionError(
         copy(
           "Não foi possível desconectar a Steam agora. Tente novamente.",
@@ -443,8 +443,8 @@ function SettingsConnectionsPage() {
               <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
                 {copy(
                   "Conecte serviços oficiais para transformar dados declarados em informações verificadas no seu Game Profile. O ÍMPAR nunca pede sua senha Steam, Riot ou Google.",
-                  "Connect official services to turn declared data into verified Game Profile information. MGP never asks for your Steam, Riot or Google password.",
-                  "Conecta servicios oficiales para convertir datos declarados en información verificada. MGP nunca solicita tu contraseña de Steam, Riot o Google.",
+                  "Connect official services to turn declared data into verified Game Profile information. ÍMPAR never asks for your Steam, Riot or Google password.",
+                  "Conecta servicios oficiales para convertir datos declarados en información verificada. ÍMPAR nunca solicita tu contraseña de Steam, Riot o Google.",
                 )}
               </p>
             </div>
@@ -530,8 +530,8 @@ function SettingsConnectionsPage() {
                 <p className="mt-2">
                   {copy(
                     "O fluxo será feito por um provedor especializado. O ÍMPAR guarda apenas o resultado da checagem, a referência do provedor, a faixa/idade necessária para aplicar as regras e as datas de validade. RG, CNH, passaporte, selfie e biometria não devem ser armazenados no banco comum do ÍMPAR.",
-                    "The flow will use a specialized provider. MGP stores only the verification verdict, provider reference, the age/band needed to apply access rules and validity dates. ID documents, selfies and biometrics must not be stored in MGP's regular database.",
-                    "El flujo utilizará un proveedor especializado. MGP guarda solo el resultado, la referencia del proveedor, la edad/franja necesaria para aplicar las reglas y las fechas de validez. Documentos, selfies y biometría no deben almacenarse en la base común de MGP.",
+                    "The flow will use a specialized provider. ÍMPAR stores only the verification verdict, provider reference, the age/band needed to apply access rules and validity dates. ID documents, selfies and biometrics must not be stored in ÍMPAR's regular database.",
+                    "El flujo utilizará un proveedor especializado. ÍMPAR guarda solo el resultado, la referencia del proveedor, la edad/franja necesaria para aplicar las reglas y las fechas de validez. Documentos, selfies y biometría no deben almacenarse en la base común de ÍMPAR.",
                   )}
                 </p>
               </div>
@@ -554,7 +554,7 @@ function SettingsConnectionsPage() {
               <p className="mt-2 text-center text-[0.7rem] leading-4 text-muted-foreground">
                 {copy(
                   "Esse passo não é necessário para participar da beta atual. Ele ficará disponível quando o ÍMPAR puder contratar/configurar um provedor externo.",
-                  "This step is not required for the current beta. It will become available when MGP can configure an external provider.",
+                  "This step is not required for the current beta. It will become available when ÍMPAR can configure an external provider.",
                   "Este paso no es obligatorio para la beta actual. Estará disponible cuando ÍMPAR pueda configurar un proveedor externo.",
                 )}
               </p>
@@ -943,8 +943,8 @@ function VerificationStatus({
         <p className="mt-1 text-sm leading-5 text-muted-foreground">
           {verified
             ? verification?.verified_over_18
-              ? copy("Sua idade foi confirmada e a conta também pode cumprir gates 18+, respeitando as demais regras do ÍMPAR.", "Your age is confirmed and the account can also satisfy 18+ gates, subject to the rest of MGP rules.", "Tu edad está confirmada y la cuenta también puede cumplir gates 18+, respetando las demás reglas de MGP.")
-              : copy("Sua idade foi confirmada. O ÍMPAR pode aplicar faixas etárias no LFG sem expor sua data de nascimento aos outros usuários.", "Your age is confirmed. MGP can enforce LFG age ranges without exposing your birth date to other users.", "Tu edad está confirmada. MGP puede aplicar rangos de edad en el LFG sin exponer tu fecha de nacimiento a otros usuarios.")
+              ? copy("Sua idade foi confirmada e a conta também pode cumprir gates 18+, respeitando as demais regras do ÍMPAR.", "Your age is confirmed and the account can also satisfy 18+ gates, subject to the rest of ÍMPAR rules.", "Tu edad está confirmada y la cuenta también puede cumplir gates 18+, respetando las demás reglas de ÍMPAR.")
+              : copy("Sua idade foi confirmada. O ÍMPAR pode aplicar faixas etárias no LFG sem expor sua data de nascimento aos outros usuários.", "Your age is confirmed. ÍMPAR can enforce LFG age ranges without exposing your birth date to other users.", "Tu edad está confirmada. ÍMPAR puede aplicar rangos de edad en el LFG sin exponer tu fecha de nacimiento a otros usuarios.")
             : pending
               ? copy("A liberação só acontece quando o verificador concluir a checagem.", "Access unlocks only after the verifier completes the check.", "El acceso solo se libera cuando finalice la comprobación.")
               : copy("A beta atual não depende dessa verificação para usar o LFG. Ela fica reservada para recursos futuros que realmente precisem de uma checagem mais forte.", "The current beta does not require this verification to use LFG. It is reserved for future features that genuinely need stronger age assurance.", "La beta actual no requiere esta verificación para usar el LFG. Queda reservada para funciones futuras que realmente necesiten una comprobación más fuerte.")}

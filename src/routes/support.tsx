@@ -125,7 +125,7 @@ function SupportPage() {
         <div className="flex items-center gap-2 text-gold-strong">
           <Sparkles className="size-4" />
           <span className="section-kicker">
-            {copy("POR QUE O ÍMPAR EXISTE", "WHY MGP EXISTS", "POR QUÉ EXISTE MGP")}
+            {copy("POR QUE O ÍMPAR EXISTE", "WHY ÍMPAR EXISTS", "POR QUÉ EXISTE ÍMPAR")}
           </span>
         </div>
         <h2 className="mt-3 max-w-3xl font-display text-2xl font-semibold leading-tight text-foreground sm:text-3xl">
@@ -142,7 +142,7 @@ function SupportPage() {
               {copy(
                 "A ideia do ÍMPAR é criar uma rede social em que você consiga conhecer pessoas para jogar, sem transformar isso em obrigação de manter contato o tempo todo. Tem gente que prefere jogar sozinha, gente que gosta de companhia, gente que entra em grupo só para uma sessão. O ÍMPAR foi pensado para caber nesses jeitos diferentes de viver os games.",
                 "ÍMPAR is meant to be a social network where you can meet people to play with without turning that into an obligation to stay in constant contact. Some people prefer playing alone, some like company, and some only want a group for one session. ÍMPAR is designed to fit those different ways of enjoying games.",
-                "ÍMPAR está pensado como una red social donde puedas conocer gente para jugar sin convertirlo en una obligación de mantener contacto constante. Hay quienes prefieren jugar solos, quienes disfrutan de compañía y quienes solo buscan grupo para una sesión. MGP fue pensado para encajar en esas distintas formas de vivir los videojuegos.",
+                "ÍMPAR está pensado como una red social donde puedas conocer gente para jugar sin convertirlo en una obligación de mantener contacto constante. Hay quienes prefieren jugar solos, quienes disfrutan de compañía y quienes solo buscan grupo para una sesión. ÍMPAR fue pensado para encajar en esas distintas formas de vivir los videojuegos.",
               )}
             </p>
             <p>
@@ -292,8 +292,8 @@ function SupportPage() {
             badge={copy("Para apoio mensal", "For monthly support", "Para apoyo mensual")}
             description={copy(
               "Uma campanha recorrente permite que quem quiser ajude com um valor mensal, sem transformar o ÍMPAR em assinatura obrigatória.",
-              "A recurring campaign lets supporters contribute monthly without turning MGP into a required subscription.",
-              "Una campaña recurrente permite apoyar mensualmente sin convertir MGP en una suscripción obligatoria.",
+              "A recurring campaign lets supporters contribute monthly without turning ÍMPAR into a required subscription.",
+              "Una campaña recurrente permite apoyar mensualmente sin convertir ÍMPAR en una suscripción obligatoria.",
             )}
             active={Boolean(recurring?.url)}
             action={<KoFiSupportButton />}
@@ -310,7 +310,7 @@ function SupportPage() {
           {copy(
             "O ÍMPAR ainda é pequeno e gerido por uma pessoa. Mais adiante, podem existir formas internas de monetização, como cosméticos e personalizações exclusivas, comunidades ou áreas especiais para apoiadores e conteúdos produzidos em colaboração com criadores, influenciadores ou jogadores do cenário quando isso for viável. Nada disso está sendo vendido ou garantido nesta fase.",
             "ÍMPAR is still small and run by one person. Later, internal monetization may include exclusive cosmetics and customization, supporter-only community spaces, or content produced with creators, influencers or competitive-scene players when feasible. None of those future ideas are being sold or guaranteed at this stage.",
-            "MGP todavía es pequeño y está gestionado por una sola persona. Más adelante podrían existir formas internas de monetización como cosméticos y personalización exclusiva, espacios especiales para seguidores o contenido con creadores, influencers o jugadores del escenario competitivo cuando sea viable. Nada de eso se vende ni se garantiza en esta fase.",
+            "ÍMPAR todavía es pequeño y está gestionado por una sola persona. Más adelante podrían existir formas internas de monetización como cosméticos y personalización exclusiva, espacios especiales para seguidores o contenido con creadores, influencers o jugadores del escenario competitivo cuando sea viable. Nada de eso se vende ni se garantiza en esta fase.",
           )}
         </p>
       </section>
@@ -355,7 +355,7 @@ function SupportPage() {
         <h2 className="mt-2 font-display text-2xl font-semibold text-foreground">
           {copy(
             "Feedback pode ficar dentro do próprio ÍMPAR.",
-            "Feedback can stay inside MGP itself.",
+            "Feedback can stay inside ÍMPAR itself.",
             "El feedback puede quedarse dentro del propio ÍMPAR.",
           )}
         </h2>
@@ -399,7 +399,7 @@ function SupportPage() {
 
       <div className="mt-8 flex flex-wrap gap-3">
         <Link to="/games" className="brand-button-secondary min-h-11">
-          {copy("Continuar explorando o ÍMPAR", "Keep exploring MGP", "Seguir explorando ÍMPAR")}
+          {copy("Continuar explorando o ÍMPAR", "Keep exploring ÍMPAR", "Seguir explorando ÍMPAR")}
         </Link>
         <a href={"mailto:" + SUPPORT_EMAIL} className="brand-button-secondary min-h-11">
           {copy("Falar com o projeto", "Contact the project", "Contactar el proyecto")}

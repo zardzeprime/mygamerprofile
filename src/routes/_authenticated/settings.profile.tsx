@@ -75,7 +75,7 @@ export const Route = createFileRoute("/_authenticated/settings/profile")({
   },
   head: () => ({
     meta: [
-      { title: "Configurações de perfil — MGP" },
+      { title: "Configurações de perfil — ÍMPAR" },
       { name: "description", content: "Edite seu perfil no ÍMPAR." },
     ],
   }),
@@ -191,7 +191,7 @@ function SettingsProfilePage() {
         if (favoriteError) throw favoriteError;
       }
 
-      // Keep the persistent header in sync with the MGP profile avatar/name.
+      // Keep the persistent header in sync with the ÍMPAR profile avatar/name.
       // Google metadata remains only as a fallback when no ÍMPAR avatar is configured.
       window.dispatchEvent(new Event("mgp:profile-updated"));
       setLocale(language);
@@ -255,7 +255,7 @@ function SettingsProfilePage() {
                 />
               </div>
               <div className="min-w-0 pb-1">
-                <p className="truncate font-display text-xl font-bold text-foreground sm:text-2xl">{displayName || "MGP Player"}</p>
+                <p className="truncate font-display text-xl font-bold text-foreground sm:text-2xl">{displayName || "ÍMPAR Player"}</p>
                 <p className="truncate text-sm text-muted-foreground">@{username || "username"}</p>
               </div>
             </div>

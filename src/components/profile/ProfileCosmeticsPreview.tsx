@@ -59,9 +59,9 @@ export function ProfileCosmeticsPreview({ locale }: { locale: Locale }) {
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
-              "A base da coleção já está pronta para fundos, banners, chibis e até seis insígnias equipadas. Nesta fase estamos testando apenas cosméticos originais do MGP.",
-              "The collection foundation already supports backgrounds, banners, chibis and up to six equipped badges. This phase tests MGP-original cosmetics only.",
-              "La base de la colección ya admite fondos, banners, chibis y hasta seis insignias equipadas. En esta fase probamos solo cosméticos originales de MGP.",
+              "A base da coleção já está pronta para fundos, banners, chibis e até seis insígnias equipadas. Nesta fase estamos testando apenas cosméticos originais do ÍMPAR.",
+              "The collection foundation already supports backgrounds, banners, chibis and up to six equipped badges. This phase tests ÍMPAR-original cosmetics only.",
+              "La base de la colección ya admite fondos, banners, chibis y hasta seis insignias equipadas. En esta fase probamos solo cosméticos originales de ÍMPAR.",
             )}
           </p>
         </div>

@@ -23,7 +23,7 @@ export const Route = createFileRoute("/register")({
   component: RegisterPage,
   head: () => ({
     meta: [
-      { title: "Criar perfil — MGP" },
+      { title: "Criar perfil — ÍMPAR" },
       { name: "description", content: "Crie sua conta no ÍMPAR." },
       { name: "robots", content: "noindex, follow" },
     ],
@@ -225,8 +225,8 @@ function RegisterPage() {
           <p className="mt-2 text-center text-[0.68rem] leading-5 text-muted-foreground">
             {copy(
               "Recomendado na beta: o Google não depende do envio de e-mail de confirmação do ÍMPAR.",
-              "Recommended during beta: Google does not depend on MGP confirmation-email delivery.",
-              "Recomendado durante la beta: Google no depende del envío del correo de confirmación de MGP.",
+              "Recommended during beta: Google does not depend on ÍMPAR confirmation-email delivery.",
+              "Recomendado durante la beta: Google no depende del envío del correo de confirmación de ÍMPAR.",
             )}
           </p>
 

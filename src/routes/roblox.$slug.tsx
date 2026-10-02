@@ -36,13 +36,13 @@ export const Route = createFileRoute("/roblox/$slug")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "Roblox Experience não encontrada — MGP" },
+          { title: "Roblox Experience não encontrada — ÍMPAR" },
           { name: "robots", content: "noindex" },
         ],
       };
     }
 
-    const title = `${loaderData.experience.name} — MGP`;
+    const title = `${loaderData.experience.name} — ÍMPAR`;
     const description = `Códigos, tier lists, guias, builds e progressão de ${loaderData.experience.name} no ÍMPAR.`;
     return buildSeo({
       title,
@@ -304,9 +304,9 @@ function RobloxExperienceHub() {
                   kicker="ÍMPAR / BUILDS"
                   title={copy("Builds e presets", "Builds and presets", "Builds y presets")}
                   description={copy(
-                    "Presets organizados por objetivo. Essa área pode receber o mesmo fluxo NEXUS usado nos outros criadores do ÍMPAR.",
-                    "Goal-based presets. This area can use the same NEXUS flow as the other MGP builders.",
-                    "Presets organizados por objetivo. Esta área puede usar el mismo flujo NEXUS que los otros creadores de MGP.",
+                    "Presets organizados por objetivo. Essa área pode receber o mesmo fluxo do Noctis usado nos outros criadores do ÍMPAR.",
+                    "Goal-based presets. This area can use the same Noctis flow as the other ÍMPAR builders.",
+                    "Presets organizados por objetivo. Esta área puede usar el mismo flujo NEXUS que los otros creadores de ÍMPAR.",
                   )}
                   topics={experience.buildTopics[locale]}
                   locale={locale}
@@ -511,7 +511,7 @@ function TopicPanel({
               <ChevronRight className="size-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-gold-strong" />
             </div>
             <p className="mt-2 text-xs leading-5 text-muted-foreground">
-              MGP · {topic}
+              ÍMPAR · {topic}
             </p>
           </article>
         ))}

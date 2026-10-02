@@ -264,7 +264,7 @@ export function AvapgvReportEmail({
               margin: 0,
             }}
           >
-            Relatório operacional AVAPGV do MG Profile. Este e-mail não inclui
+            Relatório operacional AVAPGV do ÍMPAR. Este e-mail não inclui
             chaves, tokens, senhas ou credenciais.
           </Text>
         </Container>

@@ -11,7 +11,7 @@ function p(url: string, settings: ProPlayerSettings, note?: string): RecordEntry
       url,
       label: "ProSettings.net",
       verifiedAt: VERIFIED_AT,
-      note: note ?? "Individual VALORANT settings and gear page checked for MGP.",
+      note: note ?? "Individual VALORANT settings and gear page checked for ÍMPAR.",
     },
   };
 }
@@ -344,7 +344,7 @@ export const INDIVIDUAL_EXTRA_SETTINGS: Record<string, RecordEntry> = {
     resolution: "1920x1080",
     displayMode: "Fullscreen",
     crosshairCode: "0;c;1;s;1;P;o;1;d;1;0b;0;1b;0;S;s;1.002",
-  }, "Individual page rechecked 2026-09-18; Sentinels identity matches the current MGP roster."),
+  }, "Individual page rechecked 2026-09-18; Sentinels identity matches the current ÍMPAR roster."),
   eggsterr: p("https://prosettings.net/players/eggster/", {
     dpi: 1600,
     sensitivity: 0.15,
@@ -359,7 +359,7 @@ export const INDIVIDUAL_EXTRA_SETTINGS: Record<string, RecordEntry> = {
     resolution: "1920x1080",
     displayMode: "Fullscreen",
     crosshairCode: "0;P;h;0;f;0;0l;5;0o;0;0a;1;0f;0;1b;0",
-  }, "MGP roster handle Eggsterr reconciled with ProSettings 'Eggster': both are the current ENVY player; VLR identifies Eggsterr as Evan Grady."),
+  }, "ÍMPAR roster handle Eggsterr reconciled with ProSettings 'Eggster': both are the current ENVY player; VLR identifies Eggsterr as Evan Grady."),
   p0ppin: p("https://prosettings.net/players/poppin/", {
     dpi: 3200,
     sensitivity: 0.045,
@@ -373,7 +373,7 @@ export const INDIVIDUAL_EXTRA_SETTINGS: Record<string, RecordEntry> = {
     resolution: "1920x1080",
     displayMode: "Fullscreen",
     crosshairCode: "0;p;0;s;1;P;c;1;o;1;f;0;0t;1;0l;3;0a;1;0f;0;1b;0;A;h;0;0l;4;0o;0;0a;1;0f;0;1b;0;S;s;0.7;o;1",
-  }, "ProSettings Poppin is Matteo Weber; VLR confirms the MGP P0PPIN roster identity and ENVY history."),
+  }, "ProSettings Poppin is Matteo Weber; VLR confirms the ÍMPAR P0PPIN roster identity and ENVY history."),
   boni: p("https://prosettings.net/players/boni/", {
     dpi: 1600,
     sensitivity: 0.4,
@@ -399,5 +399,5 @@ export const INDIVIDUAL_EXTRA_SETTINGS: Record<string, RecordEntry> = {
     resolution: "1920x1080",
     displayMode: "Fullscreen",
     crosshairCode: "0;s;1;P;o;1;d;1;f;0;0b;0;1b;0;S;o;1",
-  }, "MGP roster handle alvinboy reconciled by real name Alvin Hong and current M80 team on both VLR and ProSettings."),
+  }, "ÍMPAR roster handle alvinboy reconciled by real name Alvin Hong and current M80 team on both VLR and ProSettings."),
 };

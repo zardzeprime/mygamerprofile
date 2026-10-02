@@ -21,7 +21,7 @@ export function GameArtwork({
   const isValorantArtwork = game.slug === "valorant";
   const isMinimalLogoArtwork = isLeagueArtwork || isValorantArtwork;
   const isWarframePlaceholder =
-    game.slug === "warframe" && game.visual.assetSource.startsWith("MGP-generated Warframe placeholder");
+    game.slug === "warframe" && game.visual.assetSource.startsWith("ÍMPAR-generated Warframe placeholder");
   const usesUpscaledRepositoryArtwork = ["dark-souls-iii", "elden-ring", "ea-sports-fc"].includes(
     game.slug,
   );

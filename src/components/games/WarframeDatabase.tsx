@@ -264,7 +264,7 @@ export function WarframeDatabase({ mode, locale }: { mode: WarframeDatabaseMode;
           <div>
             <div className="flex items-center gap-2">
               <Sparkles className="size-4 text-gold-strong" />
-              <span className="section-kicker">MGP / TENNO DATABASE</span>
+              <span className="section-kicker">ÍMPAR / TENNO DATABASE</span>
             </div>
             <h2 className="mt-3 font-display text-2xl font-bold text-foreground sm:text-3xl">{title}</h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{description}</p>

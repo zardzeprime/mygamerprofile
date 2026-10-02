@@ -25,8 +25,8 @@ export function ValorantLineupsPanel({ locale }: { locale: Locale }) {
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
-              "A biblioteca já está preparada para lineups curtas por mapa, agente e ponto. Publicação da comunidade fica bloqueada no beta até o MGP ter moderação de vídeo e fluxo de denúncia.",
-              "The library is prepared for short lineups organized by map, agent and spot. Community publishing stays locked during beta until MGP has video moderation and reporting.",
+              "A biblioteca já está preparada para lineups curtas por mapa, agente e ponto. Publicação da comunidade fica bloqueada no beta até o ÍMPAR ter moderação de vídeo e fluxo de denúncia.",
+              "The library is prepared for short lineups organized by map, agent and spot. Community publishing stays locked during beta until ÍMPAR has video moderation and reporting.",
               "La biblioteca ya está preparada para lineups cortas por mapa, agente y punto. La publicación de la comunidad queda bloqueada durante la beta hasta contar con moderación de vídeo y reportes.",
             )}
           </p>

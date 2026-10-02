@@ -270,7 +270,7 @@ export function SoulsDpsTest({
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-2 text-gold-strong">
               <Gauge className="size-4" />
-              <span className="section-kicker">MGP · DPS TEST</span>
+              <span className="section-kicker">ÍMPAR · DPS TEST</span>
             </span>
             <span className="rounded-full border border-border bg-muted/20 px-2.5 py-1 text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
               {isDs3 ? "Dark Souls III" : "Dark Souls Remastered"}
@@ -470,9 +470,9 @@ export function SoulsDpsTest({
                     {ds1PathOptions.length === 1 ? (
                       <p className="mt-1 text-[0.64rem] leading-5 text-amber-300/80">
                         {copy(
-                          "Arma única/especial: o MGP mantém apenas a rota própria para não mostrar ascensões incompatíveis.",
-                          "Unique/special weapon: MGP keeps only its native route to avoid showing incompatible ascensions.",
-                          "Arma única/especial: MGP mantiene solo su ruta propia para no mostrar ascensos incompatibles.",
+                          "Arma única/especial: o ÍMPAR mantém apenas a rota própria para não mostrar ascensões incompatíveis.",
+                          "Unique/special weapon: ÍMPAR keeps only its native route to avoid showing incompatible ascensions.",
+                          "Arma única/especial: ÍMPAR mantiene solo su ruta propia para no mostrar ascensos incompatibles.",
                         )}
                       </p>
                     ) : null}
@@ -523,9 +523,9 @@ export function SoulsDpsTest({
                     <p className="mt-2 text-[0.66rem] leading-5 text-muted-foreground">
                       {ds1Path === "regular"
                         ? copy(
-                            "Rota Normal: o modo Avançado usa a estimativa de AR do MGP até o limite real da arma.",
-                            "Normal path: Advanced mode uses MGP's AR estimate up to the weapon's real limit.",
-                            "Ruta Normal: el modo Avanzado usa la estimación de AR de MGP hasta el límite real del arma.",
+                            "Rota Normal: o modo Avançado usa a estimativa de AR do ÍMPAR até o limite real da arma.",
+                            "Normal path: Advanced mode uses ÍMPAR's AR estimate up to the weapon's real limit.",
+                            "Ruta Normal: el modo Avanzado usa la estimación de AR de ÍMPAR hasta el límite real del arma.",
                           )
                         : copy(
                             "Rotas especiais mudam elemento/scaling. O Casual já reage à rota; AR numérico fica oculto até termos a curva exata por arma.",
@@ -780,9 +780,9 @@ function CasualResult({
         </div>
         <p className="mt-2 text-xs leading-5 text-muted-foreground">
           {copy(
-            "Sem exigir que você saiba interpretar AR: o MGP combina requisitos, scaling, seus atributos e o nível da arma.",
-            "No AR knowledge required: MGP combines requirements, scaling, your attributes and weapon level.",
-            "Sin exigir que interpretes AR: MGP combina requisitos, escalado, tus atributos y el nivel del arma.",
+            "Sem exigir que você saiba interpretar AR: o ÍMPAR combina requisitos, scaling, seus atributos e o nível da arma.",
+            "No AR knowledge required: ÍMPAR combines requirements, scaling, your attributes and weapon level.",
+            "Sin exigir que interpretes AR: ÍMPAR combina requisitos, escalado, tus atributos y el nivel del arma.",
           )}
         </p>
       </div>
@@ -951,9 +951,9 @@ function AdvancedResult({
           <p className="mt-2 text-xs text-muted-foreground">
             {result?.numericAvailable === false
               ? copy(
-                  "Esta rota altera a arma, mas o MGP não exibe um AR inventado: use o Casual para a leitura de compatibilidade enquanto a curva exata por arma não está validada.",
-                  "This path changes the weapon, but MGP does not display invented AR: use Casual for compatibility until exact per-weapon curves are validated.",
-                  "Esta ruta altera el arma, pero MGP no muestra un AR inventado: usa Casual hasta validar la curva exacta por arma.",
+                  "Esta rota altera a arma, mas o ÍMPAR não exibe um AR inventado: use o Casual para a leitura de compatibilidade enquanto a curva exata por arma não está validada.",
+                  "This path changes the weapon, but ÍMPAR does not display invented AR: use Casual for compatibility until exact per-weapon curves are validated.",
+                  "Esta ruta altera el arma, pero ÍMPAR no muestra un AR inventado: usa Casual hasta validar la curva exacta por arma.",
                 )
               : copy(
                   "Antes de defesa/absorção do inimigo.",

@@ -65,7 +65,7 @@ export function GlobalSearch({
           if (!cancelled) setProfiles(result);
         })
         .catch((error) => {
-          console.warn("[MGP Search] profile search failed", error);
+          console.warn("[ÍMPAR Search] profile search failed", error);
           if (!cancelled) setProfiles([]);
         })
         .finally(() => {
@@ -120,7 +120,7 @@ export function GlobalSearch({
             setQuery(event.target.value);
             setOpen(true);
           }}
-          placeholder={copy("Buscar no ÍMPAR", "Search MGP", "Buscar en MGP")}
+          placeholder={copy("Buscar no ÍMPAR", "Search ÍMPAR", "Buscar en ÍMPAR")}
           aria-label={copy("Buscar jogos, comunidades e pessoas", "Search games, communities and people", "Buscar juegos, comunidades y personas")}
           className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
         />

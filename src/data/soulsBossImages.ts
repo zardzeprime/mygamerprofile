@@ -169,7 +169,7 @@ export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
   "slave-knight-gael": ds3("Gael phase1 concept.png", "50% 27%", "50% 33%", 1, 1.08),
 
   // No reliable, boss-specific concept art was found for the Gravetender duo in the
-  // sources currently wired into MGP. Its game-cover fallback is intentionally kept.
+  // sources currently wired into ÍMPAR. Its game-cover fallback is intentionally kept.
 };
 
 const localMirrorLabel: LocalizedText = {

@@ -45,7 +45,7 @@ export const DARK_SOULS_BOSS_SOURCES: Record<string, string> = {
 };
 
 /**
- * MGP editorial copy for Dark Souls Remastered.
+ * ÍMPAR editorial copy for Dark Souls Remastered.
  * Facts are synthesized from in-game descriptions and established community references;
  * the prose is original and intentionally separates spoiler-light context from deeper lore.
  * "drops" focuses on unique/notable rewards instead of every generic Humanity/Homeward Bone.
@@ -237,8 +237,8 @@ export const DARK_SOULS_BOSS_WIKI: Record<string, BossWikiEntry> = {
       en: "Priscilla is a crossbreed of a dragon and another being, isolated within the Painted World of Ariamis. She does not initiate combat and allows the player to leave her world in peace.",
     },
     spoilerLore: {
-      "pt-BR": "Seu poder de Lifehunt é descrito como algo temido pelos deuses. A origem exata de sua linhagem não é confirmada pelo jogo, por isso o MGP não apresenta teorias de parentesco como fato.",
-      en: "Her Lifehunt power is described as something feared by the gods. Her exact lineage is not confirmed by the game, so MGP does not present parentage theories as fact.",
+      "pt-BR": "Seu poder de Lifehunt é descrito como algo temido pelos deuses. A origem exata de sua linhagem não é confirmada pelo jogo, por isso o ÍMPAR não apresenta teorias de parentesco como fato.",
+      en: "Her Lifehunt power is described as something feared by the gods. Her exact lineage is not confirmed by the game, so ÍMPAR does not present parentage theories as fact.",
     },
     drops: [{ "pt-BR": "Soul of Priscilla", en: "Soul of Priscilla" }],
     tailCut: { "pt-BR": "Priscilla's Dagger", en: "Priscilla's Dagger" },

@@ -103,11 +103,11 @@ export type ProfileIdentityPack = {
 export const PROFILE_IDENTITY_PACK_CONCEPTS: ProfileIdentityPack[] = [
   {
     id: "mgp-core",
-    label: { "pt-BR": "MGP Core", en: "MGP Core", es: "MGP Core" },
+    label: { "pt-BR": "ÍMPAR Core", en: "ÍMPAR Core", es: "ÍMPAR Core" },
     description: {
-      "pt-BR": "A identidade preta, grafite e dourada do MG Profile.",
-      en: "MG Profile's black, graphite and gold identity.",
-      es: "La identidad negra, grafito y dorada de MG Profile.",
+      "pt-BR": "A identidade preta, grafite e dourada do ÍMPAR.",
+      en: "ÍMPAR's black, graphite and gold identity.",
+      es: "La identidad negra, grafito y dorada de ÍMPAR.",
     },
     inspiration: "mgp",
     previewClass: "customization-pack-mgp",

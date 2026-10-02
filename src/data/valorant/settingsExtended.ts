@@ -35,7 +35,7 @@ function v(
       url: URL,
       label: "ProSettings.net",
       verifiedAt: VERIFIED_AT,
-      note: note ?? "Consolidated VALORANT pro settings and gear list checked for MGP.",
+      note: note ?? "Consolidated VALORANT pro settings and gear list checked for ÍMPAR.",
     },
   };
 }
@@ -199,7 +199,7 @@ export const EXTRA_VERIFIED_SETTINGS: Record<string, RecordEntry> = {
     "HyperX Cloud III",
     "Artisan Type-99 Gray",
     "1440x1080",
-    "spikeziN on ProSettings; mapped to Rodrigo Lombardi / MGP handle spike.",
+    "spikeziN on ProSettings; mapped to Rodrigo Lombardi / ÍMPAR handle spike.",
   ),
   blowz: v(
     800,

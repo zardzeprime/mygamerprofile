@@ -50,8 +50,8 @@ function RobloxCatalog() {
       <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
         {copy(
           "Aqui cada experiência funciona como um jogo do ÍMPAR: Blox Fruits, Project Slayers 2 e os outros têm página própria, hero, abas, conteúdo e navegação própria.",
-          "Each experience works like an MGP game here: Blox Fruits, Project Slayers 2 and the others get their own page, hero, tabs, content and navigation.",
-          "Aquí cada experiencia funciona como un juego de MGP: Blox Fruits, Project Slayers 2 y las demás tienen página propia, hero, pestañas, contenido y navegación.",
+          "Each experience works like an ÍMPAR game here: Blox Fruits, Project Slayers 2 and the others get their own page, hero, tabs, content and navigation.",
+          "Aquí cada experiencia funciona como un juego de ÍMPAR: Blox Fruits, Project Slayers 2 y las demás tienen página propia, hero, pestañas, contenido y navegación.",
         )}
       </p>
 

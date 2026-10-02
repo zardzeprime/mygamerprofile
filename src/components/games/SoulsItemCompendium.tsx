@@ -303,7 +303,7 @@ export function SoulsItemCompendium({
         <div className="border-b border-border bg-[radial-gradient(circle_at_top_right,hsl(var(--gold)/0.10),transparent_48%)] p-5 sm:p-7">
           <div className="flex flex-wrap items-center gap-2 text-gold-strong">
             <Sparkles className="size-4" />
-            <span className="section-kicker">MGP · SOULS COMPENDIUM</span>
+            <span className="section-kicker">ÍMPAR · SOULS COMPENDIUM</span>
           </div>
           <h2 className="mt-3 font-display text-3xl font-bold text-foreground">
             {copy(`Compêndio de ${gameName}`, `${gameName} compendium`, `Compendio de ${gameName}`)}
@@ -872,9 +872,9 @@ function WeaponTechnicalCard({
         {!isDs3 && ds1Path !== "regular" ? (
           <p className="mt-3 rounded-xl border border-amber-500/20 bg-amber-500/[0.05] p-3 text-[0.66rem] leading-5 text-muted-foreground">
             {copy(
-              `Rota ${DS1_UPGRADE_PATHS[ds1Path].label}: ${ds1PathDescription(ds1Path, "pt-BR")} Quando a fonte não fornece letra exata por arma nessa rota, o MGP mostra o foco do scaling sem inventar uma graduação.`,
-              `${DS1_UPGRADE_PATHS[ds1Path].label} path: ${ds1PathDescription(ds1Path, "en")} When the source does not provide an exact per-weapon letter for this path, MGP shows the scaling focus without inventing a grade.`,
-              `Ruta ${DS1_UPGRADE_PATHS[ds1Path].label}: ${ds1PathDescription(ds1Path, "es")} Cuando la fuente no ofrece una letra exacta por arma en esta ruta, MGP muestra el enfoque del scaling sin inventar una graduación.`,
+              `Rota ${DS1_UPGRADE_PATHS[ds1Path].label}: ${ds1PathDescription(ds1Path, "pt-BR")} Quando a fonte não fornece letra exata por arma nessa rota, o ÍMPAR mostra o foco do scaling sem inventar uma graduação.`,
+              `${DS1_UPGRADE_PATHS[ds1Path].label} path: ${ds1PathDescription(ds1Path, "en")} When the source does not provide an exact per-weapon letter for this path, ÍMPAR shows the scaling focus without inventing a grade.`,
+              `Ruta ${DS1_UPGRADE_PATHS[ds1Path].label}: ${ds1PathDescription(ds1Path, "es")} Cuando la fuente no ofrece una letra exacta por arma en esta ruta, ÍMPAR muestra el enfoque del scaling sin inventar una graduación.`,
             )}
           </p>
         ) : null}

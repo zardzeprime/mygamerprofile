@@ -29,7 +29,7 @@ export const Route = createFileRoute("/communities/$slug")({
     return { game, starter, gameRecord, posts };
   },
   head: ({ loaderData }) => {
-    if (!loaderData) return { meta: [{ title: "Comunidade não encontrada — MGP" }, { name: "robots", content: "noindex" }] };
+    if (!loaderData) return { meta: [{ title: "Comunidade não encontrada — ÍMPAR" }, { name: "robots", content: "noindex" }] };
     const title = `${loaderData.game.name} — Comunidade ÍMPAR`;
     const description = `Comunidade de ${loaderData.game.name} no ÍMPAR.`;
     return buildSeo({
@@ -226,7 +226,7 @@ function GameCommunityPage() {
               {copy(
                 "A classificação do post é um controle de apresentação, não uma autorização para conteúdo proibido. Contas de adolescentes seguem as regras de supervisão do ÍMPAR.",
                 "A post rating is a presentation control, not permission for prohibited content. Teen accounts remain subject to ÍMPAR supervision rules.",
-                "La clasificación del post es un control de presentación, no un permiso para contenido prohibido. Las cuentas adolescentes siguen las reglas de supervisión de MGP.",
+                "La clasificación del post es un control de presentación, no un permiso para contenido prohibido. Las cuentas adolescentes siguen las reglas de supervisión de ÍMPAR.",
               )}
             </p>
           </section>

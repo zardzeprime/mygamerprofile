@@ -21,7 +21,7 @@ function staff(
     handle,
     ...(realName ? { realName } : {}),
     role,
-    sources: [vlrSource(teamUrl, "Current staff listing checked for MGP.")],
+    sources: [vlrSource(teamUrl, "Current staff listing checked for ÍMPAR.")],
   };
 }
 

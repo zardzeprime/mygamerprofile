@@ -37,7 +37,7 @@ export const SUPPORT_METHODS: SupportMethod[] = [
     id: "recurring",
     status: "active",
     label: "Apoio recorrente",
-    description: "Apoio mensal para ajudar o MGP a manter custos contínuos.",
+    description: "Apoio mensal para ajudar o ÍMPAR a manter custos contínuos.",
     provider: "Ko-fi",
     url: "https://ko-fi.com/P3I627EQG9",
   },
