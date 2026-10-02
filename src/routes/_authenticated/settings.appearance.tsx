@@ -5,6 +5,7 @@ import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { SettingsLayout } from "@/components/settings/SettingsLayout";
 import { AudioControl } from "@/components/common/AudioControl";
+import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 
 export const Route = createFileRoute("/_authenticated/settings/appearance")({
   head: () => ({
@@ -49,9 +50,7 @@ function SettingsAppearancePage() {
             aria-label={copy("Prévia ao vivo", "Live preview", "Vista previa en vivo")}
           >
             <div className="flex items-center justify-between gap-3">
-              <span className="font-display text-lg font-bold tracking-tight">
-                MG<span className="text-gold-strong">P</span>
-              </span>
+              <BrandLogoPlaceholder size="sm" />
               <span className="rounded-full border border-border bg-surface/90 px-3 py-1 text-xs text-foreground">
                 {copy("Prévia ao vivo", "Live preview", "Vista previa en vivo")}
               </span>
