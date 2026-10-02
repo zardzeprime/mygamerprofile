@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
+import "@/impar-refinement.css";
 
 export function BrandLogoPlaceholder({
   withFullName = false,
@@ -9,14 +10,16 @@ export function BrandLogoPlaceholder({
   className,
 }: {
   withFullName?: boolean;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
   className?: string;
 }) {
   const { locale } = useI18n();
   const fullName = localeCopy(locale, "Identidade gamer", "Gaming identity", "Identidad gamer");
 
-  const markSize = size === "lg" ? "size-12" : size === "sm" ? "size-7" : "size-9";
-  const textSize = size === "lg" ? "text-xl" : size === "sm" ? "text-sm" : "text-base";
+  const markSize =
+    size === "xl" ? "size-16" : size === "lg" ? "size-12" : size === "sm" ? "size-7" : "size-9";
+  const textSize =
+    size === "xl" ? "text-2xl" : size === "lg" ? "text-xl" : size === "sm" ? "text-sm" : "text-base";
 
   return (
     <Link
@@ -27,7 +30,7 @@ export function BrandLogoPlaceholder({
       <span
         aria-hidden="true"
         className={cn(
-          "brand-logo-shell grid shrink-0 place-items-center overflow-hidden rounded-full transition-transform duration-300 group-hover:scale-[1.06]",
+          "brand-logo-shell grid shrink-0 place-items-center overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.045]",
           markSize,
         )}
       >
