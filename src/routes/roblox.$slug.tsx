@@ -36,13 +36,13 @@ export const Route = createFileRoute("/roblox/$slug")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "Roblox Experience não encontrada — MGP" },
+          { title: "Roblox Experience não encontrada — ÍMPAR" },
           { name: "robots", content: "noindex" },
         ],
       };
     }
 
-    const title = `${loaderData.experience.name} — MGP`;
+    const title = `${loaderData.experience.name} — ÍMPAR`;
     const description = `Códigos, tier lists, guias, builds e progressão de ${loaderData.experience.name} no ÍMPAR.`;
     return buildSeo({
       title,
@@ -114,11 +114,7 @@ function RobloxExperienceHub() {
 
         <div className="relative mx-auto grid min-h-[26rem] w-full max-w-7xl items-end gap-7 px-4 pb-7 pt-20 sm:min-h-[32rem] sm:px-6 sm:pb-10 sm:pt-24 lg:grid-cols-[13rem_minmax(0,1fr)]">
           <div className="group hidden aspect-[3/4] overflow-hidden rounded-lg border border-hero-border bg-hero-surface shadow-lift lg:block">
-            <img
-              src={experience.visual.coverImage}
-              alt=""
-              className="h-full w-full object-cover"
-            />
+            <img src={experience.visual.coverImage} alt="" className="h-full w-full object-cover" />
           </div>
 
           <div className="max-w-3xl">
@@ -268,7 +264,9 @@ function RobloxExperienceHub() {
               key={active}
               className="animate-in fade-in slide-in-from-bottom-2 duration-200 motion-reduce:animate-none"
             >
-              {active === "overview" ? <OverviewPanel experience={experience} locale={locale} /> : null}
+              {active === "overview" ? (
+                <OverviewPanel experience={experience} locale={locale} />
+              ) : null}
               {active === "codes" ? <CodesPanel experience={experience} locale={locale} /> : null}
               {active === "tier-list" ? (
                 <TopicPanel
@@ -304,9 +302,9 @@ function RobloxExperienceHub() {
                   kicker="ÍMPAR / BUILDS"
                   title={copy("Builds e presets", "Builds and presets", "Builds y presets")}
                   description={copy(
-                    "Presets organizados por objetivo. Essa área pode receber o mesmo fluxo NEXUS usado nos outros criadores do ÍMPAR.",
-                    "Goal-based presets. This area can use the same NEXUS flow as the other MGP builders.",
-                    "Presets organizados por objetivo. Esta área puede usar el mismo flujo NEXUS que los otros creadores de MGP.",
+                    "Presets organizados por objetivo. Essa área pode receber o mesmo fluxo do Noctis usado nos outros criadores do ÍMPAR.",
+                    "Goal-based presets. This area can use the same Noctis flow as the other ÍMPAR builders.",
+                    "Presets organizados por objetivo. Esta área puede usar el mismo flujo de Noctis que los otros creadores de ÍMPAR.",
                   )}
                   topics={experience.buildTopics[locale]}
                   locale={locale}
@@ -322,13 +320,7 @@ function RobloxExperienceHub() {
   );
 }
 
-function OverviewPanel({
-  experience,
-  locale,
-}: {
-  experience: RobloxExperience;
-  locale: Locale;
-}) {
+function OverviewPanel({ experience, locale }: { experience: RobloxExperience; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
 
   return (
@@ -390,7 +382,11 @@ function OverviewPanel({
             </div>
             <div className="mt-4 space-y-3">
               <HubStatusRow
-                label={copy("Estrutura e navegação", "Structure and navigation", "Estructura y navegación")}
+                label={copy(
+                  "Estrutura e navegação",
+                  "Structure and navigation",
+                  "Estructura y navegación",
+                )}
                 ready={experience.hubStatus.structure === "ready"}
                 locale={locale}
               />
@@ -413,8 +409,12 @@ function OverviewPanel({
               )}
             </p>
             <p className="mt-3 text-xs font-semibold text-foreground">
-              {copy("Última checagem da experiência", "Experience last checked", "Última revisión de la experiencia")}:{" "}
-              {experience.verifiedAt}
+              {copy(
+                "Última checagem da experiência",
+                "Experience last checked",
+                "Última revisión de la experiencia",
+              )}
+              : {experience.verifiedAt}
             </p>
           </section>
 
@@ -433,13 +433,7 @@ function OverviewPanel({
   );
 }
 
-function CodesPanel({
-  experience,
-  locale,
-}: {
-  experience: RobloxExperience;
-  locale: Locale;
-}) {
+function CodesPanel({ experience, locale }: { experience: RobloxExperience; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
 
   return (
@@ -464,9 +458,18 @@ function CodesPanel({
           <ProgressBadge locale={locale} />
         </div>
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <StatusCard label={copy("Ativos verificados", "Verified active", "Activos verificados")} value="—" />
-          <StatusCard label={copy("Expirados catalogados", "Catalogued expired", "Expirados catalogados")} value="—" />
-          <StatusCard label={copy("Carga editorial", "Editorial load", "Carga editorial")} value={copy("Em andamento", "In progress", "En curso")} />
+          <StatusCard
+            label={copy("Ativos verificados", "Verified active", "Activos verificados")}
+            value="—"
+          />
+          <StatusCard
+            label={copy("Expirados catalogados", "Catalogued expired", "Expirados catalogados")}
+            value="—"
+          />
+          <StatusCard
+            label={copy("Carga editorial", "Editorial load", "Carga editorial")}
+            value={copy("Em andamento", "In progress", "En curso")}
+          />
         </div>
       </section>
     </div>
@@ -510,9 +513,7 @@ function TopicPanel({
               <span className="font-display text-base font-semibold text-foreground">{topic}</span>
               <ChevronRight className="size-4 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-gold-strong" />
             </div>
-            <p className="mt-2 text-xs leading-5 text-muted-foreground">
-              MGP · {topic}
-            </p>
+            <p className="mt-2 text-xs leading-5 text-muted-foreground">ÍMPAR · {topic}</p>
           </article>
         ))}
       </div>
@@ -520,13 +521,7 @@ function TopicPanel({
   );
 }
 
-function ProgressBadge({
-  locale,
-  compact = false,
-}: {
-  locale: Locale;
-  compact?: boolean;
-}) {
+function ProgressBadge({ locale, compact = false }: { locale: Locale; compact?: boolean }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   return (
     <span
@@ -540,15 +535,7 @@ function ProgressBadge({
   );
 }
 
-function HubStatusRow({
-  label,
-  ready,
-  locale,
-}: {
-  label: string;
-  ready: boolean;
-  locale: Locale;
-}) {
+function HubStatusRow({ label, ready, locale }: { label: string; ready: boolean; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   return (
     <div className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/10 px-3 py-2.5">
@@ -561,9 +548,7 @@ function HubStatusRow({
             : "border-amber-400/25 bg-amber-400/10 text-amber-200",
         )}
       >
-        {ready
-          ? copy("Pronto", "Ready", "Listo")
-          : copy("Em andamento", "In progress", "En curso")}
+        {ready ? copy("Pronto", "Ready", "Listo") : copy("Em andamento", "In progress", "En curso")}
       </span>
     </div>
   );

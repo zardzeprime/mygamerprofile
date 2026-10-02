@@ -12,7 +12,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
-import { toggleReaction, updatePost, deletePost, createComment, listComments } from "@/lib/posts.functions";
+import {
+  toggleReaction,
+  updatePost,
+  deletePost,
+  createComment,
+  listComments,
+} from "@/lib/posts.functions";
 import { useServerFn } from "@tanstack/react-start";
 
 type CommentItem = Awaited<ReturnType<typeof createComment>>;
@@ -24,7 +30,12 @@ interface PostCardProps {
     image_url?: string | null;
     created_at: string;
     updated_at?: string;
-    author?: { id: string; username: string; display_name: string; avatar_url?: string | null } | null;
+    author?: {
+      id: string;
+      username: string;
+      display_name: string;
+      avatar_url?: string | null;
+    } | null;
     game?: { id: string; slug: string; name: string } | null;
     reactions?: { user_id: string; reaction_type: string }[] | number;
   };
@@ -36,7 +47,11 @@ export function PostCard({ post }: PostCardProps) {
   const isOwn = user?.id === post.author?.id;
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(
-    Array.isArray(post.reactions) ? post.reactions.length : typeof post.reactions === "number" ? post.reactions : 0,
+    Array.isArray(post.reactions)
+      ? post.reactions.length
+      : typeof post.reactions === "number"
+        ? post.reactions
+        : 0,
   );
   const [editing, setEditing] = useState(false);
   const [body, setBody] = useState(post.body);
@@ -175,7 +190,11 @@ export function PostCard({ post }: PostCardProps) {
             <div className="mt-4 space-y-3 border-t border-border pt-3">
               {comments.map((comment) => (
                 <div key={comment.id} className="flex gap-2">
-                  <UserAvatar src={comment.author?.avatar_url} name={comment.author?.display_name} size="sm" />
+                  <UserAvatar
+                    src={comment.author?.avatar_url}
+                    name={comment.author?.display_name}
+                    size="sm"
+                  />
                   <div className="flex-1 rounded-lg bg-muted p-2 text-sm">
                     <span className="font-semibold">{comment.author?.display_name}</span>
                     <p>{comment.body}</p>

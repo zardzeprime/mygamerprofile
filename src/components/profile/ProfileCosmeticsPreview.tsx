@@ -59,9 +59,9 @@ export function ProfileCosmeticsPreview({ locale }: { locale: Locale }) {
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
-              "A base da coleção já está pronta para fundos, banners, chibis e até seis insígnias equipadas. Nesta fase estamos testando apenas cosméticos originais do MGP.",
-              "The collection foundation already supports backgrounds, banners, chibis and up to six equipped badges. This phase tests MGP-original cosmetics only.",
-              "La base de la colección ya admite fondos, banners, chibis y hasta seis insignias equipadas. En esta fase probamos solo cosméticos originales de MGP.",
+              "A base da coleção já está pronta para fundos, banners, chibis e até seis insígnias equipadas. Nesta fase estamos testando apenas cosméticos originais do ÍMPAR.",
+              "The collection foundation already supports backgrounds, banners, chibis and up to six equipped badges. This phase tests ÍMPAR-original cosmetics only.",
+              "La base de la colección ya admite fondos, banners, chibis y hasta seis insignias equipadas. En esta fase probamos solo cosméticos originales de ÍMPAR.",
             )}
           </p>
         </div>
@@ -75,7 +75,10 @@ export function ProfileCosmeticsPreview({ locale }: { locale: Locale }) {
       ) : (
         <div className="mt-5 grid gap-3 sm:grid-cols-3">
           {backgrounds.slice(0, 3).map((cosmetic) => (
-            <article key={cosmetic.slug} className="overflow-hidden rounded-xl border border-border bg-surface">
+            <article
+              key={cosmetic.slug}
+              className="overflow-hidden rounded-xl border border-border bg-surface"
+            >
               <div className={cn("relative h-24", cosmetic.css_class ?? "profile-bg-midnight")}>
                 <span className="absolute right-2 top-2 rounded-full border border-white/15 bg-black/35 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-white/80 backdrop-blur">
                   {cosmetic.animated ? copy("Animado", "Animated", "Animado") : cosmetic.rarity}

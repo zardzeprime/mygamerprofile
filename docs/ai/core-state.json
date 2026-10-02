@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-27",
+  "updatedAt": "2026-10-02",
   "cores": {
     "nexus": {
       "name": "NEXUS",
@@ -38,7 +38,8 @@
         "Verified NEXUS Edge v17 end to end against the hosted Supabase runtime: the health endpoint returns HTTP 200 with aiReady=true and Gemini configured for inference.",
         "Removed NEXUS's hard dependency on one baked-in Supabase publishable key by resolving the hosted SUPABASE_PUBLISHABLE_KEYS set while retaining legacy compatibility for safe key rotation.",
         "Made transient provider readiness recoverable in the NEXUS chat UI with an explicit re-check action instead of presenting every unavailable state as a permanently disconnected engine.",
-        "Coordinated the responsive header hardening pass with progressive navigation/action breakpoints and a fluid global-search footprint."
+        "Coordinated the responsive header hardening pass with progressive navigation/action breakpoints and a fluid global-search footprint.",
+        "Coordinated the first safe public rebrand pass from legacy MG Profile/MGP naming to ÍMPAR while preserving technical identifiers, domains and integration contracts."
       ],
       "inProgress": [
         "Continue page-by-page visual art-direction review on top of Visual System v2 after the foundation PR is merged and rendered in Lovable."
@@ -70,7 +71,8 @@
         "Kept NEXUS guest/member authorization boundaries intact while deploying Edge v3 with custom guest-compatible gateway authentication; raw public completion remains disabled and the legacy direct-server router no longer calls that disabled route by default.",
         "Profile reset preserved the existing admin Auth identity and admin role while removing all non-admin test accounts and resetting app-level profile/onboarding records, preventing accidental administrator lockout.",
         "Atomic onboarding RPC rejects unauthenticated callers, duplicate onboarding, invalid usernames/languages/age/gender values, and creates private account attributes inside a single database transaction.",
-        "Public profile SSR now tolerates mismatched published and preview public backend coordinates by falling back only through anonymous publishable clients with visibility=public enforced on every request."
+        "Public profile SSR now tolerates mismatched published and preview public backend coordinates by falling back only through anonymous publishable clients with visibility=public enforced on every request.",
+        "Reviewed the ÍMPAR public rebrand and preserved OAuth URLs, sender domains, storage keys, database names, error codes and other compatibility-sensitive identifiers."
       ],
       "inProgress": [],
       "next": [
@@ -95,7 +97,8 @@
         "Added user-facing export and confirmed deletion controls for authenticated NEXUS conversations without exposing another user's history.",
         "Made appearance preferences local-first for fast first paint while synchronizing theme and optional accent_color to the authenticated user profile, with no cross-user preference reads.",
         "Google OAuth requests only minimal OpenID/email/profile scopes, and new OAuth users must accept the current Terms of Use and Privacy Policy during onboarding before a public profile is created.",
-        "Public-profile environment failover preserves privacy by applying visibility=public to every anonymous candidate lookup and never using privileged credentials."
+        "Public-profile environment failover preserves privacy by applying visibility=public to every anonymous candidate lookup and never using privileged credentials.",
+        "Reviewed the ÍMPAR public rebrand for privacy and kept account data behavior, consent scope and technical preference keys unchanged."
       ],
       "inProgress": [],
       "next": [
@@ -131,7 +134,8 @@
         "Standardized the League pass on Riot Data Dragon for item/champion/map icons and splash art, kept ability-video requests lazy, and withheld team/player photos or logos where reusable provenance was not established.",
         "Kept League ability media lazy-loaded only while previewing and preserved Riot/Data Dragon image provenance while adding full-size splash navigation.",
         "Kept Andromalius in the lifecycle chain as the required provenance/rights reviewer whenever live-game updates introduce new external artwork, videos or other media.",
-        "Completed boss-image coverage for Dark Souls Remastered and Dark Souls III: all 26 DS1 boss slugs and all 25 DS3 boss slugs now resolve to attributed encounter/reference media instead of generic cover fallbacks."
+        "Completed boss-image coverage for Dark Souls Remastered and Dark Souls III: all 26 DS1 boss slugs and all 25 DS3 boss slugs now resolve to attributed encounter/reference media instead of generic cover fallbacks.",
+        "Reused the approved ÍMPAR logo asset and Noctis artwork without introducing external or unverified brand media."
       ],
       "inProgress": [],
       "next": [
@@ -169,7 +173,8 @@
         "Completed a dated VALORANT + League source-of-truth audit before moving to Dark Souls Remastered and Dark Souls III, including current Riot patch baselines, LoL Data Dragon 16.18.1, current special modes and competitive schedule snapshots.",
         "League build freshness now resolves on demand by current LoLalytics patch through the league-builds Edge service, while Riot Data Dragon remains the source for champion/item presentation data.",
         "Reverified existing Dark Souls Remastered build presets against recurring Steam/Reddit player guidance and replaced weaker references with dated community sources.",
-        "Added three MGP Verified Dark Souls III PvE build presets sourced across Reddit/Steam: Sellsword Twinblades DEX, Strength/Vordt-heavy, and 40 INT/40 FTH Pyromancy."
+        "Added three MGP Verified Dark Souls III PvE build presets sourced across Reddit/Steam: Sellsword Twinblades DEX, Strength/Vordt-heavy, and 40 INT/40 FTH Pyromancy.",
+        "Reviewed public copy and metadata for stale legacy brand names across PT-BR, English and Spanish surfaces."
       ],
       "inProgress": [
         "Continue individual ProSettings verification for players whose settings remain hidden.",
@@ -216,7 +221,8 @@
         "Re-optimized League ability preview video delivery for mobile by preferring MP4 on coarse/mobile pointers, reducing preload, suspending hidden playback and retaining WebM-first behavior on desktop.",
         "Added atomic profile onboarding RPC so profile, private age/demographic records, starter loadout/inventory and favorite games commit together or roll back together.",
         "Added persistent user_builds storage with RLS and save_user_build_v1 RPC; League custom builds can now be saved privately to an authenticated profile.",
-        "Optimized user_builds RLS policies for auth.uid() init-plan performance before public scale."
+        "Optimized user_builds RLS policies for auth.uid() init-plan performance before public scale.",
+        "Preserved automation, email sender domains and integration identifiers while updating public email branding."
       ],
       "inProgress": [],
       "next": [
@@ -274,7 +280,8 @@
         "Opened previously locked/placeholder game modules: incomplete areas now render explicit in-development panels instead of padlocks, while completed DS1/DS3 builds/guides route to functional modules.",
         "Dark Souls Remastered and Dark Souls III boss pages now intentionally omit external boss artwork and label the visual area as MGP gameplay screenshots in development.",
         "Completed pre-launch polish stage 1: locked MGP to dark-only, preserved accent personalization, hardened header/hub responsive framing and touch targets, and stopped the pointer aura animation loop when idle.",
-        "Hardened the global header across intermediate desktop widths by widening the shell, staggering navigation/settings/auth visibility, auto-closing the overlay at full desktop, and clamping header search width."
+        "Hardened the global header across intermediate desktop widths by widening the shell, staggering navigation/settings/auth visibility, auto-closing the overlay at full desktop, and clamping header search width.",
+        "Reviewed public shell, auth, profiles and responsive surfaces so the ÍMPAR naming remains concise and layout-safe."
       ],
       "inProgress": [],
       "next": [

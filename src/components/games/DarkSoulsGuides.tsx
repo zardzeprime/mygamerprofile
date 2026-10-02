@@ -38,7 +38,8 @@ const QUICK_GUIDES: QuickGuide[] = [
       es: "Mejoras, Embers y herreros",
     },
     description: {
-      "pt-BR": "Como as rotas Normal, Raw, Divine, Occult, Magic, Enchanted, Fire, Chaos, Lightning e Crystal se conectam.",
+      "pt-BR":
+        "Como as rotas Normal, Raw, Divine, Occult, Magic, Enchanted, Fire, Chaos, Lightning e Crystal se conectam.",
       en: "How Normal, Raw, Divine, Occult, Magic, Enchanted, Fire, Chaos, Lightning and Crystal paths connect.",
       es: "Cómo se conectan las rutas Normal, Raw, Divine, Occult, Magic, Enchanted, Fire, Chaos, Lightning y Crystal.",
     },
@@ -102,7 +103,8 @@ const QUICK_GUIDES: QuickGuide[] = [
       es: "Covenants, rangos y consecuencias",
     },
     description: {
-      "pt-BR": "As nove facções, recompensas, oferendas e o que muda ao abandonar ou quebrar um pacto.",
+      "pt-BR":
+        "As nove facções, recompensas, oferendas e o que muda ao abandonar ou quebrar um pacto.",
       en: "The nine factions, rewards, offerings and what changes when leaving or breaking a covenant.",
       es: "Las nueve facciones, recompensas, ofrendas y lo que cambia al abandonar o romper un pacto.",
     },
@@ -134,7 +136,8 @@ const QUICK_GUIDES: QuickGuide[] = [
       es: "Poise, stamina, carga y defensa",
     },
     description: {
-      "pt-BR": "Como sobrevivência e mobilidade mudam quando você troca armadura, escudo e peso da build.",
+      "pt-BR":
+        "Como sobrevivência e mobilidade mudam quando você troca armadura, escudo e peso da build.",
       en: "How survivability and mobility change as armor, shields and build weight change.",
       es: "Cómo cambian supervivencia y movilidad al modificar armadura, escudo y peso de la build.",
     },
@@ -230,9 +233,9 @@ export function DarkSoulsGuides({ locale }: { locale: Locale }) {
             </h2>
             <p className="mt-3 text-sm leading-7 text-muted-foreground">
               {copy(
-                "A biblioteca agora cobre atributos, upgrades, Humanity, Covenants, combate e acesso ao DLC. O texto é editorial do MGP e as fontes de referência ficam visíveis.",
-                "The library now covers stats, upgrades, Humanity, Covenants, combat and DLC access. Copy is MGP editorial content with visible reference sources.",
-                "La biblioteca ahora cubre atributos, mejoras, Humanity, Covenants, combate y acceso al DLC. El texto es editorial de MGP con fuentes visibles.",
+                "A biblioteca agora cobre atributos, upgrades, Humanity, Covenants, combate e acesso ao DLC. O texto é editorial do ÍMPAR e as fontes de referência ficam visíveis.",
+                "The library now covers stats, upgrades, Humanity, Covenants, combat and DLC access. Copy is ÍMPAR editorial content with visible reference sources.",
+                "La biblioteca ahora cubre atributos, mejoras, Humanity, Covenants, combate y acceso al DLC. El texto es editorial de ÍMPAR con fuentes visibles.",
               )}
             </p>
           </div>
@@ -348,9 +351,9 @@ export function DarkSoulsGuides({ locale }: { locale: Locale }) {
 
       <div className="rounded-2xl border border-border bg-muted/15 p-4 text-xs leading-5 text-muted-foreground">
         {copy(
-          "Conteúdo editorial MGP. Mecânicas são checadas contra documentação comunitária consolidada e o compêndio de itens mantém a procedência dos assets exibidos no beta.",
-          "MGP editorial content. Mechanics are checked against established community documentation and the item compendium keeps provenance for assets shown during beta.",
-          "Contenido editorial MGP. Las mecánicas se contrastan con documentación comunitaria consolidada y el compendio mantiene la procedencia de los assets usados en beta.",
+          "Conteúdo editorial ÍMPAR. Mecânicas são checadas contra documentação comunitária consolidada e o compêndio de itens mantém a procedência dos assets exibidos no beta.",
+          "ÍMPAR editorial content. Mechanics are checked against established community documentation and the item compendium keeps provenance for assets shown during beta.",
+          "Contenido editorial ÍMPAR. Las mecánicas se contrastan con documentación comunitaria consolidada y el compendio mantiene la procedencia de los assets usados en beta.",
         )}
       </div>
     </div>

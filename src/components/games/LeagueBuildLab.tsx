@@ -151,7 +151,11 @@ export function LeagueBuildLab({ locale }: { locale: Locale }) {
             </span>
           </div>
           <h2 className="mt-3 font-display text-3xl font-bold text-foreground">
-            {copy("Builds de League of Legends", "League of Legends builds", "Builds de League of Legends")}
+            {copy(
+              "Builds de League of Legends",
+              "League of Legends builds",
+              "Builds de League of Legends",
+            )}
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
@@ -227,9 +231,9 @@ export function LeagueBuildLab({ locale }: { locale: Locale }) {
         ) : sourceError || !buildData?.builds.length ? (
           <div className="mt-5 rounded-2xl border border-border bg-muted/10 p-5 text-sm leading-6 text-muted-foreground">
             {copy(
-              "A fonte estatística não respondeu agora. O criador continua disponível e o MGP não inventa uma build para preencher espaço.",
-              "The statistical source is unavailable right now. The builder remains available and MGP does not invent a build to fill the gap.",
-              "La fuente estadística no respondió ahora. El creador sigue disponible y MGP no inventa una build para llenar el espacio.",
+              "A fonte estatística não respondeu agora. O criador continua disponível e o ÍMPAR não inventa uma build para preencher espaço.",
+              "The statistical source is unavailable right now. The builder remains available and ÍMPAR does not invent a build to fill the gap.",
+              "La fuente estadística no respondió ahora. El creador sigue disponible y ÍMPAR no inventa una build para llenar el espacio.",
             )}
           </div>
         ) : (
@@ -330,8 +334,16 @@ function ReferenceLinks({
   const fallbackLinks = [
     { id: "riot", label: "Riot", url: `https://www.leagueoflegends.com/en-us/champions/${slug}/` },
     { id: "opgg", label: "OP.GG", url: `https://www.op.gg/champions/${slug}/build` },
-    { id: "mobalytics", label: "Mobalytics", url: `https://mobalytics.gg/lol/champions/${slug}/build` },
-    { id: "leagueofgraphs", label: "League of Graphs", url: `https://www.leagueofgraphs.com/champions/builds/${slug}` },
+    {
+      id: "mobalytics",
+      label: "Mobalytics",
+      url: `https://mobalytics.gg/lol/champions/${slug}/build`,
+    },
+    {
+      id: "leagueofgraphs",
+      label: "League of Graphs",
+      url: `https://www.leagueofgraphs.com/champions/builds/${slug}`,
+    },
   ];
 
   const links = [

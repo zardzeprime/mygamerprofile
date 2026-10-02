@@ -94,7 +94,7 @@ export function AppHeader() {
 
       if (cancelled) return;
       if (error) {
-        console.error("[MGP] Failed to load current profile header data", error);
+        console.error("[ÍMPAR] Failed to load current profile header data", error);
         setProfileUsername(null);
         setProfileAvatarUrl(null);
         setProfileDisplayName(null);
@@ -121,14 +121,18 @@ export function AppHeader() {
     try {
       await signInWithGoogle("/onboarding");
     } catch (error) {
-      console.error("[MGP] Google sign-in:", error);
+      console.error("[ÍMPAR] Google sign-in:", error);
       setGoogleLoading(false);
       window.location.assign("/login");
     }
   };
 
   const profileLabel = copy("Ver meu perfil", "View my profile", "Ver mi perfil");
-  const profileUnavailableLabel = copy("Perfil indisponível", "Profile unavailable", "Perfil no disponible");
+  const profileUnavailableLabel = copy(
+    "Perfil indisponível",
+    "Profile unavailable",
+    "Perfil no disponible",
+  );
 
   const AuthSection = () => {
     if (loading) return null;
@@ -144,7 +148,9 @@ export function AppHeader() {
             aria-label={copy("Entrar com Google", "Sign in with Google", "Entrar con Google")}
             title={copy("Entrar com Google", "Sign in with Google", "Entrar con Google")}
           >
-            <span className="grid size-4 place-items-center rounded-full text-[11px] font-black">G</span>
+            <span className="grid size-4 place-items-center rounded-full text-[11px] font-black">
+              G
+            </span>
             <span className="hidden 2xl:inline">Google</span>
           </Button>
           <Button variant="ghost" size="sm" asChild>
@@ -171,7 +177,11 @@ export function AppHeader() {
         <DropdownMenuContent align="end">
           {profileUsername ? (
             <DropdownMenuItem asChild>
-              <Link to="/u/$username" params={{ username: profileUsername }} className="flex items-center gap-2">
+              <Link
+                to="/u/$username"
+                params={{ username: profileUsername }}
+                className="flex items-center gap-2"
+              >
                 <UserRound className="size-4" />
                 {profileLabel}
               </Link>
@@ -211,7 +221,10 @@ export function AppHeader() {
           </span>
         </div>
 
-        <nav aria-label={t("navigation.menu")} className="hidden min-w-0 items-center justify-center gap-0.5 min-[1320px]:flex">
+        <nav
+          aria-label={t("navigation.menu")}
+          className="hidden min-w-0 items-center justify-center gap-0.5 min-[1320px]:flex"
+        >
           {nav.map((item) => (
             <Link
               key={item.to}
@@ -226,13 +239,17 @@ export function AppHeader() {
         </nav>
 
         <div className="col-start-3 flex min-w-0 items-center justify-end gap-1 sm:gap-2">
-          <div className="hidden sm:block"><GlobalSearch /></div>
+          <div className="hidden sm:block">
+            <GlobalSearch />
+          </div>
           <div className="hidden items-center gap-2 min-[1500px]:flex">
             <LanguageSelector />
             <AppearanceQuickPanel />
           </div>
           <AudioControl />
-          <div className="hidden min-[1760px]:block"><AuthSection /></div>
+          <div className="hidden min-[1760px]:block">
+            <AuthSection />
+          </div>
           <button
             type="button"
             ref={menuButtonRef}
@@ -242,7 +259,11 @@ export function AppHeader() {
             aria-label={open ? t("navigation.closeMenu") : t("navigation.openMenu")}
             className="mgp-icon-button inline-flex size-11 shrink-0 items-center justify-center text-foreground min-[1760px]:hidden"
           >
-            {open ? <X aria-hidden="true" className="size-4" /> : <Menu aria-hidden="true" className="size-4" />}
+            {open ? (
+              <X aria-hidden="true" className="size-4" />
+            ) : (
+              <Menu aria-hidden="true" className="size-4" />
+            )}
           </button>
         </div>
       </div>
@@ -252,7 +273,10 @@ export function AppHeader() {
           id="site-mobile-navigation"
           className="mgp-mobile-panel max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t border-[var(--impar-line)] bg-surface px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] min-[1760px]:hidden"
         >
-          <nav aria-label={t("navigation.menu")} className="grid grid-cols-2 gap-1 sm:flex sm:flex-col">
+          <nav
+            aria-label={t("navigation.menu")}
+            className="grid grid-cols-2 gap-1 sm:flex sm:flex-col"
+          >
             {nav.map((item) => (
               <Link
                 key={item.to}
@@ -275,30 +299,65 @@ export function AppHeader() {
             </div>
             {!loading && !user ? (
               <div className="flex flex-col gap-2">
-                <Button type="button" variant="outline" onClick={() => void handleGoogleSignIn()} disabled={googleLoading}>
-                  <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-black">G</span>
-                  {googleLoading ? t("common.loading") : copy("Continuar com Google", "Continue with Google", "Continuar con Google")}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => void handleGoogleSignIn()}
+                  disabled={googleLoading}
+                >
+                  <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-black">
+                    G
+                  </span>
+                  {googleLoading
+                    ? t("common.loading")
+                    : copy("Continuar com Google", "Continue with Google", "Continuar con Google")}
                 </Button>
-                <Button asChild><Link to="/register" onClick={() => setOpen(false)}>{t("auth.register")}</Link></Button>
-                <Button variant="outline" asChild><Link to="/login" onClick={() => setOpen(false)}>{t("auth.login")}</Link></Button>
+                <Button asChild>
+                  <Link to="/register" onClick={() => setOpen(false)}>
+                    {t("auth.register")}
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link to="/login" onClick={() => setOpen(false)}>
+                    {t("auth.login")}
+                  </Link>
+                </Button>
               </div>
             ) : null}
             {!loading && user ? (
               <div className="flex flex-col gap-2">
                 {profileUsername ? (
                   <Button variant="outline" asChild>
-                    <Link to="/u/$username" params={{ username: profileUsername }} onClick={() => setOpen(false)}>
-                      <UserRound className="mr-2 size-4" />{profileLabel}
+                    <Link
+                      to="/u/$username"
+                      params={{ username: profileUsername }}
+                      onClick={() => setOpen(false)}
+                    >
+                      <UserRound className="mr-2 size-4" />
+                      {profileLabel}
                     </Link>
                   </Button>
                 ) : (
-                  <Button variant="outline" disabled><UserRound className="mr-2 size-4" />{profileLoading ? profileLabel : profileUnavailableLabel}</Button>
+                  <Button variant="outline" disabled>
+                    <UserRound className="mr-2 size-4" />
+                    {profileLoading ? profileLabel : profileUnavailableLabel}
+                  </Button>
                 )}
                 <Button variant="outline" asChild>
-                  <Link to="/settings/profile" onClick={() => setOpen(false)}><Settings className="mr-2 size-4" />{t("navigation.settings")}</Link>
+                  <Link to="/settings/profile" onClick={() => setOpen(false)}>
+                    <Settings className="mr-2 size-4" />
+                    {t("navigation.settings")}
+                  </Link>
                 </Button>
-                <Button variant="destructive" onClick={() => { void signOut(); setOpen(false); }}>
-                  <LogOut className="mr-2 size-4" />{t("auth.logout")}
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    void signOut();
+                    setOpen(false);
+                  }}
+                >
+                  <LogOut className="mr-2 size-4" />
+                  {t("auth.logout")}
                 </Button>
               </div>
             ) : null}

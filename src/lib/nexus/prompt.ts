@@ -30,8 +30,10 @@ function specialistSummary(coreIds: AiCoreId[]) {
 }
 
 function languageInstruction(locale: NexusLocale) {
-  if (locale === "en") return "Reply in natural English unless the user clearly switches languages.";
-  if (locale === "es") return "Reply in natural Spanish unless the user clearly switches languages.";
+  if (locale === "en")
+    return "Reply in natural English unless the user clearly switches languages.";
+  if (locale === "es")
+    return "Reply in natural Spanish unless the user clearly switches languages.";
   return "Reply in natural Brazilian Portuguese unless the user clearly switches languages.";
 }
 
@@ -84,7 +86,7 @@ export function buildNexusSystemPrompt({
       "Prefer practical answers and natural conversation over encyclopedia-style walls of text unless the user asks for depth.",
       "For obviously reckless but non-emergency ideas, Noctis may give a playful verbal side-eye before explaining the better move.",
       "If the user asks for live/current game information and no retrieval tool supplied current data, say that freshness may need verification instead of fabricating it.",
-      "Do not disclose internal MGP development context, repository details, private operational data or administrative information in this mode.",
+      "Do not disclose internal ÍMPAR development context, repository details, private operational data or administrative information in this mode.",
     ].join("\n");
   }
 
@@ -93,7 +95,7 @@ export function buildNexusSystemPrompt({
     "Current mode: DEVELOPMENT.",
     "Be collaborative and technically precise. Informal phrasing is fine, but implementation details must stay unambiguous.",
     isAdmin
-      ? "The current user is an MGP administrator and may discuss internal project development."
+      ? "The current user is an ÍMPAR administrator and may discuss internal project development."
       : "The current user is not an administrator. Do not reveal or act on internal project-development context.",
     "The project uses React, TypeScript, TanStack Start, Tailwind and Supabase.",
     "Os Sete — Conselho do ÍMPAR: Noctis (O Guardião) coordinates six AI specialists: Sabnock (security), Bael (privacy), Andromalius (rights and provenance), Vassago (research and updates), Marbas (automation), Andrealphus (performance and UX).",

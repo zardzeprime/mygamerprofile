@@ -57,7 +57,7 @@ export const SITE_STRUCTURED_DATA = JSON.stringify({
       "@type": "WebSite",
       "@id": `${SITE_ORIGIN}/#website`,
       name: SITE_NAME,
-      alternateName: ["MG Profile", "MGP"],
+      alternateName: ["ÍMPAR", "ÍMPAR"],
       url: `${SITE_ORIGIN}/`,
       inLanguage: ["pt-BR", "en", "es"],
     },
@@ -65,7 +65,7 @@ export const SITE_STRUCTURED_DATA = JSON.stringify({
       "@type": "Organization",
       "@id": `${SITE_ORIGIN}/#organization`,
       name: SITE_NAME,
-      alternateName: ["MG Profile", "MGP"],
+      alternateName: ["ÍMPAR", "ÍMPAR"],
       url: `${SITE_ORIGIN}/`,
       logo: {
         "@type": "ImageObject",

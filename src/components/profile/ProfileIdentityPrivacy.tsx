@@ -173,14 +173,22 @@ export function ProfileIdentityPrivacy({ userId, locale }: { userId: string; loc
 
       <div className="mt-5 grid gap-5 lg:grid-cols-3">
         <IdentityField
-          label={copy("Gênero / como quer se identificar", "Gender / how you identify", "Género / cómo te identificas")}
+          label={copy(
+            "Gênero / como quer se identificar",
+            "Gender / how you identify",
+            "Género / cómo te identificas",
+          )}
           visibility={state.genderVisibility}
-          onVisibility={(visibility) => setState((current) => ({ ...current, genderVisibility: visibility }))}
+          onVisibility={(visibility) =>
+            setState((current) => ({ ...current, genderVisibility: visibility }))
+          }
           copy={copy}
         >
           <Input
             value={state.genderLabel}
-            onChange={(event) => setState((current) => ({ ...current, genderLabel: event.target.value }))}
+            onChange={(event) =>
+              setState((current) => ({ ...current, genderLabel: event.target.value }))
+            }
             maxLength={60}
             placeholder={copy("Opcional", "Optional", "Opcional")}
           />
@@ -189,22 +197,32 @@ export function ProfileIdentityPrivacy({ userId, locale }: { userId: string; loc
         <IdentityField
           label={copy("País", "Country", "País")}
           visibility={state.countryVisibility}
-          onVisibility={(visibility) => setState((current) => ({ ...current, countryVisibility: visibility }))}
+          onVisibility={(visibility) =>
+            setState((current) => ({ ...current, countryVisibility: visibility }))
+          }
           copy={copy}
         >
           <Select
             value={state.countryCode || "none"}
-            onValueChange={(value) => setState((current) => ({ ...current, countryCode: value === "none" ? "" : value }))}
+            onValueChange={(value) =>
+              setState((current) => ({ ...current, countryCode: value === "none" ? "" : value }))
+            }
           >
             <SelectTrigger>
-              <SelectValue placeholder={copy("Selecionar país", "Select country", "Seleccionar país")}>
+              <SelectValue
+                placeholder={copy("Selecionar país", "Select country", "Seleccionar país")}
+              >
                 {selectedCountryLabel || copy("Não informar", "Do not specify", "No indicar")}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="none">{copy("Não informar", "Do not specify", "No indicar")}</SelectItem>
+              <SelectItem value="none">
+                {copy("Não informar", "Do not specify", "No indicar")}
+              </SelectItem>
               {COMMON_COUNTRIES.map(([code, name]) => (
-                <SelectItem key={code} value={code}>{countryFlag(code)} {name}</SelectItem>
+                <SelectItem key={code} value={code}>
+                  {countryFlag(code)} {name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -213,12 +231,16 @@ export function ProfileIdentityPrivacy({ userId, locale }: { userId: string; loc
         <IdentityField
           label={copy("Estado / província", "State / province", "Estado / provincia")}
           visibility={state.subdivisionVisibility}
-          onVisibility={(visibility) => setState((current) => ({ ...current, subdivisionVisibility: visibility }))}
+          onVisibility={(visibility) =>
+            setState((current) => ({ ...current, subdivisionVisibility: visibility }))
+          }
           copy={copy}
         >
           <Input
             value={state.subdivisionCode}
-            onChange={(event) => setState((current) => ({ ...current, subdivisionCode: event.target.value }))}
+            onChange={(event) =>
+              setState((current) => ({ ...current, subdivisionCode: event.target.value }))
+            }
             maxLength={12}
             placeholder={copy("Ex.: BA, SP, CA", "e.g. BA, SP, CA", "Ej.: BA, SP, CA")}
           />
@@ -226,7 +248,11 @@ export function ProfileIdentityPrivacy({ userId, locale }: { userId: string; loc
       </div>
 
       {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
-      {saved ? <p className="mt-4 text-sm text-success">{copy("Privacidade salva.", "Privacy saved.", "Privacidad guardada.")}</p> : null}
+      {saved ? (
+        <p className="mt-4 text-sm text-success">
+          {copy("Privacidade salva.", "Privacy saved.", "Privacidad guardada.")}
+        </p>
+      ) : null}
 
       <div className="mt-5 flex items-center justify-between gap-4 border-t border-border pt-4">
         <p className="text-xs leading-5 text-muted-foreground">
@@ -237,7 +263,9 @@ export function ProfileIdentityPrivacy({ userId, locale }: { userId: string; loc
           )}
         </p>
         <Button type="button" onClick={save} disabled={saving} className="shrink-0">
-          {saving ? copy("Salvando…", "Saving…", "Guardando…") : copy("Salvar privacidade", "Save privacy", "Guardar privacidad")}
+          {saving
+            ? copy("Salvando…", "Saving…", "Guardando…")
+            : copy("Salvar privacidade", "Save privacy", "Guardar privacidad")}
         </Button>
       </div>
     </section>
@@ -266,7 +294,11 @@ function IdentityField({
         onClick={() => onVisibility(visibility === "public" ? "private" : "public")}
         className="mt-2 flex items-center gap-2 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
       >
-        {visibility === "public" ? <Eye className="size-3.5 text-gold-strong" /> : <EyeOff className="size-3.5" />}
+        {visibility === "public" ? (
+          <Eye className="size-3.5 text-gold-strong" />
+        ) : (
+          <EyeOff className="size-3.5" />
+        )}
         {visibility === "public"
           ? copy("Visível no perfil", "Visible on profile", "Visible en el perfil")
           : copy("Privado", "Private", "Privado")}

@@ -28,7 +28,7 @@ export const DARK_SOULS_III_BOSS_VITALS: Record<string, SoulsBossVitals> = {
   "lothric-younger-prince-and-lorian-elder-prince": {
     healthNg: "Lorian 3,436 · Lothric 4,294",
     soulsNg: "85,000",
-    note: "O encontro usa dois alvos principais em fases diferentes; o MGP mantém os valores separados.",
+    note: "O encontro usa dois alvos principais em fases diferentes; o ÍMPAR mantém os valores separados.",
   },
   "ancient-wyvern": { healthNg: "7,873", soulsNg: "70,000" },
   "the-nameless-king": {

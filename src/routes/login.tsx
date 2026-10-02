@@ -14,7 +14,7 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({
     meta: [
-      { title: "Entrar — MGP" },
+      { title: "Entrar — ÍMPAR" },
       { name: "description", content: "Entre na sua conta do ÍMPAR." },
       { name: "robots", content: "noindex, follow" },
     ],
@@ -98,7 +98,9 @@ function LoginPage() {
             onClick={handleGoogle}
             disabled={oauthLoading || loading}
           >
-            <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-bold">G</span>
+            <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-bold">
+              G
+            </span>
             {oauthLoading
               ? t("common.loading")
               : copy("Continuar com Google", "Continue with Google", "Continuar con Google")}

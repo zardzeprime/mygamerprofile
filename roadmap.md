@@ -112,3 +112,11 @@
 - [ ] Expand profile cosmetics, ownership/entitlements and premium presentation without pay-to-win mechanics
 - [ ] Introduce controlled animated profile backgrounds and cosmetic inventory
 - [ ] Deepen community publishing, moderation and creator provenance
+
+# ÍMPAR — primeira etapa de rebranding público
+
+- [x] Substituir nomes antigos nas superfícies visíveis por ÍMPAR
+- [x] Atualizar metadata, acessibilidade, autenticação e e-mails públicos
+- [x] Preservar domínio, callbacks, chaves e identificadores técnicos legados
+- [x] Validar páginas públicas em desktop/mobile, lint e compilação
+- [x] Registrar a revisão dos especialistas no estado do Conselho

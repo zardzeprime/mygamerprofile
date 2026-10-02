@@ -34,10 +34,6 @@ function isLocale(value: string | null): value is Locale {
   return value !== null && (LOCALES as readonly string[]).includes(value);
 }
 
-function applyBrandName(value: string) {
-  return value.replace(/My Gamer Profile/g, "MG Profile").replace(/\bMGP\b/g, "MG Profile");
-}
-
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
 
@@ -45,7 +41,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     try {
       const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
       if (isLocale(stored)) setLocaleState(stored);
-    } catch { /* Session language remains available when storage is blocked. */ }
+    } catch {
+      /* Session language remains available when storage is blocked. */
+    }
   }, []);
 
   useEffect(() => {
@@ -54,12 +52,15 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
-    try { window.localStorage.setItem(LOCALE_STORAGE_KEY, next); } catch { /* Keep the in-memory preference. */ }
+    try {
+      window.localStorage.setItem(LOCALE_STORAGE_KEY, next);
+    } catch {
+      /* Keep the in-memory preference. */
+    }
   }, []);
 
   const t = useCallback(
-    (key: TranslationKey) =>
-      applyBrandName(translations[locale][key] ?? translations[DEFAULT_LOCALE][key] ?? key),
+    (key: TranslationKey) => translations[locale][key] ?? translations[DEFAULT_LOCALE][key] ?? key,
     [locale],
   );
 
@@ -73,4 +74,3 @@ export function useI18n(): I18nContextValue {
   if (!ctx) throw new Error("useI18n must be used inside I18nProvider");
   return ctx;
 }
-

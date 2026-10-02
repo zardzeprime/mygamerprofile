@@ -6,7 +6,8 @@ type Entry = { settings: ProPlayerSettings; source: EsportsSource };
 export function mergeSettings(...layers: Record<string, Entry>[]) {
   const result: Record<string, { settings: ProPlayerSettings; sources: EsportsSource[] }> = {};
   for (const handle of new Set(layers.flatMap((layer) => Object.keys(layer)))) {
-    const entries = layers.flatMap((layer) => layer[handle] ? [layer[handle]] : [])
+    const entries = layers
+      .flatMap((layer) => (layer[handle] ? [layer[handle]] : []))
       .sort((a, b) => a.source.verifiedAt.localeCompare(b.source.verifiedAt));
     const settings: ProPlayerSettings = {};
     const provenance = new Map<string, EsportsSource>();
@@ -21,7 +22,12 @@ export function mergeSettings(...layers: Record<string, Entry>[]) {
       settings.edpi = Math.round(settings.dpi * settings.sensitivity * 1000) / 1000;
       provenance.delete("edpi");
     }
-    result[handle] = { settings, sources: [...new Map([...provenance.values()].map((source) => [source.url, source])).values()] };
+    result[handle] = {
+      settings,
+      sources: [
+        ...new Map([...provenance.values()].map((source) => [source.url, source])).values(),
+      ],
+    };
   }
   return result;
 }

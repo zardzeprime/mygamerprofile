@@ -31,10 +31,7 @@ import {
   type SoulsDamageChannel,
   type SoulsStatusChannel,
 } from "@/data/soulsBossDefenses";
-import {
-  DS3_BOSS_VITALS_SOURCE,
-  getDs3BossVitals,
-} from "@/data/soulsBossVitals";
+import { DS3_BOSS_VITALS_SOURCE, getDs3BossVitals } from "@/data/soulsBossVitals";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
@@ -101,16 +98,16 @@ export function SoulsBossExplorer({
             <div className="max-w-3xl">
               <p className="section-kicker flex items-center gap-2 text-gold-strong">
                 <BookOpen className="size-4" />
-                {copy("ENCICLOPÉDIA MGP", "MGP ENCYCLOPEDIA", "ENCICLOPEDIA MGP")}
+                {copy("ENCICLOPÉDIA ÍMPAR", "ÍMPAR ENCYCLOPEDIA", "ENCICLOPEDIA ÍMPAR")}
               </p>
               <h2 className="mt-3 font-display text-3xl font-bold text-foreground sm:text-4xl">
                 {copy(`Chefes de ${game.name}`, `${game.name} bosses`, `Jefes de ${game.name}`)}
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base">
                 {copy(
-                  "Uma leitura editorial dos encontros, fases e sistemas de combate. As screenshots próprias do MGP ainda serão produzidas e padronizadas.",
-                  "An editorial reading of encounters, phases and combat systems. Original MGP gameplay screenshots are still being produced and standardized.",
-                  "Una lectura editorial de encuentros, fases y sistemas de combate. Las capturas propias de MGP aún se están produciendo y estandarizando.",
+                  "Uma leitura editorial dos encontros, fases e sistemas de combate. As screenshots próprias do ÍMPAR ainda serão produzidas e padronizadas.",
+                  "An editorial reading of encounters, phases and combat systems. Original ÍMPAR gameplay screenshots are still being produced and standardized.",
+                  "Una lectura editorial de encuentros, fases y sistemas de combate. Las capturas propias de ÍMPAR aún se están produciendo y estandarizando.",
                 )}
               </p>
             </div>
@@ -135,8 +132,12 @@ export function SoulsBossExplorer({
                 </p>
                 <p className="mt-1 text-sm font-semibold text-foreground">
                   {selectedImage
-                    ? copy("Procedência registrada", "Provenance recorded", "Procedencia registrada")
-                    : copy("Fallback MGP", "MGP fallback", "Fallback MGP")}
+                    ? copy(
+                        "Procedência registrada",
+                        "Provenance recorded",
+                        "Procedencia registrada",
+                      )
+                    : copy("Fallback ÍMPAR", "ÍMPAR fallback", "Fallback ÍMPAR")}
                 </p>
               </div>
               <Sparkles className="size-5 text-gold-strong" />
@@ -203,7 +204,9 @@ export function SoulsBossExplorer({
             ) : (
               <div className="flex aspect-[3/4] flex-col items-center justify-center rounded-lg border border-dashed border-gold/25 bg-[radial-gradient(circle_at_top,hsl(var(--gold)/0.08),transparent_58%)] p-6 text-center">
                 <Swords className="size-10 text-gold-strong" />
-                <p className="mt-4 font-display text-2xl font-bold text-foreground">{selected.name}</p>
+                <p className="mt-4 font-display text-2xl font-bold text-foreground">
+                  {selected.name}
+                </p>
               </div>
             )}
           </aside>
@@ -306,11 +309,18 @@ export function SoulsBossExplorer({
                       <ChevronRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
                     </span>
                     <span className="mt-3 line-clamp-2 block text-sm leading-6 text-muted-foreground">
-                      {gameSlug === "dark-souls-iii" ? getDs3BossEditorialSummary(boss.slug, locale) ?? boss.shortContext[locale] : boss.shortContext[locale]}
+                      {gameSlug === "dark-souls-iii"
+                        ? (getDs3BossEditorialSummary(boss.slug, locale) ??
+                          boss.shortContext[locale])
+                        : boss.shortContext[locale]}
                     </span>
                     <span className="mt-3 block text-[0.67rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                       {image
-                        ? copy("Arte de referência · fonte registrada", "Reference art · source recorded", "Arte de referencia · fuente registrada")
+                        ? copy(
+                            "Arte de referência · fonte registrada",
+                            "Reference art · source recorded",
+                            "Arte de referencia · fuente registrada",
+                          )
                         : copy("Arte em revisão", "Artwork in review", "Arte en revisión")}
                     </span>
                     <span className="mt-3 flex flex-wrap gap-1.5">
@@ -338,9 +348,9 @@ export function SoulsBossExplorer({
 
       <p className="rounded-lg border border-border bg-muted/15 p-4 text-xs leading-5 text-muted-foreground">
         {copy(
-          "Nota editorial: os textos do MG Profile são resumos próprios baseados em fatos do jogo e fontes de pesquisa. Artes externas usadas no beta mantêm procedência visível; capturas próprias ainda poderão substituir essas referências depois.",
-          "Editorial note: MG Profile texts are original summaries based on game facts and research sources. External artwork used during beta retains visible provenance; original captures may replace those references later.",
-          "Nota editorial: los textos de MG Profile son resúmenes propios basados en hechos del juego y fuentes de investigación. El arte externo usado en beta mantiene procedencia visible; capturas propias podrán sustituir esas referencias después.",
+          "Nota editorial: os textos do ÍMPAR são resumos próprios baseados em fatos do jogo e fontes de pesquisa. Artes externas usadas no beta mantêm procedência visível; capturas próprias ainda poderão substituir essas referências depois.",
+          "Editorial note: ÍMPAR texts are original summaries based on game facts and research sources. External artwork used during beta retains visible provenance; original captures may replace those references later.",
+          "Nota editorial: los textos de ÍMPAR son resúmenes propios basados en hechos del juego y fuentes de investigación. El arte externo usado en beta mantiene procedencia visible; capturas propias podrán sustituir esas referencias después.",
         )}
       </p>
     </div>
@@ -357,10 +367,8 @@ function BossDetail({
   gameSlug: SoulsGameSlug;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const defenseProfile =
-    gameSlug === "dark-souls-iii" ? getDs3BossDefenseProfile(boss.slug) : null;
-  const vitals =
-    gameSlug === "dark-souls-iii" ? getDs3BossVitals(boss.slug) : null;
+  const defenseProfile = gameSlug === "dark-souls-iii" ? getDs3BossDefenseProfile(boss.slug) : null;
+  const vitals = gameSlug === "dark-souls-iii" ? getDs3BossVitals(boss.slug) : null;
   const systemTitle =
     gameSlug === "dark-souls-iii"
       ? copy(
@@ -436,7 +444,11 @@ function BossDetail({
 
       <div className="mt-7 grid gap-4 md:grid-cols-2">
         <InfoCard icon={BookOpen} title={copy("Contexto", "Context", "Contexto")}>
-          <p>{gameSlug === "dark-souls-iii" ? getDs3BossEditorialSummary(boss.slug, locale) ?? boss.shortContext[locale] : boss.shortContext[locale]}</p>
+          <p>
+            {gameSlug === "dark-souls-iii"
+              ? (getDs3BossEditorialSummary(boss.slug, locale) ?? boss.shortContext[locale])
+              : boss.shortContext[locale]}
+          </p>
         </InfoCard>
         <InfoCard icon={Layers3} title={copy("Fases", "Phases", "Fases")}>
           <p>{boss.phases[locale]}</p>
@@ -449,7 +461,11 @@ function BossDetail({
             <div>
               <h4 className="flex items-center gap-2 font-display text-lg font-bold text-foreground">
                 <ShieldCheck className="size-4 text-gold-strong" />
-                {copy("Defesas, fraquezas e status", "Defense, weaknesses & status", "Defensas, debilidades y estados")}
+                {copy(
+                  "Defesas, fraquezas e status",
+                  "Defense, weaknesses & status",
+                  "Defensas, debilidades y estados",
+                )}
               </h4>
               <p className="mt-1 text-xs leading-5 text-muted-foreground">
                 {copy(
@@ -472,7 +488,10 @@ function BossDetail({
 
           <div className="mt-4 space-y-3">
             {defenseProfile.variants.map((variant) => (
-              <div key={variant.label} className="rounded-xl border border-border bg-background/45 p-3.5">
+              <div
+                key={variant.label}
+                className="rounded-xl border border-border bg-background/45 p-3.5"
+              >
                 <p className="text-xs font-black uppercase tracking-[0.08em] text-foreground">
                   {variant.label}
                 </p>
@@ -482,7 +501,9 @@ function BossDetail({
                       {copy("Absorção", "Absorption", "Absorción")}
                     </p>
                     <div className="mt-2 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
-                      {(Object.entries(variant.absorption) as Array<[SoulsDamageChannel, number]>).map(([channel, value]) => (
+                      {(
+                        Object.entries(variant.absorption) as Array<[SoulsDamageChannel, number]>
+                      ).map(([channel, value]) => (
                         <div
                           key={channel}
                           className={cn(
@@ -497,8 +518,14 @@ function BossDetail({
                           <p className="text-[0.52rem] font-black uppercase tracking-[0.08em] text-muted-foreground">
                             {damageChannelLabel(channel, locale)}
                           </p>
-                          <p className={cn("mt-0.5 text-sm font-black", value < 0 ? "text-emerald-300" : "text-foreground")}>
-                            {value > 0 ? "+" : ""}{value}%
+                          <p
+                            className={cn(
+                              "mt-0.5 text-sm font-black",
+                              value < 0 ? "text-emerald-300" : "text-foreground",
+                            )}
+                          >
+                            {value > 0 ? "+" : ""}
+                            {value}%
                           </p>
                         </div>
                       ))}
@@ -512,14 +539,17 @@ function BossDetail({
                       {copy("Status / limiar", "Status / threshold", "Estado / umbral")}
                     </p>
                     <div className="mt-2 flex flex-wrap gap-1.5">
-                      {(Object.entries(variant.status) as Array<[SoulsStatusChannel, number | "immune"]>).map(([channel, value]) => (
+                      {(
+                        Object.entries(variant.status) as Array<
+                          [SoulsStatusChannel, number | "immune"]
+                        >
+                      ).map(([channel, value]) => (
                         <span
                           key={channel}
                           className="rounded-full border border-border bg-muted/10 px-2.5 py-1 text-[0.66rem] font-semibold text-muted-foreground"
                         >
-                          {statusChannelLabel(channel, locale)} · {value === "immune"
-                            ? copy("Imune", "Immune", "Inmune")
-                            : value}
+                          {statusChannelLabel(channel, locale)} ·{" "}
+                          {value === "immune" ? copy("Imune", "Immune", "Inmune") : value}
                         </span>
                       ))}
                     </div>
@@ -527,14 +557,18 @@ function BossDetail({
                 ) : null}
 
                 {variant.note ? (
-                  <p className="mt-3 text-[0.66rem] leading-5 text-muted-foreground">{variant.note}</p>
+                  <p className="mt-3 text-[0.66rem] leading-5 text-muted-foreground">
+                    {variant.note}
+                  </p>
                 ) : null}
               </div>
             ))}
           </div>
 
           {defenseProfile.note ? (
-            <p className="mt-3 text-[0.66rem] leading-5 text-muted-foreground">{defenseProfile.note}</p>
+            <p className="mt-3 text-[0.66rem] leading-5 text-muted-foreground">
+              {defenseProfile.note}
+            </p>
           ) : null}
         </section>
       ) : null}

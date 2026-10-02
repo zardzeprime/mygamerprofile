@@ -10,10 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/connect/steam/callback")({
   component: SteamCallbackPage,
   head: () => ({
-    meta: [
-      { title: "Steam — ÍMPAR" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Steam — ÍMPAR" }, { name: "robots", content: "noindex, nofollow" }],
   }),
 });
 
@@ -108,10 +105,18 @@ function SteamCallbackPage() {
         <p className="section-kicker mt-5">ÍMPAR / STEAM</p>
         <h1 className="mt-2 font-display text-2xl font-semibold">
           {status === "working"
-            ? copy("Confirmando sua Steam", "Confirming your Steam account", "Confirmando tu cuenta de Steam")
+            ? copy(
+                "Confirmando sua Steam",
+                "Confirming your Steam account",
+                "Confirmando tu cuenta de Steam",
+              )
             : status === "success"
               ? copy("Steam conectada", "Steam connected", "Steam conectada")
-              : copy("Não foi possível conectar", "Could not connect Steam", "No se pudo conectar Steam")}
+              : copy(
+                  "Não foi possível conectar",
+                  "Could not connect Steam",
+                  "No se pudo conectar Steam",
+                )}
         </h1>
         <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">
           {status === "working"
@@ -135,10 +140,7 @@ function SteamCallbackPage() {
   );
 }
 
-function formatSteamError(
-  raw: string,
-  copy: (pt: string, en: string, es: string) => string,
-) {
+function formatSteamError(raw: string, copy: (pt: string, en: string, es: string) => string) {
   if (raw.includes("STEAM_ACCOUNT_ALREADY_LINKED")) {
     return copy(
       "Essa conta Steam já está vinculada a outro perfil do ÍMPAR.",

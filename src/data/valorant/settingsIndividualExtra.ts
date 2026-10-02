@@ -11,7 +11,7 @@ function p(url: string, settings: ProPlayerSettings, note?: string): RecordEntry
       url,
       label: "ProSettings.net",
       verifiedAt: VERIFIED_AT,
-      note: note ?? "Individual VALORANT settings and gear page checked for MGP.",
+      note: note ?? "Individual VALORANT settings and gear page checked for ÍMPAR.",
     },
   };
 }
@@ -22,116 +22,210 @@ function p(url: string, settings: ProPlayerSettings, note?: string): RecordEntry
  * long-standing hand-verified settings.ts records still remain the final layer.
  */
 export const INDIVIDUAL_EXTRA_SETTINGS: Record<string, RecordEntry> = {
-  reduxx: p("https://prosettings.net/players/reduxx/", {
-    ...EXTRA_VERIFIED_SETTINGS["reduxx"]?.settings,
-    crosshairCode: "0;P;o;1;d;1;0b;0;1b;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained."),
-  jonahp: p("https://prosettings.net/players/jonahp/", {
-    ...EXTRA_VERIFIED_SETTINGS["jonahp"]?.settings,
-    crosshairCode: "0;P;c;4;h;0;0a;1;0f;0;1b;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained."),
-  marved: p("https://prosettings.net/players/marved/", {
-    crosshairCode: "0;P;o;1;0l;4;0o;0;0a;1;0f;0;1b;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair checked on the individual player page on 2026-09-18; other sourced fields remain supplied by older merge layers."),
-  valyn: p("https://prosettings.net/players/valyn/", {
-    ...EXTRA_VERIFIED_SETTINGS["valyn"]?.settings,
-    crosshairCode: "0;p;0;s;1;P;c;7;o;1;0t;1;0l;2;0v;2;0o;2;0a;1;0f;0;1b;0;A;c;7;h;0;0l;4;0v;4;0o;0;0a;1;0f;0;1b;0;S;s;1.019",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained."),
-  jawgemo: p("https://prosettings.net/players/jawgemo/", {
-    ...EXTRA_VERIFIED_SETTINGS["jawgemo"]?.settings,
-    crosshairCode: "0;s;1;P;o;1;d;1;f;0;m;1;0l;2;0v;1;0g;1;0o;0;0a;1;0f;0;1b;0;S;s;0.652;o;1",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained."),
-  trent: p("https://prosettings.net/players/trent/", {
-    ...EXTRA_VERIFIED_SETTINGS["trent"]?.settings,
-    crosshairCode: "0;P;o;1;0l;3;0o;2;0a;1;0f;0;1b;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained."),
-  leaf: p("https://prosettings.net/players/leaf/", {
-    crosshairCode: "0;P;c;8;u;FF99FFFF;h;0;b;1;0l;8;0o;1;0a;1;0f;0;1t;4;1l;0;1o;3;1a;1;1m;0;1f;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair checked on the individual player page on 2026-09-18; other sourced fields remain supplied by older merge layers."),
-  keznit: p("https://prosettings.net/players/keznit/", {
-    crosshairCode: "0;p;0;c;1;P;c;5;h;0;0l;2;0o;1;0a;1;0f;0;1b;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair checked on the individual player page on 2026-09-18; other sourced fields remain supplied by older merge layers."),
-  asuna: p("https://prosettings.net/players/asuna/", {
-    ...EXTRA_VERIFIED_SETTINGS["asuna"]?.settings,
-    crosshairCode: "0;P;o;1;m;1;0t;1;0l;2;0o;2;0a;1;0f;0;1t;1;1o;3;1a;1;1m;0;1f;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
-  bang: p("https://prosettings.net/players/bang/", {
-    ...EXTRA_VERIFIED_SETTINGS["bang"]?.settings,
-    crosshairCode: "0;s;1;P;o;1;d;1;f;0;0b;0;1b;0;S;o;1",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
-  zellsis: p("https://prosettings.net/players/zellsis/", {
-    ...EXTRA_VERIFIED_SETTINGS["zellsis"]?.settings,
-    crosshairCode: "0;P;c;5;h;0;0t;5;0l;1;0o;2;0a;1;0f;0;1b;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
-  oxy: p("https://prosettings.net/players/oxy/", {
-    ...EXTRA_VERIFIED_SETTINGS["oxy"]?.settings,
-    crosshairCode: "0;s;1;P;c;5;o;1;d;1;0b;0;1b;0;S;o;1",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
-  supamen: p("https://prosettings.net/players/supamen/", {
-    ...EXTRA_VERIFIED_SETTINGS["supamen"]?.settings,
-    crosshairCode: "0;P;c;7;o;1;d;1;a;0.943;0t;0;0l;1;0o;0;0a;0;0f;0;1b;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
-  dgzin: p("https://prosettings.net/players/dgzin/", {
-    ...EXTRA_VERIFIED_SETTINGS["dgzin"]?.settings,
-    crosshairCode: "0;p;0;s;1;P;c;4;o;0.05;f;0;0l;3;0v;3;0g;1;0o;1;0a;1;0f;0;1b;0;A;o;1;d;1;0b;0;1b;0;S;s;1.81;o;1",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
-  shyy: p("https://prosettings.net/players/shyy/", {
-    ...EXTRA_VERIFIED_SETTINGS["shyy"]?.settings,
-    crosshairCode: "0;P;c;8;u;000000FF;h;0;b;1;0l;4;0o;0;0a;1;0f;0;1b;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
-  koalanoob: p("https://prosettings.net/players/koalanoob/", {
-    ...EXTRA_VERIFIED_SETTINGS["koalanoob"]?.settings,
-    crosshairCode: "0;s;1;P;c;8;u;AD3150FF;h;0;b;1;0l;5;0o;1;0a;1;0f;0;1b;0;S;c;1",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
-  mwzera: p("https://prosettings.net/players/mwzera/", {
-    ...EXTRA_VERIFIED_SETTINGS["mwzera"]?.settings,
-    crosshairCode: "0;P;c;4;h;0;f;0;0l;2;0o;2;0a;1;0f;0;1b;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
-  heat: p("https://prosettings.net/players/heat/", {
-    ...EXTRA_VERIFIED_SETTINGS["heat"]?.settings,
-    crosshairCode: "0;s;1;P;o;1;d;1;f;0;0b;0;1b;0;S;s;1.4;o;1",
-  }, "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained."),
-  kingg: p("https://prosettings.net/players/kingg/", {
-    ...EXTRA_VERIFIED_SETTINGS["kingg"]?.settings,
-    crosshairCode: "0;P;c;8;o;1;d;1;b;1;z;1;0t;1;0l;1;0o;0;0a;1;0f;0;1b;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list."),
-  spike: p("https://prosettings.net/players/spikezin/", {
-    ...EXTRA_VERIFIED_SETTINGS["spike"]?.settings,
-    crosshairCode: "0;s;1;P;c;8;u;000000FF;h;0;b;1;f;0;0l;4;0o;0;0a;1;0f;0;1b;0;S;c;0;s;0.55",
-  }, "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list."),
-  blowz: p("https://prosettings.net/players/blowz/", {
-    ...EXTRA_VERIFIED_SETTINGS["blowz"]?.settings,
-    crosshairCode: "0;s;1;P;o;1;d;1;0b;0;1b;0;S;c;2;s;0.984;o;1",
-    displayMode: "Fullscreen",
-  }, "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list."),
-  neon: p("https://prosettings.net/players/neon/", {
-    ...EXTRA_VERIFIED_SETTINGS["neon"]?.settings,
-    crosshairCode: "0;P;c;8;o;1;d;1;b;1;z;1;0t;1;0l;1;0o;0;0a;1;0f;0;1b;0",
-    displayMode: "Fullscreen",
-  }, "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list."),
-  sato: p("https://prosettings.net/players/sato/", {
-    ...EXTRA_VERIFIED_SETTINGS["sato"]?.settings,
-    crosshairCode: "0;s;1;P;h;0;f;0;m;1;0l;5;0o;1;0a;1;0f;0;1b;0;S;c;0;o;1",
-    displayMode: "Fullscreen",
-  }, "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list."),
+  reduxx: p(
+    "https://prosettings.net/players/reduxx/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["reduxx"]?.settings,
+      crosshairCode: "0;P;o;1;d;1;0b;0;1b;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained.",
+  ),
+  jonahp: p(
+    "https://prosettings.net/players/jonahp/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["jonahp"]?.settings,
+      crosshairCode: "0;P;c;4;h;0;0a;1;0f;0;1b;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained.",
+  ),
+  marved: p(
+    "https://prosettings.net/players/marved/",
+    {
+      crosshairCode: "0;P;o;1;0l;4;0o;0;0a;1;0f;0;1b;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair checked on the individual player page on 2026-09-18; other sourced fields remain supplied by older merge layers.",
+  ),
+  valyn: p(
+    "https://prosettings.net/players/valyn/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["valyn"]?.settings,
+      crosshairCode:
+        "0;p;0;s;1;P;c;7;o;1;0t;1;0l;2;0v;2;0o;2;0a;1;0f;0;1b;0;A;c;7;h;0;0l;4;0v;4;0o;0;0a;1;0f;0;1b;0;S;s;1.019",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained.",
+  ),
+  jawgemo: p(
+    "https://prosettings.net/players/jawgemo/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["jawgemo"]?.settings,
+      crosshairCode: "0;s;1;P;o;1;d;1;f;0;m;1;0l;2;0v;1;0g;1;0o;0;0a;1;0f;0;1b;0;S;s;0.652;o;1",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained.",
+  ),
+  trent: p(
+    "https://prosettings.net/players/trent/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["trent"]?.settings,
+      crosshairCode: "0;P;o;1;0l;3;0o;2;0a;1;0f;0;1b;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; previously verified fields retained.",
+  ),
+  leaf: p(
+    "https://prosettings.net/players/leaf/",
+    {
+      crosshairCode: "0;P;c;8;u;FF99FFFF;h;0;b;1;0l;8;0o;1;0a;1;0f;0;1t;4;1l;0;1o;3;1a;1;1m;0;1f;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair checked on the individual player page on 2026-09-18; other sourced fields remain supplied by older merge layers.",
+  ),
+  keznit: p(
+    "https://prosettings.net/players/keznit/",
+    {
+      crosshairCode: "0;p;0;c;1;P;c;5;h;0;0l;2;0o;1;0a;1;0f;0;1b;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair checked on the individual player page on 2026-09-18; other sourced fields remain supplied by older merge layers.",
+  ),
+  asuna: p(
+    "https://prosettings.net/players/asuna/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["asuna"]?.settings,
+      crosshairCode: "0;P;o;1;m;1;0t;1;0l;2;0o;2;0a;1;0f;0;1t;1;1o;3;1a;1;1m;0;1f;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained.",
+  ),
+  bang: p(
+    "https://prosettings.net/players/bang/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["bang"]?.settings,
+      crosshairCode: "0;s;1;P;o;1;d;1;f;0;0b;0;1b;0;S;o;1",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained.",
+  ),
+  zellsis: p(
+    "https://prosettings.net/players/zellsis/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["zellsis"]?.settings,
+      crosshairCode: "0;P;c;5;h;0;0t;5;0l;1;0o;2;0a;1;0f;0;1b;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained.",
+  ),
+  oxy: p(
+    "https://prosettings.net/players/oxy/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["oxy"]?.settings,
+      crosshairCode: "0;s;1;P;c;5;o;1;d;1;0b;0;1b;0;S;o;1",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained.",
+  ),
+  supamen: p(
+    "https://prosettings.net/players/supamen/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["supamen"]?.settings,
+      crosshairCode: "0;P;c;7;o;1;d;1;a;0.943;0t;0;0l;1;0o;0;0a;0;0f;0;1b;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained.",
+  ),
+  dgzin: p(
+    "https://prosettings.net/players/dgzin/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["dgzin"]?.settings,
+      crosshairCode:
+        "0;p;0;s;1;P;c;4;o;0.05;f;0;0l;3;0v;3;0g;1;0o;1;0a;1;0f;0;1b;0;A;o;1;d;1;0b;0;1b;0;S;s;1.81;o;1",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained.",
+  ),
+  shyy: p(
+    "https://prosettings.net/players/shyy/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["shyy"]?.settings,
+      crosshairCode: "0;P;c;8;u;000000FF;h;0;b;1;0l;4;0o;0;0a;1;0f;0;1b;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained.",
+  ),
+  koalanoob: p(
+    "https://prosettings.net/players/koalanoob/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["koalanoob"]?.settings,
+      crosshairCode: "0;s;1;P;c;8;u;AD3150FF;h;0;b;1;0l;5;0o;1;0a;1;0f;0;1b;0;S;c;1",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained.",
+  ),
+  mwzera: p(
+    "https://prosettings.net/players/mwzera/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["mwzera"]?.settings,
+      crosshairCode: "0;P;c;4;h;0;f;0;0l;2;0o;2;0a;1;0f;0;1b;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained.",
+  ),
+  heat: p(
+    "https://prosettings.net/players/heat/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["heat"]?.settings,
+      crosshairCode: "0;s;1;P;o;1;d;1;f;0;0b;0;1b;0;S;s;1.4;o;1",
+    },
+    "Crosshair rechecked on the individual player page on 2026-09-18; consolidated gear/settings retained.",
+  ),
+  kingg: p(
+    "https://prosettings.net/players/kingg/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["kingg"]?.settings,
+      crosshairCode: "0;P;c;8;o;1;d;1;b;1;z;1;0t;1;0l;1;0o;0;0a;1;0f;0;1b;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list.",
+  ),
+  spike: p(
+    "https://prosettings.net/players/spikezin/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["spike"]?.settings,
+      crosshairCode: "0;s;1;P;c;8;u;000000FF;h;0;b;1;f;0;0l;4;0o;0;0a;1;0f;0;1b;0;S;c;0;s;0.55",
+    },
+    "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list.",
+  ),
+  blowz: p(
+    "https://prosettings.net/players/blowz/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["blowz"]?.settings,
+      crosshairCode: "0;s;1;P;o;1;d;1;0b;0;1b;0;S;c;2;s;0.984;o;1",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list.",
+  ),
+  neon: p(
+    "https://prosettings.net/players/neon/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["neon"]?.settings,
+      crosshairCode: "0;P;c;8;o;1;d;1;b;1;z;1;0t;1;0l;1;0o;0;0a;1;0f;0;1b;0",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list.",
+  ),
+  sato: p(
+    "https://prosettings.net/players/sato/",
+    {
+      ...EXTRA_VERIFIED_SETTINGS["sato"]?.settings,
+      crosshairCode: "0;s;1;P;h;0;f;0;m;1;0l;5;0o;1;0a;1;0f;0;1b;0;S;c;0;o;1",
+      displayMode: "Fullscreen",
+    },
+    "Crosshair checked on the individual player page; other gear fields retained from the dated consolidated ProSettings list.",
+  ),
 
   vora: p("https://prosettings.net/players/vora/", {
     dpi: 1600,
@@ -235,7 +329,8 @@ export const INDIVIDUAL_EXTRA_SETTINGS: Record<string, RecordEntry> = {
     mousepad: "Artisan Hayate Otsu V2 Soft Black",
     resolution: "1280x960",
     displayMode: "Fullscreen",
-    crosshairCode: "0;s;1;P;c;5;o;0.8;f;0;m;1;0l;3;0o;0;0a;1;0f;0;1t;6;1l;1;1o;0;1a;1;1m;0;1f;0;S;c;1;s;3;o;0.3",
+    crosshairCode:
+      "0;s;1;P;c;5;o;0.8;f;0;m;1;0l;3;0o;0;0a;1;0f;0;1t;6;1l;1;1o;0;1a;1;1m;0;1f;0;S;c;1;s;3;o;0.3",
   }),
   artzin: p("https://prosettings.net/players/artzin/", {
     dpi: 1600,
@@ -332,72 +427,94 @@ export const INDIVIDUAL_EXTRA_SETTINGS: Record<string, RecordEntry> = {
     displayMode: "Fullscreen",
     crosshairCode: "0;P;c;5;o;1;d;1;z;1;f;0;0b;0;1b;0",
   }),
-  jerrwin: p("https://prosettings.net/players/jerrwin/", {
-    dpi: 800,
-    sensitivity: 0.3,
-    edpi: 240,
-    pollingRateHz: 4000,
-    mouse: "Razer Viper V4 Pro Black",
-    keyboard: "Wooting 60HE v2 Black",
-    headset: "Razer BlackShark V3 Pro Black",
-    mousepad: "Artisan Ninja FX Zero Soft Black",
-    resolution: "1920x1080",
-    displayMode: "Fullscreen",
-    crosshairCode: "0;c;1;s;1;P;o;1;d;1;0b;0;1b;0;S;s;1.002",
-  }, "Individual page rechecked 2026-09-18; Sentinels identity matches the current MGP roster."),
-  eggsterr: p("https://prosettings.net/players/eggster/", {
-    dpi: 1600,
-    sensitivity: 0.15,
-    edpi: 240,
-    pollingRateHz: 1000,
-    mouse: "Lamzu Thorn V2",
-    keyboard: "Wooting 60HE v2 Black",
-    monitor: "ZOWIE XL2566X+",
-    headset: "Razer BlackShark V2 Pro White",
-    mousepad: "Lamzu Maya Cloth Mousepad",
-    earphones: "Kiwi Ears Astral",
-    resolution: "1920x1080",
-    displayMode: "Fullscreen",
-    crosshairCode: "0;P;h;0;f;0;0l;5;0o;0;0a;1;0f;0;1b;0",
-  }, "MGP roster handle Eggsterr reconciled with ProSettings 'Eggster': both are the current ENVY player; VLR identifies Eggsterr as Evan Grady."),
-  p0ppin: p("https://prosettings.net/players/poppin/", {
-    dpi: 3200,
-    sensitivity: 0.045,
-    edpi: 144,
-    pollingRateHz: 1000,
-    mouse: "Logitech G Pro X2 SUPERSTRIKE Lunar Eclipse",
-    keyboard: "Wooting 60HE v2 Silver",
-    monitor: "ZOWIE XL2586X+",
-    headset: "Razer Kraken TE",
-    mousepad: "Pulsar eS PD170",
-    resolution: "1920x1080",
-    displayMode: "Fullscreen",
-    crosshairCode: "0;p;0;s;1;P;c;1;o;1;f;0;0t;1;0l;3;0a;1;0f;0;1b;0;A;h;0;0l;4;0o;0;0a;1;0f;0;1b;0;S;s;0.7;o;1",
-  }, "ProSettings Poppin is Matteo Weber; VLR confirms the MGP P0PPIN roster identity and ENVY history."),
-  boni: p("https://prosettings.net/players/boni/", {
-    dpi: 1600,
-    sensitivity: 0.4,
-    edpi: 640,
-    pollingRateHz: 2000,
-    mouse: "WLMouse Beast X Max Black",
-    keyboard: "Wooting 80HE Black",
-    monitor: "ZOWIE XL2566X+",
-    mousepad: "WALLHACK CR-005",
-    resolution: "1440x1080",
-    displayMode: "Fullscreen",
-    crosshairCode: "0;p;0;s;1;P;h;0;f;0;0l;3;0o;0;0a;1;0f;0;1l;0;1o;1;1a;0.314;1m;0;1f;0;A;o;0.685;d;1;0l;0;0o;2;0a;1;0f;0;1l;0;S;b;1;c;8;s;0.675;o;1",
-  }, "Individual M80 player page checked 2026-09-18."),
-  alvinboy: p("https://prosettings.net/players/alvin/", {
-    dpi: 800,
-    sensitivity: 0.18,
-    edpi: 144,
-    pollingRateHz: 4000,
-    mouse: "WLMouse BEAST X Black",
-    keyboard: "Wooting 60HE+",
-    monitor: "ZOWIE XL2566X+",
-    mousepad: "WALLHACK SP-005",
-    resolution: "1920x1080",
-    displayMode: "Fullscreen",
-    crosshairCode: "0;s;1;P;o;1;d;1;f;0;0b;0;1b;0;S;o;1",
-  }, "MGP roster handle alvinboy reconciled by real name Alvin Hong and current M80 team on both VLR and ProSettings."),
+  jerrwin: p(
+    "https://prosettings.net/players/jerrwin/",
+    {
+      dpi: 800,
+      sensitivity: 0.3,
+      edpi: 240,
+      pollingRateHz: 4000,
+      mouse: "Razer Viper V4 Pro Black",
+      keyboard: "Wooting 60HE v2 Black",
+      headset: "Razer BlackShark V3 Pro Black",
+      mousepad: "Artisan Ninja FX Zero Soft Black",
+      resolution: "1920x1080",
+      displayMode: "Fullscreen",
+      crosshairCode: "0;c;1;s;1;P;o;1;d;1;0b;0;1b;0;S;s;1.002",
+    },
+    "Individual page rechecked 2026-09-18; Sentinels identity matches the current ÍMPAR roster.",
+  ),
+  eggsterr: p(
+    "https://prosettings.net/players/eggster/",
+    {
+      dpi: 1600,
+      sensitivity: 0.15,
+      edpi: 240,
+      pollingRateHz: 1000,
+      mouse: "Lamzu Thorn V2",
+      keyboard: "Wooting 60HE v2 Black",
+      monitor: "ZOWIE XL2566X+",
+      headset: "Razer BlackShark V2 Pro White",
+      mousepad: "Lamzu Maya Cloth Mousepad",
+      earphones: "Kiwi Ears Astral",
+      resolution: "1920x1080",
+      displayMode: "Fullscreen",
+      crosshairCode: "0;P;h;0;f;0;0l;5;0o;0;0a;1;0f;0;1b;0",
+    },
+    "ÍMPAR roster handle Eggsterr reconciled with ProSettings 'Eggster': both are the current ENVY player; VLR identifies Eggsterr as Evan Grady.",
+  ),
+  p0ppin: p(
+    "https://prosettings.net/players/poppin/",
+    {
+      dpi: 3200,
+      sensitivity: 0.045,
+      edpi: 144,
+      pollingRateHz: 1000,
+      mouse: "Logitech G Pro X2 SUPERSTRIKE Lunar Eclipse",
+      keyboard: "Wooting 60HE v2 Silver",
+      monitor: "ZOWIE XL2586X+",
+      headset: "Razer Kraken TE",
+      mousepad: "Pulsar eS PD170",
+      resolution: "1920x1080",
+      displayMode: "Fullscreen",
+      crosshairCode:
+        "0;p;0;s;1;P;c;1;o;1;f;0;0t;1;0l;3;0a;1;0f;0;1b;0;A;h;0;0l;4;0o;0;0a;1;0f;0;1b;0;S;s;0.7;o;1",
+    },
+    "ProSettings Poppin is Matteo Weber; VLR confirms the ÍMPAR P0PPIN roster identity and ENVY history.",
+  ),
+  boni: p(
+    "https://prosettings.net/players/boni/",
+    {
+      dpi: 1600,
+      sensitivity: 0.4,
+      edpi: 640,
+      pollingRateHz: 2000,
+      mouse: "WLMouse Beast X Max Black",
+      keyboard: "Wooting 80HE Black",
+      monitor: "ZOWIE XL2566X+",
+      mousepad: "WALLHACK CR-005",
+      resolution: "1440x1080",
+      displayMode: "Fullscreen",
+      crosshairCode:
+        "0;p;0;s;1;P;h;0;f;0;0l;3;0o;0;0a;1;0f;0;1l;0;1o;1;1a;0.314;1m;0;1f;0;A;o;0.685;d;1;0l;0;0o;2;0a;1;0f;0;1l;0;S;b;1;c;8;s;0.675;o;1",
+    },
+    "Individual M80 player page checked 2026-09-18.",
+  ),
+  alvinboy: p(
+    "https://prosettings.net/players/alvin/",
+    {
+      dpi: 800,
+      sensitivity: 0.18,
+      edpi: 144,
+      pollingRateHz: 4000,
+      mouse: "WLMouse BEAST X Black",
+      keyboard: "Wooting 60HE+",
+      monitor: "ZOWIE XL2566X+",
+      mousepad: "WALLHACK SP-005",
+      resolution: "1920x1080",
+      displayMode: "Fullscreen",
+      crosshairCode: "0;s;1;P;o;1;d;1;f;0;0b;0;1b;0;S;o;1",
+    },
+    "ÍMPAR roster handle alvinboy reconciled by real name Alvin Hong and current M80 team on both VLR and ProSettings.",
+  ),
 };

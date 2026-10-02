@@ -36,10 +36,7 @@ export const Route = createFileRoute("/games/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [
-          { title: "Jogo não encontrado — ÍMPAR" },
-          { name: "robots", content: "noindex" },
-        ],
+        meta: [{ title: "Jogo não encontrado — ÍMPAR" }, { name: "robots", content: "noindex" }],
       };
     }
     const title = `${loaderData.game.name} — ÍMPAR`;
@@ -189,229 +186,232 @@ function GameHub() {
         </div>
       </section>
 
-      <AdReadyLayout className="mx-auto min-w-0 w-full max-w-[92rem] px-4 sm:px-6" rail={<AdSlot id={`game-${game.slug}-rail`} format="rail" />}>
+      <AdReadyLayout
+        className="mx-auto min-w-0 w-full max-w-[92rem] px-4 sm:px-6"
+        rail={<AdSlot id={`game-${game.slug}-rail`} format="rail" />}
+      >
         <div className="min-w-0">
-        <div className="sticky top-[4.25rem] z-30 -mx-2 py-2 md:hidden">
-          <div className="max-h-[calc(100dvh-5.25rem)] overflow-y-auto overscroll-contain rounded-2xl border border-border bg-background/96 p-2 shadow-lift backdrop-blur-lg">
-            <button
-              type="button"
-              aria-expanded={mobileMenuOpen}
-              aria-controls="mobile-hub-navigation"
-              onClick={() => setMobileMenuOpen((value) => !value)}
-              className="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left"
-            >
-              <span className="flex min-w-0 items-center gap-2.5">
-                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-gold/10 text-gold-strong">
-                  <Menu className="size-4" />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-[0.62rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                    {copy("Navegar no hub", "Browse hub", "Navegar por el hub")}
-                  </span>
-                  <span className="block truncate text-sm font-semibold text-foreground">
-                    {MODULE_LABELS[active][locale]}
-                  </span>
-                </span>
-              </span>
-              <ChevronDown
-                className={cn(
-                  "size-4 shrink-0 text-muted-foreground transition-transform",
-                  mobileMenuOpen && "rotate-180",
-                )}
-              />
-            </button>
-            {mobileMenuOpen ? (
-              <div
-                id="mobile-hub-navigation"
-                role="group"
-                aria-label={game.name}
-                className="mt-1 grid grid-cols-2 gap-1 border-t border-border pt-2"
-              >
-                {visibleModules.map((moduleKey) => {
-                  const selected = active === moduleKey;
-                  return (
-                    <button
-                      key={moduleKey}
-                      type="button"
-                      aria-pressed={selected}
-                      aria-controls="hub-panel-content"
-                      onClick={() => {
-                        handleTab(moduleKey, true);
-                        setMobileMenuOpen(false);
-                      }}
-                      className={cn(
-                        "min-h-11 min-w-0 rounded-lg px-3 py-2.5 text-left text-xs font-semibold transition-colors",
-                        selected
-                          ? "bg-gold/10 text-foreground"
-                          : "text-muted-foreground hover:bg-muted/35 hover:text-foreground",
-                      )}
-                    >
-                      <span className="block truncate">{MODULE_LABELS[moduleKey][locale]}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            ) : null}
-          </div>
-        </div>
-
-        <div
-          role="tablist"
-          aria-label={game.name}
-          className="hub-tablist hidden gap-1 overflow-x-auto border-b border-border py-3 md:flex"
-        >
-          {visibleModules.map((moduleKey) => {
-            const selected = active === moduleKey;
-            return (
+          <div className="sticky top-[4.25rem] z-30 -mx-2 py-2 md:hidden">
+            <div className="max-h-[calc(100dvh-5.25rem)] overflow-y-auto overscroll-contain rounded-2xl border border-border bg-background/96 p-2 shadow-lift backdrop-blur-lg">
               <button
-                key={moduleKey}
-                id={`hub-tab-${moduleKey}`}
                 type="button"
-                role="tab"
-                aria-selected={selected}
-                aria-controls="hub-panel-content"
-                tabIndex={selected ? 0 : -1}
-                onClick={() => handleTab(moduleKey)}
-                onKeyDown={(event) => {
-                  const index = visibleModules.indexOf(moduleKey);
-                  let next = index;
-                  if (event.key === "ArrowRight") next = (index + 1) % visibleModules.length;
-                  else if (event.key === "ArrowLeft")
-                    next = (index - 1 + visibleModules.length) % visibleModules.length;
-                  else if (event.key === "Home") next = 0;
-                  else if (event.key === "End") next = visibleModules.length - 1;
-                  else return;
-                  event.preventDefault();
-                  const nextModule = visibleModules[next];
-                  if (!nextModule) return;
-                  handleTab(nextModule);
-                  document.getElementById(`hub-tab-${visibleModules[next]}`)?.focus();
-                }}
-                className={cn(
-                  "hub-tab shrink-0 px-3.5 py-3 text-sm font-semibold",
-                  selected ? "hub-tab-active text-foreground" : "text-muted-foreground",
-                )}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-hub-navigation"
+                onClick={() => setMobileMenuOpen((value) => !value)}
+                className="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left"
               >
-                <span>{MODULE_LABELS[moduleKey][locale]}</span>
+                <span className="flex min-w-0 items-center gap-2.5">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-gold/10 text-gold-strong">
+                    <Menu className="size-4" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[0.62rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                      {copy("Navegar no hub", "Browse hub", "Navegar por el hub")}
+                    </span>
+                    <span className="block truncate text-sm font-semibold text-foreground">
+                      {MODULE_LABELS[active][locale]}
+                    </span>
+                  </span>
+                </span>
+                <ChevronDown
+                  className={cn(
+                    "size-4 shrink-0 text-muted-foreground transition-transform",
+                    mobileMenuOpen && "rotate-180",
+                  )}
+                />
               </button>
-            );
-          })}
-        </div>
+              {mobileMenuOpen ? (
+                <div
+                  id="mobile-hub-navigation"
+                  role="group"
+                  aria-label={game.name}
+                  className="mt-1 grid grid-cols-2 gap-1 border-t border-border pt-2"
+                >
+                  {visibleModules.map((moduleKey) => {
+                    const selected = active === moduleKey;
+                    return (
+                      <button
+                        key={moduleKey}
+                        type="button"
+                        aria-pressed={selected}
+                        aria-controls="hub-panel-content"
+                        onClick={() => {
+                          handleTab(moduleKey, true);
+                          setMobileMenuOpen(false);
+                        }}
+                        className={cn(
+                          "min-h-11 min-w-0 rounded-lg px-3 py-2.5 text-left text-xs font-semibold transition-colors",
+                          selected
+                            ? "bg-gold/10 text-foreground"
+                            : "text-muted-foreground hover:bg-muted/35 hover:text-foreground",
+                        )}
+                      >
+                        <span className="block truncate">{MODULE_LABELS[moduleKey][locale]}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </div>
+          </div>
 
-        <div
-          ref={panelRef}
-          id="hub-panel-content"
-          role="tabpanel"
-          aria-label={MODULE_LABELS[active][locale]}
-          tabIndex={0}
-          className="min-w-0 scroll-mt-36 py-5 outline-none sm:scroll-mt-24 sm:py-8"
-        >
           <div
-            key={active}
-            className="animate-in fade-in slide-in-from-bottom-2 duration-200 motion-reduce:animate-none"
+            role="tablist"
+            aria-label={game.name}
+            className="hub-tablist hidden gap-1 overflow-x-auto border-b border-border py-3 md:flex"
           >
-            {active === "overview" ? (
-              <div className="space-y-6">
-                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-                  <article className="surface-panel min-w-0 overflow-hidden p-6 sm:p-8">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="size-4 text-gold-strong" />
-                      <span className="section-kicker">
-                        {copy("FICHA DO JOGO", "GAME PROFILE", "FICHA DEL JUEGO")}
-                      </span>
-                    </div>
+            {visibleModules.map((moduleKey) => {
+              const selected = active === moduleKey;
+              return (
+                <button
+                  key={moduleKey}
+                  id={`hub-tab-${moduleKey}`}
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  aria-controls="hub-panel-content"
+                  tabIndex={selected ? 0 : -1}
+                  onClick={() => handleTab(moduleKey)}
+                  onKeyDown={(event) => {
+                    const index = visibleModules.indexOf(moduleKey);
+                    let next = index;
+                    if (event.key === "ArrowRight") next = (index + 1) % visibleModules.length;
+                    else if (event.key === "ArrowLeft")
+                      next = (index - 1 + visibleModules.length) % visibleModules.length;
+                    else if (event.key === "Home") next = 0;
+                    else if (event.key === "End") next = visibleModules.length - 1;
+                    else return;
+                    event.preventDefault();
+                    const nextModule = visibleModules[next];
+                    if (!nextModule) return;
+                    handleTab(nextModule);
+                    document.getElementById(`hub-tab-${visibleModules[next]}`)?.focus();
+                  }}
+                  className={cn(
+                    "hub-tab shrink-0 px-3.5 py-3 text-sm font-semibold",
+                    selected ? "hub-tab-active text-foreground" : "text-muted-foreground",
+                  )}
+                >
+                  <span>{MODULE_LABELS[moduleKey][locale]}</span>
+                </button>
+              );
+            })}
+          </div>
 
-                    <div className="mt-4 grid gap-7 xl:grid-cols-[minmax(0,1fr)_13rem]">
-                      <div>
-                        <h2 className="font-display text-2xl font-semibold text-foreground">
-                          {copy("Sobre o jogo", "About the game", "Sobre el juego")}
-                        </h2>
-                        <p className="mt-3 max-w-3xl break-words text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
-                          {editorial?.synopsis[locale] ?? game.description[locale]}
-                        </p>
+          <div
+            ref={panelRef}
+            id="hub-panel-content"
+            role="tabpanel"
+            aria-label={MODULE_LABELS[active][locale]}
+            tabIndex={0}
+            className="min-w-0 scroll-mt-36 py-5 outline-none sm:scroll-mt-24 sm:py-8"
+          >
+            <div
+              key={active}
+              className="animate-in fade-in slide-in-from-bottom-2 duration-200 motion-reduce:animate-none"
+            >
+              {active === "overview" ? (
+                <div className="space-y-6">
+                  <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+                    <article className="surface-panel min-w-0 overflow-hidden p-6 sm:p-8">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="size-4 text-gold-strong" />
+                        <span className="section-kicker">
+                          {copy("FICHA DO JOGO", "GAME PROFILE", "FICHA DEL JUEGO")}
+                        </span>
+                      </div>
 
-                        {editorial ? (
-                          <div className="mt-7 grid gap-3 sm:grid-cols-2">
-                            <GameFact
-                              icon={CalendarDays}
-                              label={copy("Lançamento", "Release", "Lanzamiento")}
-                              value={editorial.release[locale]}
-                            />
-                            <GameFact
-                              icon={Building2}
-                              label={copy("Desenvolvimento", "Developer", "Desarrollo")}
-                              value={editorial.developer}
-                            />
-                            <GameFact
-                              icon={Building2}
-                              label={copy("Publicação", "Publisher", "Publicación")}
-                              value={editorial.publisher}
-                            />
-                            <GameFact
-                              icon={RefreshCw}
-                              label={copy("Versão", "Version", "Versión")}
-                              value={editorial.latestVersion}
-                            />
+                      <div className="mt-4 grid gap-7 xl:grid-cols-[minmax(0,1fr)_13rem]">
+                        <div>
+                          <h2 className="font-display text-2xl font-semibold text-foreground">
+                            {copy("Sobre o jogo", "About the game", "Sobre el juego")}
+                          </h2>
+                          <p className="mt-3 max-w-3xl break-words text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
+                            {editorial?.synopsis[locale] ?? game.description[locale]}
+                          </p>
+
+                          {editorial ? (
+                            <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                              <GameFact
+                                icon={CalendarDays}
+                                label={copy("Lançamento", "Release", "Lanzamiento")}
+                                value={editorial.release[locale]}
+                              />
+                              <GameFact
+                                icon={Building2}
+                                label={copy("Desenvolvimento", "Developer", "Desarrollo")}
+                                value={editorial.developer}
+                              />
+                              <GameFact
+                                icon={Building2}
+                                label={copy("Publicação", "Publisher", "Publicación")}
+                                value={editorial.publisher}
+                              />
+                              <GameFact
+                                icon={RefreshCw}
+                                label={copy("Versão", "Version", "Versión")}
+                                value={editorial.latestVersion}
+                              />
+                            </div>
+                          ) : null}
+                        </div>
+
+                        {editorial?.score ? (
+                          <div className="self-start rounded-2xl border border-gold/25 bg-[radial-gradient(circle_at_top,rgba(212,167,44,0.14),transparent_65%),hsl(var(--muted)/0.2)] p-5 text-center transition-transform duration-300 hover:-translate-y-1">
+                            <Star className="mx-auto size-5 fill-current text-gold-strong" />
+                            <p className="mt-3 font-display text-4xl font-bold text-foreground">
+                              {editorial.score.value.toFixed(1)}
+                              <span className="text-base font-semibold text-muted-foreground">
+                                /10
+                              </span>
+                            </p>
+                            <p className="mt-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                              {copy(
+                                "Média de referência",
+                                "Reference average",
+                                "Promedio de referencia",
+                              )}
+                            </p>
+                            <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                              {editorial.score.sourceLabel}
+                            </p>
+                            <p className="mt-2 text-[0.7rem] leading-5 text-muted-foreground">
+                              {editorial.score.note[locale]}
+                            </p>
                           </div>
                         ) : null}
                       </div>
+                    </article>
 
-                      {editorial?.score ? (
-                        <div className="self-start rounded-2xl border border-gold/25 bg-[radial-gradient(circle_at_top,rgba(212,167,44,0.14),transparent_65%),hsl(var(--muted)/0.2)] p-5 text-center transition-transform duration-300 hover:-translate-y-1">
-                          <Star className="mx-auto size-5 fill-current text-gold-strong" />
-                          <p className="mt-3 font-display text-4xl font-bold text-foreground">
-                            {editorial.score.value.toFixed(1)}
-                            <span className="text-base font-semibold text-muted-foreground">
-                              /10
-                            </span>
-                          </p>
-                          <p className="mt-2 text-[0.68rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                            {copy(
-                              "Média de referência",
-                              "Reference average",
-                              "Promedio de referencia",
-                            )}
-                          </p>
-                          <p className="mt-3 text-xs leading-5 text-muted-foreground">
-                            {editorial.score.sourceLabel}
-                          </p>
-                          <p className="mt-2 text-[0.7rem] leading-5 text-muted-foreground">
-                            {editorial.score.note[locale]}
-                          </p>
-                        </div>
-                      ) : null}
-                    </div>
-                  </article>
+                    {game.slug === "league-of-legends" ? (
+                      <LeagueEsportsPanel
+                        locale={locale}
+                        compact
+                        onOpenCompetitive={() => handleTab("competitive", true)}
+                      />
+                    ) : (
+                      <GameLivePanel
+                        gameSlug={game.slug}
+                        themeKey={game.themeKey}
+                        locale={locale}
+                        onOpenModule={(moduleKey) => handleTab(moduleKey, true)}
+                      />
+                    )}
+                  </div>
 
-                  {game.slug === "league-of-legends" ? (
-                    <LeagueEsportsPanel
-                      locale={locale}
-                      compact
-                      onOpenCompetitive={() => handleTab("competitive", true)}
-                    />
-                  ) : (
-                    <GameLivePanel
-                      gameSlug={game.slug}
-                      themeKey={game.themeKey}
-                      locale={locale}
-                      onOpenModule={(moduleKey) => handleTab(moduleKey, true)}
-                    />
-                  )}
+                  {hasRiotLookup ? <RiotPlayerSearch locale={locale} /> : null}
                 </div>
-
-                {hasRiotLookup ? <RiotPlayerSearch locale={locale} /> : null}
-              </div>
-            ) : (
-              <FutureCollection
-                gameSlug={game.slug}
-                moduleKey={active}
-                themeKey={game.themeKey}
-                locale={locale}
-              />
-            )}
+              ) : (
+                <FutureCollection
+                  gameSlug={game.slug}
+                  moduleKey={active}
+                  themeKey={game.themeKey}
+                  locale={locale}
+                />
+              )}
+            </div>
           </div>
-        </div>
-        <AdSlot id={`game-${game.slug}-after-content`} format="leaderboard" className="mb-8" />
+          <AdSlot id={`game-${game.slug}-after-content`} format="leaderboard" className="mb-8" />
         </div>
       </AdReadyLayout>
     </div>
@@ -435,7 +435,7 @@ function PausedGameHub({ game, locale }: { game: GameConfig; locale: Locale }) {
           <div className="max-w-2xl rounded-3xl border border-hero-border bg-hero-surface p-6 shadow-hero backdrop-blur-xl sm:p-9">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-gold-strong">
               <Clock3 className="size-4" />
-              MGP 0.1.9
+              ÍMPAR 0.1.9
             </div>
             <h1 className="mt-4 font-display text-4xl font-bold text-hero-foreground sm:text-5xl">
               {game.name}

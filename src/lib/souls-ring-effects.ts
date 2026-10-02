@@ -14,9 +14,7 @@ const REPO_ROOT = "https://raw.githubusercontent.com/darthdemono/sl2-analyzer/ma
 const SOURCE_URL = "https://github.com/darthdemono/sl2-analyzer";
 
 function sourcePath(game: SoulsCompendiumGame) {
-  return game === "dark-souls-remastered"
-    ? "db_ds1/ring_effects.json"
-    : "db_ds3/ring_effects.json";
+  return game === "dark-souls-remastered" ? "db_ds1/ring_effects.json" : "db_ds3/ring_effects.json";
 }
 
 function candidateNames(name: string) {
@@ -66,8 +64,5 @@ export function loadSoulsRingEffects(game: SoulsCompendiumGame) {
 
 export function findSoulsRingEffect(effects: SoulsRingEffect[], name: string) {
   const candidates = candidateNames(name);
-  return (
-    effects.find((entry) => candidates.has(normalizeSoulsEquipmentName(entry.name))) ??
-    null
-  );
+  return effects.find((entry) => candidates.has(normalizeSoulsEquipmentName(entry.name))) ?? null;
 }

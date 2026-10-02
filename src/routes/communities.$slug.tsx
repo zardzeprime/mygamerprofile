@@ -1,6 +1,15 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowRight, BadgeCheck, Hammer, MessageCircle, ShieldCheck, Sparkles, TriangleAlert, Users } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Hammer,
+  MessageCircle,
+  ShieldCheck,
+  Sparkles,
+  TriangleAlert,
+  Users,
+} from "lucide-react";
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { PostCard } from "@/components/posts/PostCard";
 import { PostComposer } from "@/components/posts/PostComposer";
@@ -29,7 +38,13 @@ export const Route = createFileRoute("/communities/$slug")({
     return { game, starter, gameRecord, posts };
   },
   head: ({ loaderData }) => {
-    if (!loaderData) return { meta: [{ title: "Comunidade não encontrada — MGP" }, { name: "robots", content: "noindex" }] };
+    if (!loaderData)
+      return {
+        meta: [
+          { title: "Comunidade não encontrada — ÍMPAR" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     const title = `${loaderData.game.name} — Comunidade ÍMPAR`;
     const description = `Comunidade de ${loaderData.game.name} no ÍMPAR.`;
     return buildSeo({
@@ -48,7 +63,12 @@ function GameCommunityPage() {
   const { locale } = useI18n();
   const [posts, setPosts] = useState(initialPosts);
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const ageLabel = starter.audience === "mature" ? "18+" : starter.audience === "teen" ? "13+" : copy("Geral", "General", "General");
+  const ageLabel =
+    starter.audience === "mature"
+      ? "18+"
+      : starter.audience === "teen"
+        ? "13+"
+        : copy("Geral", "General", "General");
 
   return (
     <div className="pb-14">
@@ -66,7 +86,9 @@ function GameCommunityPage() {
                 {copy("Aberta", "Open", "Abierta")}
               </span>
             </div>
-            <h1 className="mt-4 font-display text-4xl font-bold text-white sm:text-6xl">{game.name}</h1>
+            <h1 className="mt-4 font-display text-4xl font-bold text-white sm:text-6xl">
+              {game.name}
+            </h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-white/75 sm:text-base">
               {copy(
                 `Discussões, descobertas, criação da comunidade e conteúdo editorial sobre ${game.name}, reunidos no mesmo espaço.`,
@@ -107,7 +129,9 @@ function GameCommunityPage() {
         <section className="space-y-5">
           <div className="flex items-center gap-2">
             <Sparkles className="size-4 text-gold-strong" />
-            <p className="section-kicker">{copy("ABERTURA DA COMUNIDADE", "COMMUNITY OPENING", "APERTURA DE LA COMUNIDAD")}</p>
+            <p className="section-kicker">
+              {copy("ABERTURA DA COMUNIDADE", "COMMUNITY OPENING", "APERTURA DE LA COMUNIDAD")}
+            </p>
           </div>
 
           <article className="surface-panel overflow-hidden rounded-2xl">
@@ -121,18 +145,30 @@ function GameCommunityPage() {
                   {ageLabel}
                 </span>
               </div>
-              <span className="text-xs text-muted-foreground">{copy("Post de boas-vindas", "Welcome post", "Post de bienvenida")}</span>
+              <span className="text-xs text-muted-foreground">
+                {copy("Post de boas-vindas", "Welcome post", "Post de bienvenida")}
+              </span>
             </header>
 
             <div className="p-5 sm:p-7">
-              <h2 className="font-display text-2xl font-semibold leading-tight text-foreground sm:text-3xl">{starter.title[locale]}</h2>
-              <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">{starter.body[locale]}</p>
+              <h2 className="font-display text-2xl font-semibold leading-tight text-foreground sm:text-3xl">
+                {starter.title[locale]}
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
+                {starter.body[locale]}
+              </p>
 
               <div className="mt-6 rounded-xl border border-gold/20 bg-gold/5 p-4">
                 <p className="text-xs font-bold uppercase tracking-[0.12em] text-gold-strong">
-                  {copy("Para começar a conversa", "Start the conversation", "Para empezar la conversación")}
+                  {copy(
+                    "Para começar a conversa",
+                    "Start the conversation",
+                    "Para empezar la conversación",
+                  )}
                 </p>
-                <p className="mt-2 font-display text-lg font-semibold leading-7 text-foreground">{starter.prompt[locale]}</p>
+                <p className="mt-2 font-display text-lg font-semibold leading-7 text-foreground">
+                  {starter.prompt[locale]}
+                </p>
               </div>
             </div>
           </article>
@@ -210,23 +246,49 @@ function GameCommunityPage() {
               </h2>
             </div>
             <ul className="mt-4 space-y-3 text-xs leading-5 text-muted-foreground">
-              <li>{copy("Marque spoilers e dê contexto antes de revelar momentos importantes.", "Mark spoilers and provide context before revealing major moments.", "Marca spoilers y da contexto antes de revelar momentos importantes.")}</li>
-              <li>{copy("Sem assédio, preconceito, doxxing, spam ou conteúdo que coloque menores em risco.", "No harassment, hate, doxxing, spam or content that puts minors at risk.", "Sin acoso, odio, doxxing, spam ni contenido que ponga a menores en riesgo.")}</li>
-              <li>{copy("Pornografia, sexo explícito e gore gratuito não são permitidos.", "Pornography, explicit sex and gratuitous gore are not allowed.", "Pornografía, sexo explícito y gore gratuito no están permitidos.")}</li>
-              <li>{copy("Temas maduros legítimos podem receber aviso, desfoque ou restrição etária.", "Legitimate mature themes may receive a warning, blur or age restriction.", "Los temas maduros legítimos pueden recibir aviso, desenfoque o restricción de edad.")}</li>
+              <li>
+                {copy(
+                  "Marque spoilers e dê contexto antes de revelar momentos importantes.",
+                  "Mark spoilers and provide context before revealing major moments.",
+                  "Marca spoilers y da contexto antes de revelar momentos importantes.",
+                )}
+              </li>
+              <li>
+                {copy(
+                  "Sem assédio, preconceito, doxxing, spam ou conteúdo que coloque menores em risco.",
+                  "No harassment, hate, doxxing, spam or content that puts minors at risk.",
+                  "Sin acoso, odio, doxxing, spam ni contenido que ponga a menores en riesgo.",
+                )}
+              </li>
+              <li>
+                {copy(
+                  "Pornografia, sexo explícito e gore gratuito não são permitidos.",
+                  "Pornography, explicit sex and gratuitous gore are not allowed.",
+                  "Pornografía, sexo explícito y gore gratuito no están permitidos.",
+                )}
+              </li>
+              <li>
+                {copy(
+                  "Temas maduros legítimos podem receber aviso, desfoque ou restrição etária.",
+                  "Legitimate mature themes may receive a warning, blur or age restriction.",
+                  "Los temas maduros legítimos pueden recibir aviso, desenfoque o restricción de edad.",
+                )}
+              </li>
             </ul>
           </section>
 
           <section className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5">
             <div className="flex items-center gap-2 text-amber-500">
               <TriangleAlert className="size-4" />
-              <h2 className="text-xs font-bold uppercase tracking-[0.12em]">{copy("Faixa etária", "Age safety", "Seguridad por edad")}</h2>
+              <h2 className="text-xs font-bold uppercase tracking-[0.12em]">
+                {copy("Faixa etária", "Age safety", "Seguridad por edad")}
+              </h2>
             </div>
             <p className="mt-3 text-xs leading-5 text-muted-foreground">
               {copy(
                 "A classificação do post é um controle de apresentação, não uma autorização para conteúdo proibido. Contas de adolescentes seguem as regras de supervisão do ÍMPAR.",
                 "A post rating is a presentation control, not permission for prohibited content. Teen accounts remain subject to ÍMPAR supervision rules.",
-                "La clasificación del post es un control de presentación, no un permiso para contenido prohibido. Las cuentas adolescentes siguen las reglas de supervisión de MGP.",
+                "La clasificación del post es un control de presentación, no un permiso para contenido prohibido. Las cuentas adolescentes siguen las reglas de supervisión de ÍMPAR.",
               )}
             </p>
           </section>

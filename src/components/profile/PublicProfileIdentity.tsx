@@ -23,7 +23,9 @@ export function PublicProfileIdentity({ userId, locale }: { userId: string; loca
   useEffect(() => {
     let active = true;
     const load = async () => {
-      const { data, error } = await supabase.rpc("get_public_profile_identity", { p_user_id: userId });
+      const { data, error } = await supabase.rpc("get_public_profile_identity", {
+        p_user_id: userId,
+      });
       if (!active || error) return;
       setIdentity((data?.[0] ?? null) as PublicIdentity | null);
     };
@@ -48,14 +50,20 @@ export function PublicProfileIdentity({ userId, locale }: { userId: string; loca
         </span>
       ) : null}
       {identity.country_code ? (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/20 px-3 py-1.5" title={copy("País", "Country", "País")}>
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/20 px-3 py-1.5"
+          title={copy("País", "Country", "País")}
+        >
           <Globe2 className="size-3.5" />
           {flag ? <span aria-hidden="true">{flag}</span> : null}
           {identity.country_code}
         </span>
       ) : null}
       {identity.subdivision_code ? (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/20 px-3 py-1.5" title={copy("Estado / província", "State / province", "Estado / provincia")}>
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/20 px-3 py-1.5"
+          title={copy("Estado / província", "State / province", "Estado / provincia")}
+        >
           <MapPin className="size-3.5" />
           {identity.subdivision_code}
         </span>

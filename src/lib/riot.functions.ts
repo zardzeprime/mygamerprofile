@@ -68,12 +68,10 @@ export const lookupRiotAccount = createServerFn({ method: "POST" })
     } satisfies RiotAccountLookupResult;
   });
 
-
 export const getRiotApiReadiness = createServerFn({ method: "GET" }).handler(async () => ({
   apiKeyConfigured: Boolean(process.env["RIOT_API_KEY"]?.trim()),
   rsoConfigured: Boolean(
-    process.env["RIOT_RSO_CLIENT_ID"]?.trim() &&
-      process.env["RIOT_RSO_CLIENT_SECRET"]?.trim(),
+    process.env["RIOT_RSO_CLIENT_ID"]?.trim() && process.env["RIOT_RSO_CLIENT_SECRET"]?.trim(),
   ),
   publicAppUrlConfigured: Boolean(process.env["PUBLIC_APP_URL"]?.trim()),
 }));

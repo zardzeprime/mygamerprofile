@@ -63,13 +63,7 @@ const cardStyle = {
   marginBottom: "12px",
 };
 
-function ReportCard({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function ReportCard({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <Section style={cardStyle}>
       <Text
@@ -122,8 +116,7 @@ export function AvapgvReportEmail({
         style={{
           backgroundColor: "#090A0C",
           color: "#F3F1EA",
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif',
           margin: 0,
           padding: "28px 12px",
         }}
@@ -264,8 +257,8 @@ export function AvapgvReportEmail({
               margin: 0,
             }}
           >
-            Relatório operacional AVAPGV do MG Profile. Este e-mail não inclui
-            chaves, tokens, senhas ou credenciais.
+            Relatório operacional AVAPGV do ÍMPAR. Este e-mail não inclui chaves, tokens, senhas ou
+            credenciais.
           </Text>
         </Container>
       </Body>

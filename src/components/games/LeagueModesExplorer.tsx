@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { Bot, Crosshair, Dumbbell, ExternalLink, ShieldCheck, Sparkles, Swords, Zap } from "lucide-react";
+import {
+  Bot,
+  Crosshair,
+  Dumbbell,
+  ExternalLink,
+  ShieldCheck,
+  Sparkles,
+  Swords,
+  Zap,
+} from "lucide-react";
 import { DataSourceIndicator } from "@/components/common/DataSourceIndicator";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
@@ -92,7 +101,8 @@ const MODES: ModeDefinition[] = [
     mapId: "30",
     teamSize: "multi-team",
     icon: Sparkles,
-    officialUrl: "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-17-notes/",
+    officialUrl:
+      "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-17-notes/",
   },
   {
     key: "aram-mayhem",
@@ -100,7 +110,8 @@ const MODES: ModeDefinition[] = [
     mapId: "12",
     teamSize: "5v5",
     icon: Zap,
-    officialUrl: "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-18-notes/",
+    officialUrl:
+      "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-18-notes/",
   },
   {
     key: "classic",
@@ -108,7 +119,8 @@ const MODES: ModeDefinition[] = [
     mapId: "11",
     teamSize: "5v5",
     icon: Swords,
-    officialUrl: "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-18-notes/",
+    officialUrl:
+      "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-18-notes/",
   },
   {
     key: "tft",
@@ -123,66 +135,121 @@ const MODES: ModeDefinition[] = [
 function modeCopy(locale: Locale, key: ModeKey) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
 
-  const entries: Record<ModeKey, { name: string; short: string; description: string; objective: string }> = {
+  const entries: Record<
+    ModeKey,
+    { name: string; short: string; description: string; objective: string }
+  > = {
     ranked: {
-      name: copy("Summoner's Rift · Normal e Ranqueada", "Summoner's Rift · Normal & Ranked", "Grieta del Invocador · Normal y Clasificatoria"),
-      short: copy("A experiência principal do League.", "League's main experience.", "La experiencia principal de League."),
+      name: copy(
+        "Summoner's Rift · Normal e Ranqueada",
+        "Summoner's Rift · Normal & Ranked",
+        "Grieta del Invocador · Normal y Clasificatoria",
+      ),
+      short: copy(
+        "A experiência principal do League.",
+        "League's main experience.",
+        "La experiencia principal de League.",
+      ),
       description: copy(
         "Duas equipes de cinco jogadores disputam rotas, objetivos e controle de mapa até destruir o Nexus adversário. A arena sustenta filas normais, ranqueadas e formatos competitivos.",
         "Two teams of five contest lanes, objectives and map control until one destroys the enemy Nexus. The battleground supports normal, ranked and competitive formats.",
         "Dos equipos de cinco disputan líneas, objetivos y control del mapa hasta destruir el Nexo rival. El campo sostiene partidas normales, clasificatorias y competitivas.",
       ),
-      objective: copy("Destruir o Nexus inimigo.", "Destroy the enemy Nexus.", "Destruir el Nexo enemigo."),
+      objective: copy(
+        "Destruir o Nexus inimigo.",
+        "Destroy the enemy Nexus.",
+        "Destruir el Nexo enemigo.",
+      ),
     },
     swiftplay: {
       name: "Swiftplay",
-      short: copy("Summoner's Rift em ritmo acelerado.", "A faster-paced Summoner's Rift queue.", "Grieta del Invocador a un ritmo más rápido."),
+      short: copy(
+        "Summoner's Rift em ritmo acelerado.",
+        "A faster-paced Summoner's Rift queue.",
+        "Grieta del Invocador a un ritmo más rápido.",
+      ),
       description: copy(
         "Fila 5v5 criada para manter o arco completo de uma partida de League, mas acelerar progressão e reduzir o peso de vantagens iniciais.",
         "A 5v5 queue designed to preserve the full League match arc while accelerating progression and reducing the punishment of early disadvantages.",
         "Una cola 5v5 pensada para conservar el arco completo de League acelerando la progresión y reduciendo el castigo de las desventajas tempranas.",
       ),
-      objective: copy("Chegar mais rápido aos momentos decisivos do Rift.", "Reach the decisive Rift moments faster.", "Llegar antes a los momentos decisivos de la Grieta."),
+      objective: copy(
+        "Chegar mais rápido aos momentos decisivos do Rift.",
+        "Reach the decisive Rift moments faster.",
+        "Llegar antes a los momentos decisivos de la Grieta.",
+      ),
     },
     aram: {
       name: "ARAM",
-      short: copy("Uma rota, campeões aleatórios e luta constante.", "One lane, random champions and constant fighting.", "Una línea, campeones aleatorios y combate constante."),
+      short: copy(
+        "Uma rota, campeões aleatórios e luta constante.",
+        "One lane, random champions and constant fighting.",
+        "Una línea, campeones aleatorios y combate constante.",
+      ),
       description: copy(
         "All Random All Mid coloca duas equipes em uma única rota. Composição, teamfight e adaptação ficam no centro da partida.",
         "All Random All Mid puts two teams on a single lane. Composition, teamfighting and adaptation become the center of the match.",
         "All Random All Mid enfrenta a dos equipos en una sola línea. Composición, peleas y adaptación pasan al centro de la partida.",
       ),
-      objective: copy("Vencer teamfights e avançar até o Nexus.", "Win teamfights and push to the Nexus.", "Ganar peleas y avanzar hasta el Nexo."),
+      objective: copy(
+        "Vencer teamfights e avançar até o Nexus.",
+        "Win teamfights and push to the Nexus.",
+        "Ganar peleas y avanzar hasta el Nexo.",
+      ),
     },
     coop: {
       name: copy("Co-op vs. IA", "Co-op vs. AI", "Cooperativo vs. IA"),
-      short: copy("Aprenda o Rift enfrentando bots.", "Learn the Rift against bots.", "Aprende la Grieta contra bots."),
+      short: copy(
+        "Aprenda o Rift enfrentando bots.",
+        "Learn the Rift against bots.",
+        "Aprende la Grieta contra bots.",
+      ),
       description: copy(
         "Uma porta de entrada com menos pressão para aprender fundamentos, testar campeões e entender o fluxo básico de Summoner's Rift.",
         "A lower-pressure entry point to learn fundamentals, test champions and understand the basic Summoner's Rift flow.",
         "Una entrada con menos presión para aprender fundamentos, probar campeones y entender el flujo básico de la Grieta.",
       ),
-      objective: copy("Praticar fundamentos e concluir a partida contra IA.", "Practice fundamentals and complete a match against AI.", "Practicar fundamentos y completar una partida contra IA."),
+      objective: copy(
+        "Praticar fundamentos e concluir a partida contra IA.",
+        "Practice fundamentals and complete a match against AI.",
+        "Practicar fundamentos y completar una partida contra IA.",
+      ),
     },
     practice: {
       name: copy("Ferramenta de Treino", "Practice Tool", "Herramienta de Práctica"),
-      short: copy("Laboratório para mecânica, combos e testes.", "A sandbox for mechanics, combos and testing.", "Un laboratorio para mecánicas, combos y pruebas."),
+      short: copy(
+        "Laboratório para mecânica, combos e testes.",
+        "A sandbox for mechanics, combos and testing.",
+        "Un laboratorio para mecánicas, combos y pruebas.",
+      ),
       description: copy(
         "Ambiente controlado para testar dano, tempos, combos, rotas, interações e configurações sem a pressão de uma partida normal.",
         "A controlled environment to test damage, timings, combos, routes, interactions and settings without normal match pressure.",
         "Un entorno controlado para probar daño, tiempos, combos, rutas, interacciones y ajustes sin presión de partida.",
       ),
-      objective: copy("Treinar e experimentar livremente.", "Train and experiment freely.", "Entrenar y experimentar libremente."),
+      objective: copy(
+        "Treinar e experimentar livremente.",
+        "Train and experiment freely.",
+        "Entrenar y experimentar libremente.",
+      ),
     },
     arena: {
       name: "Arena",
-      short: copy("Rodadas, Aprimoramentos e múltiplas equipes.", "Rounds, Augments and multiple teams.", "Rondas, Aumentos y múltiples equipos."),
+      short: copy(
+        "Rodadas, Aprimoramentos e múltiplas equipes.",
+        "Rounds, Augments and multiple teams.",
+        "Rondas, Aumentos y múltiples equipos.",
+      ),
       description: copy(
         "Arena gira em torno de rodadas de combate, Aprimoramentos e builds fora do padrão do Rift. Em 2026 a Riot continua atualizando eventos e regras ao longo dos patches.",
         "Arena revolves around combat rounds, Augments and builds outside standard Rift play. In 2026 Riot continues updating events and rules across patches.",
         "Arena gira alrededor de rondas de combate, Aumentos y builds fuera del Rift estándar. En 2026 Riot sigue actualizando eventos y reglas entre parches.",
       ),
-      objective: copy("Sobreviver às rodadas e adaptar sua build.", "Survive rounds and adapt your build.", "Sobrevivir las rondas y adaptar tu build."),
+      objective: copy(
+        "Sobreviver às rodadas e adaptar sua build.",
+        "Survive rounds and adapt your build.",
+        "Sobrevivir las rondas y adaptar tu build.",
+      ),
     },
     classic: {
       name: "League of Legends Classic",
@@ -192,9 +259,9 @@ function modeCopy(locale: Locale, key: ModeKey) {
         "Una experiencia oficial de LoL clásico mantenida y actualizada por Riot.",
       ),
       description: copy(
-        "Classic recria uma era antiga de League com kits, sistemas, runas e ritmo próprios. A Riot continua adicionando campeões clássicos e ajustes específicos, então o MGP mantém o modo separado do Summoner's Rift moderno.",
-        "Classic recreates an older League era with its own kits, systems, runes and pacing. Riot continues adding classic champions and mode-specific updates, so MGP keeps it separate from modern Summoner's Rift.",
-        "Classic recrea una era antigua de League con kits, sistemas, runas y ritmo propios. Riot sigue añadiendo campeones clásicos y ajustes específicos, así que MGP lo mantiene separado de la Grieta moderna.",
+        "Classic recria uma era antiga de League com kits, sistemas, runas e ritmo próprios. A Riot continua adicionando campeões clássicos e ajustes específicos, então o ÍMPAR mantém o modo separado do Summoner's Rift moderno.",
+        "Classic recreates an older League era with its own kits, systems, runes and pacing. Riot continues adding classic champions and mode-specific updates, so ÍMPAR keeps it separate from modern Summoner's Rift.",
+        "Classic recrea una era antigua de League con kits, sistemas, runas y ritmo propios. Riot sigue añadiendo campeones clásicos y ajustes específicos, así que ÍMPAR lo mantiene separado de la Grieta moderna.",
       ),
       objective: copy(
         "Jogar o Rift com as regras e kits da experiência Classic.",
@@ -204,23 +271,39 @@ function modeCopy(locale: Locale, key: ModeKey) {
     },
     "aram-mayhem": {
       name: copy("ARAM: Desordem", "ARAM: Mayhem", "ARAM: Caos"),
-      short: copy("ARAM com Aprimoramentos e variações especiais.", "ARAM with Augments and special variations.", "ARAM con Aumentos y variaciones especiales."),
+      short: copy(
+        "ARAM com Aprimoramentos e variações especiais.",
+        "ARAM with Augments and special variations.",
+        "ARAM con Aumentos y variaciones especiales.",
+      ),
       description: copy(
         "Uma variação especial do ARAM em que Aprimoramentos mudam o ritmo e criam combinações fora da experiência fixa do modo tradicional.",
         "A special ARAM variant where Augments change the pace and create combinations outside the standard fixed-mode experience.",
         "Una variante especial de ARAM donde los Aumentos cambian el ritmo y crean combinaciones fuera de la experiencia fija tradicional.",
       ),
-      objective: copy("Vencer a rota única explorando Aprimoramentos.", "Win the single lane while exploiting Augments.", "Ganar la línea única aprovechando los Aumentos."),
+      objective: copy(
+        "Vencer a rota única explorando Aprimoramentos.",
+        "Win the single lane while exploiting Augments.",
+        "Ganar la línea única aprovechando los Aumentos.",
+      ),
     },
     tft: {
       name: "Teamfight Tactics",
-      short: copy("Auto battler separado do League tradicional.", "An auto battler separate from traditional League.", "Auto battler separado del League tradicional."),
-      description: copy(
-        "TFT compartilha o universo e parte da infraestrutura de League, mas possui regras, sets, itens e progressão próprios. Por isso aparece em uma categoria separada no MGP.",
-        "TFT shares League's universe and some infrastructure but has its own rules, sets, items and progression, so MGP keeps it in a separate category.",
-        "TFT comparte el universo y parte de la infraestructura de League, pero tiene reglas, sets, objetos y progresión propios; por eso MGP lo mantiene separado.",
+      short: copy(
+        "Auto battler separado do League tradicional.",
+        "An auto battler separate from traditional League.",
+        "Auto battler separado del League tradicional.",
       ),
-      objective: copy("Montar uma composição e sobreviver até o topo da sala.", "Build a composition and survive to the top of the lobby.", "Construir una composición y sobrevivir hasta lo alto de la sala."),
+      description: copy(
+        "TFT compartilha o universo e parte da infraestrutura de League, mas possui regras, sets, itens e progressão próprios. Por isso aparece em uma categoria separada no ÍMPAR.",
+        "TFT shares League's universe and some infrastructure but has its own rules, sets, items and progression, so ÍMPAR keeps it in a separate category.",
+        "TFT comparte el universo y parte de la infraestructura de League, pero tiene reglas, sets, objetos y progresión propios; por eso ÍMPAR lo mantiene separado.",
+      ),
+      objective: copy(
+        "Montar uma composição e sobreviver até o topo da sala.",
+        "Build a composition and survive to the top of the lobby.",
+        "Construir una composición y sobrevivir hasta lo alto de la sala.",
+      ),
     },
   };
 
@@ -241,7 +324,11 @@ function categoryCopy(locale: Locale, category: ModeCategory) {
   }
   if (category === "rotating") {
     return {
-      title: copy("Modos rotativos e especiais", "Rotating & special modes", "Modos rotativos y especiales"),
+      title: copy(
+        "Modos rotativos e especiais",
+        "Rotating & special modes",
+        "Modos rotativos y especiales",
+      ),
       description: copy(
         "A disponibilidade e as regras podem mudar entre atualizações.",
         "Availability and rules can change between patches.",
@@ -271,7 +358,9 @@ export function LeagueModesExplorer({ locale }: { locale: Locale }) {
     async function loadMaps() {
       try {
         let current = FALLBACK_VERSION;
-        const versionsResponse = await fetch(`${DDRAGON}/api/versions.json`, { signal: controller.signal });
+        const versionsResponse = await fetch(`${DDRAGON}/api/versions.json`, {
+          signal: controller.signal,
+        });
         if (versionsResponse.ok) {
           const versions = (await versionsResponse.json()) as string[];
           current = versions[0] || FALLBACK_VERSION;
@@ -293,7 +382,8 @@ export function LeagueModesExplorer({ locale }: { locale: Locale }) {
         setVersion(current);
         setMaps(byId);
       } catch (error) {
-        if (!controller.signal.aborted) console.warn("[League] Mode artwork fallback in use.", error);
+        if (!controller.signal.aborted)
+          console.warn("[League] Mode artwork fallback in use.", error);
       }
     }
 
@@ -351,7 +441,9 @@ export function LeagueModesExplorer({ locale }: { locale: Locale }) {
             return (
               <section key={category}>
                 <div className="mb-3">
-                  <h3 className="font-display text-xl font-semibold text-foreground">{text.title}</h3>
+                  <h3 className="font-display text-xl font-semibold text-foreground">
+                    {text.title}
+                  </h3>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">{text.description}</p>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -368,7 +460,9 @@ export function LeagueModesExplorer({ locale }: { locale: Locale }) {
                         onClick={() => setSelectedKey(mode.key)}
                         className={cn(
                           "group overflow-hidden rounded-2xl border bg-surface text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lift",
-                          active ? "border-gold/70 ring-1 ring-gold/25" : "border-border hover:border-gold/35",
+                          active
+                            ? "border-gold/70 ring-1 ring-gold/25"
+                            : "border-border hover:border-gold/35",
                         )}
                       >
                         <div className="relative grid h-32 place-items-center overflow-hidden bg-[radial-gradient(circle_at_top,hsl(var(--gold)/0.16),transparent_70%),hsl(var(--muted)/0.18)]">
@@ -389,8 +483,12 @@ export function LeagueModesExplorer({ locale }: { locale: Locale }) {
                           </span>
                         </div>
                         <div className="p-4">
-                          <h4 className="font-display text-base font-semibold text-foreground">{modeText.name}</h4>
-                          <p className="mt-1 text-xs leading-5 text-muted-foreground">{modeText.short}</p>
+                          <h4 className="font-display text-base font-semibold text-foreground">
+                            {modeText.name}
+                          </h4>
+                          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                            {modeText.short}
+                          </p>
                         </div>
                       </button>
                     );
@@ -415,8 +513,12 @@ export function LeagueModesExplorer({ locale }: { locale: Locale }) {
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/35 to-transparent" />
             <div className="relative flex min-h-52 items-end p-5">
               <div>
-                <p className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-gold-strong">{selected.teamSize}</p>
-                <h3 className="mt-1 font-display text-2xl font-semibold text-foreground">{selectedCopy.name}</h3>
+                <p className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-gold-strong">
+                  {selected.teamSize}
+                </p>
+                <h3 className="mt-1 font-display text-2xl font-semibold text-foreground">
+                  {selectedCopy.name}
+                </h3>
               </div>
             </div>
           </div>

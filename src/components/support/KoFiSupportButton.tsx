@@ -9,12 +9,7 @@ export function KoFiSupportButton() {
   const { locale } = useI18n();
   const { accentColor } = useTheme();
   const accent = accentColor ?? DEFAULT_ACCENT_COLOR;
-  const label = localeCopy(
-    locale,
-    "Apoiar no Ko-fi",
-    "Support me on Ko-fi",
-    "Apoyar en Ko-fi",
-  );
+  const label = localeCopy(locale, "Apoiar no Ko-fi", "Support me on Ko-fi", "Apoyar en Ko-fi");
 
   return (
     <a

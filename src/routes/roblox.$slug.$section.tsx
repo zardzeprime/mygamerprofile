@@ -25,13 +25,13 @@ export const Route = createFileRoute("/roblox/$slug/$section")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "Conteúdo Roblox não encontrado — MGP" },
+          { title: "Conteúdo Roblox não encontrado — ÍMPAR" },
           { name: "robots", content: "noindex" },
         ],
       };
     }
 
-    const title = `${loaderData.section.label["pt-BR"]} · ${loaderData.experience.name} — MGP`;
+    const title = `${loaderData.section.label["pt-BR"]} · ${loaderData.experience.name} — ÍMPAR`;
     const description = loaderData.section.description["pt-BR"];
     return buildSeo({
       title,
@@ -106,7 +106,11 @@ function RobloxExperienceSectionPage() {
                 </span>
               </div>
               <h2 className="mt-3 font-display text-2xl font-semibold text-foreground">
-                {copy("Estrutura pronta, conteúdo em carga", "Structure ready, content loading", "Estructura lista, contenido en carga")}
+                {copy(
+                  "Estrutura pronta, conteúdo em carga",
+                  "Structure ready, content loading",
+                  "Estructura lista, contenido en carga",
+                )}
               </h2>
               <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
                 {copy(
@@ -140,11 +144,11 @@ function RobloxExperienceSectionPage() {
               />
               <ProgressCard
                 icon={WandSparkles}
-                title="NEXUS"
+                title="Noctis · Guardião do ÍMPAR"
                 text={copy(
-                  "Contexto preparado para a NEXUS ajudar com recomendações e presets quando os dados verificáveis estiverem carregados.",
-                  "Context is prepared for NEXUS recommendations and presets once verifiable data is loaded.",
-                  "El contexto queda preparado para recomendaciones y presets de NEXUS cuando los datos verificables estén cargados.",
+                  "Contexto preparado para o Noctis ajudar com recomendações e presets quando os dados verificáveis estiverem carregados.",
+                  "Context is prepared for Noctis recommendations and presets once verifiable data is loaded.",
+                  "El contexto queda preparado para recomendaciones y presets de Noctis cuando los datos verificables estén cargados.",
                 )}
                 locale={locale}
               />
@@ -240,9 +244,7 @@ function StatusLine({
             : "rounded-full border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 text-[0.56rem] font-black uppercase tracking-[0.08em] text-amber-200"
         }
       >
-        {done
-          ? copy("Pronto", "Ready", "Listo")
-          : copy("Em andamento", "In progress", "En curso")}
+        {done ? copy("Pronto", "Ready", "Listo") : copy("Em andamento", "In progress", "En curso")}
       </span>
     </div>
   );

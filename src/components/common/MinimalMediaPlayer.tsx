@@ -61,11 +61,16 @@ function loadYouTubeApi(): Promise<YouTubeApi> {
 
   youtubeApiPromise = new Promise<YouTubeApi>((resolve, reject) => {
     const previousReady = window.onYouTubeIframeAPIReady;
-    let script = document.querySelector<HTMLScriptElement>('script[src="https://www.youtube.com/iframe_api"]');
+    let script = document.querySelector<HTMLScriptElement>(
+      'script[src="https://www.youtube.com/iframe_api"]',
+    );
     const cleanup = () => {
       window.clearTimeout(timeout);
       script?.removeEventListener("error", fail);
-      if (window.onYouTubeIframeAPIReady === onReady) { if (previousReady) window.onYouTubeIframeAPIReady = previousReady; else delete window.onYouTubeIframeAPIReady; }
+      if (window.onYouTubeIframeAPIReady === onReady) {
+        if (previousReady) window.onYouTubeIframeAPIReady = previousReady;
+        else delete window.onYouTubeIframeAPIReady;
+      }
     };
     const fail = () => {
       cleanup();
@@ -133,9 +138,13 @@ export function MinimalYouTubePlayer({
     setDuration(0);
     const mobileOrTouch = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
     const connection = (navigator as Navigator & { connection?: NetworkInformation }).connection;
-    const shouldAutoPlay = autoPlay && !mobileOrTouch && !connection?.saveData && document.visibilityState !== "hidden";
+    const shouldAutoPlay =
+      autoPlay && !mobileOrTouch && !connection?.saveData && document.visibilityState !== "hidden";
     const readyTimeout = window.setTimeout(() => {
-      if (!cancelled) { setError(true); setBuffering(false); }
+      if (!cancelled) {
+        setError(true);
+        setBuffering(false);
+      }
     }, 20000);
 
     void loadYouTubeApi()
@@ -193,14 +202,21 @@ export function MinimalYouTubePlayer({
               setBuffering(false);
             },
             onAutoplayBlocked: () => {
-              if (!cancelled) { setPlaying(false); setBuffering(false); }
+              if (!cancelled) {
+                setPlaying(false);
+                setBuffering(false);
+              }
             },
           },
         });
         playerRef.current = player;
       })
       .catch(() => {
-        if (!cancelled) { setReady(false); setError(true); setBuffering(false); }
+        if (!cancelled) {
+          setReady(false);
+          setError(true);
+          setBuffering(false);
+        }
       });
 
     return () => {
@@ -215,13 +231,16 @@ export function MinimalYouTubePlayer({
   useEffect(() => {
     if (!ready || !playing) return;
     const mobileOrTouch = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
-    const timer = window.setInterval(() => {
-      const player = playerRef.current;
-      if (!player || document.visibilityState === "hidden") return;
-      setCurrentTime(player.getCurrentTime() || 0);
-      const nextDuration = player.getDuration() || 0;
-      setDuration(nextDuration);
-    }, mobileOrTouch ? 750 : 250);
+    const timer = window.setInterval(
+      () => {
+        const player = playerRef.current;
+        if (!player || document.visibilityState === "hidden") return;
+        setCurrentTime(player.getCurrentTime() || 0);
+        const nextDuration = player.getDuration() || 0;
+        setDuration(nextDuration);
+      },
+      mobileOrTouch ? 750 : 250,
+    );
     return () => window.clearInterval(timer);
   }, [playing, ready]);
 
@@ -250,8 +269,16 @@ export function MinimalYouTubePlayer({
 
   return (
     <div className={cn("relative isolate h-full w-full overflow-hidden bg-black", className)}>
-      <div ref={mountRef} className="pointer-events-none absolute inset-0 h-full w-full [&>iframe]:h-full [&>iframe]:w-full" />
-      <PlayerStatus buffering={buffering} error={error} locale={locale} onRetry={() => setAttempt((value) => value + 1)} />
+      <div
+        ref={mountRef}
+        className="pointer-events-none absolute inset-0 h-full w-full [&>iframe]:h-full [&>iframe]:w-full"
+      />
+      <PlayerStatus
+        buffering={buffering}
+        error={error}
+        locale={locale}
+        onRetry={() => setAttempt((value) => value + 1)}
+      />
       <PlayerControls
         playing={playing}
         ready={ready && !error}
@@ -274,7 +301,11 @@ export function MinimalYouTubePlayer({
         pauseLabel={copy("Pausar", "Pause", "Pausar")}
         volumeLabel={copy("Volume", "Volume", "Volumen")}
         progressLabel={copy("Progresso do vídeo", "Video progress", "Progreso del video")}
-        muteLabel={volume === 0 ? copy("Ativar som", "Unmute", "Activar sonido") : copy("Silenciar", "Mute", "Silenciar")}
+        muteLabel={
+          volume === 0
+            ? copy("Ativar som", "Unmute", "Activar sonido")
+            : copy("Silenciar", "Mute", "Silenciar")
+        }
       />
     </div>
   );
@@ -326,14 +357,17 @@ export function MinimalVideoPlayer({
     }
   }, []);
 
-  const revealControls = useCallback((linger = 2200) => {
-    setControlsVisible(true);
-    clearControlsTimer();
-    controlsTimerRef.current = window.setTimeout(() => {
-      setControlsVisible(false);
-      controlsTimerRef.current = null;
-    }, linger);
-  }, [clearControlsTimer]);
+  const revealControls = useCallback(
+    (linger = 2200) => {
+      setControlsVisible(true);
+      clearControlsTimer();
+      controlsTimerRef.current = window.setTimeout(() => {
+        setControlsVisible(false);
+        controlsTimerRef.current = null;
+      }, linger);
+    },
+    [clearControlsTimer],
+  );
 
   useEffect(() => () => clearControlsTimer(), [clearControlsTimer]);
 
@@ -350,7 +384,14 @@ export function MinimalVideoPlayer({
     setPreload(saveData || slowConnection || mobileOrTouch ? "none" : "metadata");
 
     const touchAutoPlay = mobileOrTouch && autoPlayOnTouch;
-    if (!autoPlay || (mobileOrTouch && !touchAutoPlay) || saveData || slowConnection || document.visibilityState === "hidden") return;
+    if (
+      !autoPlay ||
+      (mobileOrTouch && !touchAutoPlay) ||
+      saveData ||
+      slowConnection ||
+      document.visibilityState === "hidden"
+    )
+      return;
 
     if (touchAutoPlay) {
       video.muted = true;
@@ -396,7 +437,12 @@ export function MinimalVideoPlayer({
       // play() itself starts loading when preload is none; never gate this gesture on metadata.
       void video.play().catch((reason: unknown) => {
         setBuffering(false);
-        if (reason instanceof DOMException && reason.name !== "NotAllowedError" && reason.name !== "AbortError") setError(true);
+        if (
+          reason instanceof DOMException &&
+          reason.name !== "NotAllowedError" &&
+          reason.name !== "AbortError"
+        )
+          setError(true);
       });
     } else {
       video.pause();
@@ -433,7 +479,9 @@ export function MinimalVideoPlayer({
         preload={preload}
         className="mx-auto h-full max-h-[68dvh] w-full bg-black object-contain"
         onLoadedMetadata={(event) => {
-          setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0);
+          setDuration(
+            Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0,
+          );
           setReady(true);
         }}
         onLoadedData={() => {
@@ -441,7 +489,11 @@ export function MinimalVideoPlayer({
           setBuffering(false);
         }}
         onCanPlay={() => setBuffering(false)}
-        onDurationChange={(event) => setDuration(Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0)}
+        onDurationChange={(event) =>
+          setDuration(
+            Number.isFinite(event.currentTarget.duration) ? event.currentTarget.duration : 0,
+          )
+        }
         onTimeUpdate={(event) => {
           const video = event.currentTarget;
           const now = performance.now();
@@ -450,15 +502,24 @@ export function MinimalVideoPlayer({
           setCurrentTime(video.currentTime);
         }}
         onSeeked={(event) => setCurrentTime(event.currentTarget.currentTime)}
-        onError={() => { setError(true); setBuffering(false); setPlaying(false); }}
+        onError={() => {
+          setError(true);
+          setBuffering(false);
+          setPlaying(false);
+        }}
         onPlay={() => setPlaying(true)}
         onPlaying={(event) => {
-          if (document.visibilityState === "hidden") { event.currentTarget.pause(); return; }
+          if (document.visibilityState === "hidden") {
+            event.currentTarget.pause();
+            return;
+          }
           setPlaying(true);
           setBuffering(false);
         }}
         onWaiting={() => setBuffering(true)}
-        onStalled={(event) => { if (!event.currentTarget.paused) setBuffering(true); }}
+        onStalled={(event) => {
+          if (!event.currentTarget.paused) setBuffering(true);
+        }}
         onPause={() => {
           setPlaying(false);
           setBuffering(false);
@@ -474,7 +535,12 @@ export function MinimalVideoPlayer({
       />
       <PlayerStatus buffering={buffering} error={error} locale={locale} onRetry={requestPlay} />
       {!playing && !buffering && !error && !ready ? (
-        <button type="button" onClick={requestPlay} className="absolute left-1/2 top-1/3 z-10 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white ring-1 ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white" aria-label={copy("Reproduzir", "Play", "Reproducir")}>
+        <button
+          type="button"
+          onClick={requestPlay}
+          className="absolute left-1/2 top-1/3 z-10 grid size-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white ring-1 ring-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+          aria-label={copy("Reproduzir", "Play", "Reproducir")}
+        >
           <Play className="size-5 fill-current" aria-hidden="true" />
         </button>
       ) : null}
@@ -504,28 +570,65 @@ export function MinimalVideoPlayer({
         pauseLabel={copy("Pausar", "Pause", "Pausar")}
         volumeLabel={copy("Volume", "Volume", "Volumen")}
         progressLabel={copy("Progresso do vídeo", "Video progress", "Progreso del video")}
-        muteLabel={volume === 0 ? copy("Ativar som", "Unmute", "Activar sonido") : copy("Silenciar", "Mute", "Silenciar")}
+        muteLabel={
+          volume === 0
+            ? copy("Ativar som", "Unmute", "Activar sonido")
+            : copy("Silenciar", "Mute", "Silenciar")
+        }
       />
     </div>
   );
 }
 
-function PlayerStatus({ buffering, error, locale, onRetry }: { buffering: boolean; error: boolean; locale: Locale; onRetry: () => void }) {
+function PlayerStatus({
+  buffering,
+  error,
+  locale,
+  onRetry,
+}: {
+  buffering: boolean;
+  error: boolean;
+  locale: Locale;
+  onRetry: () => void;
+}) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  if (error) return (
-    <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-black/90 p-3 text-center text-white" role="alert">
-      <p className="text-sm">{copy("Não foi possível carregar este vídeo.", "This video could not be loaded.", "No se pudo cargar este video.")}</p>
-      <button type="button" onClick={onRetry} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/30 px-4 text-sm font-semibold hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
-        <RotateCcw className="size-4" aria-hidden="true" />{copy("Tentar novamente", "Try again", "Volver a intentar")}
-      </button>
-    </div>
-  );
+  if (error)
+    return (
+      <div
+        className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-2 bg-black/90 p-3 text-center text-white"
+        role="alert"
+      >
+        <p className="text-sm">
+          {copy(
+            "Não foi possível carregar este vídeo.",
+            "This video could not be loaded.",
+            "No se pudo cargar este video.",
+          )}
+        </p>
+        <button
+          type="button"
+          onClick={onRetry}
+          className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/30 px-4 text-sm font-semibold hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+        >
+          <RotateCcw className="size-4" aria-hidden="true" />
+          {copy("Tentar novamente", "Try again", "Volver a intentar")}
+        </button>
+      </div>
+    );
   if (!buffering) return null;
   return (
-    <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center" role="status">
+    <div
+      className="pointer-events-none absolute inset-0 z-10 grid place-items-center"
+      role="status"
+    >
       <span className="grid size-11 place-items-center rounded-full bg-black/60 text-white">
-        <LoaderCircle className="size-5 animate-spin motion-reduce:animate-none" aria-hidden="true" />
-        <span className="sr-only">{copy("Carregando vídeo", "Loading video", "Cargando video")}</span>
+        <LoaderCircle
+          className="size-5 animate-spin motion-reduce:animate-none"
+          aria-hidden="true"
+        />
+        <span className="sr-only">
+          {copy("Carregando vídeo", "Loading video", "Cargando video")}
+        </span>
       </span>
     </div>
   );
@@ -570,7 +673,12 @@ function PlayerControls({
   const safeCurrent = safeDuration > 0 ? Math.min(currentTime, safeDuration) : 0;
 
   return (
-    <div className={cn("absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/95 via-black/70 to-transparent px-3 pb-3 pt-10 sm:px-4", className)}>
+    <div
+      className={cn(
+        "absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/95 via-black/70 to-transparent px-3 pb-3 pt-10 sm:px-4",
+        className,
+      )}
+    >
       <input
         type="range"
         min={0}
@@ -590,7 +698,11 @@ function PlayerControls({
           className="grid size-11 shrink-0 place-items-center rounded-full bg-white/12 text-white transition-colors hover:bg-white/20 disabled:opacity-45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           aria-label={playing ? pauseLabel : playLabel}
         >
-          {playing ? <Pause className="size-4 fill-current" /> : <Play className="size-4 fill-current" />}
+          {playing ? (
+            <Pause className="size-4 fill-current" />
+          ) : (
+            <Play className="size-4 fill-current" />
+          )}
         </button>
 
         <span className="min-w-[4.2rem] text-[0.65rem] font-semibold tabular-nums text-white/75">
@@ -630,4 +742,3 @@ function formatTime(value: number) {
   const seconds = total % 60;
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
-

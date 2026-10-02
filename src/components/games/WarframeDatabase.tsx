@@ -114,7 +114,9 @@ function normalizedDrops(item?: WarframeItem) {
 }
 
 function normalizedComponents(item?: WarframeItem) {
-  return Array.isArray(item?.components) ? item.components.filter((component) => component?.name) : [];
+  return Array.isArray(item?.components)
+    ? item.components.filter((component) => component?.name)
+    : [];
 }
 
 function componentCount(component: WarframeComponent) {
@@ -155,9 +157,8 @@ async function fetchWarframeData(
   if (!response.ok) throw new Error(`WARFRAME_DATA_${response.status}`);
   const raw = (await response.json()) as unknown;
   const entries = Array.isArray(raw)
-    ? raw.filter(
-        (candidate): candidate is WarframeItem =>
-          Boolean(candidate && typeof candidate === "object" && "name" in candidate),
+    ? raw.filter((candidate): candidate is WarframeItem =>
+        Boolean(candidate && typeof candidate === "object" && "name" in candidate),
       )
     : [];
   memoryCache.set(cacheKey, entries);
@@ -264,16 +265,22 @@ export function WarframeDatabase({ mode, locale }: { mode: WarframeDatabaseMode;
           <div>
             <div className="flex items-center gap-2">
               <Sparkles className="size-4 text-gold-strong" />
-              <span className="section-kicker">MGP / TENNO DATABASE</span>
+              <span className="section-kicker">ÍMPAR / TENNO DATABASE</span>
             </div>
-            <h2 className="mt-3 font-display text-2xl font-bold text-foreground sm:text-3xl">{title}</h2>
+            <h2 className="mt-3 font-display text-2xl font-bold text-foreground sm:text-3xl">
+              {title}
+            </h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{description}</p>
             <div className="mt-4 flex flex-wrap gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               <span className="rounded-full border border-border bg-muted/20 px-2.5 py-1">
                 {copy("Dados atuais via WFCD", "Current WFCD data", "Datos actuales vía WFCD")}
               </span>
               <span className="rounded-full border border-border bg-muted/20 px-2.5 py-1">
-                {copy("Imagens via CDN WarframeStatus", "WarframeStatus CDN images", "Imágenes vía CDN WarframeStatus")}
+                {copy(
+                  "Imagens via CDN WarframeStatus",
+                  "WarframeStatus CDN images",
+                  "Imágenes vía CDN WarframeStatus",
+                )}
               </span>
             </div>
           </div>
@@ -286,8 +293,16 @@ export function WarframeDatabase({ mode, locale }: { mode: WarframeDatabaseMode;
               className="h-auto border-0 p-0 shadow-none"
               placeholder={
                 mode === "items"
-                  ? copy("Ex.: Forma, Neurodes, Catalyst...", "e.g. Forma, Neurodes, Catalyst...", "Ej.: Forma, Neurodes, Catalyst...")
-                  : copy("Buscar por nome ou tipo", "Search by name or type", "Buscar por nombre o tipo")
+                  ? copy(
+                      "Ex.: Forma, Neurodes, Catalyst...",
+                      "e.g. Forma, Neurodes, Catalyst...",
+                      "Ej.: Forma, Neurodes, Catalyst...",
+                    )
+                  : copy(
+                      "Buscar por nome ou tipo",
+                      "Search by name or type",
+                      "Buscar por nombre o tipo",
+                    )
               }
             />
           </label>
@@ -321,7 +336,11 @@ export function WarframeDatabase({ mode, locale }: { mode: WarframeDatabaseMode;
           <div className="p-6 sm:p-8">
             <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-5">
               <h3 className="font-display text-lg font-semibold text-foreground">
-                {copy("A base do Arsenal não respondeu", "The Arsenal database did not respond", "La base del Arsenal no respondió")}
+                {copy(
+                  "A base do Arsenal não respondeu",
+                  "The Arsenal database did not respond",
+                  "La base del Arsenal no respondió",
+                )}
               </h3>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 {copy(
@@ -330,7 +349,12 @@ export function WarframeDatabase({ mode, locale }: { mode: WarframeDatabaseMode;
                   "El hub sigue intacto. Inténtalo de nuevo; los datos se cargan desde la API pública del ecosistema Warframe.",
                 )}
               </p>
-              <a href={API_DOCS} target="_blank" rel="noreferrer" className="brand-button-secondary mt-4 gap-2">
+              <a
+                href={API_DOCS}
+                target="_blank"
+                rel="noreferrer"
+                className="brand-button-secondary mt-4 gap-2"
+              >
                 {copy("Ver fonte", "View source", "Ver fuente")}
                 <ExternalLink className="size-4" />
               </a>
@@ -341,7 +365,11 @@ export function WarframeDatabase({ mode, locale }: { mode: WarframeDatabaseMode;
             <div>
               <Loader2 className="mx-auto size-7 animate-spin text-gold-strong" />
               <p className="mt-3 text-sm font-semibold text-foreground">
-                {copy("Sincronizando o Arsenal...", "Syncing the Arsenal...", "Sincronizando el Arsenal...")}
+                {copy(
+                  "Sincronizando o Arsenal...",
+                  "Syncing the Arsenal...",
+                  "Sincronizando el Arsenal...",
+                )}
               </p>
             </div>
           </div>
@@ -349,7 +377,11 @@ export function WarframeDatabase({ mode, locale }: { mode: WarframeDatabaseMode;
           <div className="grid min-h-64 place-items-center p-8 text-center">
             <PackageSearch className="size-8 text-muted-foreground" />
             <p className="mt-3 text-sm text-muted-foreground">
-              {copy("Nenhum resultado encontrado.", "No results found.", "No se encontraron resultados.")}
+              {copy(
+                "Nenhum resultado encontrado.",
+                "No results found.",
+                "No se encontraron resultados.",
+              )}
             </p>
           </div>
         ) : (
@@ -372,9 +404,14 @@ export function WarframeDatabase({ mode, locale }: { mode: WarframeDatabaseMode;
                     >
                       <ItemThumb item={item} className="size-10" />
                       <span className="min-w-0">
-                        <span className="block truncate text-sm font-semibold text-foreground">{item.name}</span>
+                        <span className="block truncate text-sm font-semibold text-foreground">
+                          {item.name}
+                        </span>
                         <span className="mt-0.5 block truncate text-[0.68rem] text-muted-foreground">
-                          {item.type || item.category || item.productCategory || copy("Item", "Item", "Objeto")}
+                          {item.type ||
+                            item.category ||
+                            item.productCategory ||
+                            copy("Item", "Item", "Objeto")}
                         </span>
                       </span>
                     </button>
@@ -416,7 +453,9 @@ export function WarframeDatabase({ mode, locale }: { mode: WarframeDatabaseMode;
                 {copy("Mídia oficial", "Official media", "Medio oficial")}
               </span>
             </div>
-            <h3 className="mt-2 font-display text-lg font-semibold text-foreground">Warframe: Tau</h3>
+            <h3 className="mt-2 font-display text-lg font-semibold text-foreground">
+              Warframe: Tau
+            </h3>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {copy(
                 "Trailer oficial da Digital Extremes exibido na TennoCon 2026.",
@@ -439,11 +478,21 @@ export function WarframeDatabase({ mode, locale }: { mode: WarframeDatabaseMode;
             )}
           </p>
           <div className="mt-4 flex flex-col gap-2">
-            <a href={API_DOCS} target="_blank" rel="noreferrer" className="brand-button-secondary justify-between gap-2">
+            <a
+              href={API_DOCS}
+              target="_blank"
+              rel="noreferrer"
+              className="brand-button-secondary justify-between gap-2"
+            >
               WarframeStatus API
               <ExternalLink className="size-4" />
             </a>
-            <a href={OFFICIAL_DROPS} target="_blank" rel="noreferrer" className="brand-button-secondary justify-between gap-2">
+            <a
+              href={OFFICIAL_DROPS}
+              target="_blank"
+              rel="noreferrer"
+              className="brand-button-secondary justify-between gap-2"
+            >
               {copy("Drops oficiais", "Official drops", "Drops oficiales")}
               <ExternalLink className="size-4" />
             </a>
@@ -454,7 +503,15 @@ export function WarframeDatabase({ mode, locale }: { mode: WarframeDatabaseMode;
   );
 }
 
-function ItemDetail({ item, mode, locale }: { item: WarframeItem; mode: WarframeDatabaseMode; locale: Locale }) {
+function ItemDetail({
+  item,
+  mode,
+  locale,
+}: {
+  item: WarframeItem;
+  mode: WarframeDatabaseMode;
+  locale: Locale;
+}) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const components = normalizedComponents(item);
   const drops = normalizedDrops(item);
@@ -469,23 +526,36 @@ function ItemDetail({ item, mode, locale }: { item: WarframeItem; mode: Warframe
           </div>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {item.masteryReq !== undefined ? <Badge>MR {item.masteryReq}</Badge> : null}
-            {item.tradable ? <Badge>{copy("Negociável", "Tradable", "Intercambiable")}</Badge> : null}
+            {item.tradable ? (
+              <Badge>{copy("Negociável", "Tradable", "Intercambiable")}</Badge>
+            ) : null}
             {item.vaulted ? <Badge>Vaulted</Badge> : null}
           </div>
         </div>
 
         <div className="min-w-0">
           <p className="text-[0.68rem] font-bold uppercase tracking-[0.12em] text-gold-strong">
-            {item.type || item.category || item.productCategory || copy("Entrada do Arsenal", "Arsenal entry", "Entrada del Arsenal")}
+            {item.type ||
+              item.category ||
+              item.productCategory ||
+              copy("Entrada do Arsenal", "Arsenal entry", "Entrada del Arsenal")}
           </p>
-          <h3 className="mt-2 text-balance font-display text-3xl font-bold text-foreground">{item.name}</h3>
+          <h3 className="mt-2 text-balance font-display text-3xl font-bold text-foreground">
+            {item.name}
+          </h3>
           {item.description ? (
-            <p className="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground">{item.description}</p>
+            <p className="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground">
+              {item.description}
+            </p>
           ) : null}
 
           <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-4">
             {item.buildTime !== undefined ? (
-              <Fact icon={Clock3} label={copy("Tempo", "Build time", "Tiempo")} value={formatDuration(item.buildTime)} />
+              <Fact
+                icon={Clock3}
+                label={copy("Tempo", "Build time", "Tiempo")}
+                value={formatDuration(item.buildTime)}
+              />
             ) : null}
             {item.skipBuildTimePrice !== undefined ? (
               <Fact
@@ -495,7 +565,11 @@ function ItemDetail({ item, mode, locale }: { item: WarframeItem; mode: Warframe
               />
             ) : null}
             {item.buildPrice !== undefined ? (
-              <Fact icon={Coins} label={copy("Créditos", "Credits", "Créditos")} value={formatNumber(item.buildPrice)} />
+              <Fact
+                icon={Coins}
+                label={copy("Créditos", "Credits", "Créditos")}
+                value={formatNumber(item.buildPrice)}
+              />
             ) : null}
             {totalWindow ? (
               <Fact
@@ -540,7 +614,11 @@ function ItemDetail({ item, mode, locale }: { item: WarframeItem; mode: Warframe
           <div className="flex items-center gap-2">
             <PackageSearch className="size-4 text-gold-strong" />
             <h4 className="font-display text-lg font-semibold text-foreground">
-              {copy("Onde conseguir / onde dropa", "Where to get / drops", "Dónde conseguir / drops")}
+              {copy(
+                "Onde conseguir / onde dropa",
+                "Where to get / drops",
+                "Dónde conseguir / drops",
+              )}
             </h4>
           </div>
           {drops.length ? (
@@ -562,7 +640,12 @@ function ItemDetail({ item, mode, locale }: { item: WarframeItem; mode: Warframe
               )}
             </p>
           )}
-          <a href={OFFICIAL_DROPS} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-gold-strong hover:underline">
+          <a
+            href={OFFICIAL_DROPS}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-gold-strong hover:underline"
+          >
             {copy("Conferir tabela oficial", "Check official drop table", "Ver tabla oficial")}
             <ExternalLink className="size-3.5" />
           </a>
@@ -585,9 +668,17 @@ function ComponentCard({ component, locale }: { component: WarframeComponent; lo
             <span className="text-xs font-bold text-gold-strong">×{componentCount(component)}</span>
           </div>
           <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
-            {component.buildTime ? <span>{copy("Fundição", "Build", "Fundición")}: {formatDuration(component.buildTime)}</span> : null}
-            {component.skipBuildTimePrice !== undefined ? <span>Rush: {formatNumber(component.skipBuildTimePrice)} PL</span> : null}
-            {component.buildPrice !== undefined ? <span>{formatNumber(component.buildPrice)} cr</span> : null}
+            {component.buildTime ? (
+              <span>
+                {copy("Fundição", "Build", "Fundición")}: {formatDuration(component.buildTime)}
+              </span>
+            ) : null}
+            {component.skipBuildTimePrice !== undefined ? (
+              <span>Rush: {formatNumber(component.skipBuildTimePrice)} PL</span>
+            ) : null}
+            {component.buildPrice !== undefined ? (
+              <span>{formatNumber(component.buildPrice)} cr</span>
+            ) : null}
           </div>
         </div>
       </div>
@@ -596,20 +687,37 @@ function ComponentCard({ component, locale }: { component: WarframeComponent; lo
   );
 }
 
-function DropList({ drops, locale, compact = false }: { drops: WarframeDrop[]; locale: Locale; compact?: boolean }) {
+function DropList({
+  drops,
+  locale,
+  compact = false,
+}: {
+  drops: WarframeDrop[];
+  locale: Locale;
+  compact?: boolean;
+}) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   return (
     <div className={cn("space-y-2", compact ? "mt-3" : "mt-4")}>
       {drops.slice(0, compact ? 4 : 12).map((drop, index) => (
-        <div key={`${drop.location ?? drop.type ?? "drop"}-${index}`} className="flex items-start justify-between gap-3 rounded-lg border border-border/70 bg-muted/10 px-3 py-2.5">
+        <div
+          key={`${drop.location ?? drop.type ?? "drop"}-${index}`}
+          className="flex items-start justify-between gap-3 rounded-lg border border-border/70 bg-muted/10 px-3 py-2.5"
+        >
           <div className="min-w-0">
             <p className="break-words text-xs font-semibold text-foreground">
-              {drop.location || drop.type || copy("Fonte registrada", "Recorded source", "Fuente registrada")}
+              {drop.location ||
+                drop.type ||
+                copy("Fonte registrada", "Recorded source", "Fuente registrada")}
             </p>
-            {drop.rarity ? <p className="mt-0.5 text-[0.68rem] text-muted-foreground">{drop.rarity}</p> : null}
+            {drop.rarity ? (
+              <p className="mt-0.5 text-[0.68rem] text-muted-foreground">{drop.rarity}</p>
+            ) : null}
           </div>
           {drop.chance !== undefined ? (
-            <span className="shrink-0 text-xs font-bold text-gold-strong">{formatPercent(drop.chance)}</span>
+            <span className="shrink-0 text-xs font-bold text-gold-strong">
+              {formatPercent(drop.chance)}
+            </span>
           ) : null}
         </div>
       ))}
@@ -629,7 +737,11 @@ function WarframeStats({ item, locale }: { item: WarframeItem; locale: Locale })
   if (!stats.length) return null;
   return (
     <div className="mt-5 flex flex-wrap gap-2">
-      {stats.map(([label, value]) => <Badge key={String(label)}>{String(label)}: {formatNumber(value as number)}</Badge>)}
+      {stats.map(([label, value]) => (
+        <Badge key={String(label)}>
+          {String(label)}: {formatNumber(value as number)}
+        </Badge>
+      ))}
     </div>
   );
 }
@@ -637,19 +749,39 @@ function WarframeStats({ item, locale }: { item: WarframeItem; locale: Locale })
 function WeaponStats({ item, locale }: { item: WarframeItem; locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const stats = [
-    [copy("Dano", "Damage", "Daño"), item.totalDamage !== undefined ? formatNumber(item.totalDamage) : undefined],
-    [copy("Crítico", "Critical", "Crítico"), item.criticalChance !== undefined ? formatPercent(item.criticalChance) : undefined],
-    [copy("Multiplicador", "Multiplier", "Multiplicador"), item.criticalMultiplier !== undefined ? `${item.criticalMultiplier.toFixed(1)}×` : undefined],
-    [copy("Status", "Status", "Estado"), item.procChance !== undefined ? formatPercent(item.procChance) : undefined],
-    [copy("Cadência", "Fire rate", "Cadencia"), item.fireRate !== undefined ? formatNumber(item.fireRate) : undefined],
-    [copy("Carregador", "Magazine", "Cargador"), item.magazineSize !== undefined ? formatNumber(item.magazineSize) : undefined],
+    [
+      copy("Dano", "Damage", "Daño"),
+      item.totalDamage !== undefined ? formatNumber(item.totalDamage) : undefined,
+    ],
+    [
+      copy("Crítico", "Critical", "Crítico"),
+      item.criticalChance !== undefined ? formatPercent(item.criticalChance) : undefined,
+    ],
+    [
+      copy("Multiplicador", "Multiplier", "Multiplicador"),
+      item.criticalMultiplier !== undefined ? `${item.criticalMultiplier.toFixed(1)}×` : undefined,
+    ],
+    [
+      copy("Status", "Status", "Estado"),
+      item.procChance !== undefined ? formatPercent(item.procChance) : undefined,
+    ],
+    [
+      copy("Cadência", "Fire rate", "Cadencia"),
+      item.fireRate !== undefined ? formatNumber(item.fireRate) : undefined,
+    ],
+    [
+      copy("Carregador", "Magazine", "Cargador"),
+      item.magazineSize !== undefined ? formatNumber(item.magazineSize) : undefined,
+    ],
   ].filter(([, value]) => value !== undefined);
   if (!stats.length) return null;
   return (
     <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
       {stats.map(([label, value]) => (
         <div key={String(label)} className="rounded-lg border border-border bg-muted/15 px-3 py-2">
-          <p className="text-[0.64rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
+          <p className="text-[0.64rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
+            {label}
+          </p>
           <p className="mt-1 text-sm font-semibold text-foreground">{value}</p>
         </div>
       ))}
@@ -672,16 +804,32 @@ function Fact({ icon: Icon, label, value }: { icon: typeof Clock3; label: string
 function ItemThumb({ item, className }: { item: WarframeItem; className?: string }) {
   const source = imageUrl(item);
   return (
-    <span className={cn("grid shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-muted/20", className)}>
-      {source ? <img src={source} alt="" loading="lazy" className="h-full w-full object-contain p-1" /> : <ImageOff className="size-4 text-muted-foreground" />}
+    <span
+      className={cn(
+        "grid shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-muted/20",
+        className,
+      )}
+    >
+      {source ? (
+        <img src={source} alt="" loading="lazy" className="h-full w-full object-contain p-1" />
+      ) : (
+        <ImageOff className="size-4 text-muted-foreground" />
+      )}
     </span>
   );
 }
 
 function ItemImage({ item }: { item: WarframeItem }) {
   const source = imageUrl(item);
-  if (!source) return <div className="grid h-full place-items-center"><ImageOff className="size-10 text-muted-foreground" /></div>;
-  return <img src={source} alt={item.name} loading="lazy" className="h-full w-full object-contain" />;
+  if (!source)
+    return (
+      <div className="grid h-full place-items-center">
+        <ImageOff className="size-10 text-muted-foreground" />
+      </div>
+    );
+  return (
+    <img src={source} alt={item.name} loading="lazy" className="h-full w-full object-contain" />
+  );
 }
 
 function Badge({ children }: { children: React.ReactNode }) {

@@ -234,8 +234,7 @@ export const lookupSteamPlayer = createServerFn({ method: "POST" })
       profileUrl: player.profileurl,
       avatarUrl: player.avatarfull || player.avatarmedium || player.avatar || null,
       countryCode: player.loccountrycode ?? null,
-      visibility:
-        player.communityvisibilitystate === 3 ? "public" : "private_or_limited",
+      visibility: player.communityvisibilitystate === 3 ? "public" : "private_or_limited",
       library,
     } satisfies SteamPlayerLookupResult;
   });
@@ -265,14 +264,8 @@ export const beginSteamConnection = createServerFn({ method: "POST" })
     url.searchParams.set("openid.mode", "checkid_setup");
     url.searchParams.set("openid.return_to", returnTo);
     url.searchParams.set("openid.realm", `${appUrl}/`);
-    url.searchParams.set(
-      "openid.identity",
-      "http://specs.openid.net/auth/2.0/identifier_select",
-    );
-    url.searchParams.set(
-      "openid.claimed_id",
-      "http://specs.openid.net/auth/2.0/identifier_select",
-    );
+    url.searchParams.set("openid.identity", "http://specs.openid.net/auth/2.0/identifier_select");
+    url.searchParams.set("openid.claimed_id", "http://specs.openid.net/auth/2.0/identifier_select");
 
     return { url: url.toString() };
   });
@@ -351,7 +344,7 @@ export const completeSteamConnection = createServerFn({ method: "POST" })
     try {
       player = await getSteamSummary(steamId);
     } catch (error) {
-      console.warn("[MGP Steam] Profile summary unavailable during OpenID link", error);
+      console.warn("[ÍMPAR Steam] Profile summary unavailable during OpenID link", error);
     }
 
     const now = new Date().toISOString();
@@ -359,8 +352,7 @@ export const completeSteamConnection = createServerFn({ method: "POST" })
       profile_url: player?.profileurl ?? `https://steamcommunity.com/profiles/${steamId}/`,
       avatar_url: player?.avatarfull || player?.avatarmedium || player?.avatar || null,
       country_code: player?.loccountrycode ?? null,
-      visibility:
-        player?.communityvisibilitystate === 3 ? "public" : "private_or_limited",
+      visibility: player?.communityvisibilitystate === 3 ? "public" : "private_or_limited",
     };
 
     const { error: upsertError } = await admin.from("connected_accounts").upsert(

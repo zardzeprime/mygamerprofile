@@ -14,7 +14,7 @@ export const Route = createFileRoute("/forgot-password")({
   component: ForgotPasswordPage,
   head: () => ({
     meta: [
-      { title: "Recuperar senha — MGP" },
+      { title: "Recuperar senha — ÍMPAR" },
       { name: "description", content: "Recupere sua senha do ÍMPAR." },
       { name: "robots", content: "noindex, follow" },
     ],

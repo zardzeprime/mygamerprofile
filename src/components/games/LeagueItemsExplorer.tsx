@@ -159,7 +159,9 @@ export function LeagueItemsExplorer({ locale }: { locale: Locale }) {
         if (!response.ok) throw new Error(`Data Dragon returned ${response.status}`);
         const payload = (await response.json()) as ItemPayload;
         const everyItem = Object.entries(payload.data);
-        const summonersRiftItems = dedupeCatalog(everyItem.filter(([, item]) => isVisibleStoreItem(item)));
+        const summonersRiftItems = dedupeCatalog(
+          everyItem.filter(([, item]) => isVisibleStoreItem(item)),
+        );
 
         setVersion(current);
         setAllItemEntries(everyItem);
@@ -229,7 +231,11 @@ export function LeagueItemsExplorer({ locale }: { locale: Locale }) {
               </span>
             </div>
             <h2 className="mt-4 font-display text-2xl font-semibold text-foreground sm:text-3xl">
-              {copy("Itens de Summoner's Rift", "Summoner's Rift items", "Objetos de la Grieta del Invocador")}
+              {copy(
+                "Itens de Summoner's Rift",
+                "Summoner's Rift items",
+                "Objetos de la Grieta del Invocador",
+              )}
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
               {copy(
@@ -240,7 +246,9 @@ export function LeagueItemsExplorer({ locale }: { locale: Locale }) {
             </p>
           </div>
           <span className="text-xs font-semibold text-muted-foreground">
-            {loading ? copy("Sincronizando…", "Syncing…", "Sincronizando…") : `${filtered.length} / ${items.length}`}
+            {loading
+              ? copy("Sincronizando…", "Syncing…", "Sincronizando…")
+              : `${filtered.length} / ${items.length}`}
           </span>
         </div>
 
@@ -264,7 +272,10 @@ export function LeagueItemsExplorer({ locale }: { locale: Locale }) {
       {loading ? (
         <div className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12">
           {Array.from({ length: 36 }).map((_, index) => (
-            <div key={index} className="aspect-square animate-pulse rounded-xl border border-border bg-muted/40" />
+            <div
+              key={index}
+              className="aspect-square animate-pulse rounded-xl border border-border bg-muted/40"
+            />
           ))}
         </div>
       ) : (
@@ -279,7 +290,9 @@ export function LeagueItemsExplorer({ locale }: { locale: Locale }) {
                 title={item.name}
                 className={cn(
                   "group overflow-hidden rounded-xl border bg-surface p-2 text-left transition-all hover:-translate-y-0.5 hover:shadow-lift",
-                  masterwork ? "border-amber-500/35 hover:border-orange-400/70" : "border-border hover:border-gold/45",
+                  masterwork
+                    ? "border-amber-500/35 hover:border-orange-400/70"
+                    : "border-border hover:border-gold/45",
                 )}
               >
                 <div className="relative">
@@ -292,13 +305,19 @@ export function LeagueItemsExplorer({ locale }: { locale: Locale }) {
                   {masterwork ? (
                     <span
                       className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full border border-orange-300/70 bg-[#24140b] text-orange-200 shadow-lg"
-                      title={copy("Lendário elegível ao sistema Magistral do Ornn", "Legendary item for Ornn's Masterwork system", "Objeto legendario para el sistema Magistral de Ornn")}
+                      title={copy(
+                        "Lendário elegível ao sistema Magistral do Ornn",
+                        "Legendary item for Ornn's Masterwork system",
+                        "Objeto legendario para el sistema Magistral de Ornn",
+                      )}
                     >
                       <Hammer className="size-3" />
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-2 truncate text-[0.68rem] font-semibold text-foreground">{item.name}</p>
+                <p className="mt-2 truncate text-[0.68rem] font-semibold text-foreground">
+                  {item.name}
+                </p>
                 {item.gold?.total ? (
                   <p className="mt-1 flex items-center gap-1 text-[0.62rem] text-muted-foreground">
                     <Coins className="size-3" />
@@ -315,9 +334,9 @@ export function LeagueItemsExplorer({ locale }: { locale: Locale }) {
         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-gold-strong" />
         <p>
           {copy(
-            "Dados e imagens desta seção vêm do Riot Data Dragon. Variantes de outros modos e entradas ocultas da loja são removidas do catálogo principal. O MGP é independente e não é endossado pela Riot Games.",
-            "Data and images in this section come from Riot Data Dragon. Other-mode variants and hidden store entries are removed from the main catalog. MGP is independent and is not endorsed by Riot Games.",
-            "Los datos e imágenes de esta sección provienen de Riot Data Dragon. Las variantes de otros modos y entradas ocultas se eliminan del catálogo principal. MGP es independiente y no está respaldado por Riot Games.",
+            "Dados e imagens desta seção vêm do Riot Data Dragon. Variantes de outros modos e entradas ocultas da loja são removidas do catálogo principal. O ÍMPAR é independente e não é endossado pela Riot Games.",
+            "Data and images in this section come from Riot Data Dragon. Other-mode variants and hidden store entries are removed from the main catalog. ÍMPAR is independent and is not endorsed by Riot Games.",
+            "Los datos e imágenes de esta sección provienen de Riot Data Dragon. Las variantes de otros modos y entradas ocultas se eliminan del catálogo principal. ÍMPAR es independiente y no está respaldado por Riot Games.",
           )}
         </p>
       </div>
@@ -436,7 +455,11 @@ function ItemDetail({
       {components.length ? (
         <ItemLinks
           title={copy("Componentes", "Components", "Componentes")}
-          description={copy("Clique para descer na receita.", "Select to go down the recipe.", "Selecciona para bajar en la receta.")}
+          description={copy(
+            "Clique para descer na receita.",
+            "Select to go down the recipe.",
+            "Selecciona para bajar en la receta.",
+          )}
           entries={components}
           version={version}
           onSelect={onSelect}
@@ -446,7 +469,11 @@ function ItemDetail({
       {upgrades.length ? (
         <ItemLinks
           title={copy("Pode construir", "Builds into", "Puede construir")}
-          description={copy("Clique para subir para o próximo item.", "Select to move up to the next item.", "Selecciona para subir al siguiente objeto.")}
+          description={copy(
+            "Clique para subir para o próximo item.",
+            "Select to move up to the next item.",
+            "Selecciona para subir al siguiente objeto.",
+          )}
           entries={upgrades}
           version={version}
           onSelect={onSelect}
@@ -477,14 +504,18 @@ function OrnnMasterworkCard({ item, locale }: { item: LeagueItem; locale: Locale
           </span>
           <div>
             <p className="text-xs font-black uppercase tracking-[0.12em] text-orange-500">
-              {copy("Aprimoramento Magistral do Ornn", "Ornn Masterwork upgrade", "Mejora Magistral de Ornn")}
+              {copy(
+                "Aprimoramento Magistral do Ornn",
+                "Ornn Masterwork upgrade",
+                "Mejora Magistral de Ornn",
+              )}
             </p>
             <p className="mt-1 font-display text-lg font-semibold text-foreground">{item.name}</p>
             <p className="mt-2 text-xs leading-5 text-muted-foreground">
               {copy(
-                "No sistema atual do LoL, o item aprimorado pelo Ornn mantém o próprio nome e recebe o estado Magistral com atributos adicionais. O MGP mostra esse estado com a borda do Ornn em vez de criar uma cópia com um nome antigo.",
-                "In the current LoL system, an Ornn-upgraded item keeps its own name and gains Masterwork status with additional stats. MGP represents that state with the Ornn border instead of creating a duplicate with an old legacy name.",
-                "En el sistema actual de LoL, un objeto mejorado por Ornn conserva su nombre y obtiene el estado Magistral con atributos adicionales. MGP representa ese estado con el borde de Ornn en lugar de crear un duplicado con un nombre antiguo.",
+                "No sistema atual do LoL, o item aprimorado pelo Ornn mantém o próprio nome e recebe o estado Magistral com atributos adicionais. O ÍMPAR mostra esse estado com a borda do Ornn em vez de criar uma cópia com um nome antigo.",
+                "In the current LoL system, an Ornn-upgraded item keeps its own name and gains Masterwork status with additional stats. ÍMPAR represents that state with the Ornn border instead of creating a duplicate with an old legacy name.",
+                "En el sistema actual de LoL, un objeto mejorado por Ornn conserva su nombre y obtiene el estado Magistral con atributos adicionales. ÍMPAR representa ese estado con el borde de Ornn en lugar de crear un duplicado con un nombre antiguo.",
               )}
             </p>
           </div>
@@ -509,7 +540,9 @@ function ItemLinks({
 }) {
   return (
     <section className="mt-6">
-      <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">{title}</h3>
+      <h3 className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
+        {title}
+      </h3>
       <p className="mt-1 text-[0.7rem] text-muted-foreground">{description}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         {entries.map(([id, item]) => (

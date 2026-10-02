@@ -1,6 +1,16 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Code2, Download, Gamepad2, Loader2, LockKeyhole, Plus, Send, Trash2, X } from "lucide-react";
+import {
+  Code2,
+  Download,
+  Gamepad2,
+  Loader2,
+  LockKeyhole,
+  Plus,
+  Send,
+  Trash2,
+  X,
+} from "lucide-react";
 
 import { NoctisMark } from "@/components/noctis/NoctisMark";
 import { NoctisMarkdown } from "@/components/noctis/NoctisMarkdown";
@@ -142,7 +152,9 @@ export function NoctisChat() {
       })) as NoctisMessage[];
       if (!active) return;
       setThreadId(preferred.id);
-      setMessages(history.filter((message) => message.role === "user" || message.role === "assistant"));
+      setMessages(
+        history.filter((message) => message.role === "user" || message.role === "assistant"),
+      );
     };
 
     const LOAD_TIMEOUT_MS = 12_000;
@@ -194,8 +206,9 @@ export function NoctisChat() {
       `${title} · ÍMPAR`,
       new Date().toLocaleString(locale),
       "",
-      ...messages.map((message) =>
-        `${message.role === "user" ? copy("Você", "You", "Tú") : "Noctis"}: ${message.content}`,
+      ...messages.map(
+        (message) =>
+          `${message.role === "user" ? copy("Você", "You", "Tú") : "Noctis"}: ${message.content}`,
       ),
     ].join("\n\n");
     const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
@@ -263,7 +276,8 @@ export function NoctisChat() {
         });
 
         persistGuestId(response.guestId);
-        if (response.message) setMessages((current) => [...current, response.message as NoctisMessage]);
+        if (response.message)
+          setMessages((current) => [...current, response.message as NoctisMessage]);
         setGuestStatus((current) => ({
           guestId: response.guestId,
           responsesUsed: response.maxResponses - response.remaining,
@@ -334,7 +348,10 @@ export function NoctisChat() {
   const providerStatusKnown = user ? status !== null : guestStatus !== null;
   const aiReady = user ? status?.aiReady === true : guestStatus?.aiReady === true;
   const canSend = Boolean(
-    !loadingChat && providerStatusKnown && aiReady && (user || (guestStatus && !guestStatus.locked)),
+    !loadingChat &&
+    providerStatusKnown &&
+    aiReady &&
+    (user || (guestStatus && !guestStatus.locked)),
   );
 
   return (
@@ -345,7 +362,11 @@ export function NoctisChat() {
         className="fixed bottom-5 right-5 z-[70] grid size-14 place-items-center rounded-full border border-[var(--impar-spectral)]/45 bg-foreground text-[var(--impar-spectral)] shadow-lift transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--impar-spectral)]"
         aria-label={copy("Abrir Noctis", "Open Noctis", "Abrir Noctis")}
       >
-        {open ? <X className="size-5 text-background" /> : <NoctisMark className="size-full rounded-full" faceOnly />}
+        {open ? (
+          <X className="size-5 text-background" />
+        ) : (
+          <NoctisMark className="size-full rounded-full" faceOnly />
+        )}
       </button>
 
       {open ? (
@@ -371,7 +392,11 @@ export function NoctisChat() {
                             `${guestStatus.remaining} of ${guestStatus.maxResponses} free replies left`,
                             `${guestStatus.remaining} de ${guestStatus.maxResponses} respuestas gratis`,
                           )
-                        : copy("Conectando sessão guest...", "Connecting guest session...", "Conectando sesión invitada...")
+                        : copy(
+                            "Conectando sessão guest...",
+                            "Connecting guest session...",
+                            "Conectando sesión invitada...",
+                          )
                       : !status
                         ? copy(
                             "Noctis está acordando o motor do ÍMPAR...",
@@ -395,18 +420,41 @@ export function NoctisChat() {
 
               {user ? (
                 <div className="flex items-center gap-1">
-                  <Button type="button" variant="ghost" size="icon" onClick={exportCurrentChat} disabled={messages.length === 0} title={copy("Exportar conversa", "Export chat", "Exportar conversación")}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={exportCurrentChat}
+                    disabled={messages.length === 0}
+                    title={copy("Exportar conversa", "Export chat", "Exportar conversación")}
+                  >
                     <Download className="size-4" />
                   </Button>
-                  <Button type="button" variant="ghost" size="icon" onClick={() => void deleteCurrentChat()} disabled={!threadId} title={copy("Excluir conversa", "Delete chat", "Eliminar conversación")}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => void deleteCurrentChat()}
+                    disabled={!threadId}
+                    title={copy("Excluir conversa", "Delete chat", "Eliminar conversación")}
+                  >
                     <Trash2 className="size-4" />
                   </Button>
-                  <Button type="button" variant="ghost" size="icon" onClick={() => startNewChat()} title={copy("Nova conversa", "New chat", "Nueva conversación")}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => startNewChat()}
+                    title={copy("Nova conversa", "New chat", "Nueva conversación")}
+                  >
                     <Plus className="size-4" />
                   </Button>
                 </div>
               ) : (
-                <Link to="/login" className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted">
+                <Link
+                  to="/login"
+                  className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+                >
                   {copy("Entrar", "Sign in", "Entrar")}
                 </Link>
               )}
@@ -414,11 +462,33 @@ export function NoctisChat() {
 
             {user && status ? (
               <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl bg-muted/60 p-1">
-                <button type="button" onClick={() => changeMode("gaming")} className={cn("flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-colors", mode === "gaming" ? "bg-background text-foreground shadow-soft" : "text-muted-foreground")}>
+                <button
+                  type="button"
+                  onClick={() => changeMode("gaming")}
+                  className={cn(
+                    "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-colors",
+                    mode === "gaming"
+                      ? "bg-background text-foreground shadow-soft"
+                      : "text-muted-foreground",
+                  )}
+                >
                   <Gamepad2 className="size-3.5" /> Gamer
                 </button>
-                <button type="button" disabled={!status.isAdmin} onClick={() => changeMode("development")} className={cn("flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-colors", mode === "development" ? "bg-background text-foreground shadow-soft" : "text-muted-foreground", !status.isAdmin && "cursor-not-allowed opacity-40")} title={!status.isAdmin ? "Admin only" : undefined}>
-                  <Code2 className="size-3.5" /> {copy("Desenvolvimento", "Development", "Desarrollo")}
+                <button
+                  type="button"
+                  disabled={!status.isAdmin}
+                  onClick={() => changeMode("development")}
+                  className={cn(
+                    "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold transition-colors",
+                    mode === "development"
+                      ? "bg-background text-foreground shadow-soft"
+                      : "text-muted-foreground",
+                    !status.isAdmin && "cursor-not-allowed opacity-40",
+                  )}
+                  title={!status.isAdmin ? "Admin only" : undefined}
+                >
+                  <Code2 className="size-3.5" />{" "}
+                  {copy("Desenvolvimento", "Development", "Desarrollo")}
                 </button>
               </div>
             ) : null}
@@ -426,19 +496,35 @@ export function NoctisChat() {
 
           <div ref={scrollRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-4">
             {authLoading || loadingChat ? (
-              <div className="grid h-full place-items-center text-muted-foreground"><Loader2 className="size-5 animate-spin" /></div>
+              <div className="grid h-full place-items-center text-muted-foreground">
+                <Loader2 className="size-5 animate-spin" />
+              </div>
             ) : (
               <>
                 {visibleMessages.map((message, index) => (
-                  <article key={message.id ?? `${message.role}-${index}`} className={cn("max-w-[88%] rounded-2xl px-3.5 py-3 text-sm leading-6", message.role === "user" ? "ml-auto bg-foreground text-background" : "mr-auto border border-border bg-surface text-foreground")}>
+                  <article
+                    key={message.id ?? `${message.role}-${index}`}
+                    className={cn(
+                      "max-w-[88%] rounded-2xl px-3.5 py-3 text-sm leading-6",
+                      message.role === "user"
+                        ? "ml-auto bg-foreground text-background"
+                        : "mr-auto border border-border bg-surface text-foreground",
+                    )}
+                  >
                     {message.role === "assistant" ? (
                       <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--impar-spectral)]">
                         <NoctisMark className="size-3.5" /> Noctis
                       </div>
                     ) : null}
-                    {message.role === "assistant" ? <NoctisMarkdown content={message.content} /> : <p className="whitespace-pre-wrap">{message.content}</p>}
+                    {message.role === "assistant" ? (
+                      <NoctisMarkdown content={message.content} />
+                    ) : (
+                      <p className="whitespace-pre-wrap">{message.content}</p>
+                    )}
                     {message.role === "assistant" && (message.model || message.provider) ? (
-                      <p className="mt-2 text-[10px] uppercase tracking-[0.12em] text-muted-foreground">{[message.provider, message.model].filter(Boolean).join(" · ")}</p>
+                      <p className="mt-2 text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                        {[message.provider, message.model].filter(Boolean).join(" · ")}
+                      </p>
                     ) : null}
                   </article>
                 ))}
@@ -468,7 +554,13 @@ export function NoctisChat() {
                         "Esto puede cambiar tras actualizar un secreto o por una indisponibilidad temporal del proveedor.",
                       )}
                     </p>
-                    <Button type="button" variant="outline" size="sm" onClick={() => setReloadNonce((value) => value + 1)} className="mt-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setReloadNonce((value) => value + 1)}
+                      className="mt-3"
+                    >
                       {copy("Verificar novamente", "Check again", "Verificar de nuevo")}
                     </Button>
                   </div>
@@ -476,7 +568,9 @@ export function NoctisChat() {
 
                 {guestLocked ? (
                   <div className="mt-4 rounded-2xl border border-[var(--impar-spectral)]/30 bg-[var(--impar-spectral-soft)] p-4 text-center">
-                    <div className="mx-auto mb-2 grid size-9 place-items-center rounded-full bg-[var(--impar-spectral-soft)] text-[var(--impar-spectral)]"><LockKeyhole className="size-4" /></div>
+                    <div className="mx-auto mb-2 grid size-9 place-items-center rounded-full bg-[var(--impar-spectral-soft)] text-[var(--impar-spectral)]">
+                      <LockKeyhole className="size-4" />
+                    </div>
                     <p className="font-semibold text-foreground">
                       {copy(
                         "As 10 respostas grátis acabaram por aqui.",
@@ -492,8 +586,18 @@ export function NoctisChat() {
                       )}
                     </p>
                     <div className="mt-3 flex justify-center gap-2">
-                      <Link to="/login" className="rounded-xl bg-foreground px-3.5 py-2 text-xs font-semibold text-background">{copy("Entrar", "Sign in", "Entrar")}</Link>
-                      <Link to="/register" className="rounded-xl border border-border bg-background px-3.5 py-2 text-xs font-semibold text-foreground">{copy("Criar perfil", "Create profile", "Crear perfil")}</Link>
+                      <Link
+                        to="/login"
+                        className="rounded-xl bg-foreground px-3.5 py-2 text-xs font-semibold text-background"
+                      >
+                        {copy("Entrar", "Sign in", "Entrar")}
+                      </Link>
+                      <Link
+                        to="/register"
+                        className="rounded-xl border border-border bg-background px-3.5 py-2 text-xs font-semibold text-foreground"
+                      >
+                        {copy("Criar perfil", "Create profile", "Crear perfil")}
+                      </Link>
                     </div>
                   </div>
                 ) : null}
@@ -506,7 +610,11 @@ export function NoctisChat() {
               <div className="mb-2 flex items-center justify-between gap-3 rounded-xl border border-destructive/20 bg-destructive/5 px-3 py-2">
                 <p className="text-xs text-destructive">{error}</p>
                 {!providerStatusKnown ? (
-                  <button type="button" onClick={() => setReloadNonce((value) => value + 1)} className="shrink-0 rounded-lg border border-border bg-background px-2.5 py-1.5 text-[11px] font-semibold text-foreground transition-colors hover:bg-muted">
+                  <button
+                    type="button"
+                    onClick={() => setReloadNonce((value) => value + 1)}
+                    className="shrink-0 rounded-lg border border-border bg-background px-2.5 py-1.5 text-[11px] font-semibold text-foreground transition-colors hover:bg-muted"
+                  >
                     {copy("Tentar novamente", "Retry", "Reintentar")}
                   </button>
                 ) : null}
@@ -527,16 +635,33 @@ export function NoctisChat() {
                 maxLength={user ? 6000 : 2500}
                 placeholder={
                   !providerStatusKnown
-                    ? copy("Verificando conexão com o Noctis...", "Checking Noctis connection...", "Verificando conexión con Noctis...")
+                    ? copy(
+                        "Verificando conexão com o Noctis...",
+                        "Checking Noctis connection...",
+                        "Verificando conexión con Noctis...",
+                      )
                     : !aiReady
-                      ? copy("Provedor indisponível — verifique novamente", "Provider unavailable — check again", "Proveedor no disponible — verifica de nuevo")
+                      ? copy(
+                          "Provedor indisponível — verifique novamente",
+                          "Provider unavailable — check again",
+                          "Proveedor no disponible — verifica de nuevo",
+                        )
                       : guestLocked
-                        ? copy("Entre para continuar com o Noctis", "Sign in to keep chatting with Noctis", "Inicia sesión para continuar con Noctis")
+                        ? copy(
+                            "Entre para continuar com o Noctis",
+                            "Sign in to keep chatting with Noctis",
+                            "Inicia sesión para continuar con Noctis",
+                          )
                         : copy("Fale com o Noctis...", "Talk to Noctis...", "Habla con Noctis...")
                 }
                 className="max-h-32 min-h-11 flex-1 resize-none rounded-2xl border border-input bg-background px-3.5 py-3 text-sm text-foreground outline-none transition-shadow placeholder:text-muted-foreground focus:ring-2 focus:ring-[var(--impar-spectral)]/30 disabled:opacity-50"
               />
-              <Button type="submit" size="icon" disabled={!canSend || sending || !input.trim()} className="size-11 rounded-2xl">
+              <Button
+                type="submit"
+                size="icon"
+                disabled={!canSend || sending || !input.trim()}
+                className="size-11 rounded-2xl"
+              >
                 <Send className="size-4" />
               </Button>
             </form>
@@ -554,7 +679,11 @@ export function NoctisChat() {
                       "Prueba invitada: hasta 10 respuestas. Los mensajes pueden ser procesados por proveedores oficiales de IA de ÍMPAR.",
                     )}
               </p>
-              {!user && guestStatus ? <span className="shrink-0 font-semibold text-[var(--impar-spectral)]">{guestStatus.remaining}/10</span> : null}
+              {!user && guestStatus ? (
+                <span className="shrink-0 font-semibold text-[var(--impar-spectral)]">
+                  {guestStatus.remaining}/10
+                </span>
+              ) : null}
             </div>
           </footer>
         </section>
@@ -578,7 +707,10 @@ function formatNoctisError(
     );
   }
 
-  if (raw.includes("NEXUS_ALL_PROVIDERS_FAILED") || raw.includes("All configured NEXUS providers failed")) {
+  if (
+    raw.includes("NEXUS_ALL_PROVIDERS_FAILED") ||
+    raw.includes("All configured NEXUS providers failed")
+  ) {
     return copy(
       "O Noctis teve uma falha temporária nos provedores do ÍMPAR. Sua mensagem voltou para a caixa — tente enviar de novo em alguns segundos.",
       "Noctis hit a temporary ÍMPAR provider failure. Your message is back in the box — try sending it again in a few seconds.",
@@ -594,7 +726,11 @@ function formatNoctisError(
     );
   }
 
-  if (raw.includes("NEXUS_LOAD_TIMEOUT") || raw.includes("NEXUS_EDGE_") || raw.includes("NEXUS_RUNTIME_ERROR")) {
+  if (
+    raw.includes("NEXUS_LOAD_TIMEOUT") ||
+    raw.includes("NEXUS_EDGE_") ||
+    raw.includes("NEXUS_RUNTIME_ERROR")
+  ) {
     return copy(
       "Não consegui acordar o Noctis agora. Tente novamente — isso não significa que o motor de IA esteja desconectado.",
       "I couldn't wake Noctis right now. Try again — this does not mean the AI engine is disconnected.",

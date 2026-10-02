@@ -48,7 +48,7 @@ export function AdSlot({ id, format = "fluid", className, label = "Publicidade" 
       window.adsbygoogle = window.adsbygoogle || [];
       window.adsbygoogle.push({});
     } catch (error) {
-      console.warn("[MGP] AdSense unit could not be requested.", error);
+      console.warn("[ÍMPAR] AdSense unit could not be requested.", error);
     }
   }, [unitSlot]);
 
@@ -71,7 +71,9 @@ export function AdSlot({ id, format = "fluid", className, label = "Publicidade" 
         style={{ display: "block" }}
         data-ad-client={ADSENSE_CLIENT}
         data-ad-slot={unitSlot}
-        data-ad-format={format === "rail" ? "auto" : format === "leaderboard" ? "horizontal" : "auto"}
+        data-ad-format={
+          format === "rail" ? "auto" : format === "leaderboard" ? "horizontal" : "auto"
+        }
         data-tag-for-age-treatment="2"
         data-full-width-responsive="true"
       />

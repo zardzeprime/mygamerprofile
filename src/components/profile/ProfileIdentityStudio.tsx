@@ -91,7 +91,7 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
         const result = await loadStudio({ data: { accessToken } });
         if (!cancelled) setData(result as StudioData);
       } catch (reason) {
-        console.error("[MGP Identity] studio load failed", reason);
+        console.error("[ÍMPAR Identity] studio load failed", reason);
         if (!cancelled) {
           setError(
             copy(
@@ -133,7 +133,7 @@ export function ProfileIdentityStudio({ locale }: { locale: Locale }) {
       await refresh();
       window.dispatchEvent(new Event("mgp:profile-updated"));
     } catch (reason) {
-      console.error("[MGP Identity] equip failed", reason);
+      console.error("[ÍMPAR Identity] equip failed", reason);
       setError(
         copy(
           "Não foi possível equipar esse item. Confirme se ele já foi desbloqueado.",

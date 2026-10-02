@@ -43,9 +43,12 @@ export function FutureCollection({
 }) {
   if (gameSlug === "dark-souls-remastered") {
     if (moduleKey === "builds") return <DarkSoulsBuildLab locale={locale} />;
-    if (moduleKey === "dps-test") return <SoulsDpsTest gameSlug="dark-souls-remastered" locale={locale} />;
-    if (moduleKey === "fashion-test") return <SoulsFashionTest gameSlug="dark-souls-remastered" locale={locale} />;
-    if (moduleKey === "items") return <SoulsItemCompendium gameSlug="dark-souls-remastered" locale={locale} />;
+    if (moduleKey === "dps-test")
+      return <SoulsDpsTest gameSlug="dark-souls-remastered" locale={locale} />;
+    if (moduleKey === "fashion-test")
+      return <SoulsFashionTest gameSlug="dark-souls-remastered" locale={locale} />;
+    if (moduleKey === "items")
+      return <SoulsItemCompendium gameSlug="dark-souls-remastered" locale={locale} />;
     if (moduleKey === "bosses") return <DarkSoulsBossWiki locale={locale} />;
     if (moduleKey === "guides") return <DarkSoulsGuides locale={locale} />;
   }
@@ -80,7 +83,8 @@ export function FutureCollection({
     if (moduleKey === "maps") return <ValorantMaps locale={locale} />;
     if (moduleKey === "weapons") return <ValorantWeapons locale={locale} />;
     if (moduleKey === "skins") return <ValorantSkins locale={locale} />;
-    if (moduleKey === "competitive") return <CompetitiveCompendium game="valorant" locale={locale} />;
+    if (moduleKey === "competitive")
+      return <CompetitiveCompendium game="valorant" locale={locale} />;
     if (moduleKey === "lineups") return <ValorantLineupsPanel locale={locale} />;
   }
 
@@ -106,87 +110,178 @@ export function FutureCollection({
   const labels: Partial<Record<GameModuleKey, [string, string]>> = {
     bosses: [
       copy("Enciclopédia de chefes", "Boss encyclopedia", "Enciclopedia de jefes"),
-      copy("Chefes, filtros e páginas individuais serão organizados aqui para este jogo.", "Bosses, filters and individual pages will be organized here for this game.", "Jefes, filtros y páginas individuales se organizarán aquí para este juego."),
+      copy(
+        "Chefes, filtros e páginas individuais serão organizados aqui para este jogo.",
+        "Bosses, filters and individual pages will be organized here for this game.",
+        "Jefes, filtros y páginas individuales se organizarán aquí para este juego.",
+      ),
     ],
     guides: [
       copy("Guias da comunidade", "Community guides", "Guías de la comunidad"),
-      copy("Conteúdo editorial e guias verificados serão organizados aqui.", "Editorial content and verified guides will be organized here.", "El contenido editorial y las guías verificadas se organizarán aquí."),
+      copy(
+        "Conteúdo editorial e guias verificados serão organizados aqui.",
+        "Editorial content and verified guides will be organized here.",
+        "El contenido editorial y las guías verificadas se organizarán aquí.",
+      ),
     ],
     news: [
       copy("Novidades", "News", "Novedades"),
-      copy("Atualizações e anúncios oficiais deste jogo aparecerão aqui.", "Official updates and announcements for this game will appear here.", "Actualizaciones y anuncios oficiales de este juego aparecerán aquí."),
+      copy(
+        "Atualizações e anúncios oficiais deste jogo aparecerão aqui.",
+        "Official updates and announcements for this game will appear here.",
+        "Actualizaciones y anuncios oficiales de este juego aparecerán aquí.",
+      ),
     ],
     warframes: [
       copy("Enciclopédia de Warframes", "Warframe encyclopedia", "Enciclopedia de Warframes"),
-      copy("Warframes, funções e habilidades serão organizados aqui.", "Warframes, roles and abilities will be organized here.", "Warframes, roles y habilidades se organizarán aquí."),
+      copy(
+        "Warframes, funções e habilidades serão organizados aqui.",
+        "Warframes, roles and abilities will be organized here.",
+        "Warframes, roles y habilidades se organizarán aquí.",
+      ),
     ],
     agents: [
       copy("Enciclopédia de agentes", "Agent encyclopedia", "Enciclopedia de agentes"),
-      copy("Agentes e habilidades serão adicionados com informações canônicas.", "Agents and abilities will be added with canonical information.", "Los agentes y sus habilidades se añadirán con información canónica."),
+      copy(
+        "Agentes e habilidades serão adicionados com informações canônicas.",
+        "Agents and abilities will be added with canonical information.",
+        "Los agentes y sus habilidades se añadirán con información canónica.",
+      ),
     ],
     champions: [
       copy("Enciclopédia de campeões", "Champion encyclopedia", "Enciclopedia de campeones"),
-      copy("Campeões, funções, habilidades e referências oficiais serão organizados aqui.", "Champions, roles, abilities and official references will be organized here.", "Campeones, roles, habilidades y referencias oficiales se organizarán aquí."),
+      copy(
+        "Campeões, funções, habilidades e referências oficiais serão organizados aqui.",
+        "Champions, roles, abilities and official references will be organized here.",
+        "Campeones, roles, habilidades y referencias oficiales se organizarán aquí.",
+      ),
     ],
     runes: [
       copy("Compêndio de runas", "Rune compendium", "Compendio de runas"),
-      copy("Árvores, runas essenciais, opções secundárias e fragmentos de atributos.", "Trees, keystones, secondary choices and stat shards.", "Árboles, runas clave, opciones secundarias y fragmentos de atributos."),
+      copy(
+        "Árvores, runas essenciais, opções secundárias e fragmentos de atributos.",
+        "Trees, keystones, secondary choices and stat shards.",
+        "Árboles, runas clave, opciones secundarias y fragmentos de atributos.",
+      ),
     ],
     maps: [
       copy("Atlas de mapas", "Map atlas", "Atlas de mapas"),
-      copy("Mapas e características táticas aparecerão aqui.", "Maps and tactical characteristics will appear here.", "Mapas y características tácticas aparecerán aquí."),
+      copy(
+        "Mapas e características táticas aparecerão aqui.",
+        "Maps and tactical characteristics will appear here.",
+        "Mapas y características tácticas aparecerán aquí.",
+      ),
     ],
     weapons: [
       copy("Arsenal", "Arsenal", "Arsenal"),
-      copy("Armas, economia e dados oficiais aparecerão aqui.", "Weapons, economy and official data will appear here.", "Armas, economía y datos oficiales aparecerán aquí."),
+      copy(
+        "Armas, economia e dados oficiais aparecerão aqui.",
+        "Weapons, economy and official data will appear here.",
+        "Armas, economía y datos oficiales aparecerán aquí.",
+      ),
     ],
     items: [
       copy("Biblioteca de itens", "Item library", "Biblioteca de objetos"),
-      copy("Itens, componentes, atributos e mudanças de patch serão organizados aqui.", "Items, components, stats and patch changes will be organized here.", "Objetos, componentes, atributos y cambios de parche se organizarán aquí."),
+      copy(
+        "Itens, componentes, atributos e mudanças de patch serão organizados aqui.",
+        "Items, components, stats and patch changes will be organized here.",
+        "Objetos, componentes, atributos y cambios de parche se organizarán aquí.",
+      ),
     ],
     modes: [
       copy("Modos de jogo", "Game modes", "Modos de juego"),
-      copy("Modos, temporadas e formatos competitivos serão organizados aqui.", "Modes, seasons and competitive formats will be organized here.", "Modos, temporadas y formatos competitivos se organizarán aquí."),
+      copy(
+        "Modos, temporadas e formatos competitivos serão organizados aqui.",
+        "Modes, seasons and competitive formats will be organized here.",
+        "Modos, temporadas y formatos competitivos se organizarán aquí.",
+      ),
     ],
     skins: [
       copy("Coleção de skins", "Skin collection", "Colección de skins"),
-      copy("Skins, variantes e referências oficiais aparecerão aqui.", "Skins, variants and official references will appear here.", "Skins, variantes y referencias oficiales aparecerán aquí."),
+      copy(
+        "Skins, variantes e referências oficiais aparecerão aqui.",
+        "Skins, variants and official references will appear here.",
+        "Skins, variantes y referencias oficiales aparecerán aquí.",
+      ),
     ],
     competitive: [
       copy("Compêndio competitivo", "Competitive compendium", "Compendio competitivo"),
-      copy("Times, jogadores, equipamentos e configurações serão publicados com fonte e data de verificação.", "Teams, players, gear and settings will be published with source and verification date.", "Equipos, jugadores, equipo y configuraciones se publicarán con fuente y fecha de verificación."),
+      copy(
+        "Times, jogadores, equipamentos e configurações serão publicados com fonte e data de verificação.",
+        "Teams, players, gear and settings will be published with source and verification date.",
+        "Equipos, jugadores, equipo y configuraciones se publicarán con fuente y fecha de verificación.",
+      ),
     ],
     lineups: [
       copy("Biblioteca de lineups", "Lineup library", "Biblioteca de lineups"),
-      copy("Setups, utilitários e jogadas da comunidade serão publicados com autoria e procedência.", "Setups, utility and community plays will be published with authorship and provenance.", "Setups, utilidades y jugadas de la comunidad se publicarán con autoría y procedencia."),
+      copy(
+        "Setups, utilitários e jogadas da comunidade serão publicados com autoria e procedência.",
+        "Setups, utility and community plays will be published with authorship and provenance.",
+        "Setups, utilidades y jugadas de la comunidad se publicarán con autoría y procedencia.",
+      ),
     ],
     "dps-test": [
       copy("DPS Test", "DPS Test", "DPS Test"),
-      copy("Teste armas, upgrades e atributos em modo Casual ou Avançado.", "Test weapons, upgrades and attributes in Casual or Advanced mode.", "Prueba armas, mejoras y atributos en modo Casual o Avanzado."),
+      copy(
+        "Teste armas, upgrades e atributos em modo Casual ou Avançado.",
+        "Test weapons, upgrades and attributes in Casual or Advanced mode.",
+        "Prueba armas, mejoras y atributos en modo Casual o Avanzado.",
+      ),
     ],
     "fashion-test": [
       copy("Fashion Test", "Fashion Test", "Fashion Test"),
-      copy("Monte armaduras, confira peso, poise e resistências em uma ferramenta própria.", "Build armor sets and check weight, poise and resistances in a dedicated tool.", "Monta armaduras y revisa peso, poise y resistencias en una herramienta propia."),
+      copy(
+        "Monte armaduras, confira peso, poise e resistências em uma ferramenta própria.",
+        "Build armor sets and check weight, poise and resistances in a dedicated tool.",
+        "Monta armaduras y revisa peso, poise y resistencias en una herramienta propia.",
+      ),
     ],
     builds: [
       copy("Laboratório de builds", "Build laboratory", "Laboratorio de builds"),
-      copy("Crie e descubra combinações da comunidade em breve.", "Create and discover community combinations soon.", "Muy pronto podrás crear y descubrir combinaciones de la comunidad."),
+      copy(
+        "Crie e descubra combinações da comunidade em breve.",
+        "Create and discover community combinations soon.",
+        "Muy pronto podrás crear y descubrir combinaciones de la comunidad.",
+      ),
     ],
     clips: [
       copy("Clipes", "Clips", "Clips"),
-      copy("Momentos da comunidade chegarão em uma versão futura.", "Community moments will arrive in a future version.", "Los momentos de la comunidad llegarán en una versión futura."),
+      copy(
+        "Momentos da comunidade chegarão em uma versão futura.",
+        "Community moments will arrive in a future version.",
+        "Los momentos de la comunidad llegarán en una versión futura.",
+      ),
     ],
     lfg: [
       copy("Procurando grupo", "Looking for group", "Buscando grupo"),
-      copy("O LFG global do MG Profile poderá ser filtrado por este jogo.", "MG Profile's global LFG can be filtered by this game.", "El LFG global de MG Profile podrá filtrarse por este juego."),
+      copy(
+        "O LFG global do ÍMPAR poderá ser filtrado por este jogo.",
+        "ÍMPAR's global LFG can be filtered by this game.",
+        "El LFG global de ÍMPAR podrá filtrarse por este juego.",
+      ),
     ],
   };
 
   const [title, description] = labels[moduleKey] ?? [
     copy("Em preparação", "In preparation", "En preparación"),
-    copy("Este espaço está sendo preparado.", "This space is being prepared.", "Este espacio se está preparando."),
+    copy(
+      "Este espaço está sendo preparado.",
+      "This space is being prepared.",
+      "Este espacio se está preparando.",
+    ),
   ];
-  const collectionModules: GameModuleKey[] = ["bosses", "warframes", "agents", "champions", "runes", "maps", "weapons", "items", "modes", "skins"];
+  const collectionModules: GameModuleKey[] = [
+    "bosses",
+    "warframes",
+    "agents",
+    "champions",
+    "runes",
+    "maps",
+    "weapons",
+    "items",
+    "modes",
+    "skins",
+  ];
   const isCollection = collectionModules.includes(moduleKey);
   const developmentCards = [
     {
@@ -209,7 +304,7 @@ export function FutureCollection({
     },
     {
       icon: FlaskConical,
-      title: copy("Revisão MGP", "MGP review", "Revisión MGP"),
+      title: copy("Revisão ÍMPAR", "ÍMPAR review", "Revisión ÍMPAR"),
       text: copy(
         "Conteúdo incompleto fica identificado como desenvolvimento em vez de aparecer bloqueado.",
         "Incomplete content is labeled as development instead of appearing locked.",
@@ -227,7 +322,11 @@ export function FutureCollection({
             <Input
               disabled
               className="h-auto border-0 p-0 shadow-none"
-              placeholder={copy("Busca entra com o conteúdo", "Search arrives with content", "La búsqueda llega con el contenido")}
+              placeholder={copy(
+                "Busca entra com o conteúdo",
+                "Search arrives with content",
+                "La búsqueda llega con el contenido",
+              )}
             />
           </label>
           <span className="rounded-full border border-gold/25 bg-gold/[0.06] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-gold-strong">
@@ -247,7 +346,9 @@ export function FutureCollection({
             return (
               <div key={card.title} className="rounded-2xl border border-border bg-muted/10 p-4">
                 <Icon className="size-5 text-gold-strong" />
-                <p className="mt-3 font-display text-base font-semibold text-foreground">{card.title}</p>
+                <p className="mt-3 font-display text-base font-semibold text-foreground">
+                  {card.title}
+                </p>
                 <p className="mt-2 text-xs leading-5 text-muted-foreground">{card.text}</p>
               </div>
             );
@@ -256,7 +357,11 @@ export function FutureCollection({
       </div>
 
       <EmptyState
-        title={copy("Área aberta para desenvolvimento", "Area open for development", "Área abierta para desarrollo")}
+        title={copy(
+          "Área aberta para desenvolvimento",
+          "Area open for development",
+          "Área abierta para desarrollo",
+        )}
         description={copy(
           "O módulo não está mais bloqueado. O que ainda depender de pesquisa, licença, screenshot ou fonte aparecerá explicitamente como em desenvolvimento.",
           "The module is no longer locked. Anything still depending on research, licensing, screenshots or source validation is explicitly marked as in development.",

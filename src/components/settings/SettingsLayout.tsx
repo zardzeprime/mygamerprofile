@@ -4,7 +4,11 @@ import { localeCopy } from "@/i18n/locale-utils";
 
 const TABS: { to: string; key: TranslationKey | null; label?: [string, string, string] }[] = [
   { to: "/settings/profile", key: "settings.profile" },
-  { to: "/settings/identity", key: null, label: ["Dados & privacidade", "Data & privacy", "Datos y privacidad"] },
+  {
+    to: "/settings/identity",
+    key: null,
+    label: ["Dados & privacidade", "Data & privacy", "Datos y privacidad"],
+  },
   { to: "/settings/account", key: "settings.account" },
   { to: "/settings/connections", key: null, label: ["Conexões", "Connections", "Conexiones"] },
   { to: "/settings/appearance", key: "settings.appearance" },
@@ -18,7 +22,10 @@ export function SettingsLayout({ children }: { children: React.ReactNode }) {
     <main className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6">
       <h1 className="mb-6 font-display text-2xl font-semibold">{t("settings.title")}</h1>
       <div className="grid gap-6 md:grid-cols-[12rem_1fr]">
-        <nav aria-label={t("settings.title")} className="flex flex-row gap-2 overflow-x-auto md:flex-col">
+        <nav
+          aria-label={t("settings.title")}
+          className="flex flex-row gap-2 overflow-x-auto md:flex-col"
+        >
           {TABS.map((tab) => (
             <Link
               key={tab.to}

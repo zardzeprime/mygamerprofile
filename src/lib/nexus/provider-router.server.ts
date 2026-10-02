@@ -425,7 +425,7 @@ async function completeOpenRouter(
     model: serverEnv("NEXUS_OPENROUTER_MODEL") ?? "openrouter/free",
     extraHeaders: {
       ...(appUrl ? { "HTTP-Referer": appUrl } : {}),
-      "X-OpenRouter-Title": "MG Profile NEXUS",
+      "X-OpenRouter-Title": "ÍMPAR NEXUS",
     },
   });
 }
@@ -489,10 +489,7 @@ export async function completeWithNexusRouter(
   // The public Edge gateway intentionally disables raw "completion" requests.
   // Only opt into the legacy completion route when a deployment explicitly
   // re-enables that contract; normal in-product NEXUS chat uses guest/member actions.
-  if (
-    publicSupabaseConfig() &&
-    serverEnv("NEXUS_ALLOW_LEGACY_EDGE_COMPLETION") === "true"
-  ) {
+  if (publicSupabaseConfig() && serverEnv("NEXUS_ALLOW_LEGACY_EDGE_COMPLETION") === "true") {
     try {
       return await completeViaEdge(request);
     } catch (error) {

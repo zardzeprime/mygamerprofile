@@ -40,7 +40,12 @@ interface ReportDialogProps {
   compact?: boolean;
 }
 
-export function ReportDialog({ targetType, targetId, username, compact = false }: ReportDialogProps) {
+export function ReportDialog({
+  targetType,
+  targetId,
+  username,
+  compact = false,
+}: ReportDialogProps) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState<(typeof REASONS)[number] | "">("");
@@ -82,7 +87,10 @@ export function ReportDialog({ targetType, targetId, username, compact = false }
             {username && <p className="text-sm text-muted-foreground">@{username}</p>}
             <div className="space-y-2">
               <Label htmlFor="reason">{t("report.reason")}</Label>
-              <Select value={reason} onValueChange={(value) => setReason(value as (typeof REASONS)[number])}>
+              <Select
+                value={reason}
+                onValueChange={(value) => setReason(value as (typeof REASONS)[number])}
+              >
                 <SelectTrigger id="reason">
                   <SelectValue placeholder={t("report.reason")} />
                 </SelectTrigger>
@@ -97,11 +105,7 @@ export function ReportDialog({ targetType, targetId, username, compact = false }
             </div>
             <div className="space-y-2">
               <Label htmlFor="details">{t("report.details")}</Label>
-              <Textarea
-                id="details"
-                value={details}
-                onChange={(e) => setDetails(e.target.value)}
-              />
+              <Textarea id="details" value={details} onChange={(e) => setDetails(e.target.value)} />
             </div>
             <Button type="submit" disabled={!reason || loading}>
               {loading ? t("common.loading") : t("report.submit")}

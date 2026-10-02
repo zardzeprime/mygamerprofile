@@ -5,11 +5,12 @@ import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { SettingsLayout } from "@/components/settings/SettingsLayout";
 import { AudioControl } from "@/components/common/AudioControl";
+import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 
 export const Route = createFileRoute("/_authenticated/settings/appearance")({
   head: () => ({
     meta: [
-      { title: "Aparência — MGP" },
+      { title: "Aparência — ÍMPAR" },
       { name: "description", content: "Personalize a aparência do ÍMPAR." },
     ],
   }),
@@ -37,8 +38,8 @@ function SettingsAppearancePage() {
           <p className="mt-2 max-w-xl text-sm text-muted-foreground">
             {copy(
               "Dê o seu tom ao ÍMPAR. A cor principal da interface pode mudar com você, sem perder a estrutura da marca.",
-              "Make MGP feel like you. The interface signal color can change with you without losing the brand structure.",
-              "Dale tu tono a MGP. El color principal de la interfaz puede cambiar contigo sin perder la estructura de la marca.",
+              "Make ÍMPAR feel like you. The interface signal color can change with you without losing the brand structure.",
+              "Dale tu tono a ÍMPAR. El color principal de la interfaz puede cambiar contigo sin perder la estructura de la marca.",
             )}
           </p>
         </header>
@@ -49,9 +50,7 @@ function SettingsAppearancePage() {
             aria-label={copy("Prévia ao vivo", "Live preview", "Vista previa en vivo")}
           >
             <div className="flex items-center justify-between gap-3">
-              <span className="font-display text-lg font-bold tracking-tight">
-                MG<span className="text-gold-strong">P</span>
-              </span>
+              <BrandLogoPlaceholder size="sm" />
               <span className="rounded-full border border-border bg-surface/90 px-3 py-1 text-xs text-foreground">
                 {copy("Prévia ao vivo", "Live preview", "Vista previa en vivo")}
               </span>
@@ -127,12 +126,14 @@ function SettingsAppearancePage() {
             )}
           </p>
           <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-            {([
-              ["classic", copy("MGP padrão", "MGP default", "ÍMPAR estándar"), MousePointer2],
-              ["sword", copy("Espada", "Sword", "Espada"), Sword],
-              ["axe", copy("Machado", "Axe", "Hacha"), Axe],
-              ["reticle", copy("Mira", "Reticle", "Mira"), Crosshair],
-            ] as const).map(([value, label, Icon]) => (
+            {(
+              [
+                ["classic", copy("ÍMPAR padrão", "ÍMPAR default", "ÍMPAR estándar"), MousePointer2],
+                ["sword", copy("Espada", "Sword", "Espada"), Sword],
+                ["axe", copy("Machado", "Axe", "Hacha"), Axe],
+                ["reticle", copy("Mira", "Reticle", "Mira"), Crosshair],
+              ] as const
+            ).map(([value, label, Icon]) => (
               <button
                 key={value}
                 type="button"
@@ -151,10 +152,18 @@ function SettingsAppearancePage() {
                   <span className="block">{label}</span>
                   <span className="mt-0.5 block text-[0.65rem] font-medium text-muted-foreground">
                     {value === "classic"
-                      ? copy("Cursor normal customizado", "Customized normal cursor", "Cursor normal personalizado")
+                      ? copy(
+                          "Cursor normal customizado",
+                          "Customized normal cursor",
+                          "Cursor normal personalizado",
+                        )
                       : value === "reticle"
                         ? copy("Precisão central", "Centered precision", "Precisión central")
-                        : copy("Cosmético alternativo", "Alternative cosmetic", "Cosmético alternativo")}
+                        : copy(
+                            "Cosmético alternativo",
+                            "Alternative cosmetic",
+                            "Cosmético alternativo",
+                          )}
                   </span>
                 </span>
               </button>

@@ -1,11 +1,5 @@
 export type ProfileCustomizationSlot =
-  | "background"
-  | "banner"
-  | "avatar_frame"
-  | "cursor"
-  | "profile_effect"
-  | "chibi"
-  | "badges";
+  "background" | "banner" | "avatar_frame" | "cursor" | "profile_effect" | "chibi" | "badges";
 
 export type CustomizationReadiness = "available" | "foundation" | "planned";
 
@@ -52,7 +46,8 @@ export const PROFILE_CUSTOMIZATION_SLOTS: ProfileCustomizationSlotDefinition[] =
     id: "cursor",
     label: { "pt-BR": "Cursor", en: "Cursor", es: "Cursor" },
     description: {
-      "pt-BR": "Cursores equipáveis para desktop; touch e movimento reduzido continuam respeitados.",
+      "pt-BR":
+        "Cursores equipáveis para desktop; touch e movimento reduzido continuam respeitados.",
       en: "Equipable desktop cursors; touch and reduced-motion preferences remain respected.",
       es: "Cursores equipables para escritorio; se respetan touch y movimiento reducido.",
     },
@@ -72,7 +67,8 @@ export const PROFILE_CUSTOMIZATION_SLOTS: ProfileCustomizationSlotDefinition[] =
     id: "chibi",
     label: { "pt-BR": "Mascote / chibi", en: "Mascot / chibi", es: "Mascota / chibi" },
     description: {
-      "pt-BR": "Companheiro visual do perfil; personagens de jogos só entram com direitos revisados.",
+      "pt-BR":
+        "Companheiro visual do perfil; personagens de jogos só entram com direitos revisados.",
       en: "A visual profile companion; game characters only enter after rights review.",
       es: "Compañero visual del perfil; personajes de juegos solo entran tras revisar derechos.",
     },
@@ -103,11 +99,11 @@ export type ProfileIdentityPack = {
 export const PROFILE_IDENTITY_PACK_CONCEPTS: ProfileIdentityPack[] = [
   {
     id: "mgp-core",
-    label: { "pt-BR": "MGP Core", en: "MGP Core", es: "MGP Core" },
+    label: { "pt-BR": "ÍMPAR Core", en: "ÍMPAR Core", es: "ÍMPAR Core" },
     description: {
-      "pt-BR": "A identidade preta, grafite e dourada do MG Profile.",
-      en: "MG Profile's black, graphite and gold identity.",
-      es: "La identidad negra, grafito y dorada de MG Profile.",
+      "pt-BR": "A identidade preta, grafite e dourada do ÍMPAR.",
+      en: "ÍMPAR's black, graphite and gold identity.",
+      es: "La identidad negra, grafito y dorada de ÍMPAR.",
     },
     inspiration: "mgp",
     previewClass: "customization-pack-mgp",
@@ -129,7 +125,8 @@ export const PROFILE_IDENTITY_PACK_CONCEPTS: ProfileIdentityPack[] = [
     id: "signal-protocol",
     label: { "pt-BR": "Protocolo de Sinal", en: "Signal Protocol", es: "Protocolo de Señal" },
     description: {
-      "pt-BR": "Conceito tático original para perfis ligados a FPS competitivo, sem reutilizar assets de terceiros.",
+      "pt-BR":
+        "Conceito tático original para perfis ligados a FPS competitivo, sem reutilizar assets de terceiros.",
       en: "Original tactical concept for competitive-FPS profiles without reusing third-party assets.",
       es: "Concepto táctico original para perfiles de FPS competitivo sin reutilizar recursos de terceros.",
     },
@@ -141,7 +138,8 @@ export const PROFILE_IDENTITY_PACK_CONCEPTS: ProfileIdentityPack[] = [
     id: "rift-arc",
     label: { "pt-BR": "Arco do Rift", en: "Rift Arc", es: "Arco del Rift" },
     description: {
-      "pt-BR": "Conceito mágico-tecnológico original para o futuro ecossistema de League of Legends.",
+      "pt-BR":
+        "Conceito mágico-tecnológico original para o futuro ecossistema de League of Legends.",
       en: "Original magic-tech concept for the future League of Legends ecosystem.",
       es: "Concepto mágico-tecnológico original para el futuro ecosistema de League of Legends.",
     },

@@ -81,15 +81,30 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
   const skinPool = useMemo(() => {
     if (!selectedWeapon) return [];
     const term = skinQuery.trim().toLocaleLowerCase();
-    return selectedWeapon.skins.filter((skin) => !term || skin.name.toLocaleLowerCase().includes(term));
+    return selectedWeapon.skins.filter(
+      (skin) => !term || skin.name.toLocaleLowerCase().includes(term),
+    );
   }, [selectedWeapon, skinQuery]);
-  const selectedSkin = selectedWeapon?.skins.find((skin) => skin.uuid === skinId) ?? skinPool[0] ?? selectedWeapon?.skins[0];
-  const selectedPoolIndex = selectedSkin ? skinPool.findIndex((skin) => skin.uuid === selectedSkin.uuid) : -1;
-  const selectedChroma = selectedSkin?.chromas.find((chroma) => chroma.uuid === chromaId) ?? selectedSkin?.chromas[0];
-  const previewImage = selectedChroma?.fullRender ?? selectedSkin?.icon ?? selectedWeapon?.icon ?? null;
-  const previewClips = useMemo(() => (selectedSkin ? getSkinPreviewClips(selectedSkin) : []), [selectedSkin]);
+  const selectedSkin =
+    selectedWeapon?.skins.find((skin) => skin.uuid === skinId) ??
+    skinPool[0] ??
+    selectedWeapon?.skins[0];
+  const selectedPoolIndex = selectedSkin
+    ? skinPool.findIndex((skin) => skin.uuid === selectedSkin.uuid)
+    : -1;
+  const selectedChroma =
+    selectedSkin?.chromas.find((chroma) => chroma.uuid === chromaId) ?? selectedSkin?.chromas[0];
+  const previewImage =
+    selectedChroma?.fullRender ?? selectedSkin?.icon ?? selectedWeapon?.icon ?? null;
+  const previewClips = useMemo(
+    () => (selectedSkin ? getSkinPreviewClips(selectedSkin) : []),
+    [selectedSkin],
+  );
   const wheelItems = useMemo(
-    () => selectedSkin && selectedPoolIndex >= 0 ? getWheelItems(skinPool, selectedPoolIndex, WHEEL_SLOTS) : [],
+    () =>
+      selectedSkin && selectedPoolIndex >= 0
+        ? getWheelItems(skinPool, selectedPoolIndex, WHEEL_SLOTS)
+        : [],
     [selectedPoolIndex, selectedSkin, skinPool],
   );
 
@@ -113,7 +128,10 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
     setPreviewOpen(false);
     requestAnimationFrame(() => {
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      wheelRef.current?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+      wheelRef.current?.scrollIntoView({
+        behavior: reducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
     });
   };
 
@@ -125,7 +143,9 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
   const rotate = useCallback(
     (direction: -1 | 1) => {
       if (!skinPool.length) return;
-      const current = selectedSkin ? skinPool.findIndex((skin) => skin.uuid === selectedSkin.uuid) : -1;
+      const current = selectedSkin
+        ? skinPool.findIndex((skin) => skin.uuid === selectedSkin.uuid)
+        : -1;
       const safeCurrent = current >= 0 ? current : 0;
       const next = (safeCurrent + direction + skinPool.length) % skinPool.length;
       const nextSkin = skinPool[next];
@@ -158,13 +178,34 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
     return () => node.removeEventListener("wheel", handleWheel);
   }, [rotate, skinPool.length]);
 
-  if (loading) return <StateCard text={copy("Carregando coleção de skins…", "Loading skin collection…", "Cargando colección de skins…")} />;
-  if (error || weapons.length === 0) return <StateCard text={copy("Não foi possível carregar as skins agora.", "Skins could not be loaded right now.", "No se pudieron cargar las skins ahora.")} />;
+  if (loading)
+    return (
+      <StateCard
+        text={copy(
+          "Carregando coleção de skins…",
+          "Loading skin collection…",
+          "Cargando colección de skins…",
+        )}
+      />
+    );
+  if (error || weapons.length === 0)
+    return (
+      <StateCard
+        text={copy(
+          "Não foi possível carregar as skins agora.",
+          "Skins could not be loaded right now.",
+          "No se pudieron cargar las skins ahora.",
+        )}
+      />
+    );
 
   return (
     <div className="space-y-7">
       <header className="animate-in fade-in slide-in-from-bottom-2 rounded-2xl border border-gold/25 bg-[radial-gradient(circle_at_top_right,rgba(255,70,85,0.12),transparent_34%),hsl(var(--surface))] p-6 duration-500 sm:p-8">
-        <div className="flex items-center gap-2 text-gold-strong"><Sparkles className="size-4" /><span className="section-kicker">{copy("COLEÇÃO", "COLLECTION", "COLECCIÓN")}</span></div>
+        <div className="flex items-center gap-2 text-gold-strong">
+          <Sparkles className="size-4" />
+          <span className="section-kicker">{copy("COLEÇÃO", "COLLECTION", "COLECCIÓN")}</span>
+        </div>
         <h2 className="mt-3 font-display text-3xl font-bold">{copy("Skins", "Skins", "Skins")}</h2>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
           {copy(
@@ -183,7 +224,11 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
       >
         <div>
           <p className="text-[0.62rem] font-black uppercase tracking-[0.12em] text-gold-strong">
-            {copy("Destaque oficial · Ato V", "Official spotlight · Act V", "Destacado oficial · Acto V")}
+            {copy(
+              "Destaque oficial · Ato V",
+              "Official spotlight · Act V",
+              "Destacado oficial · Acto V",
+            )}
           </p>
           <p className="mt-1 font-display text-lg font-semibold text-foreground">Aeris</p>
           <p className="mt-1 text-xs leading-5 text-muted-foreground">
@@ -203,10 +248,19 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
       <div className="flex flex-col gap-3 border-y border-border py-4 lg:flex-row lg:items-center lg:justify-between">
         <label className="flex max-w-md flex-1 items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 transition-colors focus-within:border-gold/60">
           <Search className="size-4 text-muted-foreground" />
-          <Input value={weaponQuery} onChange={(event) => setWeaponQuery(event.target.value)} className="h-auto border-0 p-0 shadow-none" placeholder={copy("Buscar arma", "Search weapon", "Buscar arma")} />
+          <Input
+            value={weaponQuery}
+            onChange={(event) => setWeaponQuery(event.target.value)}
+            className="h-auto border-0 p-0 shadow-none"
+            placeholder={copy("Buscar arma", "Search weapon", "Buscar arma")}
+          />
         </label>
         <span className="text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground">
-          {copy(`${weapons.length} armas com skins`, `${weapons.length} weapons with skins`, `${weapons.length} armas con skins`)}
+          {copy(
+            `${weapons.length} armas com skins`,
+            `${weapons.length} weapons with skins`,
+            `${weapons.length} armas con skins`,
+          )}
         </span>
       </div>
 
@@ -219,26 +273,47 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
             style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}
             className={cn(
               "group animate-in fade-in slide-in-from-bottom-2 rounded-xl border bg-surface p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-lift",
-              selectedWeapon?.uuid === weapon.uuid ? "border-gold/55 ring-1 ring-gold/20" : "border-border",
+              selectedWeapon?.uuid === weapon.uuid
+                ? "border-gold/55 ring-1 ring-gold/20"
+                : "border-border",
             )}
           >
             <div className="flex h-24 items-center justify-center rounded-lg bg-muted/20 p-3">
-              {weapon.icon ? <img src={weapon.icon} alt={weapon.name} loading="lazy" className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105" /> : null}
+              {weapon.icon ? (
+                <img
+                  src={weapon.icon}
+                  alt={weapon.name}
+                  loading="lazy"
+                  className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                />
+              ) : null}
             </div>
             <div className="mt-3 flex items-end justify-between gap-3">
-              <div><p className="font-display text-lg font-semibold">{weapon.name}</p><p className="mt-1 text-xs text-muted-foreground">{weapon.skins.length} skins</p></div>
-              {weapon.isMelee ? <span className="rounded-full border border-gold/20 px-2 py-1 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-gold-strong">Melee</span> : null}
+              <div>
+                <p className="font-display text-lg font-semibold">{weapon.name}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{weapon.skins.length} skins</p>
+              </div>
+              {weapon.isMelee ? (
+                <span className="rounded-full border border-gold/20 px-2 py-1 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-gold-strong">
+                  Melee
+                </span>
+              ) : null}
             </div>
           </button>
         ))}
       </div>
 
       {selectedWeapon && selectedSkin ? (
-        <section ref={wheelRef} className="scroll-mt-24 overflow-hidden rounded-2xl border border-gold/25 bg-surface shadow-soft">
+        <section
+          ref={wheelRef}
+          className="scroll-mt-24 overflow-hidden rounded-2xl border border-gold/25 bg-surface shadow-soft"
+        >
           <div className="border-b border-border px-5 py-4 sm:px-7">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-gold-strong">{selectedWeapon.name}</p>
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-gold-strong">
+                  {selectedWeapon.name}
+                </p>
                 <h3 className="mt-1 font-display text-2xl font-semibold">{selectedSkin.name}</h3>
               </div>
               <div className="flex w-full max-w-xl items-center gap-3 lg:justify-end">
@@ -248,12 +323,20 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
                     value={skinQuery}
                     onChange={(event) => setSkinQuery(event.target.value)}
                     className="h-auto border-0 p-0 shadow-none"
-                    placeholder={copy(`Buscar skin de ${selectedWeapon.name}`, `Search ${selectedWeapon.name} skin`, `Buscar skin de ${selectedWeapon.name}`)}
+                    placeholder={copy(
+                      `Buscar skin de ${selectedWeapon.name}`,
+                      `Search ${selectedWeapon.name} skin`,
+                      `Buscar skin de ${selectedWeapon.name}`,
+                    )}
                   />
                 </label>
                 <div className="shrink-0 text-right">
-                  <p className="text-xs text-muted-foreground">{selectedPoolIndex >= 0 ? selectedPoolIndex + 1 : 0} / {skinPool.length}</p>
-                  <p className="mt-1 text-xs font-semibold text-muted-foreground">{selectedSkin.rarity ?? copy("Sem tier", "No tier", "Sin tier")}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {selectedPoolIndex >= 0 ? selectedPoolIndex + 1 : 0} / {skinPool.length}
+                  </p>
+                  <p className="mt-1 text-xs font-semibold text-muted-foreground">
+                    {selectedSkin.rarity ?? copy("Sem tier", "No tier", "Sin tier")}
+                  </p>
                 </div>
               </div>
             </div>
@@ -274,7 +357,8 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
                   <div className="pointer-events-none absolute left-1/2 top-1/2 h-[18rem] w-[63%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-dashed border-gold/10" />
 
                   {wheelItems.map(({ skin, offset }, index) => {
-                    const angle = (index / Math.max(1, wheelItems.length)) * Math.PI * 2 - Math.PI / 2;
+                    const angle =
+                      (index / Math.max(1, wheelItems.length)) * Math.PI * 2 - Math.PI / 2;
                     const left = 50 + Math.cos(angle) * 44;
                     const top = 50 + Math.sin(angle) * 39;
                     const distance = Math.min(4, Math.abs(offset));
@@ -288,18 +372,48 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
                         style={{ left: `${left}%`, top: `${top}%`, opacity }}
                         className="absolute z-20 w-20 -translate-x-1/2 -translate-y-1/2 animate-in fade-in zoom-in-75 rounded-xl border border-border/70 bg-background/82 p-1.5 text-left shadow-md backdrop-blur-md transition-[left,top,opacity,border-color,box-shadow] duration-500 ease-[cubic-bezier(.2,.9,.2,1)] hover:z-30 hover:border-gold/55 hover:opacity-100 hover:shadow-lift motion-reduce:transition-none"
                       >
-                        <div style={{ transform: `scale(${scale})` }} className="transition-transform duration-500 ease-[cubic-bezier(.2,.9,.2,1)] group-hover:scale-105">
-                          <div className="flex h-11 items-center justify-center">{skin.icon ? <img src={skin.icon} alt="" className="max-h-full max-w-full object-contain" /> : null}</div>
-                          <p className="mt-1 truncate text-[0.54rem] font-semibold" title={skin.name}>{skin.name}</p>
+                        <div
+                          style={{ transform: `scale(${scale})` }}
+                          className="transition-transform duration-500 ease-[cubic-bezier(.2,.9,.2,1)] group-hover:scale-105"
+                        >
+                          <div className="flex h-11 items-center justify-center">
+                            {skin.icon ? (
+                              <img
+                                src={skin.icon}
+                                alt=""
+                                className="max-h-full max-w-full object-contain"
+                              />
+                            ) : null}
+                          </div>
+                          <p
+                            className="mt-1 truncate text-[0.54rem] font-semibold"
+                            title={skin.name}
+                          >
+                            {skin.name}
+                          </p>
                         </div>
                       </button>
                     );
                   })}
 
-                  <div key={selectedSkin.uuid} className="absolute left-1/2 top-1/2 z-10 flex h-72 w-[25rem] -translate-x-1/2 -translate-y-1/2 animate-in flex-col items-center justify-center rounded-[2.25rem] border border-gold/30 bg-background/90 p-6 shadow-2xl backdrop-blur-xl fade-in zoom-in-95 duration-300">
-                    {previewImage ? <img key={`${selectedSkin.uuid}-${selectedChroma?.uuid ?? "base"}`} src={previewImage} alt={selectedSkin.name} className="h-40 w-full animate-in object-contain drop-shadow-2xl fade-in zoom-in-95 duration-300" /> : null}
-                    <p className="mt-4 max-w-full truncate font-display text-2xl font-bold">{selectedSkin.name}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{selectedSkin.rarity ?? "—"}</p>
+                  <div
+                    key={selectedSkin.uuid}
+                    className="absolute left-1/2 top-1/2 z-10 flex h-72 w-[25rem] -translate-x-1/2 -translate-y-1/2 animate-in flex-col items-center justify-center rounded-[2.25rem] border border-gold/30 bg-background/90 p-6 shadow-2xl backdrop-blur-xl fade-in zoom-in-95 duration-300"
+                  >
+                    {previewImage ? (
+                      <img
+                        key={`${selectedSkin.uuid}-${selectedChroma?.uuid ?? "base"}`}
+                        src={previewImage}
+                        alt={selectedSkin.name}
+                        className="h-40 w-full animate-in object-contain drop-shadow-2xl fade-in zoom-in-95 duration-300"
+                      />
+                    ) : null}
+                    <p className="mt-4 max-w-full truncate font-display text-2xl font-bold">
+                      {selectedSkin.name}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {selectedSkin.rarity ?? "—"}
+                    </p>
                     {previewClips.length ? (
                       <button
                         type="button"
@@ -317,39 +431,101 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
                 </div>
               ) : (
                 <div className="hidden min-h-[32rem] items-center justify-center text-center md:flex">
-                  <p className="max-w-sm text-sm leading-6 text-muted-foreground">{copy("Nenhuma skin corresponde à sua busca.", "No skin matches your search.", "Ninguna skin coincide con tu búsqueda.")}</p>
+                  <p className="max-w-sm text-sm leading-6 text-muted-foreground">
+                    {copy(
+                      "Nenhuma skin corresponde à sua busca.",
+                      "No skin matches your search.",
+                      "Ninguna skin coincide con tu búsqueda.",
+                    )}
+                  </p>
                 </div>
               )}
 
               <div className="md:hidden">
                 <div className="flex min-h-64 items-center justify-center rounded-2xl border border-gold/20 bg-background/70 p-5">
-                  {previewImage ? <img key={`${selectedSkin.uuid}-mobile`} src={previewImage} alt={selectedSkin.name} className="max-h-52 w-full animate-in object-contain fade-in zoom-in-95 duration-300" /> : null}
+                  {previewImage ? (
+                    <img
+                      key={`${selectedSkin.uuid}-mobile`}
+                      src={previewImage}
+                      alt={selectedSkin.name}
+                      className="max-h-52 w-full animate-in object-contain fade-in zoom-in-95 duration-300"
+                    />
+                  ) : null}
                 </div>
                 {previewClips.length ? (
-                  <button type="button" onClick={() => setPreviewOpen(true)} className="mx-auto mt-3 flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-2 text-xs font-bold">
-                    <Play className="size-3.5 fill-current text-gold-strong" />{copy("Ver preview", "Watch preview", "Ver preview")}
+                  <button
+                    type="button"
+                    onClick={() => setPreviewOpen(true)}
+                    className="mx-auto mt-3 flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-2 text-xs font-bold"
+                  >
+                    <Play className="size-3.5 fill-current text-gold-strong" />
+                    {copy("Ver preview", "Watch preview", "Ver preview")}
                   </button>
                 ) : null}
                 <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
                   {skinPool.map((skin) => (
-                    <button key={skin.uuid} type="button" onClick={() => chooseSkin(skin)} className={cn("w-28 shrink-0 rounded-xl border bg-background/70 p-2 transition-all duration-200 active:scale-95", skin.uuid === selectedSkin.uuid ? "scale-[1.02] border-gold/60 shadow-md" : "border-border")}>
-                      <div className="h-14">{skin.icon ? <img src={skin.icon} alt="" className="h-full w-full object-contain" /> : null}</div><p className="mt-1 truncate text-[0.62rem] font-semibold">{skin.name}</p>
+                    <button
+                      key={skin.uuid}
+                      type="button"
+                      onClick={() => chooseSkin(skin)}
+                      className={cn(
+                        "w-28 shrink-0 rounded-xl border bg-background/70 p-2 transition-all duration-200 active:scale-95",
+                        skin.uuid === selectedSkin.uuid
+                          ? "scale-[1.02] border-gold/60 shadow-md"
+                          : "border-border",
+                      )}
+                    >
+                      <div className="h-14">
+                        {skin.icon ? (
+                          <img src={skin.icon} alt="" className="h-full w-full object-contain" />
+                        ) : null}
+                      </div>
+                      <p className="mt-1 truncate text-[0.62rem] font-semibold">{skin.name}</p>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="mt-3 flex items-center justify-center gap-3">
-                <button type="button" onClick={() => rotate(-1)} disabled={skinPool.length <= 1} className="grid size-10 place-items-center rounded-full border border-border bg-background/80 transition-all hover:-translate-x-0.5 hover:border-gold/45 hover:text-gold-strong disabled:opacity-40" aria-label={copy("Skin anterior", "Previous skin", "Skin anterior")}><ChevronLeft className="size-5" /></button>
-                <span className="min-w-14 text-center text-xs font-semibold tabular-nums text-muted-foreground">{selectedPoolIndex >= 0 ? selectedPoolIndex + 1 : 0}/{skinPool.length}</span>
-                <button type="button" onClick={() => rotate(1)} disabled={skinPool.length <= 1} className="grid size-10 place-items-center rounded-full border border-border bg-background/80 transition-all hover:translate-x-0.5 hover:border-gold/45 hover:text-gold-strong disabled:opacity-40" aria-label={copy("Próxima skin", "Next skin", "Siguiente skin")}><ChevronRight className="size-5" /></button>
+                <button
+                  type="button"
+                  onClick={() => rotate(-1)}
+                  disabled={skinPool.length <= 1}
+                  className="grid size-10 place-items-center rounded-full border border-border bg-background/80 transition-all hover:-translate-x-0.5 hover:border-gold/45 hover:text-gold-strong disabled:opacity-40"
+                  aria-label={copy("Skin anterior", "Previous skin", "Skin anterior")}
+                >
+                  <ChevronLeft className="size-5" />
+                </button>
+                <span className="min-w-14 text-center text-xs font-semibold tabular-nums text-muted-foreground">
+                  {selectedPoolIndex >= 0 ? selectedPoolIndex + 1 : 0}/{skinPool.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => rotate(1)}
+                  disabled={skinPool.length <= 1}
+                  className="grid size-10 place-items-center rounded-full border border-border bg-background/80 transition-all hover:translate-x-0.5 hover:border-gold/45 hover:text-gold-strong disabled:opacity-40"
+                  aria-label={copy("Próxima skin", "Next skin", "Siguiente skin")}
+                >
+                  <ChevronRight className="size-5" />
+                </button>
               </div>
             </div>
 
             <aside className="border-t border-border p-5 sm:p-7 xl:border-l xl:border-t-0">
-              <SkinInfo skin={selectedSkin} weapon={selectedWeapon} locale={locale} previewCount={previewClips.length} onPreview={() => setPreviewOpen(true)} />
+              <SkinInfo
+                skin={selectedSkin}
+                weapon={selectedWeapon}
+                locale={locale}
+                previewCount={previewClips.length}
+                onPreview={() => setPreviewOpen(true)}
+              />
               <div className="mt-6">
-                <div className="flex items-center gap-2"><Palette className="size-4 text-gold-strong" /><p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">{copy("Variantes", "Variants", "Variantes")}</p></div>
+                <div className="flex items-center gap-2">
+                  <Palette className="size-4 text-gold-strong" />
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                    {copy("Variantes", "Variants", "Variantes")}
+                  </p>
+                </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {selectedSkin.chromas.map((chroma, index) => (
                     <button
@@ -357,20 +533,52 @@ export function ValorantSkins({ locale }: { locale: Locale }) {
                       type="button"
                       onClick={() => setChromaId(chroma.uuid)}
                       title={chroma.name}
-                      className={cn("grid size-10 place-items-center overflow-hidden rounded-full border bg-muted/20 p-1 transition-all hover:scale-105", selectedChroma?.uuid === chroma.uuid ? "border-gold/70 ring-2 ring-gold/20" : "border-border hover:border-gold/35")}
+                      className={cn(
+                        "grid size-10 place-items-center overflow-hidden rounded-full border bg-muted/20 p-1 transition-all hover:scale-105",
+                        selectedChroma?.uuid === chroma.uuid
+                          ? "border-gold/70 ring-2 ring-gold/20"
+                          : "border-border hover:border-gold/35",
+                      )}
                     >
-                      {chroma.swatch ? <img src={chroma.swatch} alt="" className="h-full w-full rounded-full object-cover" /> : chroma.fullRender ? <img src={chroma.fullRender} alt="" className="h-full w-full object-contain" /> : <span className="text-xs font-bold">{index + 1}</span>}
+                      {chroma.swatch ? (
+                        <img
+                          src={chroma.swatch}
+                          alt=""
+                          className="h-full w-full rounded-full object-cover"
+                        />
+                      ) : chroma.fullRender ? (
+                        <img
+                          src={chroma.fullRender}
+                          alt=""
+                          className="h-full w-full object-contain"
+                        />
+                      ) : (
+                        <span className="text-xs font-bold">{index + 1}</span>
+                      )}
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="mt-6">
-                <div className="flex items-center gap-2"><Layers3 className="size-4 text-gold-strong" /><p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">{copy("Níveis de evolução", "Upgrade levels", "Niveles de mejora")}</p></div>
+                <div className="flex items-center gap-2">
+                  <Layers3 className="size-4 text-gold-strong" />
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                    {copy("Níveis de evolução", "Upgrade levels", "Niveles de mejora")}
+                  </p>
+                </div>
                 <div className="mt-3 space-y-2">
                   {selectedSkin.levels.map((level, index) => (
-                    <div key={level.uuid} className="rounded-xl border border-border bg-muted/15 px-3 py-2.5 transition-colors hover:bg-muted/25">
-                      <div className="flex items-center justify-between gap-3"><span className="text-xs font-semibold">Lv. {index + 1}</span><span className="truncate text-[0.68rem] text-muted-foreground">{level.item ?? level.name}</span></div>
+                    <div
+                      key={level.uuid}
+                      className="rounded-xl border border-border bg-muted/15 px-3 py-2.5 transition-colors hover:bg-muted/25"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-xs font-semibold">Lv. {index + 1}</span>
+                        <span className="truncate text-[0.68rem] text-muted-foreground">
+                          {level.item ?? level.name}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -414,7 +622,8 @@ function SkinPreviewModal({
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousFocus =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     dialogRef.current?.focus();
@@ -428,17 +637,34 @@ function SkinPreviewModal({
     const handleKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
       if (event.key === "Tab") {
-        const controls = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), a[href], [tabindex="0"]') ?? []).filter((element) => element.getClientRects().length > 0);
+        const controls = Array.from(
+          dialogRef.current?.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), input:not([disabled]), a[href], [tabindex="0"]',
+          ) ?? [],
+        ).filter((element) => element.getClientRects().length > 0);
         const first = controls?.[0];
         const last = controls?.[controls.length - 1];
-        if (first && last && event.shiftKey && (document.activeElement === first || document.activeElement === dialogRef.current)) {
-          event.preventDefault(); last.focus();
-        } else if (first && last && !event.shiftKey && (document.activeElement === last || document.activeElement === dialogRef.current)) {
-          event.preventDefault(); first.focus();
+        if (
+          first &&
+          last &&
+          event.shiftKey &&
+          (document.activeElement === first || document.activeElement === dialogRef.current)
+        ) {
+          event.preventDefault();
+          last.focus();
+        } else if (
+          first &&
+          last &&
+          !event.shiftKey &&
+          (document.activeElement === last || document.activeElement === dialogRef.current)
+        ) {
+          event.preventDefault();
+          first.focus();
         }
       }
       // Range controls own their arrow keys; do not switch clips while seeking or changing volume.
-      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement)
+        return;
       if (event.key === "ArrowRight" || event.key === "ArrowLeft") event.preventDefault();
       if (event.key === "ArrowRight") onIndex((activeIndex + 1) % clips.length);
       if (event.key === "ArrowLeft") onIndex((activeIndex - 1 + clips.length) % clips.length);
@@ -463,8 +689,22 @@ function SkinPreviewModal({
     >
       <div className="max-h-[94dvh] w-full max-w-5xl overflow-y-auto overscroll-contain rounded-2xl border border-white/15 bg-background shadow-2xl animate-in fade-in zoom-in-95 duration-250 motion-reduce:animate-none">
         <div className="flex items-center justify-between gap-4 border-b border-border px-4 py-3 sm:px-5 sm:py-4">
-          <div className="min-w-0"><p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-gold-strong">{copy("PREVIEW DE SKIN", "SKIN PREVIEW", "PREVIEW DE SKIN")}</p><h3 className="mt-1 truncate font-display text-lg font-semibold sm:text-xl">{skin.name}</h3></div>
-          <button type="button" onClick={onClose} className="grid size-11 shrink-0 place-items-center rounded-full border border-border transition-all hover:rotate-90 hover:border-gold/45 hover:text-gold-strong" aria-label={copy("Fechar preview", "Close preview", "Cerrar preview")}><X className="size-4" /></button>
+          <div className="min-w-0">
+            <p className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-gold-strong">
+              {copy("PREVIEW DE SKIN", "SKIN PREVIEW", "PREVIEW DE SKIN")}
+            </p>
+            <h3 className="mt-1 truncate font-display text-lg font-semibold sm:text-xl">
+              {skin.name}
+            </h3>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="grid size-11 shrink-0 place-items-center rounded-full border border-border transition-all hover:rotate-90 hover:border-gold/45 hover:text-gold-strong"
+            aria-label={copy("Fechar preview", "Close preview", "Cerrar preview")}
+          >
+            <X className="size-4" />
+          </button>
         </div>
         <MinimalVideoPlayer
           key={active.url}
@@ -547,7 +787,11 @@ function PreviewClipRail({
           <span className="block text-[0.58rem] font-black uppercase tracking-[0.1em] text-gold-strong">
             {clip.kind === "level"
               ? copy(`Nível ${clip.ordinal}`, `Level ${clip.ordinal}`, `Nivel ${clip.ordinal}`)
-              : copy(`Variante ${clip.ordinal}`, `Variant ${clip.ordinal}`, `Variante ${clip.ordinal}`)}
+              : copy(
+                  `Variante ${clip.ordinal}`,
+                  `Variant ${clip.ordinal}`,
+                  `Variante ${clip.ordinal}`,
+                )}
           </span>
           <span className="mt-1 block max-w-48 truncate text-xs font-semibold">{clip.label}</span>
         </button>
@@ -577,8 +821,17 @@ function SkinInfo({
   return (
     <div>
       <div className="flex items-center gap-3">
-        {skin.rarityIcon ? <img src={skin.rarityIcon} alt="" className="size-9 rounded-lg bg-muted/25 p-1.5" /> : <Sparkles className="size-7 text-gold-strong" />}
-        <div><p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">{copy("Raridade", "Edition", "Rareza")}</p><p className="font-semibold">{skin.rarity ?? "—"}</p></div>
+        {skin.rarityIcon ? (
+          <img src={skin.rarityIcon} alt="" className="size-9 rounded-lg bg-muted/25 p-1.5" />
+        ) : (
+          <Sparkles className="size-7 text-gold-strong" />
+        )}
+        <div>
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+            {copy("Raridade", "Edition", "Rareza")}
+          </p>
+          <p className="font-semibold">{skin.rarity ?? "—"}</p>
+        </div>
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
@@ -599,13 +852,47 @@ function SkinInfo({
       </p>
 
       <div className="mt-5 rounded-xl border border-border bg-muted/15 p-4">
-        <p className="text-xs font-bold uppercase tracking-[0.1em] text-muted-foreground">{copy("Para upar tudo", "To fully upgrade", "Para mejorar todo")}</p>
-        <div className="mt-3 grid grid-cols-2 gap-3 text-xs"><div><p className="text-muted-foreground">{copy("Níveis extras", "Extra levels", "Niveles extra")}</p><p className="mt-1 font-semibold">{Math.max(0, skin.levels.length - 1)} · ~{upgradeRp} RP</p></div><div><p className="text-muted-foreground">{copy("Variantes extras", "Extra variants", "Variantes extra")}</p><p className="mt-1 font-semibold">{Math.max(0, skin.chromas.length - 1)} · ~{variantRp} RP</p></div></div>
+        <p className="text-xs font-bold uppercase tracking-[0.1em] text-muted-foreground">
+          {copy("Para upar tudo", "To fully upgrade", "Para mejorar todo")}
+        </p>
+        <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <p className="text-muted-foreground">
+              {copy("Níveis extras", "Extra levels", "Niveles extra")}
+            </p>
+            <p className="mt-1 font-semibold">
+              {Math.max(0, skin.levels.length - 1)} · ~{upgradeRp} RP
+            </p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">
+              {copy("Variantes extras", "Extra variants", "Variantes extra")}
+            </p>
+            <p className="mt-1 font-semibold">
+              {Math.max(0, skin.chromas.length - 1)} · ~{variantRp} RP
+            </p>
+          </div>
+        </div>
       </div>
 
       {previewCount ? (
-        <button type="button" onClick={onPreview} className="mt-4 flex w-full items-center justify-between rounded-xl border border-gold/25 bg-gold/[0.06] px-4 py-3 text-left transition-all hover:-translate-y-0.5 hover:border-gold/50 hover:bg-gold/10">
-          <span><span className="block text-xs font-bold uppercase tracking-[0.1em] text-gold-strong">{copy("Preview disponível", "Preview available", "Preview disponible")}</span><span className="mt-1 block text-xs text-muted-foreground">{copy(`${previewCount} clipe(s) detectado(s)`, `${previewCount} clip(s) detected`, `${previewCount} clip(s) detectado(s)`)}</span></span>
+        <button
+          type="button"
+          onClick={onPreview}
+          className="mt-4 flex w-full items-center justify-between rounded-xl border border-gold/25 bg-gold/[0.06] px-4 py-3 text-left transition-all hover:-translate-y-0.5 hover:border-gold/50 hover:bg-gold/10"
+        >
+          <span>
+            <span className="block text-xs font-bold uppercase tracking-[0.1em] text-gold-strong">
+              {copy("Preview disponível", "Preview available", "Preview disponible")}
+            </span>
+            <span className="mt-1 block text-xs text-muted-foreground">
+              {copy(
+                `${previewCount} clipe(s) detectado(s)`,
+                `${previewCount} clip(s) detected`,
+                `${previewCount} clip(s) detectado(s)`,
+              )}
+            </span>
+          </span>
           <Play className="size-4 fill-current text-gold-strong" />
         </button>
       ) : null}
@@ -613,8 +900,24 @@ function SkinInfo({
   );
 }
 
-function InfoBox({ icon: Icon, label, value }: { icon: typeof Coins; label: string; value: string }) {
-  return <div className="rounded-xl border border-border bg-muted/15 p-3"><Icon className="size-4 text-gold-strong" /><p className="mt-2 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">{label}</p><p className="mt-1 font-display text-lg font-bold">{value}</p></div>;
+function InfoBox({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Coins;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-xl border border-border bg-muted/15 p-3">
+      <Icon className="size-4 text-gold-strong" />
+      <p className="mt-2 text-[0.62rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+        {label}
+      </p>
+      <p className="mt-1 font-display text-lg font-bold">{value}</p>
+    </div>
+  );
 }
 
 function getSkinPreviewClips(skin: ValorantSkin): PreviewClip[] {
@@ -645,7 +948,11 @@ function getSkinPreviewClips(skin: ValorantSkin): PreviewClip[] {
   return clips;
 }
 
-function getWheelItems(skins: ValorantSkin[], selectedIndex: number, slots: number): Array<{ skin: ValorantSkin; offset: number }> {
+function getWheelItems(
+  skins: ValorantSkin[],
+  selectedIndex: number,
+  slots: number,
+): Array<{ skin: ValorantSkin; offset: number }> {
   if (skins.length <= 1 || selectedIndex < 0) return [];
   const count = Math.min(slots, skins.length - 1);
   const offsets: number[] = [];
@@ -662,6 +969,9 @@ function getWheelItems(skins: ValorantSkin[], selectedIndex: number, slots: numb
 }
 
 function StateCard({ text }: { text: string }) {
-  return <div className="surface-panel rounded-2xl p-10 text-center text-sm text-muted-foreground">{text}</div>;
+  return (
+    <div className="surface-panel rounded-2xl p-10 text-center text-sm text-muted-foreground">
+      {text}
+    </div>
+  );
 }
-

@@ -3,7 +3,8 @@ export type ValorantRegion = "americas" | "emea" | "pacific" | "china";
 export type LeagueRegion = "lck" | "lec" | "lcs" | "lpl" | "cblol" | "lcp";
 export type EsportsRegion = ValorantRegion | LeagueRegion;
 export type RosterStatus = "active" | "sub" | "inactive" | "stand-in" | "loan";
-export type TeamStaffRole = "manager" | "head-coach" | "assistant-coach" | "performance-coach" | "analyst" | "other";
+export type TeamStaffRole =
+  "manager" | "head-coach" | "assistant-coach" | "performance-coach" | "analyst" | "other";
 
 export type EsportsSource = {
   url: string;

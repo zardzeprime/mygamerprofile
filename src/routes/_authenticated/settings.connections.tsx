@@ -34,10 +34,11 @@ import {
 export const Route = createFileRoute("/_authenticated/settings/connections")({
   head: () => ({
     meta: [
-      { title: "Contas conectadas e verificação — MGP" },
+      { title: "Contas conectadas e verificação — ÍMPAR" },
       {
         name: "description",
-        content: "Gerencie Steam, Riot, Google e o estado de verificação etária da sua conta MGP.",
+        content:
+          "Gerencie Steam, Riot, Google e o estado de verificação etária da sua conta ÍMPAR.",
       },
     ],
   }),
@@ -65,7 +66,11 @@ type VerificationState = {
 
 type ApiReadiness = {
   steam: { configured: boolean; openIdReady: boolean } | null;
-  riot: { apiKeyConfigured: boolean; rsoConfigured: boolean; publicAppUrlConfigured: boolean } | null;
+  riot: {
+    apiKeyConfigured: boolean;
+    rsoConfigured: boolean;
+    publicAppUrlConfigured: boolean;
+  } | null;
 };
 
 type SteamSyncStatus = {
@@ -109,8 +114,14 @@ type ConnectedAccountsReadClient = {
 type VerificationReadClient = {
   from: (table: "account_age_verifications") => {
     select: (columns: string) => {
-      eq: (column: "user_id", value: string) => {
-        maybeSingle: () => Promise<{ data: VerificationState | null; error: { message?: string } | null }>;
+      eq: (
+        column: "user_id",
+        value: string,
+      ) => {
+        maybeSingle: () => Promise<{
+          data: VerificationState | null;
+          error: { message?: string } | null;
+        }>;
       };
     };
   };
@@ -154,7 +165,11 @@ const PROVIDERS: Array<{
       "Simplified sign-in and basic identity with minimal scopes.",
       "Inicio de sesión simplificado e identidad básica con permisos mínimos.",
     ],
-    futureData: ["OpenID · email · profile", "OpenID · email · profile", "OpenID · email · profile"],
+    futureData: [
+      "OpenID · email · profile",
+      "OpenID · email · profile",
+      "OpenID · email · profile",
+    ],
   },
 ];
 
@@ -191,22 +206,23 @@ function SettingsConnectionsPage() {
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData.session?.access_token;
 
-      const [accountsResult, verificationResult, steamReadiness, riotReadiness, syncStatus] = await Promise.all([
-        accountsClient
-          .from("connected_accounts")
-          .select("provider,display_name,status,connected_at,last_synced_at")
-          .eq("user_id", user.id),
-        verificationClient
-          .from("account_age_verifications")
-          .select("status,verified_over_18,method,provider_name,verified_at,expires_at")
-          .eq("user_id", user.id)
-          .maybeSingle(),
-        getSteamApiReadiness().catch(() => null),
-        getRiotApiReadiness().catch(() => null),
-        accessToken
-          ? loadSteamSyncStatus({ data: { accessToken } }).catch(() => null)
-          : Promise.resolve(null),
-      ]);
+      const [accountsResult, verificationResult, steamReadiness, riotReadiness, syncStatus] =
+        await Promise.all([
+          accountsClient
+            .from("connected_accounts")
+            .select("provider,display_name,status,connected_at,last_synced_at")
+            .eq("user_id", user.id),
+          verificationClient
+            .from("account_age_verifications")
+            .select("status,verified_over_18,method,provider_name,verified_at,expires_at")
+            .eq("user_id", user.id)
+            .maybeSingle(),
+          getSteamApiReadiness().catch(() => null),
+          getRiotApiReadiness().catch(() => null),
+          accessToken
+            ? loadSteamSyncStatus({ data: { accessToken } }).catch(() => null)
+            : Promise.resolve(null),
+        ]);
 
       if (cancelled) return;
       if (!accountsResult.error) setAccounts(accountsResult.data ?? []);
@@ -260,13 +276,13 @@ function SettingsConnectionsPage() {
 
       window.location.assign(data.url);
     } catch (error) {
-      console.error("[MGP Steam] Could not start OpenID link", error);
+      console.error("[ÍMPAR Steam] Could not start OpenID link", error);
       setSteamBusy(false);
       setConnectionError(
         copy(
           "Não foi possível abrir o login oficial da Steam. A conexão segura foi reiniciada no backend do ÍMPAR; tente novamente em alguns segundos.",
-          "Could not open the official Steam sign-in. The secure connection now runs through MGP's backend; try again in a few seconds.",
-          "No se pudo abrir el acceso oficial de Steam. La conexión segura ahora se ejecuta en el backend de MGP; inténtalo de nuevo en unos segundos.",
+          "Could not open the official Steam sign-in. The secure connection now runs through ÍMPAR's backend; try again in a few seconds.",
+          "No se pudo abrir el acceso oficial de Steam. La conexión segura ahora se ejecuta en el backend de ÍMPAR; inténtalo de nuevo en unos segundos.",
         ),
       );
     }
@@ -347,7 +363,7 @@ function SettingsConnectionsPage() {
             ),
       );
     } catch (error) {
-      console.error("[MGP Steam] Full sync failed", error);
+      console.error("[ÍMPAR Steam] Full sync failed", error);
       setConnectionError(
         copy(
           "A sincronização da Steam falhou. Confira a privacidade do perfil/biblioteca e tente novamente.",
@@ -379,7 +395,7 @@ function SettingsConnectionsPage() {
           : current,
       );
     } catch (error) {
-      console.error("[MGP Steam] Sharing preference failed", error);
+      console.error("[ÍMPAR Steam] Sharing preference failed", error);
       setConnectionError(
         copy(
           "Não foi possível salvar essa preferência de exibição.",
@@ -417,7 +433,7 @@ function SettingsConnectionsPage() {
 
       setAccounts((current) => current.filter((account) => account.provider !== "steam"));
     } catch (error) {
-      console.error("[MGP Steam] Could not disconnect account", error);
+      console.error("[ÍMPAR Steam] Could not disconnect account", error);
       setConnectionError(
         copy(
           "Não foi possível desconectar a Steam agora. Tente novamente.",
@@ -443,8 +459,8 @@ function SettingsConnectionsPage() {
               <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
                 {copy(
                   "Conecte serviços oficiais para transformar dados declarados em informações verificadas no seu Game Profile. O ÍMPAR nunca pede sua senha Steam, Riot ou Google.",
-                  "Connect official services to turn declared data into verified Game Profile information. MGP never asks for your Steam, Riot or Google password.",
-                  "Conecta servicios oficiales para convertir datos declarados en información verificada. MGP nunca solicita tu contraseña de Steam, Riot o Google.",
+                  "Connect official services to turn declared data into verified Game Profile information. ÍMPAR never asks for your Steam, Riot or Google password.",
+                  "Conecta servicios oficiales para convertir datos declarados en información verificada. ÍMPAR nunca solicita tu contraseña de Steam, Riot o Google.",
                 )}
               </p>
             </div>
@@ -507,7 +523,11 @@ function SettingsConnectionsPage() {
               <div>
                 <p className="section-kicker">ÍMPAR / AGE ASSURANCE</p>
                 <h2 className="mt-1 font-display text-xl font-semibold text-foreground">
-                  {copy("Verificação reforçada de idade · futura", "Stronger age verification · future", "Verificación reforzada de edad · futura")}
+                  {copy(
+                    "Verificação reforçada de idade · futura",
+                    "Stronger age verification · future",
+                    "Verificación reforzada de edad · futura",
+                  )}
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
                   {copy(
@@ -525,13 +545,17 @@ function SettingsConnectionsPage() {
               <VerificationStatus verification={verification} loading={loading} locale={locale} />
               <div className="rounded-xl border border-border bg-muted/20 p-4 text-sm leading-6 text-muted-foreground">
                 <p className="font-semibold text-foreground">
-                  {copy("Como o documento será tratado", "How the document will be handled", "Cómo se tratará el documento")}
+                  {copy(
+                    "Como o documento será tratado",
+                    "How the document will be handled",
+                    "Cómo se tratará el documento",
+                  )}
                 </p>
                 <p className="mt-2">
                   {copy(
                     "O fluxo será feito por um provedor especializado. O ÍMPAR guarda apenas o resultado da checagem, a referência do provedor, a faixa/idade necessária para aplicar as regras e as datas de validade. RG, CNH, passaporte, selfie e biometria não devem ser armazenados no banco comum do ÍMPAR.",
-                    "The flow will use a specialized provider. MGP stores only the verification verdict, provider reference, the age/band needed to apply access rules and validity dates. ID documents, selfies and biometrics must not be stored in MGP's regular database.",
-                    "El flujo utilizará un proveedor especializado. MGP guarda solo el resultado, la referencia del proveedor, la edad/franja necesaria para aplicar las reglas y las fechas de validez. Documentos, selfies y biometría no deben almacenarse en la base común de MGP.",
+                    "The flow will use a specialized provider. ÍMPAR stores only the verification verdict, provider reference, the age/band needed to apply access rules and validity dates. ID documents, selfies and biometrics must not be stored in ÍMPAR's regular database.",
+                    "El flujo utilizará un proveedor especializado. ÍMPAR guarda solo el resultado, la referencia del proveedor, la edad/franja necesaria para aplicar las reglas y las fechas de validez. Documentos, selfies y biometría no deben almacenarse en la base común de ÍMPAR.",
                   )}
                 </p>
               </div>
@@ -542,19 +566,51 @@ function SettingsConnectionsPage() {
                 {copy("Fluxo previsto", "Planned flow", "Flujo previsto")}
               </p>
               <ol className="mt-4 space-y-3 text-sm text-muted-foreground">
-                <FlowStep n="1" text={copy("Abrir verificação segura", "Open secure verification", "Abrir verificación segura")} />
-                <FlowStep n="2" text={copy("Confirmar identidade e idade", "Confirm identity and age", "Confirmar identidad y edad")} />
-                <FlowStep n="3" text={copy("Receber apenas o resultado", "Receive verdict only", "Recibir solo el resultado")} />
-                <FlowStep n="4" text={copy("Liberar recursos que exigirem verificação reforçada", "Unlock features that require stronger verification", "Habilitar funciones que requieran verificación reforzada")} />
+                <FlowStep
+                  n="1"
+                  text={copy(
+                    "Abrir verificação segura",
+                    "Open secure verification",
+                    "Abrir verificación segura",
+                  )}
+                />
+                <FlowStep
+                  n="2"
+                  text={copy(
+                    "Confirmar identidade e idade",
+                    "Confirm identity and age",
+                    "Confirmar identidad y edad",
+                  )}
+                />
+                <FlowStep
+                  n="3"
+                  text={copy(
+                    "Receber apenas o resultado",
+                    "Receive verdict only",
+                    "Recibir solo el resultado",
+                  )}
+                />
+                <FlowStep
+                  n="4"
+                  text={copy(
+                    "Liberar recursos que exigirem verificação reforçada",
+                    "Unlock features that require stronger verification",
+                    "Habilitar funciones que requieran verificación reforzada",
+                  )}
+                />
               </ol>
               <Button className="mt-5 w-full" disabled>
                 <ShieldQuestion className="mr-2 size-4" />
-                {copy("Verificar idade e identidade", "Verify age and identity", "Verificar edad e identidad")}
+                {copy(
+                  "Verificar idade e identidade",
+                  "Verify age and identity",
+                  "Verificar edad e identidad",
+                )}
               </Button>
               <p className="mt-2 text-center text-[0.7rem] leading-4 text-muted-foreground">
                 {copy(
                   "Esse passo não é necessário para participar da beta atual. Ele ficará disponível quando o ÍMPAR puder contratar/configurar um provedor externo.",
-                  "This step is not required for the current beta. It will become available when MGP can configure an external provider.",
+                  "This step is not required for the current beta. It will become available when ÍMPAR can configure an external provider.",
                   "Este paso no es obligatorio para la beta actual. Estará disponible cuando ÍMPAR pueda configurar un proveedor externo.",
                 )}
               </p>
@@ -593,10 +649,7 @@ function ProviderCard({
   account: ConnectedAccount | undefined;
   locale: "pt-BR" | "en" | "es";
   loading: boolean;
-  readiness:
-    | ApiReadiness["steam"]
-    | ApiReadiness["riot"]
-    | null;
+  readiness: ApiReadiness["steam"] | ApiReadiness["riot"] | null;
   steamBusy: boolean;
   googleConnected: boolean;
   googleDisplayName: string | null;
@@ -605,8 +658,7 @@ function ProviderCard({
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const Icon = provider.icon;
-  const connected =
-    provider.key === "google" ? googleConnected : account?.status === "connected";
+  const connected = provider.key === "google" ? googleConnected : account?.status === "connected";
   const reauth = account?.status === "reauth_required";
 
   return (
@@ -615,7 +667,9 @@ function ProviderCard({
         <div className="grid size-10 place-items-center rounded-lg border border-border bg-background text-gold-strong">
           <Icon className="size-5" />
         </div>
-        <span className={`rounded-full px-2.5 py-1 text-[0.66rem] font-bold uppercase tracking-[0.08em] ${connected ? "bg-emerald-500/10 text-emerald-500" : reauth ? "bg-amber-500/10 text-amber-500" : "bg-muted text-muted-foreground"}`}>
+        <span
+          className={`rounded-full px-2.5 py-1 text-[0.66rem] font-bold uppercase tracking-[0.08em] ${connected ? "bg-emerald-500/10 text-emerald-500" : reauth ? "bg-amber-500/10 text-amber-500" : "bg-muted text-muted-foreground"}`}
+        >
           {loading
             ? copy("Verificando", "Checking", "Comprobando")
             : connected
@@ -630,7 +684,9 @@ function ProviderCard({
         {provider.purpose[locale === "pt-BR" ? 0 : locale === "en" ? 1 : 2]}
       </p>
       <div className="mt-4 rounded-lg border border-border/70 bg-background/50 px-3 py-2 text-xs text-muted-foreground">
-        <span className="font-semibold text-foreground">{provider.futureData[locale === "pt-BR" ? 0 : locale === "en" ? 1 : 2]}</span>
+        <span className="font-semibold text-foreground">
+          {provider.futureData[locale === "pt-BR" ? 0 : locale === "en" ? 1 : 2]}
+        </span>
         {account?.display_name ? <span className="mt-1 block">{account.display_name}</span> : null}
         {provider.key === "google" && googleDisplayName ? (
           <span className="mt-1 block">{googleDisplayName}</span>
@@ -646,29 +702,61 @@ function ProviderCard({
         ) : null}
         {provider.key === "steam" && readiness && "configured" in readiness ? (
           <span className="mt-2 block space-y-1">
-            <span className={`block font-semibold ${readiness.configured ? "text-emerald-500" : "text-amber-500"}`}>
+            <span
+              className={`block font-semibold ${readiness.configured ? "text-emerald-500" : "text-amber-500"}`}
+            >
               {readiness.configured
-                ? copy("Web API pronta no servidor", "Web API ready on server", "Web API lista en el servidor")
-                : copy("Aguardando STEAM_WEB_API_KEY", "Waiting for STEAM_WEB_API_KEY", "Esperando STEAM_WEB_API_KEY")}
+                ? copy(
+                    "Web API pronta no servidor",
+                    "Web API ready on server",
+                    "Web API lista en el servidor",
+                  )
+                : copy(
+                    "Aguardando STEAM_WEB_API_KEY",
+                    "Waiting for STEAM_WEB_API_KEY",
+                    "Esperando STEAM_WEB_API_KEY",
+                  )}
             </span>
-            <span className={`block font-semibold ${readiness.openIdReady ? "text-emerald-500" : "text-amber-500"}`}>
+            <span
+              className={`block font-semibold ${readiness.openIdReady ? "text-emerald-500" : "text-amber-500"}`}
+            >
               {readiness.openIdReady
                 ? copy("Steam OpenID pronto", "Steam OpenID ready", "Steam OpenID listo")
-                : copy("Steam OpenID indisponível", "Steam OpenID unavailable", "Steam OpenID no disponible")}
+                : copy(
+                    "Steam OpenID indisponível",
+                    "Steam OpenID unavailable",
+                    "Steam OpenID no disponible",
+                  )}
             </span>
           </span>
         ) : null}
         {provider.key === "riot" && readiness && "apiKeyConfigured" in readiness ? (
           <span className="mt-2 block space-y-1">
-            <span className={`block font-semibold ${readiness.apiKeyConfigured ? "text-emerald-500" : "text-amber-500"}`}>
+            <span
+              className={`block font-semibold ${readiness.apiKeyConfigured ? "text-emerald-500" : "text-amber-500"}`}
+            >
               {readiness.apiKeyConfigured
-                ? copy("Riot API pronta no servidor", "Riot API ready on server", "Riot API lista en el servidor")
-                : copy("Aguardando RIOT_API_KEY", "Waiting for RIOT_API_KEY", "Esperando RIOT_API_KEY")}
+                ? copy(
+                    "Riot API pronta no servidor",
+                    "Riot API ready on server",
+                    "Riot API lista en el servidor",
+                  )
+                : copy(
+                    "Aguardando RIOT_API_KEY",
+                    "Waiting for RIOT_API_KEY",
+                    "Esperando RIOT_API_KEY",
+                  )}
             </span>
-            <span className={`block font-semibold ${readiness.rsoConfigured ? "text-emerald-500" : "text-muted-foreground"}`}>
+            <span
+              className={`block font-semibold ${readiness.rsoConfigured ? "text-emerald-500" : "text-muted-foreground"}`}
+            >
               {readiness.rsoConfigured
                 ? "RSO · ready"
-                : copy("RSO · depende da aprovação de produção da Riot", "RSO · requires Riot production approval", "RSO · requiere aprobación de producción de Riot")}
+                : copy(
+                    "RSO · depende da aprovação de produção da Riot",
+                    "RSO · requires Riot production approval",
+                    "RSO · requiere aprobación de producción de Riot",
+                  )}
             </span>
           </span>
         ) : null}
@@ -764,7 +852,11 @@ function SteamDataPanel({
     },
     {
       key: "show_badges" as const,
-      label: copy("Mostrar nível e insígnias", "Show level and badges", "Mostrar nivel e insignias"),
+      label: copy(
+        "Mostrar nível e insígnias",
+        "Show level and badges",
+        "Mostrar nivel e insignias",
+      ),
       checked: profile?.show_badges ?? true,
     },
     {
@@ -780,7 +872,11 @@ function SteamDataPanel({
         <div className="min-w-0">
           <p className="section-kicker">ÍMPAR / STEAM SYNC</p>
           <h2 className="mt-2 font-display text-xl font-semibold">
-            {copy("Dados Steam no Game Profile", "Steam data in your Game Profile", "Datos de Steam en tu Game Profile")}
+            {copy(
+              "Dados Steam no Game Profile",
+              "Steam data in your Game Profile",
+              "Datos de Steam en tu Game Profile",
+            )}
           </h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
@@ -802,15 +898,19 @@ function SteamDataPanel({
         <SteamMetric icon={Library} label={copy("Jogos", "Games", "Juegos")} value={counts.games} />
         <SteamMetric
           icon={Trophy}
-          label={copy(
-            "Conquistas desbloqueadas",
-            "Unlocked achievements",
-            "Logros desbloqueados",
-          )}
+          label={copy("Conquistas desbloqueadas", "Unlocked achievements", "Logros desbloqueados")}
           value={counts.achievements}
         />
-        <SteamMetric icon={BadgeCheck} label={copy("Insígnias", "Badges", "Insignias")} value={counts.badges} />
-        <SteamMetric icon={Package} label={copy("Itens públicos", "Public items", "Objetos públicos")} value={counts.inventoryItems} />
+        <SteamMetric
+          icon={BadgeCheck}
+          label={copy("Insígnias", "Badges", "Insignias")}
+          value={counts.badges}
+        />
+        <SteamMetric
+          icon={Package}
+          label={copy("Itens públicos", "Public items", "Objetos públicos")}
+          value={counts.inventoryItems}
+        />
       </div>
 
       {progress ? (
@@ -834,7 +934,11 @@ function SteamDataPanel({
               <span className={profile.library_visible ? "text-emerald-500" : "text-amber-500"}>
                 {profile.library_visible
                   ? copy("Biblioteca visível", "Library visible", "Biblioteca visible")
-                  : copy("Biblioteca privada/indisponível", "Library private/unavailable", "Biblioteca privada/no disponible")}
+                  : copy(
+                      "Biblioteca privada/indisponível",
+                      "Library private/unavailable",
+                      "Biblioteca privada/no disponible",
+                    )}
               </span>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
@@ -845,7 +949,11 @@ function SteamDataPanel({
             </p>
             {profile.last_error ? (
               <p className="mt-2 text-xs text-amber-500">
-                {copy("Alguns dados ficaram indisponíveis pela Steam: ", "Some Steam data was unavailable: ", "Algunos datos de Steam no estaban disponibles: ")}
+                {copy(
+                  "Alguns dados ficaram indisponíveis pela Steam: ",
+                  "Some Steam data was unavailable: ",
+                  "Algunos datos de Steam no estaban disponibles: ",
+                )}
                 {profile.last_error}
               </p>
             ) : null}
@@ -857,7 +965,10 @@ function SteamDataPanel({
             </p>
             <div className="mt-3 space-y-2">
               {sharing.map((item) => (
-                <label key={item.key} className="flex cursor-pointer items-center justify-between gap-3 text-xs text-muted-foreground">
+                <label
+                  key={item.key}
+                  className="flex cursor-pointer items-center justify-between gap-3 text-xs text-muted-foreground"
+                >
                   <span>{item.label}</span>
                   <input
                     type="checkbox"
@@ -928,8 +1039,12 @@ function VerificationStatus({
   const Icon = verified ? BadgeCheck : pending ? Clock3 : ShieldQuestion;
 
   return (
-    <div className={`flex items-start gap-3 rounded-xl border p-4 ${verified ? "border-emerald-500/25 bg-emerald-500/5" : pending ? "border-amber-500/25 bg-amber-500/5" : "border-border bg-muted/15"}`}>
-      <Icon className={`mt-0.5 size-5 shrink-0 ${verified ? "text-emerald-500" : pending ? "text-amber-500" : "text-muted-foreground"}`} />
+    <div
+      className={`flex items-start gap-3 rounded-xl border p-4 ${verified ? "border-emerald-500/25 bg-emerald-500/5" : pending ? "border-amber-500/25 bg-amber-500/5" : "border-border bg-muted/15"}`}
+    >
+      <Icon
+        className={`mt-0.5 size-5 shrink-0 ${verified ? "text-emerald-500" : pending ? "text-amber-500" : "text-muted-foreground"}`}
+      />
       <div>
         <p className="font-semibold text-foreground">
           {verified
@@ -938,16 +1053,36 @@ function VerificationStatus({
               : copy("Idade verificada", "Age verified", "Edad verificada")
             : pending
               ? copy("Verificação em andamento", "Verification pending", "Verificación en curso")
-              : copy("Verificação reforçada não configurada", "Stronger verification not configured", "Verificación reforzada no configurada")}
+              : copy(
+                  "Verificação reforçada não configurada",
+                  "Stronger verification not configured",
+                  "Verificación reforzada no configurada",
+                )}
         </p>
         <p className="mt-1 text-sm leading-5 text-muted-foreground">
           {verified
             ? verification?.verified_over_18
-              ? copy("Sua idade foi confirmada e a conta também pode cumprir gates 18+, respeitando as demais regras do ÍMPAR.", "Your age is confirmed and the account can also satisfy 18+ gates, subject to the rest of MGP rules.", "Tu edad está confirmada y la cuenta también puede cumplir gates 18+, respetando las demás reglas de MGP.")
-              : copy("Sua idade foi confirmada. O ÍMPAR pode aplicar faixas etárias no LFG sem expor sua data de nascimento aos outros usuários.", "Your age is confirmed. MGP can enforce LFG age ranges without exposing your birth date to other users.", "Tu edad está confirmada. MGP puede aplicar rangos de edad en el LFG sin exponer tu fecha de nacimiento a otros usuarios.")
+              ? copy(
+                  "Sua idade foi confirmada e a conta também pode cumprir gates 18+, respeitando as demais regras do ÍMPAR.",
+                  "Your age is confirmed and the account can also satisfy 18+ gates, subject to the rest of ÍMPAR rules.",
+                  "Tu edad está confirmada y la cuenta también puede cumplir gates 18+, respetando las demás reglas de ÍMPAR.",
+                )
+              : copy(
+                  "Sua idade foi confirmada. O ÍMPAR pode aplicar faixas etárias no LFG sem expor sua data de nascimento aos outros usuários.",
+                  "Your age is confirmed. ÍMPAR can enforce LFG age ranges without exposing your birth date to other users.",
+                  "Tu edad está confirmada. ÍMPAR puede aplicar rangos de edad en el LFG sin exponer tu fecha de nacimiento a otros usuarios.",
+                )
             : pending
-              ? copy("A liberação só acontece quando o verificador concluir a checagem.", "Access unlocks only after the verifier completes the check.", "El acceso solo se libera cuando finalice la comprobación.")
-              : copy("A beta atual não depende dessa verificação para usar o LFG. Ela fica reservada para recursos futuros que realmente precisem de uma checagem mais forte.", "The current beta does not require this verification to use LFG. It is reserved for future features that genuinely need stronger age assurance.", "La beta actual no requiere esta verificación para usar el LFG. Queda reservada para funciones futuras que realmente necesiten una comprobación más fuerte.")}
+              ? copy(
+                  "A liberação só acontece quando o verificador concluir a checagem.",
+                  "Access unlocks only after the verifier completes the check.",
+                  "El acceso solo se libera cuando finalice la comprobación.",
+                )
+              : copy(
+                  "A beta atual não depende dessa verificação para usar o LFG. Ela fica reservada para recursos futuros que realmente precisem de uma checagem mais forte.",
+                  "The current beta does not require this verification to use LFG. It is reserved for future features that genuinely need stronger age assurance.",
+                  "La beta actual no requiere esta verificación para usar el LFG. Queda reservada para funciones futuras que realmente necesiten una comprobación más fuerte.",
+                )}
         </p>
       </div>
     </div>

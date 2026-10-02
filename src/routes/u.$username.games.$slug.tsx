@@ -97,7 +97,14 @@ function GameProfilePage() {
             {config.name} — {profile.display_name}
           </h1>
           <p className="text-sm text-muted-foreground">
-            @{profile.username} · <Link to="/games/$slug" params={{ slug: config.slug }} className="text-gold hover:underline">{t("games.openHub")}</Link>
+            @{profile.username} ·{" "}
+            <Link
+              to="/games/$slug"
+              params={{ slug: config.slug }}
+              className="text-gold hover:underline"
+            >
+              {t("games.openHub")}
+            </Link>
           </p>
         </div>
         {isOwn && !editing && (

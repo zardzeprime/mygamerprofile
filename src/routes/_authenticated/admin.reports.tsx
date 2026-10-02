@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_authenticated/admin/reports")({
   },
   head: () => ({
     meta: [
-      { title: "Admin — Denúncias — MGP" },
+      { title: "Admin — Denúncias — ÍMPAR" },
       { name: "description", content: "Fila de denúncias do ÍMPAR." },
     ],
   }),
@@ -77,14 +77,19 @@ function AdminReportsPage() {
                     </Badge>
                   </div>
                   <p className="mt-2 text-sm">
-                    {t(`report.reasons.${report.reason}` as TranslationKey)} · {report.reporter?.display_name} (@
+                    {t(`report.reasons.${report.reason}` as TranslationKey)} ·{" "}
+                    {report.reporter?.display_name} (@
                     {report.reporter?.username})
                   </p>
-                  {report.details && <p className="mt-1 text-sm text-muted-foreground">{report.details}</p>}
+                  {report.details && (
+                    <p className="mt-1 text-sm text-muted-foreground">{report.details}</p>
+                  )}
                 </div>
                 <Select
                   value={report.status}
-                  onValueChange={(value) => handleStatusChange(report.id, value as (typeof STATUSES)[number])}
+                  onValueChange={(value) =>
+                    handleStatusChange(report.id, value as (typeof STATUSES)[number])
+                  }
                 >
                   <SelectTrigger className="w-36">
                     <SelectValue />

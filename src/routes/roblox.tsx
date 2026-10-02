@@ -50,8 +50,8 @@ function RobloxCatalog() {
       <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
         {copy(
           "Aqui cada experiência funciona como um jogo do ÍMPAR: Blox Fruits, Project Slayers 2 e os outros têm página própria, hero, abas, conteúdo e navegação própria.",
-          "Each experience works like an MGP game here: Blox Fruits, Project Slayers 2 and the others get their own page, hero, tabs, content and navigation.",
-          "Aquí cada experiencia funciona como un juego de MGP: Blox Fruits, Project Slayers 2 y las demás tienen página propia, hero, pestañas, contenido y navegación.",
+          "Each experience works like an ÍMPAR game here: Blox Fruits, Project Slayers 2 and the others get their own page, hero, tabs, content and navigation.",
+          "Aquí cada experiencia funciona como un juego de ÍMPAR: Blox Fruits, Project Slayers 2 y las demás tienen página propia, hero, pestañas, contenido y navegación.",
         )}
       </p>
 
@@ -87,7 +87,9 @@ function RobloxCatalog() {
                 <span className="rounded-full border border-white/15 bg-black/35 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white/75 backdrop-blur">
                   Roblox Experience
                 </span>
-                <h2 className="mt-3 font-display text-2xl font-bold text-white">{experience.name}</h2>
+                <h2 className="mt-3 font-display text-2xl font-bold text-white">
+                  {experience.name}
+                </h2>
                 <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-white/65">
                   {experience.category}
                 </p>
@@ -128,7 +130,11 @@ function RobloxCatalog() {
       {results.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-dashed border-border p-10 text-center">
           <p className="font-semibold text-foreground">
-            {copy("Nenhuma experiência encontrada", "No experience found", "No se encontró ninguna experiencia")}
+            {copy(
+              "Nenhuma experiência encontrada",
+              "No experience found",
+              "No se encontró ninguna experiencia",
+            )}
           </p>
         </div>
       ) : null}

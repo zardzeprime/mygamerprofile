@@ -39,11 +39,25 @@ export function RiotPlayerSearch({ locale }: { locale: Locale }) {
       } else if (raw.includes("RIOT_ACCOUNT_NOT_FOUND")) {
         setError(copy("Riot ID não encontrado.", "Riot ID not found.", "Riot ID no encontrado."));
       } else if (raw.includes("RIOT_API_RATE_LIMIT")) {
-        setError(copy("A Riot pediu uma pausa nas buscas. Tenta de novo daqui a pouco.", "Riot rate-limited the search. Try again shortly.", "Riot limitó las búsquedas. Inténtalo de nuevo en un momento."));
+        setError(
+          copy(
+            "A Riot pediu uma pausa nas buscas. Tenta de novo daqui a pouco.",
+            "Riot rate-limited the search. Try again shortly.",
+            "Riot limitó las búsquedas. Inténtalo de nuevo en un momento.",
+          ),
+        );
       } else if (raw.includes("RIOT_ID_INVALID")) {
-        setError(copy("Usa o formato Nome#TAG.", "Use the format Name#TAG.", "Usa el formato Nombre#TAG."));
+        setError(
+          copy("Usa o formato Nome#TAG.", "Use the format Name#TAG.", "Usa el formato Nombre#TAG."),
+        );
       } else {
-        setError(copy("A busca da Riot falhou nessa tentativa.", "Riot search failed this time.", "La búsqueda de Riot falló esta vez."));
+        setError(
+          copy(
+            "A busca da Riot falhou nessa tentativa.",
+            "Riot search failed this time.",
+            "La búsqueda de Riot falló esta vez.",
+          ),
+        );
       }
     } finally {
       setLoading(false);
@@ -83,7 +97,9 @@ export function RiotPlayerSearch({ locale }: { locale: Locale }) {
         />
         <Button type="submit" disabled={loading || !riotId.trim()}>
           <Search className="mr-2 size-4" />
-          {loading ? copy("Buscando…", "Searching…", "Buscando…") : copy("Buscar", "Search", "Buscar")}
+          {loading
+            ? copy("Buscando…", "Searching…", "Buscando…")
+            : copy("Buscar", "Search", "Buscar")}
         </Button>
       </form>
 

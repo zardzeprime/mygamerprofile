@@ -209,7 +209,7 @@ async function optionalSteamApi<T>(
   try {
     return await steamApi<T>(path, params);
   } catch (error) {
-    console.warn("[MGP Steam Sync] optional endpoint failed", path, error);
+    console.warn("[ÍMPAR Steam Sync] optional endpoint failed", path, error);
     return null;
   }
 }
@@ -237,7 +237,7 @@ async function evaluateProfileUnlocks(db: ReturnType<typeof createUserDb>, userI
     target_user_id: userId,
   });
   if (error) {
-    console.warn("[MGP Identity] unlock evaluation failed", error);
+    console.warn("[ÍMPAR Identity] unlock evaluation failed", error);
     return null;
   }
 
@@ -245,7 +245,7 @@ async function evaluateProfileUnlocks(db: ReturnType<typeof createUserDb>, userI
     target_user_id: userId,
   });
   if (defaultsError) {
-    console.warn("[MGP Identity] default loadout failed", defaultsError);
+    console.warn("[ÍMPAR Identity] default loadout failed", defaultsError);
   }
 
   return data;
@@ -289,7 +289,7 @@ async function fetchInventory(steamId: string, appId: number, contextId: string)
       return { visible: false, items: [] as Array<Record<string, unknown>> };
     }
     if (!response.ok) {
-      console.warn("[MGP Steam Sync] inventory endpoint failed", appId, response.status);
+      console.warn("[ÍMPAR Steam Sync] inventory endpoint failed", appId, response.status);
       return { visible: false, items: [] as Array<Record<string, unknown>> };
     }
 
@@ -764,7 +764,7 @@ export const syncSteamAchievementsBatch = createServerFn({ method: "POST" })
           .eq("app_id", appId);
         if (updateError) throw updateError;
       } catch (achievementError) {
-        console.warn("[MGP Steam Sync] achievement sync failed", appId, achievementError);
+        console.warn("[ÍMPAR Steam Sync] achievement sync failed", appId, achievementError);
         failures.push(appId);
       }
     }
@@ -867,7 +867,7 @@ export const getPublicSteamShowcase = createServerFn({ method: "GET" })
     });
 
     if (!response.ok) {
-      console.warn("[MGP Steam] public showcase lookup failed", response.status);
+      console.warn("[ÍMPAR Steam] public showcase lookup failed", response.status);
       return null;
     }
 

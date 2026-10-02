@@ -7,11 +7,14 @@ import { getSupabasePublic } from "./supabase.server";
 
 const LFG_STATUSES = ["open", "closed", "expired"] as const;
 const LFG_TTL_VALUES = [6, 12, 24, 48] as const;
-const lfgTtlSchema = z.number().int().refine(
-  (value): value is (typeof LFG_TTL_VALUES)[number] =>
-    LFG_TTL_VALUES.includes(value as (typeof LFG_TTL_VALUES)[number]),
-  { message: "invalid_lfg_ttl" },
-);
+const lfgTtlSchema = z
+  .number()
+  .int()
+  .refine(
+    (value): value is (typeof LFG_TTL_VALUES)[number] =>
+      LFG_TTL_VALUES.includes(value as (typeof LFG_TTL_VALUES)[number]),
+    { message: "invalid_lfg_ttl" },
+  );
 
 const listLfgSchema = z.object({
   gameId: z.string().uuid().optional(),
@@ -44,7 +47,7 @@ const createLfgSchema = z
     (data) =>
       Boolean(
         data.game_id ||
-          (data.external_game_source && data.external_game_id && data.external_game_name),
+        (data.external_game_source && data.external_game_id && data.external_game_name),
       ),
     { message: "game_reference_required" },
   );
@@ -83,7 +86,10 @@ async function readDeclaredAge(db: unknown, userId: string) {
   const typedDb = db as {
     from: (table: "account_age_data") => {
       select: (columns: string) => {
-        eq: (column: string, value: string) => {
+        eq: (
+          column: string,
+          value: string,
+        ) => {
           maybeSingle: () => Promise<{
             data: { birth_date: string; age_assurance_method: string } | null;
             error: { message: string } | null;
@@ -113,8 +119,7 @@ async function readDeclaredAge(db: unknown, userId: string) {
   let age = now.getUTCFullYear() - birthDate.getUTCFullYear();
   const birthdayPassed =
     now.getUTCMonth() > birthDate.getUTCMonth() ||
-    (now.getUTCMonth() === birthDate.getUTCMonth() &&
-      now.getUTCDate() >= birthDate.getUTCDate());
+    (now.getUTCMonth() === birthDate.getUTCMonth() && now.getUTCDate() >= birthDate.getUTCDate());
   if (!birthdayPassed) age -= 1;
 
   return {
@@ -195,8 +200,7 @@ export const listLfgPostsForViewer = createServerFn({ method: "GET" })
     const now = Date.now();
     return (rows ?? []).filter(
       (row) =>
-        !blocked.has(row.user_id) &&
-        (!row.expires_at || new Date(row.expires_at).getTime() > now),
+        !blocked.has(row.user_id) && (!row.expires_at || new Date(row.expires_at).getTime() > now),
     );
   });
 
@@ -218,10 +222,10 @@ export const createLfgPost = createServerFn({ method: "POST" })
       .insert({
         user_id: context.userId,
         game_id: data.game_id ?? null,
-        external_game_source: data.game_id ? null : data.external_game_source ?? null,
-        external_game_id: data.game_id ? null : data.external_game_id ?? null,
-        external_game_name: data.game_id ? null : data.external_game_name ?? null,
-        external_game_image_url: data.game_id ? null : data.external_game_image_url ?? null,
+        external_game_source: data.game_id ? null : (data.external_game_source ?? null),
+        external_game_id: data.game_id ? null : (data.external_game_id ?? null),
+        external_game_name: data.game_id ? null : (data.external_game_name ?? null),
+        external_game_image_url: data.game_id ? null : (data.external_game_image_url ?? null),
         title: data.title,
         platform: data.platform,
         region: data.region || null,
@@ -356,7 +360,10 @@ export const listMyLfgApplications = createServerFn({ method: "GET" })
       ? context.supabase
           .from("lfg_applications")
           .select(selectShape)
-          .in("lfg_post_id", ownPosts.map((post) => post.id))
+          .in(
+            "lfg_post_id",
+            ownPosts.map((post) => post.id),
+          )
           .order("created_at", { ascending: false })
       : Promise.resolve({ data: [], error: null });
 
@@ -442,7 +449,10 @@ export const listLfgMessages = createServerFn({ method: "GET" })
     if (applicationError || !application || application.status !== "accepted") {
       throw new Error("LFG_MATCH_REQUIRED");
     }
-    if (!application.chat_expires_at || new Date(application.chat_expires_at).getTime() <= Date.now()) {
+    if (
+      !application.chat_expires_at ||
+      new Date(application.chat_expires_at).getTime() <= Date.now()
+    ) {
       throw new Error("LFG_CHAT_EXPIRED");
     }
 
@@ -479,7 +489,10 @@ export const sendLfgMessage = createServerFn({ method: "POST" })
     if (appError || !application || application.status !== "accepted") {
       throw new Error("LFG_MATCH_REQUIRED");
     }
-    if (!application.chat_expires_at || new Date(application.chat_expires_at).getTime() <= Date.now()) {
+    if (
+      !application.chat_expires_at ||
+      new Date(application.chat_expires_at).getTime() <= Date.now()
+    ) {
       throw new Error("LFG_CHAT_EXPIRED");
     }
 

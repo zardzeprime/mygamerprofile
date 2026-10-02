@@ -74,7 +74,9 @@ export function LanguageSelector({ variant = "compact" }: { variant?: "compact" 
                   {CODE_LABELS[value]}
                 </span>
               </span>
-              {selected ? <Check aria-hidden="true" className="size-4 shrink-0 text-gold-strong" /> : null}
+              {selected ? (
+                <Check aria-hidden="true" className="size-4 shrink-0 text-gold-strong" />
+              ) : null}
             </DropdownMenuItem>
           );
         })}

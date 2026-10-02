@@ -1,8 +1,5 @@
 import type { ComponentType } from "react";
-import {
-  AvapgvReportEmail,
-  type AvapgvReportData,
-} from "./avapgv-report";
+import { AvapgvReportEmail, type AvapgvReportData } from "./avapgv-report";
 
 export interface TemplateEntry {
   component: ComponentType<Record<string, unknown>>;
@@ -16,8 +13,8 @@ export interface TemplateEntry {
 const avapgvPreviewData = {
   status: "+/-",
   severity: "warning",
-  title: "Revisão operacional do MG Profile",
-  owningCore: "NEXUS (Coordenação e IA)",
+  title: "Revisão operacional do ÍMPAR",
+  owningCore: "Noctis (Guardião do ÍMPAR)",
   changed:
     "Uma alteração relevante foi detectada e precisa de validação antes de ser considerada concluída.",
   reference: "main · commit fcd91c5",
@@ -45,9 +42,7 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
           : "+/-";
       const rawTitle = data["title"];
       const title =
-        typeof rawTitle === "string" && rawTitle.trim()
-          ? rawTitle.trim()
-          : "Relatório operacional";
+        typeof rawTitle === "string" && rawTitle.trim() ? rawTitle.trim() : "Relatório operacional";
       return `[AVAPGV ${status}] ${title}`;
     },
     previewData: avapgvPreviewData,

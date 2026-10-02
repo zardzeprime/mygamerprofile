@@ -1,11 +1,5 @@
 export type ProfileBackgroundKey =
-  | "mgp-grid"
-  | "ember"
-  | "tactical"
-  | "midnight"
-  | "rift-nebula"
-  | "emberstorm"
-  | "hextech-pulse";
+  "mgp-grid" | "ember" | "tactical" | "midnight" | "rift-nebula" | "emberstorm" | "hextech-pulse";
 
 export type ProfileBackgroundPreset = {
   key: ProfileBackgroundKey;
@@ -18,7 +12,7 @@ export type ProfileBackgroundPreset = {
 
 const DEFAULT_PROFILE_BACKGROUND: ProfileBackgroundPreset = {
   key: "mgp-grid",
-  name: { "pt-BR": "Grade MGP", en: "MGP Grid", es: "Cuadrícula MGP" },
+  name: { "pt-BR": "Grade ÍMPAR", en: "ÍMPAR Grid", es: "Cuadrícula ÍMPAR" },
   description: {
     "pt-BR": "Identidade institucional em preto e dourado.",
     en: "Institutional black-and-gold identity.",

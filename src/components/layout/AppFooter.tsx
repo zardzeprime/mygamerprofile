@@ -49,7 +49,8 @@ export function AppFooter() {
               </a>
             </nav>
             <p className="text-xs text-muted-foreground">
-              {copy("Comunidade ÍMPAR", "ÍMPAR Community", "Comunidad ÍMPAR")} · {copy("Beta público", "Public beta", "Beta público")} · © {new Date().getFullYear()}
+              {copy("Comunidade ÍMPAR", "ÍMPAR Community", "Comunidad ÍMPAR")} ·{" "}
+              {copy("Beta público", "Public beta", "Beta público")} · © {new Date().getFullYear()}
             </p>
           </div>
         </div>

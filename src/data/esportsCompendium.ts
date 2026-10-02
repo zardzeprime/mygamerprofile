@@ -48,7 +48,8 @@ export const COMPETITIVE_SOURCE_LINKS: CompetitiveSourceLink[] = [
     id: "prosettings",
     name: "ProSettings.net",
     url: PROSETTINGS_VALORANT,
-    purpose: "DPI, sensibilidade/eDPI, crosshair, vídeo, periféricos e configurações profissionais.",
+    purpose:
+      "DPI, sensibilidade/eDPI, crosshair, vídeo, periféricos e configurações profissionais.",
     verifiedAt: VERIFIED_AT,
   },
 ];
@@ -73,7 +74,10 @@ function normalizeHandle(handle: string) {
 }
 
 function playerId(teamId: string, handle: string) {
-  return `${teamId}-${handle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
+  return `${teamId}-${handle
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")}`;
 }
 
 function playerFromSeed(team: ValorantRosterSeed, seed: PlayerSeed): EsportsPlayer {
@@ -106,7 +110,9 @@ function playerFromSeed(team: ValorantRosterSeed, seed: PlayerSeed): EsportsPlay
 }
 
 export const ESPORTS_PLAYERS: EsportsPlayer[] = [
-  ...VALORANT_TEAMS_2026.flatMap((team) => team.players.map((player) => playerFromSeed(team, player))),
+  ...VALORANT_TEAMS_2026.flatMap((team) =>
+    team.players.map((player) => playerFromSeed(team, player)),
+  ),
   ...LEAGUE_ESPORTS_PLAYERS,
 ];
 
@@ -125,15 +131,15 @@ const VALORANT_ESPORTS_TEAMS: EsportsTeam[] = VALORANT_TEAMS_2026.map((team) => 
       url: team.vlrUrl,
       label: "VLR.gg",
       verifiedAt: VERIFIED_AT,
-      note: team.entryStage === "play-ins" ? "VCT 2026 play-ins roster snapshot." : "VCT 2026 regional roster snapshot.",
+      note:
+        team.entryStage === "play-ins"
+          ? "VCT 2026 play-ins roster snapshot."
+          : "VCT 2026 regional roster snapshot.",
     },
   ],
 }));
 
-export const ESPORTS_TEAMS: EsportsTeam[] = [
-  ...VALORANT_ESPORTS_TEAMS,
-  ...LEAGUE_ESPORTS_TEAMS,
-];
+export const ESPORTS_TEAMS: EsportsTeam[] = [...VALORANT_ESPORTS_TEAMS, ...LEAGUE_ESPORTS_TEAMS];
 
 /**
  * The competitive directory is a dated, provenance-tracked snapshot. VLR is the

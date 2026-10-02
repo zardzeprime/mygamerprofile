@@ -16,7 +16,11 @@ export function ValorantLineupsPanel({ locale }: { locale: Locale }) {
               <span className="section-kicker">LINEUP LAB</span>
             </span>
             <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-[0.62rem] font-black uppercase tracking-[0.1em] text-amber-300">
-              {copy("Uploads fechados no beta", "Uploads closed during beta", "Subidas cerradas durante la beta")}
+              {copy(
+                "Uploads fechados no beta",
+                "Uploads closed during beta",
+                "Subidas cerradas durante la beta",
+              )}
             </span>
           </div>
 
@@ -25,8 +29,8 @@ export function ValorantLineupsPanel({ locale }: { locale: Locale }) {
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
-              "A biblioteca já está preparada para lineups curtas por mapa, agente e ponto. Publicação da comunidade fica bloqueada no beta até o MGP ter moderação de vídeo e fluxo de denúncia.",
-              "The library is prepared for short lineups organized by map, agent and spot. Community publishing stays locked during beta until MGP has video moderation and reporting.",
+              "A biblioteca já está preparada para lineups curtas por mapa, agente e ponto. Publicação da comunidade fica bloqueada no beta até o ÍMPAR ter moderação de vídeo e fluxo de denúncia.",
+              "The library is prepared for short lineups organized by map, agent and spot. Community publishing stays locked during beta until ÍMPAR has video moderation and reporting.",
               "La biblioteca ya está preparada para lineups cortas por mapa, agente y punto. La publicación de la comunidad queda bloqueada durante la beta hasta contar con moderación de vídeo y reportes.",
             )}
           </p>
@@ -53,7 +57,11 @@ export function ValorantLineupsPanel({ locale }: { locale: Locale }) {
           />
           <InfoCard
             icon={ShieldCheck}
-            title={copy("Moderação antes de publicar", "Moderation before publishing", "Moderación antes de publicar")}
+            title={copy(
+              "Moderação antes de publicar",
+              "Moderation before publishing",
+              "Moderación antes de publicar",
+            )}
             text={copy(
               "Nada enviado por usuário será publicado sem checagem de conteúdo, autoria e denúncias.",
               "No user upload will be published without content checks, authorship review and reporting controls.",
@@ -75,12 +83,27 @@ export function ValorantLineupsPanel({ locale }: { locale: Locale }) {
         </div>
 
         <div className="grid gap-4 p-5 sm:grid-cols-2 sm:p-6">
-          <DisabledField label={copy("Mapa", "Map", "Mapa")} value={copy("Selecione o mapa", "Select map", "Selecciona el mapa")} />
-          <DisabledField label={copy("Agente", "Agent", "Agente")} value={copy("Selecione o agente", "Select agent", "Selecciona el agente")} />
-          <DisabledField label={copy("Lado", "Side", "Lado")} value={copy("Ataque / Defesa", "Attack / Defense", "Ataque / Defensa")} />
-          <DisabledField label={copy("Spot", "Spot", "Punto")} value={copy("Origem → destino", "Origin → destination", "Origen → destino")} />
+          <DisabledField
+            label={copy("Mapa", "Map", "Mapa")}
+            value={copy("Selecione o mapa", "Select map", "Selecciona el mapa")}
+          />
+          <DisabledField
+            label={copy("Agente", "Agent", "Agente")}
+            value={copy("Selecione o agente", "Select agent", "Selecciona el agente")}
+          />
+          <DisabledField
+            label={copy("Lado", "Side", "Lado")}
+            value={copy("Ataque / Defesa", "Attack / Defense", "Ataque / Defensa")}
+          />
+          <DisabledField
+            label={copy("Spot", "Spot", "Punto")}
+            value={copy("Origem → destino", "Origin → destination", "Origen → destino")}
+          />
           <div className="sm:col-span-2">
-            <DisabledField label={copy("Título", "Title", "Título")} value={copy("Nome curto da lineup", "Short lineup name", "Nombre corto de la lineup")} />
+            <DisabledField
+              label={copy("Título", "Title", "Título")}
+              value={copy("Nome curto da lineup", "Short lineup name", "Nombre corto de la lineup")}
+            />
           </div>
           <div className="sm:col-span-2">
             <label className="block">
@@ -105,7 +128,11 @@ export function ValorantLineupsPanel({ locale }: { locale: Locale }) {
                 <Video className="size-5 text-gold-strong" />
               </div>
               <p className="mt-3 text-sm font-bold text-foreground">
-                {copy("Upload de vídeo indisponível no beta", "Video upload unavailable during beta", "Subida de vídeo no disponible durante la beta")}
+                {copy(
+                  "Upload de vídeo indisponível no beta",
+                  "Video upload unavailable during beta",
+                  "Subida de vídeo no disponible durante la beta",
+                )}
               </p>
               <p className="mt-1 max-w-md text-xs leading-5 text-muted-foreground">
                 {copy(

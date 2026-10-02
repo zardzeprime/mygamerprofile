@@ -1,12 +1,5 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import {
-  CheckCircle2,
-  Clock3,
-  Inbox,
-  MessageSquareReply,
-  Save,
-  UserRound,
-} from "lucide-react";
+import { CheckCircle2, Clock3, Inbox, MessageSquareReply, Save, UserRound } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { useI18n } from "@/i18n";
@@ -50,7 +43,7 @@ export const Route = createFileRoute("/_authenticated/admin/feedback")({
   },
   head: () => ({
     meta: [
-      { title: "Admin — Feedback — MGP" },
+      { title: "Admin — Feedback — ÍMPAR" },
       { name: "description", content: "Caixa administrativa de feedback do ÍMPAR." },
     ],
   }),
@@ -98,11 +91,9 @@ function AdminFeedbackPage() {
       .single();
 
     if (!error && data) {
-      setRows((current) =>
-        current.map((row) => (row.id === id ? { ...row, ...data } : row)),
-      );
+      setRows((current) => current.map((row) => (row.id === id ? { ...row, ...data } : row)));
     } else if (error) {
-      console.error("[MGP] admin feedback status", error);
+      console.error("[ÍMPAR] admin feedback status", error);
     }
     setSavingId(null);
   };
@@ -137,7 +128,7 @@ function AdminFeedbackPage() {
         current.map((item) => (item.id === row.id ? { ...item, ...data } : item)),
       );
     } else if (error) {
-      console.error("[MGP] admin feedback reply", error);
+      console.error("[ÍMPAR] admin feedback reply", error);
     }
     setSavingId(null);
   };
@@ -146,7 +137,7 @@ function AdminFeedbackPage() {
     <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
       <div className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="section-kicker">MGP ADMIN</p>
+          <p className="section-kicker">ÍMPAR ADMIN</p>
           <h1 className="mt-2 flex items-center gap-2 font-display text-2xl font-semibold text-foreground">
             <Inbox className="size-5 text-gold-strong" />
             {copy("Caixa de feedback", "Feedback inbox", "Bandeja de feedback")}
@@ -206,7 +197,7 @@ function AdminFeedbackPage() {
                   <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
                     <UserRound className="size-3.5" />
                     <span>
-                      {row.author?.display_name ?? "MGP user"}
+                      {row.author?.display_name ?? "ÍMPAR user"}
                       {row.author?.username ? " · @" + row.author.username : ""}
                     </span>
                   </div>
