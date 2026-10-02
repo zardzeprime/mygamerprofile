@@ -46,7 +46,9 @@ export function LeagueNews({ locale }: { locale: Locale }) {
       <header className="overflow-hidden rounded-2xl border border-gold/25 bg-[radial-gradient(circle_at_top_right,rgba(12,92,140,0.16),transparent_36%),hsl(var(--surface))] p-6 sm:p-8">
         <div className="flex items-center gap-2 text-gold-strong">
           <Newspaper className="size-4" />
-          <span className="section-kicker">{copy("FEED OFICIAL", "OFFICIAL FEED", "FEED OFICIAL")}</span>
+          <span className="section-kicker">
+            {copy("FEED OFICIAL", "OFFICIAL FEED", "FEED OFICIAL")}
+          </span>
         </div>
         <h2 className="mt-3 font-display text-3xl font-bold">
           {copy("Novidades de League", "League news", "Novedades de League")}
@@ -114,7 +116,9 @@ export function LeagueNews({ locale }: { locale: Locale }) {
             </h3>
           </div>
           <div className="mt-4 grid gap-3 lg:grid-cols-2">
-            {upcoming.map((item) => <NewsCard key={item.id} item={item} locale={locale} featured />)}
+            {upcoming.map((item) => (
+              <NewsCard key={item.id} item={item} locale={locale} featured />
+            ))}
           </div>
         </section>
       ) : null}
@@ -122,9 +126,15 @@ export function LeagueNews({ locale }: { locale: Locale }) {
       <section>
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
-            <h3 className="font-display text-xl font-semibold">{copy("Arquivo", "Archive", "Archivo")}</h3>
+            <h3 className="font-display text-xl font-semibold">
+              {copy("Arquivo", "Archive", "Archivo")}
+            </h3>
             <p className="mt-1 text-xs text-muted-foreground">
-              {copy(`${published.length} itens encontrados`, `${published.length} items found`, `${published.length} elementos encontrados`)}
+              {copy(
+                `${published.length} itens encontrados`,
+                `${published.length} items found`,
+                `${published.length} elementos encontrados`,
+              )}
             </p>
           </div>
           <a
@@ -139,11 +149,17 @@ export function LeagueNews({ locale }: { locale: Locale }) {
 
         {published.length ? (
           <div className="relative space-y-3 before:absolute before:bottom-5 before:left-[0.92rem] before:top-5 before:w-px before:bg-border sm:before:left-[1.15rem]">
-            {published.map((item) => <NewsCard key={item.id} item={item} locale={locale} />)}
+            {published.map((item) => (
+              <NewsCard key={item.id} item={item} locale={locale} />
+            ))}
           </div>
         ) : (
           <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            {copy("Nenhuma novidade corresponde aos filtros.", "No news matches these filters.", "Ninguna novedad coincide con los filtros.")}
+            {copy(
+              "Nenhuma novidade corresponde aos filtros.",
+              "No news matches these filters.",
+              "Ninguna novedad coincide con los filtros.",
+            )}
           </div>
         )}
       </section>

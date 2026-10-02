@@ -66,10 +66,8 @@ const BUILDS: VerifiedBuild[] = [
     summary: {
       "pt-BR":
         "Um dos caminhos PvE mais consolidados pela comunidade: Sharp Sellsword Twinblades, Destreza alta e foco em ataques L1 de duas mãos. É simples, muito rápido e derrete chefes quando você mantém stamina e posicionamento.",
-      en:
-        "One of the community's most established PvE routes: Sharp Sellsword Twinblades, high Dexterity and two-handed L1 pressure. It is simple, extremely fast and melts bosses when stamina and positioning are managed well.",
-      es:
-        "Una de las rutas PvE más consolidadas por la comunidad: Sharp Sellsword Twinblades, Destreza alta y presión con L1 a dos manos. Es simple, muy rápida y derrite jefes si gestionas bien stamina y posición.",
+      en: "One of the community's most established PvE routes: Sharp Sellsword Twinblades, high Dexterity and two-handed L1 pressure. It is simple, extremely fast and melts bosses when stamina and positioning are managed well.",
+      es: "Una de las rutas PvE más consolidadas por la comunidad: Sharp Sellsword Twinblades, Destreza alta y presión con L1 a dos manos. Es simple, muy rápida y derrite jefes si gestionas bien stamina y posición.",
     },
     startingClass: "Mercenary",
     stats: ["VIG 27–40", "END 25–35", "DEX 40–60", "STR só requisito"],
@@ -116,10 +114,8 @@ const BUILDS: VerifiedBuild[] = [
     summary: {
       "pt-BR":
         "Build direta e robusta para quem quer aprender DS3 sem dividir muitos atributos. Vordt's Great Hammer é acessível cedo e o Frostbite ajuda bastante; depois você pode migrar para Great Club, Fume UGS ou outros pesados conforme preferência.",
-      en:
-        "A direct and robust route for learning DS3 without spreading stats too thin. Vordt's Great Hammer is available early and Frostbite adds strong pressure; later you can move into Great Club, Fume UGS or other heavy weapons.",
-      es:
-        "Ruta directa y robusta para aprender DS3 sin repartir demasiados atributos. Vordt's Great Hammer llega temprano y Frostbite ayuda mucho; luego puedes pasar a Great Club, Fume UGS u otras armas pesadas.",
+      en: "A direct and robust route for learning DS3 without spreading stats too thin. Vordt's Great Hammer is available early and Frostbite adds strong pressure; later you can move into Great Club, Fume UGS or other heavy weapons.",
+      es: "Ruta directa y robusta para aprender DS3 sin repartir demasiados atributos. Vordt's Great Hammer llega temprano y Frostbite ayuda mucho; luego puedes pasar a Great Club, Fume UGS u otras armas pesadas.",
     },
     startingClass: "Knight / Warrior",
     stats: ["VIG 35–40", "END 30–35", "VIT conforme armadura", "STR 40–66"],
@@ -129,12 +125,14 @@ const BUILDS: VerifiedBuild[] = [
     spells: [],
     variants: [
       {
-        "pt-BR": "40 STR é suficiente para uma rota mais equilibrada; 60–66 favorece armas pesadas e duas mãos.",
+        "pt-BR":
+          "40 STR é suficiente para uma rota mais equilibrada; 60–66 favorece armas pesadas e duas mãos.",
         en: "40 STR is enough for a balanced route; 60–66 favors heavy weapons and two-handing.",
         es: "40 STR basta para una ruta equilibrada; 60–66 favorece armas pesadas y dos manos.",
       },
       {
-        "pt-BR": "Troque Vordt por Heavy Great Club quando quiser dano físico puro sem depender de Frostbite.",
+        "pt-BR":
+          "Troque Vordt por Heavy Great Club quando quiser dano físico puro sem depender de Frostbite.",
         en: "Swap Vordt for Heavy Great Club when you want pure physical damage without Frostbite.",
         es: "Cambia Vordt por Heavy Great Club si quieres daño físico puro sin depender de Frostbite.",
       },
@@ -166,10 +164,8 @@ const BUILDS: VerifiedBuild[] = [
     summary: {
       "pt-BR":
         "A rota clássica de piromancia de DS3 escala Inteligência e Fé juntas. Com Pyromancy Flame +10, Witch's Ring e Great Swamp Ring, Chaos Bed Vestiges e Black Flame viram o núcleo do dano; uma arma Dark/Chaos cobre combate corpo a corpo.",
-      en:
-        "The classic DS3 pyromancy route scales Intelligence and Faith together. With Pyromancy Flame +10, Witch's Ring and Great Swamp Ring, Chaos Bed Vestiges and Black Flame become the damage core while a Dark/Chaos weapon covers melee.",
-      es:
-        "La ruta clásica de piromancia de DS3 escala Inteligencia y Fe juntas. Con Pyromancy Flame +10, Witch's Ring y Great Swamp Ring, Chaos Bed Vestiges y Black Flame forman el núcleo de daño y un arma Dark/Chaos cubre melee.",
+      en: "The classic DS3 pyromancy route scales Intelligence and Faith together. With Pyromancy Flame +10, Witch's Ring and Great Swamp Ring, Chaos Bed Vestiges and Black Flame become the damage core while a Dark/Chaos weapon covers melee.",
+      es: "La ruta clásica de piromancia de DS3 escala Inteligencia y Fe juntas. Con Pyromancy Flame +10, Witch's Ring y Great Swamp Ring, Chaos Bed Vestiges y Black Flame forman el núcleo de daño y un arma Dark/Chaos cubre melee.",
     },
     startingClass: "Pyromancer",
     stats: ["VIG 30–40", "ATT 24–30", "END 18–25", "INT 40", "FTH 40"],
@@ -210,7 +206,9 @@ const BUILDS: VerifiedBuild[] = [
 export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [selected, setSelected] = useState(BUILDS[0]?.id ?? "");
-  const [customName, setCustomName] = useState(copy("Minha build DS3", "My DS3 build", "Mi build DS3"));
+  const [customName, setCustomName] = useState(
+    copy("Minha build DS3", "My DS3 build", "Mi build DS3"),
+  );
   const [coreOne, setCoreOne] = useState("");
   const [coreTwo, setCoreTwo] = useState("");
   const [variant, setVariant] = useState("");
@@ -359,11 +357,15 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
                 onClick={() => setSelected(build.id)}
                 className={cn(
                   "rounded-2xl border p-4 text-left transition-all hover:-translate-y-1 hover:shadow-lift",
-                  activeCard ? "border-gold/55 bg-gold/[0.08]" : "border-border bg-muted/10 hover:border-gold/30",
+                  activeCard
+                    ? "border-gold/55 bg-gold/[0.08]"
+                    : "border-border bg-muted/10 hover:border-gold/30",
                 )}
               >
                 <Icon className="size-5 text-gold-strong" />
-                <p className="mt-3 font-display text-lg font-semibold text-foreground">{build.title[locale]}</p>
+                <p className="mt-3 font-display text-lg font-semibold text-foreground">
+                  {build.title[locale]}
+                </p>
                 <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">
                   {build.archetype[locale]}
                 </p>
@@ -391,25 +393,40 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
                 <ActiveIcon className="size-5 text-gold-strong" />
               </span>
               <div>
-                <h3 className="font-display text-3xl font-bold text-foreground">{active.title[locale]}</h3>
-                <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">{active.summary[locale]}</p>
+                <h3 className="font-display text-3xl font-bold text-foreground">
+                  {active.title[locale]}
+                </h3>
+                <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">
+                  {active.summary[locale]}
+                </p>
               </div>
             </div>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <BuildPanel title={copy("Stats alvo", "Target stats", "Stats objetivo")} rows={active.stats} />
+              <BuildPanel
+                title={copy("Stats alvo", "Target stats", "Stats objetivo")}
+                rows={active.stats}
+              />
               <BuildPanel title={copy("Núcleo", "Core", "Núcleo")} rows={active.core} highlighted />
-              <BuildPanel title={copy("Opções secundárias", "Secondary options", "Opciones secundarias")} rows={active.secondary} />
+              <BuildPanel
+                title={copy("Opções secundárias", "Secondary options", "Opciones secundarias")}
+                rows={active.secondary}
+              />
               <BuildPanel title={copy("Anéis", "Rings", "Anillos")} rows={active.rings} />
               {active.spells.length ? (
                 <BuildPanel title={copy("Magias", "Spells", "Magias")} rows={active.spells} />
               ) : null}
-              <BuildPanel title={copy("Variantes", "Variants", "Variantes")} rows={active.variants.map((entry) => entry[locale])} />
+              <BuildPanel
+                title={copy("Variantes", "Variants", "Variantes")}
+                rows={active.variants.map((entry) => entry[locale])}
+              />
             </div>
           </article>
 
           <aside className="border-t border-border bg-muted/10 p-5 lg:border-l lg:border-t-0 sm:p-6">
-            <p className="section-kicker">{copy("FONTES DA VERIFICAÇÃO", "VERIFICATION SOURCES", "FUENTES DE VERIFICACIÓN")}</p>
+            <p className="section-kicker">
+              {copy("FONTES DA VERIFICAÇÃO", "VERIFICATION SOURCES", "FUENTES DE VERIFICACIÓN")}
+            </p>
             <div className="mt-4 space-y-2">
               {active.sources.map((source) => (
                 <a
@@ -440,7 +457,11 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
           <span className="section-kicker">{copy("CRIADOR", "BUILDER", "CREADOR")}</span>
         </div>
         <h3 className="mt-2 font-display text-2xl font-bold text-foreground">
-          {copy("Monte sua própria build de DS3", "Create your own DS3 build", "Crea tu propia build de DS3")}
+          {copy(
+            "Monte sua própria build de DS3",
+            "Create your own DS3 build",
+            "Crea tu propia build de DS3",
+          )}
         </h3>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
           {copy(
@@ -469,13 +490,31 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
             <Input value={customName} onChange={(event) => setCustomName(event.target.value)} />
           </BuilderField>
           <BuilderField label="Core 1">
-            <Input value={coreOne} onChange={(event) => setCoreOne(event.target.value)} placeholder="Ex.: Sharp Sellsword Twinblades +10" />
+            <Input
+              value={coreOne}
+              onChange={(event) => setCoreOne(event.target.value)}
+              placeholder="Ex.: Sharp Sellsword Twinblades +10"
+            />
           </BuilderField>
           <BuilderField label={copy("Core 2 (opcional)", "Core 2 (optional)", "Core 2 (opcional)")}>
-            <Input value={coreTwo} onChange={(event) => setCoreTwo(event.target.value)} placeholder="Ex.: Pontiff's Right Eye" />
+            <Input
+              value={coreTwo}
+              onChange={(event) => setCoreTwo(event.target.value)}
+              placeholder="Ex.: Pontiff's Right Eye"
+            />
           </BuilderField>
-          <BuilderField label={copy("Variante / situacional", "Variant / situational", "Variante / situacional")}>
-            <Input value={variant} onChange={(event) => setVariant(event.target.value)} placeholder="Ex.: Prisoner's Chain" />
+          <BuilderField
+            label={copy(
+              "Variante / situacional",
+              "Variant / situational",
+              "Variante / situacional",
+            )}
+          >
+            <Input
+              value={variant}
+              onChange={(event) => setVariant(event.target.value)}
+              placeholder="Ex.: Prisoner's Chain"
+            />
           </BuilderField>
         </div>
 
@@ -502,7 +541,10 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {[coreOne, coreTwo, variant].filter(Boolean).map((value, index) => (
-              <span key={`${value}-${index}`} className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-foreground">
+              <span
+                key={`${value}-${index}`}
+                className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-foreground"
+              >
                 {index < 2 ? "Core" : copy("Variante", "Variant", "Variante")}: {value}
               </span>
             ))}
@@ -534,13 +576,29 @@ export function DarkSouls3BuildLab({ locale }: { locale: Locale }) {
           <div className="flex flex-wrap items-center gap-3">
             <p className="text-xs text-muted-foreground">
               {saveStatus === "saved"
-                ? copy("Build salva no seu perfil.", "Build saved to your profile.", "Build guardada en tu perfil.")
+                ? copy(
+                    "Build salva no seu perfil.",
+                    "Build saved to your profile.",
+                    "Build guardada en tu perfil.",
+                  )
                 : saveStatus === "login"
-                  ? copy("Entre na sua conta para salvar.", "Sign in to save.", "Inicia sesión para guardar.")
+                  ? copy(
+                      "Entre na sua conta para salvar.",
+                      "Sign in to save.",
+                      "Inicia sesión para guardar.",
+                    )
                   : saveStatus === "error"
-                    ? copy("Não foi possível salvar agora.", "Could not save right now.", "No se pudo guardar ahora.")
+                    ? copy(
+                        "Não foi possível salvar agora.",
+                        "Could not save right now.",
+                        "No se pudo guardar ahora.",
+                      )
                     : !coreOne.trim()
-                      ? copy("Adicione pelo menos um item core.", "Add at least one core item.", "Añade al menos un objeto core.")
+                      ? copy(
+                          "Adicione pelo menos um item core.",
+                          "Add at least one core item.",
+                          "Añade al menos un objeto core.",
+                        )
                       : copy("Pronta para salvar.", "Ready to save.", "Lista para guardar.")}
             </p>
             <button
@@ -571,8 +629,15 @@ function BuildPanel({
   highlighted?: boolean;
 }) {
   return (
-    <section className={cn("rounded-2xl border p-4", highlighted ? "border-gold/35 bg-gold/[0.06]" : "border-border bg-muted/10")}>
-      <h4 className="text-xs font-black uppercase tracking-[0.1em] text-muted-foreground">{title}</h4>
+    <section
+      className={cn(
+        "rounded-2xl border p-4",
+        highlighted ? "border-gold/35 bg-gold/[0.06]" : "border-border bg-muted/10",
+      )}
+    >
+      <h4 className="text-xs font-black uppercase tracking-[0.1em] text-muted-foreground">
+        {title}
+      </h4>
       <ul className="mt-3 space-y-2">
         {rows.map((row) => (
           <li key={row} className="flex gap-2 text-sm leading-6 text-foreground">
@@ -588,7 +653,9 @@ function BuildPanel({
 function BuilderField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label>
-      <span className="text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">{label}</span>
+      <span className="text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">
+        {label}
+      </span>
       <div className="mt-2">{children}</div>
     </label>
   );

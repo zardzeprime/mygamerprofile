@@ -50,7 +50,10 @@ export const Route = createFileRoute("/u/$username")({
         return [];
       }),
       getPublicGameProfilesByUserId({ data: { userId: profile.id } }).catch((error) => {
-        console.warn("[Profile] Could not load game profiles; rendering profile without game cards.", error);
+        console.warn(
+          "[Profile] Could not load game profiles; rendering profile without game cards.",
+          error,
+        );
         return [];
       }),
       getPublicSteamShowcase({ data: { userId: profile.id } }).catch((error) => {
@@ -61,7 +64,6 @@ export const Route = createFileRoute("/u/$username")({
         console.warn("[Profile] Could not load public identity loadout.", error);
         return null;
       }),
-
     ]);
 
     return { profile, posts, gameProfiles, steamShowcase, identityLoadout };
@@ -234,7 +236,12 @@ function ProfilePage() {
                 >
                   {profile.display_name}
                 </h1>
-                {isOwn ? <ShieldCheck className="size-5 shrink-0 text-gold-strong" aria-label={copy("Seu perfil", "Your profile", "Tu perfil")} /> : null}
+                {isOwn ? (
+                  <ShieldCheck
+                    className="size-5 shrink-0 text-gold-strong"
+                    aria-label={copy("Seu perfil", "Your profile", "Tu perfil")}
+                  />
+                ) : null}
               </div>
               <p className="mt-1 truncate text-sm text-muted-foreground">@{profile.username}</p>
               {identityLoadout?.title ? (
@@ -244,24 +251,40 @@ function ProfilePage() {
                       "mgp-rarity-chip inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.08em]",
                       `mgp-rarity-${identityLoadout.title.rarity}`,
                     )}
-                    title={identityLoadout.title.description?.[locale] ?? identityLoadout.title.description?.["pt-BR"] ?? ""}
+                    title={
+                      identityLoadout.title.description?.[locale] ??
+                      identityLoadout.title.description?.["pt-BR"] ??
+                      ""
+                    }
                   >
                     <Award className="size-3.5" aria-hidden="true" />
-                    {identityLoadout.title.name?.[locale] ?? identityLoadout.title.name?.["pt-BR"] ?? identityLoadout.title.slug}
+                    {identityLoadout.title.name?.[locale] ??
+                      identityLoadout.title.name?.["pt-BR"] ??
+                      identityLoadout.title.slug}
                   </span>
                 </div>
               ) : null}
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5"><CalendarDays className="size-3.5" />{copy("Entrou em", "Joined", "Se unió en")} {joinedAt}</span>
-                <span>{followerCount} {t("profile.followers")}</span>
-                <span>{profile.following ?? 0} {t("profile.following")}</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <CalendarDays className="size-3.5" />
+                  {copy("Entrou em", "Joined", "Se unió en")} {joinedAt}
+                </span>
+                <span>
+                  {followerCount} {t("profile.followers")}
+                </span>
+                <span>
+                  {profile.following ?? 0} {t("profile.following")}
+                </span>
               </div>
             </div>
 
             <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:justify-end">
               {isOwn ? (
                 <Button asChild variant="outline" className="flex-1 sm:flex-none">
-                  <Link to="/settings/profile"><Edit3 className="mr-2 size-4" />{t("profile.editProfile")}</Link>
+                  <Link to="/settings/profile">
+                    <Edit3 className="mr-2 size-4" />
+                    {t("profile.editProfile")}
+                  </Link>
                 </Button>
               ) : null}
               {isOwn ? (
@@ -275,12 +298,23 @@ function ProfilePage() {
                 </Button>
               ) : null}
               {!isOwn && user ? (
-                <Button onClick={handleFollow} disabled={followBusy} variant={following ? "outline" : "default"} className="flex-1 sm:flex-none">
+                <Button
+                  onClick={handleFollow}
+                  disabled={followBusy}
+                  variant={following ? "outline" : "default"}
+                  className="flex-1 sm:flex-none"
+                >
                   <UserRoundPlus className="mr-2 size-4" />
                   {following ? t("profile.unfollow") : t("profile.follow")}
                 </Button>
               ) : null}
-              {!isOwn && user ? <ReportDialog targetType="profile" targetId={profile.id} username={profile.username} /> : null}
+              {!isOwn && user ? (
+                <ReportDialog
+                  targetType="profile"
+                  targetId={profile.id}
+                  username={profile.username}
+                />
+              ) : null}
             </div>
           </div>
 
@@ -307,7 +341,12 @@ function ProfilePage() {
         <section className="min-w-0 space-y-5">
           {favoriteGames.length > 0 ? (
             <div className="surface-panel p-4 sm:p-5">
-              <div className="flex items-center gap-2"><Sparkles className="size-4 text-gold-strong" /><h2 className="font-display text-base font-semibold">{copy("Jogos favoritos", "Favorite games", "Juegos favoritos")}</h2></div>
+              <div className="flex items-center gap-2">
+                <Sparkles className="size-4 text-gold-strong" />
+                <h2 className="font-display text-base font-semibold">
+                  {copy("Jogos favoritos", "Favorite games", "Juegos favoritos")}
+                </h2>
+              </div>
               <div className="mt-4 flex flex-wrap gap-2">
                 {favoriteGames.map((game) => (
                   <Link
@@ -325,20 +364,30 @@ function ProfilePage() {
 
           <Tabs defaultValue="posts" className="min-w-0">
             <TabsList className="h-auto w-full justify-start overflow-x-auto rounded-xl bg-muted/45 p-1">
-              <TabsTrigger value="posts" className="shrink-0">{t("profile.posts")}</TabsTrigger>
+              <TabsTrigger value="posts" className="shrink-0">
+                {t("profile.posts")}
+              </TabsTrigger>
               <TabsTrigger value="games" className="shrink-0">
                 {copy("Perfis por jogo", "Game profiles", "Perfiles por juego")}
               </TabsTrigger>
             </TabsList>
             <TabsContent value="posts" className="mt-4 min-w-0 space-y-4">
-              {posts.length === 0 ? <EmptyState title={t("home.activity.empty")} /> : posts.map((post) => <PostCard key={post.id} post={post} />)}
+              {posts.length === 0 ? (
+                <EmptyState title={t("home.activity.empty")} />
+              ) : (
+                posts.map((post) => <PostCard key={post.id} post={post} />)
+              )}
             </TabsContent>
             <TabsContent value="games" className="mt-4 grid min-w-0 gap-4 md:grid-cols-2">
               {gameProfiles.length === 0 ? (
                 <div className="md:col-span-2">
                   {isOwn ? (
                     <EmptyState
-                      title={copy("Nenhum Game Profile configurado", "No Game Profile configured", "Ningún Game Profile configurado")}
+                      title={copy(
+                        "Nenhum Game Profile configurado",
+                        "No Game Profile configured",
+                        "Ningún Game Profile configurado",
+                      )}
                       description={copy(
                         "Escolha seus jogos favoritos nas configurações e complete cada perfil de jogo.",
                         "Choose your favorite games in settings and complete each Game Profile.",
@@ -369,7 +418,11 @@ function ProfilePage() {
         </section>
 
         <aside className="grid min-w-0 gap-4 sm:grid-cols-3 lg:grid-cols-1 lg:self-start">
-          <SteamIdentityCard steam={steamShowcase} locale={locale} gameProfileCount={gameProfiles.length} />
+          <SteamIdentityCard
+            steam={steamShowcase}
+            locale={locale}
+            gameProfileCount={gameProfiles.length}
+          />
           <SteamAchievementsCard steam={steamShowcase} locale={locale} />
           <SteamActivityCard steam={steamShowcase} locale={locale} postCount={posts.length} />
         </aside>
@@ -392,8 +445,7 @@ function SteamIdentityCard({
     steam?.showLibrary ??
     Boolean(steam && (steam.libraryGameCount !== null || steam.games.length > 0));
   const badgesShared =
-    steam?.showBadges ??
-    Boolean(steam && (steam.steamLevel !== null || steam.badgeCount !== null));
+    steam?.showBadges ?? Boolean(steam && (steam.steamLevel !== null || steam.badgeCount !== null));
   const hiddenValue = copy("Oculto", "Hidden", "Oculto");
 
   return (
@@ -422,10 +474,22 @@ function SteamIdentityCard({
           </div>
 
           <div className="grid grid-cols-2 gap-2">
-            <MiniStat label={copy("Nível", "Level", "Nivel")} value={badgesShared ? (steam.steamLevel ?? "—") : hiddenValue} />
-            <MiniStat label={copy("Jogos", "Games", "Juegos")} value={libraryShared ? (steam.libraryGameCount ?? steam.games.length) : hiddenValue} />
-            <MiniStat label={copy("Insígnias", "Badges", "Insignias")} value={badgesShared ? (steam.badgeCount ?? "—") : hiddenValue} />
-            <MiniStat label={copy("Perfis de jogo", "Game Profiles", "Perfiles de juego")} value={gameProfileCount} />
+            <MiniStat
+              label={copy("Nível", "Level", "Nivel")}
+              value={badgesShared ? (steam.steamLevel ?? "—") : hiddenValue}
+            />
+            <MiniStat
+              label={copy("Jogos", "Games", "Juegos")}
+              value={libraryShared ? (steam.libraryGameCount ?? steam.games.length) : hiddenValue}
+            />
+            <MiniStat
+              label={copy("Insígnias", "Badges", "Insignias")}
+              value={badgesShared ? (steam.badgeCount ?? "—") : hiddenValue}
+            />
+            <MiniStat
+              label={copy("Perfis de jogo", "Game Profiles", "Perfiles de juego")}
+              value={gameProfileCount}
+            />
           </div>
         </div>
       ) : (
@@ -468,9 +532,7 @@ function SteamAchievementsCard({
     <div className="surface-panel p-4">
       <div className="flex items-center gap-2">
         <Award className="size-4 text-gold-strong" />
-        <h3 className="text-sm font-semibold">
-          {copy("Conquistas", "Achievements", "Logros")}
-        </h3>
+        <h3 className="text-sm font-semibold">{copy("Conquistas", "Achievements", "Logros")}</h3>
       </div>
 
       {summary && summary.total > 0 ? (
@@ -484,7 +546,8 @@ function SteamAchievementsCard({
                 </span>
               </p>
               <p className="mt-0.5 text-[0.67rem] text-muted-foreground">
-                {summary.gamesTracked} {copy("jogos com conquistas", "games with achievements", "juegos con logros")}
+                {summary.gamesTracked}{" "}
+                {copy("jogos com conquistas", "games with achievements", "juegos con logros")}
               </p>
             </div>
             <span className="text-xs font-semibold text-gold-strong">
@@ -497,10 +560,7 @@ function SteamAchievementsCard({
           {trackedGames.length > 0 ? (
             <div className="mt-4 space-y-3 border-t border-border pt-3">
               {trackedGames.map((game) => {
-                const percent = Math.max(
-                  0,
-                  Math.min(100, Number(game.achievementPercent ?? 0)),
-                );
+                const percent = Math.max(0, Math.min(100, Number(game.achievementPercent ?? 0)));
                 return (
                   <div key={game.appId} className="min-w-0">
                     <div className="flex items-center justify-between gap-2 text-[0.68rem]">
@@ -559,18 +619,20 @@ function SteamActivityCard({
     <div className="surface-panel p-4">
       <div className="flex items-center gap-2">
         <History className="size-4 text-gold-strong" />
-        <h3 className="text-sm font-semibold">
-          {copy("Atividade", "Activity", "Actividad")}
-        </h3>
+        <h3 className="text-sm font-semibold">{copy("Atividade", "Activity", "Actividad")}</h3>
       </div>
 
       {recent.length > 0 ? (
         <div className="mt-3 space-y-2">
           {recent.map((game) => (
-            <div key={game.appId} className="rounded-xl border border-border bg-muted/10 px-3 py-2.5">
+            <div
+              key={game.appId}
+              className="rounded-xl border border-border bg-muted/10 px-3 py-2.5"
+            >
               <p className="truncate text-xs font-semibold">{game.name}</p>
               <p className="mt-1 text-[0.67rem] text-muted-foreground">
-                {formatSteamMinutes(game.recentMinutes)} {copy("nas últimas 2 semanas", "in the last 2 weeks", "en las últimas 2 semanas")}
+                {formatSteamMinutes(game.recentMinutes)}{" "}
+                {copy("nas últimas 2 semanas", "in the last 2 weeks", "en las últimas 2 semanas")}
               </p>
             </div>
           ))}
@@ -606,7 +668,9 @@ function SteamActivityCard({
 function MiniStat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="rounded-lg border border-border bg-muted/10 px-2.5 py-2">
-      <p className="truncate text-[0.6rem] uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
+      <p className="truncate text-[0.6rem] uppercase tracking-[0.08em] text-muted-foreground">
+        {label}
+      </p>
       <p className="mt-1 font-display text-sm font-bold">{value}</p>
     </div>
   );
@@ -616,7 +680,10 @@ function ProgressBar({ value, className }: { value: number; className?: string }
   const percent = Math.max(0, Math.min(100, Number.isFinite(value) ? value : 0));
   return (
     <div className={cn("overflow-hidden rounded-full bg-muted", className)}>
-      <div className="h-full rounded-full bg-gold transition-[width]" style={{ width: `${percent}%` }} />
+      <div
+        className="h-full rounded-full bg-gold transition-[width]"
+        style={{ width: `${percent}%` }}
+      />
     </div>
   );
 }

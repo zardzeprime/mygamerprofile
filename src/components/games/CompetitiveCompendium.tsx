@@ -1,5 +1,21 @@
 import { useRef, useState } from "react";
-import { BriefcaseBusiness, Building2, Check, Copy, Crosshair, Database, Ear, ExternalLink, Headphones, Keyboard, Monitor, Mouse, MousePointer2, RectangleHorizontal, UsersRound } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  Building2,
+  Check,
+  Copy,
+  Crosshair,
+  Database,
+  Ear,
+  ExternalLink,
+  Headphones,
+  Keyboard,
+  Monitor,
+  Mouse,
+  MousePointer2,
+  RectangleHorizontal,
+  UsersRound,
+} from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -82,11 +98,16 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
     directoryRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
   };
   const search = query.trim().toLocaleLowerCase();
-  const matchingTeams = teams.filter((team) =>
-    (regionFilter === "all" || team.region === regionFilter) &&
-    (!search || team.name.toLocaleLowerCase().includes(search) ||
-      players.some((player) => team.playerIds.includes(player.id) &&
-        `${player.handle} ${player.realName ?? ""}`.toLocaleLowerCase().includes(search)))
+  const matchingTeams = teams.filter(
+    (team) =>
+      (regionFilter === "all" || team.region === regionFilter) &&
+      (!search ||
+        team.name.toLocaleLowerCase().includes(search) ||
+        players.some(
+          (player) =>
+            team.playerIds.includes(player.id) &&
+            `${player.handle} ${player.realName ?? ""}`.toLocaleLowerCase().includes(search),
+        )),
   );
   const pageCount = Math.max(1, Math.ceil(matchingTeams.length / pageSize));
   const currentPage = Math.min(page, pageCount);
@@ -101,8 +122,11 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
   const openTeam = (team: EsportsTeam) => {
     const roster = players.filter((player) => team.playerIds.includes(player.id));
     setSelectedTeamId(team.id);
-    const match = search ? roster.find((player) =>
-      `${player.handle} ${player.realName ?? ""}`.toLocaleLowerCase().includes(search)) : null;
+    const match = search
+      ? roster.find((player) =>
+          `${player.handle} ${player.realName ?? ""}`.toLocaleLowerCase().includes(search),
+        )
+      : null;
     setSelectedPlayerId(match?.id ?? roster[0]?.id ?? null);
   };
 
@@ -139,7 +163,8 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
               {teams.length} {copy("times", "teams", "equipos")}
             </span>
             <span className="rounded-full border border-border px-2.5 py-1 sm:px-3 sm:py-1.5">
-              {players.length} {copy("jogadores no diretório", "players in directory", "jugadores en el directorio")}
+              {players.length}{" "}
+              {copy("jogadores no diretório", "players in directory", "jugadores en el directorio")}
             </span>
           </div>
         </div>
@@ -158,43 +183,51 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
             <span className="mb-1.5 block text-xs font-semibold text-muted-foreground">
               {copy("Buscar time ou jogador", "Find team or player", "Buscar equipo o jugador")}
             </span>
-            <input type="search" value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }}
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setPage(1);
+              }}
               placeholder={
                 game === "valorant"
                   ? copy("Ex.: LOUD, aspas…", "E.g. LOUD, aspas…", "Ej.: LOUD, aspas…")
                   : copy("Ex.: T1, Faker…", "E.g. T1, Faker…", "Ej.: T1, Faker…")
               }
-              className="h-11 w-full min-w-0 rounded-xl border border-border bg-background px-3 text-base text-foreground outline-none focus-visible:ring-2 focus-visible:ring-gold/40" />
+              className="h-11 w-full min-w-0 rounded-xl border border-border bg-background px-3 text-base text-foreground outline-none focus-visible:ring-2 focus-visible:ring-gold/40"
+            />
           </label>
 
           <div className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {(game === "valorant" ? VALORANT_REGION_FILTERS : LEAGUE_REGION_FILTERS).map((region) => {
-              const active = regionFilter === region;
-              const label =
-                region === "all" ? copy("Todos", "All", "Todos") : REGION_LABELS[region];
-              const hasTeams =
-                region === "all" || teams.some((team) => team.region === region);
-              return (
-                <button
-                  key={region}
-                  type="button"
-                  aria-pressed={active}
-                  disabled={!hasTeams}
-                  onClick={() => {
-                    if (!hasTeams) return;
-                    setRegionFilter(region);
-                    setPage(1);
-                  }}
-                  className={`shrink-0 min-h-11 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
-                    active
-                      ? "border-gold/40 bg-gold/10 text-gold-strong"
-                      : "border-border bg-background/45 text-muted-foreground hover:border-gold/25 hover:text-foreground"
-                  } disabled:cursor-not-allowed disabled:opacity-35`}
-                >
-                  {label}
-                </button>
-              );
-            })}
+            {(game === "valorant" ? VALORANT_REGION_FILTERS : LEAGUE_REGION_FILTERS).map(
+              (region) => {
+                const active = regionFilter === region;
+                const label =
+                  region === "all" ? copy("Todos", "All", "Todos") : REGION_LABELS[region];
+                const hasTeams = region === "all" || teams.some((team) => team.region === region);
+                return (
+                  <button
+                    key={region}
+                    type="button"
+                    aria-pressed={active}
+                    disabled={!hasTeams}
+                    onClick={() => {
+                      if (!hasTeams) return;
+                      setRegionFilter(region);
+                      setPage(1);
+                    }}
+                    className={`shrink-0 min-h-11 rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                      active
+                        ? "border-gold/40 bg-gold/10 text-gold-strong"
+                        : "border-border bg-background/45 text-muted-foreground hover:border-gold/25 hover:text-foreground"
+                    } disabled:cursor-not-allowed disabled:opacity-35`}
+                  >
+                    {label}
+                  </button>
+                );
+              },
+            )}
           </div>
 
           <p className="mt-3 text-xs text-muted-foreground" role="status">
@@ -217,7 +250,10 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                         {team.name}
                       </p>
                       <p className="mt-0.5 truncate text-[10px] text-muted-foreground sm:text-xs">
-                        {regionLabel(team.region, team.countryCode ?? (game === "valorant" ? "VALORANT" : "LoL Esports"))}
+                        {regionLabel(
+                          team.region,
+                          team.countryCode ?? (game === "valorant" ? "VALORANT" : "LoL Esports"),
+                        )}
                         {roster.length > 0 ? ` · ${roster.length}` : ""}
                       </p>
                     </div>
@@ -241,7 +277,11 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                     </div>
                   ) : (
                     <p className="mt-2 hidden text-[10px] text-muted-foreground sm:block">
-                      {copy("Elenco em verificação", "Roster being verified", "Plantilla en verificación")}
+                      {copy(
+                        "Elenco em verificação",
+                        "Roster being verified",
+                        "Plantilla en verificación",
+                      )}
                     </p>
                   )}
 
@@ -252,18 +292,37 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
               );
             })}
           </div>
-          {matchingTeams.length === 0 ? <p className="py-8 text-center text-sm text-muted-foreground">
-            {copy("Nenhum resultado. Tente outro nome ou região.", "No results. Try another name or region.", "Sin resultados. Prueba otro nombre o región.")}
-          </p> : null}
+          {matchingTeams.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">
+              {copy(
+                "Nenhum resultado. Tente outro nome ou região.",
+                "No results. Try another name or region.",
+                "Sin resultados. Prueba otro nombre o región.",
+              )}
+            </p>
+          ) : null}
           {pageCount > 1 ? (
-            <nav aria-label={copy("Páginas de times", "Team pages", "Páginas de equipos")} className="mt-4 flex items-center justify-between gap-2 border-t border-border pt-4">
-              <button type="button" disabled={currentPage === 1} onClick={() => changePage(currentPage - 1)}
-                className="min-h-11 rounded-lg border border-border px-3 text-xs font-semibold disabled:opacity-40">
+            <nav
+              aria-label={copy("Páginas de times", "Team pages", "Páginas de equipos")}
+              className="mt-4 flex items-center justify-between gap-2 border-t border-border pt-4"
+            >
+              <button
+                type="button"
+                disabled={currentPage === 1}
+                onClick={() => changePage(currentPage - 1)}
+                className="min-h-11 rounded-lg border border-border px-3 text-xs font-semibold disabled:opacity-40"
+              >
                 {copy("Anterior", "Previous", "Anterior")}
               </button>
-              <span className="text-xs text-muted-foreground">{currentPage} / {pageCount}</span>
-              <button type="button" disabled={currentPage === pageCount} onClick={() => changePage(currentPage + 1)}
-                className="min-h-11 rounded-lg border border-border px-3 text-xs font-semibold disabled:opacity-40">
+              <span className="text-xs text-muted-foreground">
+                {currentPage} / {pageCount}
+              </span>
+              <button
+                type="button"
+                disabled={currentPage === pageCount}
+                onClick={() => changePage(currentPage + 1)}
+                className="min-h-11 rounded-lg border border-border px-3 text-xs font-semibold disabled:opacity-40"
+              >
                 {copy("Próxima", "Next", "Siguiente")}
               </button>
             </nav>
@@ -273,7 +332,11 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
         <section className="rounded-2xl border border-dashed border-border bg-muted/10 p-6 text-center">
           <Database className="mx-auto size-6 text-gold-strong" />
           <p className="mt-3 font-display text-lg font-semibold text-foreground">
-            {copy("Base editorial em preparação", "Editorial dataset in preparation", "Base editorial en preparación")}
+            {copy(
+              "Base editorial em preparação",
+              "Editorial dataset in preparation",
+              "Base editorial en preparación",
+            )}
           </p>
         </section>
       )}
@@ -289,13 +352,20 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
             <div className="max-h-[92dvh] overflow-y-auto sm:max-h-[88vh]">
               <DialogHeader className="sticky top-0 z-10 border-b border-border bg-surface px-4 py-4 pr-11 sm:px-7 sm:py-5 sm:pr-12">
                 <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-                  <TeamLogo key={selectedTeam.id} team={selectedTeam} className="size-10 rounded-xl sm:size-14 sm:rounded-2xl" />
+                  <TeamLogo
+                    key={selectedTeam.id}
+                    team={selectedTeam}
+                    className="size-10 rounded-xl sm:size-14 sm:rounded-2xl"
+                  />
                   <div className="min-w-0">
                     <DialogTitle className="truncate font-display text-xl text-foreground sm:text-2xl">
                       {selectedTeam.name}
                     </DialogTitle>
                     <DialogDescription className="mt-0.5 text-xs sm:mt-1 sm:text-sm">
-                      {regionLabel(selectedTeam.region, copy("Competitivo", "Competitive", "Competitivo"))}
+                      {regionLabel(
+                        selectedTeam.region,
+                        copy("Competitivo", "Competitive", "Competitivo"),
+                      )}
                     </DialogDescription>
                   </div>
                 </div>
@@ -309,39 +379,53 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
 
                   {selectedRoster.length > 0 ? (
                     <>
-                    <label className="mt-2 block lg:hidden">
-                      <span className="sr-only">{copy("Selecionar jogador", "Select player", "Seleccionar jugador")}</span>
-                      <select value={selectedPlayer?.id ?? ""} onChange={(event) => setSelectedPlayerId(event.target.value)}
-                        className="h-12 w-full min-w-0 rounded-xl border border-border bg-background px-3 text-base text-foreground">
-                        {selectedRoster.map((player) => <option key={player.id} value={player.id}>{player.handle}{player.role ? ` · ${playerRoleLabel(player.role, copy)}` : ""}</option>)}
-                      </select>
-                    </label>
-                    <div className="mt-2 hidden lg:block lg:space-y-2">
-                      {selectedRoster.map((player) => {
-                        const active = player.id === selectedPlayer?.id;
-                        return (
-                          <button
-                            key={player.id}
-                            type="button"
-                            aria-pressed={active}
-                            onClick={() => setSelectedPlayerId(player.id)}
-                            className={`group flex min-w-0 items-center gap-2 rounded-lg border p-2 text-left transition duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/30 sm:rounded-xl sm:p-2.5 lg:w-full lg:hover:scale-[1.01] ${
-                              active
-                                ? "border-gold/40 bg-gold/5"
-                                : "border-border bg-muted/10 hover:border-gold/25 hover:bg-muted/20"
-                            }`}
-                          >
-                            <PlayerAvatar player={player} compact />
-                            <div className="min-w-0">
-                              <p className="truncate text-xs font-semibold text-foreground sm:text-sm">{player.handle}</p>
-                              <p className="hidden truncate text-[10px] text-muted-foreground sm:block">
-                                {player.role ? playerRoleLabel(player.role, copy) : rosterStatusLabel(player.rosterStatus, copy)}
-                              </p>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
+                      <label className="mt-2 block lg:hidden">
+                        <span className="sr-only">
+                          {copy("Selecionar jogador", "Select player", "Seleccionar jugador")}
+                        </span>
+                        <select
+                          value={selectedPlayer?.id ?? ""}
+                          onChange={(event) => setSelectedPlayerId(event.target.value)}
+                          className="h-12 w-full min-w-0 rounded-xl border border-border bg-background px-3 text-base text-foreground"
+                        >
+                          {selectedRoster.map((player) => (
+                            <option key={player.id} value={player.id}>
+                              {player.handle}
+                              {player.role ? ` · ${playerRoleLabel(player.role, copy)}` : ""}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <div className="mt-2 hidden lg:block lg:space-y-2">
+                        {selectedRoster.map((player) => {
+                          const active = player.id === selectedPlayer?.id;
+                          return (
+                            <button
+                              key={player.id}
+                              type="button"
+                              aria-pressed={active}
+                              onClick={() => setSelectedPlayerId(player.id)}
+                              className={`group flex min-w-0 items-center gap-2 rounded-lg border p-2 text-left transition duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/30 sm:rounded-xl sm:p-2.5 lg:w-full lg:hover:scale-[1.01] ${
+                                active
+                                  ? "border-gold/40 bg-gold/5"
+                                  : "border-border bg-muted/10 hover:border-gold/25 hover:bg-muted/20"
+                              }`}
+                            >
+                              <PlayerAvatar player={player} compact />
+                              <div className="min-w-0">
+                                <p className="truncate text-xs font-semibold text-foreground sm:text-sm">
+                                  {player.handle}
+                                </p>
+                                <p className="hidden truncate text-[10px] text-muted-foreground sm:block">
+                                  {player.role
+                                    ? playerRoleLabel(player.role, copy)
+                                    : rosterStatusLabel(player.rosterStatus, copy)}
+                                </p>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </>
                   ) : (
                     <div className="mt-3 rounded-xl border border-dashed border-border bg-muted/10 p-4 text-xs leading-5 text-muted-foreground">
@@ -353,9 +437,16 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                     </div>
                   )}
 
-                  <details key={selectedTeam.id} className="mt-3 rounded-xl border border-border p-3">
+                  <details
+                    key={selectedTeam.id}
+                    className="mt-3 rounded-xl border border-border p-3"
+                  >
                     <summary className="cursor-pointer py-1 text-xs font-semibold text-gold-strong">
-                      {copy("Equipe, comissão e fontes", "Organization, staff and sources", "Equipo, cuerpo técnico y fuentes")}
+                      {copy(
+                        "Equipe, comissão e fontes",
+                        "Organization, staff and sources",
+                        "Equipo, cuerpo técnico y fuentes",
+                      )}
                     </summary>
                     <TeamDetails team={selectedTeam} copy={copy} />
                     <TeamProvenance team={selectedTeam} copy={copy} />
@@ -364,7 +455,12 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
 
                 <div className="min-w-0">
                   {selectedPlayer ? (
-                    <PlayerPanel key={selectedPlayer.id} player={selectedPlayer} team={selectedTeam} copy={copy} />
+                    <PlayerPanel
+                      key={selectedPlayer.id}
+                      player={selectedPlayer}
+                      team={selectedTeam}
+                      copy={copy}
+                    />
                   ) : null}
                 </div>
               </div>
@@ -394,7 +490,9 @@ function TeamLogo({ team, className }: { team: EsportsTeam; className: string })
           onError={() => setFailed(true)}
         />
       ) : (
-        <span className="max-w-full truncate">{team.shortName ?? team.name.slice(0, 4).toUpperCase()}</span>
+        <span className="max-w-full truncate">
+          {team.shortName ?? team.name.slice(0, 4).toUpperCase()}
+        </span>
       )}
     </div>
   );
@@ -417,7 +515,9 @@ function PlayerAvatar({ player, compact = false }: { player: EsportsPlayer; comp
   }
 
   return (
-    <div className={`grid ${sizeClass} shrink-0 place-items-center border border-border bg-background/70 font-bold text-gold-strong`}>
+    <div
+      className={`grid ${sizeClass} shrink-0 place-items-center border border-border bg-background/70 font-bold text-gold-strong`}
+    >
       {player.handle.slice(0, 2).toUpperCase()}
     </div>
   );
@@ -462,8 +562,10 @@ function staffRoleLabel(
 ) {
   if (role === "manager") return "Manager";
   if (role === "head-coach") return copy("Head coach", "Head coach", "Entrenador principal");
-  if (role === "assistant-coach") return copy("Coach assistente", "Assistant coach", "Entrenador asistente");
-  if (role === "performance-coach") return copy("Coach de performance", "Performance coach", "Coach de rendimiento");
+  if (role === "assistant-coach")
+    return copy("Coach assistente", "Assistant coach", "Entrenador asistente");
+  if (role === "performance-coach")
+    return copy("Coach de performance", "Performance coach", "Coach de rendimiento");
   if (role === "analyst") return copy("Analista", "Analyst", "Analista");
   return copy("Comissão técnica", "Staff", "Cuerpo técnico");
 }
@@ -501,10 +603,15 @@ function TeamDetails({
           </div>
           <div className="mt-2 space-y-2">
             {staff.map((member) => (
-              <div key={`${member.handle}-${member.role}`} className="flex items-start justify-between gap-3 rounded-lg border border-border/70 bg-muted/10 px-2.5 py-2">
+              <div
+                key={`${member.handle}-${member.role}`}
+                className="flex items-start justify-between gap-3 rounded-lg border border-border/70 bg-muted/10 px-2.5 py-2"
+              >
                 <div className="min-w-0">
                   <p className="truncate text-xs font-semibold text-foreground">{member.handle}</p>
-                  {member.realName ? <p className="truncate text-[10px] text-muted-foreground">{member.realName}</p> : null}
+                  {member.realName ? (
+                    <p className="truncate text-[10px] text-muted-foreground">{member.realName}</p>
+                  ) : null}
                 </div>
                 <span className="shrink-0 text-right text-[9px] font-semibold uppercase tracking-[0.06em] text-gold-strong">
                   {staffRoleLabel(member.role, copy)}
@@ -524,13 +631,41 @@ function TeamDetails({
             </p>
           </div>
           <div className="mt-2 space-y-1 text-[11px] text-muted-foreground">
-            {organization.foundedYear ? <p>{copy("Fundação", "Founded", "Fundación")}: <span className="font-semibold text-foreground">{organization.foundedYear}</span></p> : null}
-            {organization.headquarters ? <p>{copy("Sede", "Headquarters", "Sede")}: <span className="font-semibold text-foreground">{organization.headquarters}</span></p> : null}
-            {organization.ownerName ? <p>{copy("Proprietário", "Owner", "Propietario")}: <span className="font-semibold text-foreground">{organization.ownerName}</span></p> : null}
-            {organization.founderNames?.length ? <p>{copy("Fundadores", "Founders", "Fundadores")}: <span className="font-semibold text-foreground">{organization.founderNames.join(", ")}</span></p> : null}
+            {organization.foundedYear ? (
+              <p>
+                {copy("Fundação", "Founded", "Fundación")}:{" "}
+                <span className="font-semibold text-foreground">{organization.foundedYear}</span>
+              </p>
+            ) : null}
+            {organization.headquarters ? (
+              <p>
+                {copy("Sede", "Headquarters", "Sede")}:{" "}
+                <span className="font-semibold text-foreground">{organization.headquarters}</span>
+              </p>
+            ) : null}
+            {organization.ownerName ? (
+              <p>
+                {copy("Proprietário", "Owner", "Propietario")}:{" "}
+                <span className="font-semibold text-foreground">{organization.ownerName}</span>
+              </p>
+            ) : null}
+            {organization.founderNames?.length ? (
+              <p>
+                {copy("Fundadores", "Founders", "Fundadores")}:{" "}
+                <span className="font-semibold text-foreground">
+                  {organization.founderNames.join(", ")}
+                </span>
+              </p>
+            ) : null}
             {organization.websiteUrl ? (
-              <a href={organization.websiteUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-gold-strong hover:underline">
-                {copy("Site oficial", "Official website", "Sitio oficial")} <ExternalLink className="size-3" />
+              <a
+                href={organization.websiteUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 font-semibold text-gold-strong hover:underline"
+              >
+                {copy("Site oficial", "Official website", "Sitio oficial")}{" "}
+                <ExternalLink className="size-3" />
               </a>
             ) : null}
           </div>
@@ -553,21 +688,24 @@ function rosterStatusLabel(
 }
 
 function playerRoleLabel(role: string, copy: (pt: string, en: string, es: string) => string) {
-  return role.split(" / ").map((part) => {
-    const labels: Record<string, [string, string, string]> = {
-      Duelista: ["Duelista", "Duelist", "Duelista"],
-      Controlador: ["Controlador", "Controller", "Controlador"],
-      Iniciador: ["Iniciador", "Initiator", "Iniciador"],
-      Sentinela: ["Sentinela", "Sentinel", "Centinela"],
-      Operador: ["Operador", "Operator", "Operador"],
-      Top: ["Topo", "Top", "Top"],
-      Jungle: ["Selva", "Jungle", "Jungla"],
-      Mid: ["Meio", "Mid", "Medio"],
-      Bot: ["Atirador / Bot", "Bot", "Tirador / Bot"],
-      Support: ["Suporte", "Support", "Soporte"],
-    };
-    return labels[part] ? copy(...labels[part]) : part;
-  }).join(" / ");
+  return role
+    .split(" / ")
+    .map((part) => {
+      const labels: Record<string, [string, string, string]> = {
+        Duelista: ["Duelista", "Duelist", "Duelista"],
+        Controlador: ["Controlador", "Controller", "Controlador"],
+        Iniciador: ["Iniciador", "Initiator", "Iniciador"],
+        Sentinela: ["Sentinela", "Sentinel", "Centinela"],
+        Operador: ["Operador", "Operator", "Operador"],
+        Top: ["Topo", "Top", "Top"],
+        Jungle: ["Selva", "Jungle", "Jungla"],
+        Mid: ["Meio", "Mid", "Medio"],
+        Bot: ["Atirador / Bot", "Bot", "Tirador / Bot"],
+        Support: ["Suporte", "Support", "Soporte"],
+      };
+      return labels[part] ? copy(...labels[part]) : part;
+    })
+    .join(" / ");
 }
 
 function PlayerPanel({
@@ -581,7 +719,9 @@ function PlayerPanel({
 }) {
   const settings = player.settings;
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
-  const vlrSource = player.observation?.source ?? player.sources.find((source) => source.label.startsWith("VLR.gg"));
+  const vlrSource =
+    player.observation?.source ??
+    player.sources.find((source) => source.label.startsWith("VLR.gg"));
   const primarySource = vlrSource ?? player.sources[0];
   const proSources = player.sources.filter((source) => source.label === "ProSettings.net");
 
@@ -596,10 +736,16 @@ function PlayerPanel({
           <h4 className="mt-0.5 truncate font-display text-xl font-semibold text-foreground sm:mt-1 sm:text-2xl">
             {player.handle}
           </h4>
-          {player.realName ? <p className="mt-0.5 truncate text-xs text-muted-foreground sm:text-sm">{player.realName}</p> : null}
+          {player.realName ? (
+            <p className="mt-0.5 truncate text-xs text-muted-foreground sm:text-sm">
+              {player.realName}
+            </p>
+          ) : null}
           <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3 sm:gap-2">
             <span className="rounded-full border border-border bg-background/55 px-2 py-0.5 text-[10px] font-semibold text-foreground sm:px-2.5 sm:py-1 sm:text-xs">
-              {player.role ? playerRoleLabel(player.role, copy) : copy("Função não verificada", "Role not verified", "Rol no verificado")}
+              {player.role
+                ? playerRoleLabel(player.role, copy)
+                : copy("Função não verificada", "Role not verified", "Rol no verificado")}
             </span>
             {player.rosterStatus && player.rosterStatus !== "active" ? (
               <span className="rounded-full border border-amber-500/25 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-300 sm:px-2.5 sm:py-1 sm:text-xs">
@@ -628,20 +774,35 @@ function PlayerPanel({
       <div className="p-4 sm:p-5">
         {player.observation?.agents.length ? (
           <div className="mb-5 rounded-xl border border-border bg-background/40 p-3">
-            <p className="text-xs font-semibold text-gold-strong">{copy("Função observada em jogo", "Observed in-game role", "Rol observado en partida")}</p>
-            <p className="mt-1 text-xs leading-5 text-muted-foreground">{copy(
-              "Classificação pelo agente mais usado na amostra consultada. A função pode mudar entre mapas.",
-              "Based on the most-used agent in the reviewed sample. Roles can change between maps.",
-              "Basado en el agente más usado en la muestra consultada. El rol puede cambiar entre mapas.",
-            )}</p>
+            <p className="text-xs font-semibold text-gold-strong">
+              {copy(
+                "Função observada em jogo",
+                "Observed in-game role",
+                "Rol observado en partida",
+              )}
+            </p>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              {copy(
+                "Classificação pelo agente mais usado na amostra consultada. A função pode mudar entre mapas.",
+                "Based on the most-used agent in the reviewed sample. Roles can change between maps.",
+                "Basado en el agente más usado en la muestra consultada. El rol puede cambiar entre mapas.",
+              )}
+            </p>
             <div className="mt-2 flex flex-wrap gap-2">
               {player.observation.agents.slice(0, 4).map(({ agent, maps }) => (
-                <span key={agent} className="rounded-md border border-border px-2 py-1 text-xs text-foreground">
-                  <span className="capitalize">{agent === "kayo" ? "KAY/O" : agent}</span> · {maps} {copy("mapas", "maps", "mapas")}
+                <span
+                  key={agent}
+                  className="rounded-md border border-border px-2 py-1 text-xs text-foreground"
+                >
+                  <span className="capitalize">{agent === "kayo" ? "KAY/O" : agent}</span> · {maps}{" "}
+                  {copy("mapas", "maps", "mapas")}
                 </span>
               ))}
             </div>
-            <p className="mt-2 text-[10px] text-muted-foreground">{copy("Consulta", "Reviewed", "Consulta")}: {player.observation.source.verifiedAt} · VLR.gg</p>
+            <p className="mt-2 text-[10px] text-muted-foreground">
+              {copy("Consulta", "Reviewed", "Consulta")}: {player.observation.source.verifiedAt} ·
+              VLR.gg
+            </p>
           </div>
         ) : null}
         {player.game === "league-of-legends" ? (
@@ -658,7 +819,9 @@ function PlayerPanel({
                   {copy("Posição", "Position", "Posición")}
                 </p>
                 <p className="mt-1 text-sm font-semibold text-foreground">
-                  {player.role ? playerRoleLabel(player.role, copy) : copy("Não verificada", "Not verified", "No verificada")}
+                  {player.role
+                    ? playerRoleLabel(player.role, copy)
+                    : copy("Não verificada", "Not verified", "No verificada")}
                 </p>
               </div>
               <div className="rounded-xl border border-border bg-muted/10 p-3">
@@ -680,110 +843,207 @@ function PlayerPanel({
           </div>
         ) : (
           <>
-        <div className="flex items-center gap-2">
-          <MousePointer2 className="size-4 text-gold-strong" />
-          <h5 className="font-display text-base font-semibold text-foreground sm:text-lg">
-            {copy("Configurações profissionais", "Professional settings", "Configuraciones profesionales")}
-          </h5>
-        </div>
+            <div className="flex items-center gap-2">
+              <MousePointer2 className="size-4 text-gold-strong" />
+              <h5 className="font-display text-base font-semibold text-foreground sm:text-lg">
+                {copy(
+                  "Configurações profissionais",
+                  "Professional settings",
+                  "Configuraciones profesionales",
+                )}
+              </h5>
+            </div>
 
-        {settings ? (
-          <Tabs defaultValue="settings" className="mt-4 min-w-0">
-            <TabsList aria-label={copy("Detalhes do jogador", "Player details", "Detalles del jugador")} className="grid h-auto w-full grid-cols-3 gap-1">
-              <TabsTrigger value="settings" className="min-h-11 min-w-0 px-1 text-xs">{copy("Ajustes", "Settings", "Ajustes")}</TabsTrigger>
-              <TabsTrigger value="crosshair" className="min-h-11 min-w-0 px-1 text-xs">{copy("Mira", "Crosshair", "Mira")}</TabsTrigger>
-              <TabsTrigger value="gear" className="min-h-11 min-w-0 px-1 text-xs">{copy("Equipamento", "Gear", "Equipo")}</TabsTrigger>
-            </TabsList>
-            <TabsContent value="settings">
-            <p className="mt-3 text-xs text-muted-foreground">{copy("Traço indica informação ainda não confirmada.", "A dash means the value is not yet confirmed.", "Un guion indica información aún no confirmada.")}</p>
-            <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-3 sm:mt-4 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-4">
-              <Stat label="DPI" value={settings.dpi} />
-              <Stat label={copy("Sens.", "Sens.", "Sens.")} value={settings.sensitivity} />
-              <Stat label="eDPI" value={settings.edpi} />
-              <Stat label="Hz" value={settings.pollingRateHz} />
-              <Stat label={copy("Resolução", "Resolution", "Resolución")} value={settings.resolution} />
-              <Stat label={copy("Tela", "Display", "Pantalla")} value={settings.displayMode} />
-            </dl>
-            </TabsContent>
-            <TabsContent value="gear">
-            {settings.mouse || settings.keyboard || settings.monitor || settings.headset || settings.mousepad || settings.earphones ? (
-              <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-2">
-                <GearItem icon={<Mouse className="size-3.5" />} label="Mouse" value={settings.mouse} />
-                <GearItem icon={<Keyboard className="size-3.5" />} label={copy("Teclado", "Keyboard", "Teclado")} value={settings.keyboard} />
-                <GearItem icon={<Monitor className="size-3.5" />} label={copy("Monitor", "Monitor", "Monitor")} value={settings.monitor} />
-                <GearItem icon={<Headphones className="size-3.5" />} label={copy("Headset", "Headset", "Auriculares")} value={settings.headset} />
-                <GearItem icon={<RectangleHorizontal className="size-3.5" />} label="Mousepad" value={settings.mousepad} />
-                <GearItem icon={<Ear className="size-3.5" />} label={copy("Fones", "Earphones", "Auriculares in-ear")} value={settings.earphones} />
-              </div>
-            ) : <p className="py-4 text-sm text-muted-foreground">{copy("Equipamentos ainda não verificados.", "Gear not yet verified.", "Equipo aún no verificado.")}</p>}
-            </TabsContent>
-            <TabsContent value="crosshair">
-
-            {settings.crosshairCode ? (
-              <div className="mt-2 rounded-lg border border-border bg-background/50 p-3 sm:mt-3 sm:rounded-xl">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <Crosshair className="size-3.5 text-gold-strong sm:size-4" />
-                    <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">Crosshair</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      try {
-                        if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
-                        await navigator.clipboard.writeText(settings.crosshairCode ?? "");
-                        setCopyStatus("copied");
-                      } catch {
-                        setCopyStatus("error");
-                      }
-                    }}
-                    className="inline-flex min-h-11 items-center gap-1 rounded-md border border-border px-3 py-2 text-xs font-semibold text-gold-strong transition hover:border-gold/30 sm:text-[10px]"
-                  >
-                    {copyStatus === "copied" ? <Check className="size-3" /> : <Copy className="size-3" />}
-                    {copyStatus === "copied" ? copy("Copiado", "Copied", "Copiado") : copy("Copiar", "Copy", "Copiar")}
-                  </button>
-                </div>
-                <p role="status" className="mt-2 text-xs text-muted-foreground">
-                  {copyStatus === "error" ? copy("Não foi possível copiar. Selecione o código abaixo e copie manualmente.", "Could not copy. Select the code below and copy manually.", "No se pudo copiar. Selecciona el código y cópialo manualmente.") : copyStatus === "copied" ? copy("Código copiado.", "Code copied.", "Código copiado.") : ""}
-                </p>
-                <code tabIndex={0} className="mt-2 block select-all break-all text-[10px] leading-4 text-foreground sm:text-[11px] sm:leading-5">
-                  {settings.crosshairCode}
-                </code>
-              </div>
-            ) : null}
-
-            {settings.crosshairCode ? <CrosshairPreview code={settings.crosshairCode} copy={copy} /> :
-              <p className="py-4 text-sm text-muted-foreground">{copy("Código da mira ainda não verificado.", "Crosshair code not yet verified.", "Código de mira aún no verificado.")}</p>}
-            </TabsContent>
-
-            {proSources.length ? (
-              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 sm:mt-4 sm:pt-4">
-                {proSources.map((proSource) => (
-                <a
-                  key={proSource.url}
-                  href={proSource.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-gold-strong hover:underline sm:text-xs"
+            {settings ? (
+              <Tabs defaultValue="settings" className="mt-4 min-w-0">
+                <TabsList
+                  aria-label={copy("Detalhes do jogador", "Player details", "Detalles del jugador")}
+                  className="grid h-auto w-full grid-cols-3 gap-1"
                 >
-                  {proSource.url.includes("/players/") ? copy("Perfil do jogador", "Player profile", "Perfil del jugador") : copy("Lista de ajustes", "Settings list", "Lista de ajustes")} · ProSettings.net <ExternalLink className="size-3" />
-                </a>
-                ))}
-                <span className="text-[9px] text-muted-foreground sm:text-[10px]">
-                  {copy("Conferido", "Verified", "Verificado")} {proSources.map((source) => source.verifiedAt).sort().at(-1)}
-                </span>
+                  <TabsTrigger value="settings" className="min-h-11 min-w-0 px-1 text-xs">
+                    {copy("Ajustes", "Settings", "Ajustes")}
+                  </TabsTrigger>
+                  <TabsTrigger value="crosshair" className="min-h-11 min-w-0 px-1 text-xs">
+                    {copy("Mira", "Crosshair", "Mira")}
+                  </TabsTrigger>
+                  <TabsTrigger value="gear" className="min-h-11 min-w-0 px-1 text-xs">
+                    {copy("Equipamento", "Gear", "Equipo")}
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="settings">
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    {copy(
+                      "Traço indica informação ainda não confirmada.",
+                      "A dash means the value is not yet confirmed.",
+                      "Un guion indica información aún no confirmada.",
+                    )}
+                  </p>
+                  <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-3 sm:mt-4 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-4">
+                    <Stat label="DPI" value={settings.dpi} />
+                    <Stat label={copy("Sens.", "Sens.", "Sens.")} value={settings.sensitivity} />
+                    <Stat label="eDPI" value={settings.edpi} />
+                    <Stat label="Hz" value={settings.pollingRateHz} />
+                    <Stat
+                      label={copy("Resolução", "Resolution", "Resolución")}
+                      value={settings.resolution}
+                    />
+                    <Stat
+                      label={copy("Tela", "Display", "Pantalla")}
+                      value={settings.displayMode}
+                    />
+                  </dl>
+                </TabsContent>
+                <TabsContent value="gear">
+                  {settings.mouse ||
+                  settings.keyboard ||
+                  settings.monitor ||
+                  settings.headset ||
+                  settings.mousepad ||
+                  settings.earphones ? (
+                    <div className="mt-3 grid grid-cols-1 gap-2 sm:mt-4 sm:grid-cols-2">
+                      <GearItem
+                        icon={<Mouse className="size-3.5" />}
+                        label="Mouse"
+                        value={settings.mouse}
+                      />
+                      <GearItem
+                        icon={<Keyboard className="size-3.5" />}
+                        label={copy("Teclado", "Keyboard", "Teclado")}
+                        value={settings.keyboard}
+                      />
+                      <GearItem
+                        icon={<Monitor className="size-3.5" />}
+                        label={copy("Monitor", "Monitor", "Monitor")}
+                        value={settings.monitor}
+                      />
+                      <GearItem
+                        icon={<Headphones className="size-3.5" />}
+                        label={copy("Headset", "Headset", "Auriculares")}
+                        value={settings.headset}
+                      />
+                      <GearItem
+                        icon={<RectangleHorizontal className="size-3.5" />}
+                        label="Mousepad"
+                        value={settings.mousepad}
+                      />
+                      <GearItem
+                        icon={<Ear className="size-3.5" />}
+                        label={copy("Fones", "Earphones", "Auriculares in-ear")}
+                        value={settings.earphones}
+                      />
+                    </div>
+                  ) : (
+                    <p className="py-4 text-sm text-muted-foreground">
+                      {copy(
+                        "Equipamentos ainda não verificados.",
+                        "Gear not yet verified.",
+                        "Equipo aún no verificado.",
+                      )}
+                    </p>
+                  )}
+                </TabsContent>
+                <TabsContent value="crosshair">
+                  {settings.crosshairCode ? (
+                    <div className="mt-2 rounded-lg border border-border bg-background/50 p-3 sm:mt-3 sm:rounded-xl">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <Crosshair className="size-3.5 text-gold-strong sm:size-4" />
+                          <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">
+                            Crosshair
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            try {
+                              if (!navigator.clipboard?.writeText)
+                                throw new Error("Clipboard unavailable");
+                              await navigator.clipboard.writeText(settings.crosshairCode ?? "");
+                              setCopyStatus("copied");
+                            } catch {
+                              setCopyStatus("error");
+                            }
+                          }}
+                          className="inline-flex min-h-11 items-center gap-1 rounded-md border border-border px-3 py-2 text-xs font-semibold text-gold-strong transition hover:border-gold/30 sm:text-[10px]"
+                        >
+                          {copyStatus === "copied" ? (
+                            <Check className="size-3" />
+                          ) : (
+                            <Copy className="size-3" />
+                          )}
+                          {copyStatus === "copied"
+                            ? copy("Copiado", "Copied", "Copiado")
+                            : copy("Copiar", "Copy", "Copiar")}
+                        </button>
+                      </div>
+                      <p role="status" className="mt-2 text-xs text-muted-foreground">
+                        {copyStatus === "error"
+                          ? copy(
+                              "Não foi possível copiar. Selecione o código abaixo e copie manualmente.",
+                              "Could not copy. Select the code below and copy manually.",
+                              "No se pudo copiar. Selecciona el código y cópialo manualmente.",
+                            )
+                          : copyStatus === "copied"
+                            ? copy("Código copiado.", "Code copied.", "Código copiado.")
+                            : ""}
+                      </p>
+                      <code
+                        tabIndex={0}
+                        className="mt-2 block select-all break-all text-[10px] leading-4 text-foreground sm:text-[11px] sm:leading-5"
+                      >
+                        {settings.crosshairCode}
+                      </code>
+                    </div>
+                  ) : null}
+
+                  {settings.crosshairCode ? (
+                    <CrosshairPreview code={settings.crosshairCode} copy={copy} />
+                  ) : (
+                    <p className="py-4 text-sm text-muted-foreground">
+                      {copy(
+                        "Código da mira ainda não verificado.",
+                        "Crosshair code not yet verified.",
+                        "Código de mira aún no verificado.",
+                      )}
+                    </p>
+                  )}
+                </TabsContent>
+
+                {proSources.length ? (
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 sm:mt-4 sm:pt-4">
+                    {proSources.map((proSource) => (
+                      <a
+                        key={proSource.url}
+                        href={proSource.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-gold-strong hover:underline sm:text-xs"
+                      >
+                        {proSource.url.includes("/players/")
+                          ? copy("Perfil do jogador", "Player profile", "Perfil del jugador")
+                          : copy("Lista de ajustes", "Settings list", "Lista de ajustes")}{" "}
+                        · ProSettings.net <ExternalLink className="size-3" />
+                      </a>
+                    ))}
+                    <span className="text-[9px] text-muted-foreground sm:text-[10px]">
+                      {copy("Conferido", "Verified", "Verificado")}{" "}
+                      {proSources
+                        .map((source) => source.verifiedAt)
+                        .sort()
+                        .at(-1)}
+                    </span>
+                  </div>
+                ) : null}
+              </Tabs>
+            ) : (
+              <div className="mt-3 rounded-xl border border-dashed border-border bg-background/40 p-3 text-xs leading-5 text-muted-foreground sm:mt-4 sm:p-4 sm:text-sm sm:leading-6">
+                {copy(
+                  "Ainda não encontramos configurações públicas confirmadas para este jogador. Nenhum valor é preenchido por estimativa.",
+                  "We have not yet confirmed public settings for this player. Values are never estimated.",
+                  "Aún no encontramos configuraciones públicas confirmadas para este jugador. No se rellenan valores estimados.",
+                )}
               </div>
-            ) : null}
-          </Tabs>
-        ) : (
-          <div className="mt-3 rounded-xl border border-dashed border-border bg-background/40 p-3 text-xs leading-5 text-muted-foreground sm:mt-4 sm:p-4 sm:text-sm sm:leading-6">
-            {copy(
-              "Ainda não encontramos configurações públicas confirmadas para este jogador. Nenhum valor é preenchido por estimativa.",
-              "We have not yet confirmed public settings for this player. Values are never estimated.",
-              "Aún no encontramos configuraciones públicas confirmadas para este jugador. No se rellenan valores estimados.",
             )}
-          </div>
-        )}
           </>
         )}
       </div>
@@ -791,15 +1051,27 @@ function PlayerPanel({
   );
 }
 
-function GearItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | undefined }) {
+function GearItem({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | undefined;
+}) {
   if (!value) return null;
   return (
     <div className="rounded-lg border border-border bg-background/50 p-3 sm:rounded-xl">
       <div className="flex items-center gap-1.5 text-gold-strong">
         {icon}
-        <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">{label}</p>
+        <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:text-[10px]">
+          {label}
+        </p>
       </div>
-      <p className="mt-1.5 break-words text-xs font-semibold leading-5 text-foreground sm:text-sm">{value}</p>
+      <p className="mt-1.5 break-words text-xs font-semibold leading-5 text-foreground sm:text-sm">
+        {value}
+      </p>
     </div>
   );
 }
@@ -822,7 +1094,16 @@ type CrosshairVisual = {
   centerOpacity: number;
 };
 
-const VALORANT_CROSSHAIR_COLORS = ["#ffffff", "#00ff00", "#bfff00", "#dfff00", "#ffff00", "#00ffff", "#ff66ff", "#ff4040"];
+const VALORANT_CROSSHAIR_COLORS = [
+  "#ffffff",
+  "#00ff00",
+  "#bfff00",
+  "#dfff00",
+  "#ffff00",
+  "#00ffff",
+  "#ff66ff",
+  "#ff4040",
+];
 
 function parseValorantCrosshairCode(code: string): CrosshairVisual {
   const tokens = code.split(";").filter(Boolean);
@@ -852,7 +1133,10 @@ function parseValorantCrosshairCode(code: string): CrosshairVisual {
   const customColor = values["u"]?.replace(/^#/, "");
 
   return {
-    color: colorIndex === 8 && customColor && /^(?:[a-f0-9]{6}|[a-f0-9]{8})$/i.test(customColor) ? `#${customColor}` : (VALORANT_CROSSHAIR_COLORS[colorIndex] ?? "#ffffff"),
+    color:
+      colorIndex === 8 && customColor && /^(?:[a-f0-9]{6}|[a-f0-9]{8})$/i.test(customColor)
+        ? `#${customColor}`
+        : (VALORANT_CROSSHAIR_COLORS[colorIndex] ?? "#ffffff"),
     centerDot: values["d"] === "1",
     centerSize: Math.max(1, Math.min(8, number("z", 2))),
     inner: values["0b"] !== "0",
@@ -887,54 +1171,136 @@ function CrosshairPreview({
             {copy("Prévia da mira", "Crosshair preview", "Vista previa de la mira")}
           </p>
           <p className="mt-0.5 text-[9px] text-muted-foreground">
-            {copy("Prévia estática ampliada · aproximada", "Enlarged static preview · approximate", "Vista estática ampliada · aproximada")}
+            {copy(
+              "Prévia estática ampliada · aproximada",
+              "Enlarged static preview · approximate",
+              "Vista estática ampliada · aproximada",
+            )}
           </p>
         </div>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <CrosshairCanvas visual={visual} tone="dark" label={copy("Fundo escuro", "Dark background", "Fondo oscuro")} />
-        <CrosshairCanvas visual={visual} tone="light" label={copy("Fundo claro", "Light background", "Fondo claro")} />
+        <CrosshairCanvas
+          visual={visual}
+          tone="dark"
+          label={copy("Fundo escuro", "Dark background", "Fondo oscuro")}
+        />
+        <CrosshairCanvas
+          visual={visual}
+          tone="light"
+          label={copy("Fundo claro", "Light background", "Fondo claro")}
+        />
       </div>
     </section>
   );
 }
 
-function CrosshairCanvas({ visual, tone, label }: { visual: CrosshairVisual; tone: "dark" | "light"; label: string }) {
-  const lineStyle = (length: number, thickness: number, horizontal: boolean): React.CSSProperties => ({
+function CrosshairCanvas({
+  visual,
+  tone,
+  label,
+}: {
+  visual: CrosshairVisual;
+  tone: "dark" | "light";
+  label: string;
+}) {
+  const lineStyle = (
+    length: number,
+    thickness: number,
+    horizontal: boolean,
+  ): React.CSSProperties => ({
     width: horizontal ? length : thickness,
     height: horizontal ? thickness : length,
     backgroundColor: visual.color,
     boxShadow: visual.outline ? "0 0 0 1px rgba(0,0,0,.9)" : undefined,
   });
-  const lines = (prefix: string, length: number, thickness: number, offset: number, opacity: number) => [
-    <span key={`${prefix}-left`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), opacity, transform: `translate(calc(-100% - ${offset}px), -50%)` }} />,
-    <span key={`${prefix}-right`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, true), opacity, transform: `translate(${offset}px, -50%)` }} />,
-    <span key={`${prefix}-top`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), opacity, transform: `translate(-50%, calc(-100% - ${offset}px))` }} />,
-    <span key={`${prefix}-bottom`} className="absolute left-1/2 top-1/2" style={{ ...lineStyle(length, thickness, false), opacity, transform: `translate(-50%, ${offset}px)` }} />,
+  const lines = (
+    prefix: string,
+    length: number,
+    thickness: number,
+    offset: number,
+    opacity: number,
+  ) => [
+    <span
+      key={`${prefix}-left`}
+      className="absolute left-1/2 top-1/2"
+      style={{
+        ...lineStyle(length, thickness, true),
+        opacity,
+        transform: `translate(calc(-100% - ${offset}px), -50%)`,
+      }}
+    />,
+    <span
+      key={`${prefix}-right`}
+      className="absolute left-1/2 top-1/2"
+      style={{
+        ...lineStyle(length, thickness, true),
+        opacity,
+        transform: `translate(${offset}px, -50%)`,
+      }}
+    />,
+    <span
+      key={`${prefix}-top`}
+      className="absolute left-1/2 top-1/2"
+      style={{
+        ...lineStyle(length, thickness, false),
+        opacity,
+        transform: `translate(-50%, calc(-100% - ${offset}px))`,
+      }}
+    />,
+    <span
+      key={`${prefix}-bottom`}
+      className="absolute left-1/2 top-1/2"
+      style={{
+        ...lineStyle(length, thickness, false),
+        opacity,
+        transform: `translate(-50%, ${offset}px)`,
+      }}
+    />,
   ];
 
   return (
     <div>
-      <div className={`relative aspect-[4/3] overflow-hidden rounded-lg border ${tone === "dark" ? "border-white/10 bg-[#15191d]" : "border-black/10 bg-[#d8d2c6]"}`}>
-        <div className={`absolute inset-0 opacity-35 ${tone === "dark" ? "bg-[radial-gradient(circle_at_65%_35%,#52616d,transparent_42%)]" : "bg-[linear-gradient(145deg,#f2eadc_0%,#aaa394_100%)]"}`} />
+      <div
+        className={`relative aspect-[4/3] overflow-hidden rounded-lg border ${tone === "dark" ? "border-white/10 bg-[#15191d]" : "border-black/10 bg-[#d8d2c6]"}`}
+      >
+        <div
+          className={`absolute inset-0 opacity-35 ${tone === "dark" ? "bg-[radial-gradient(circle_at_65%_35%,#52616d,transparent_42%)]" : "bg-[linear-gradient(145deg,#f2eadc_0%,#aaa394_100%)]"}`}
+        />
         <div className="absolute inset-x-0 bottom-[28%] h-px bg-black/15" />
         <div className="absolute bottom-0 left-[58%] h-[62%] w-px bg-black/15" />
         <div className="absolute inset-0 scale-[2]">
-        {visual.outer ? lines("outer", visual.outerLength, visual.outerThickness, visual.outerOffset, visual.outerOpacity) : null}
-        {visual.inner ? lines("inner", visual.innerLength, visual.innerThickness, visual.innerOffset, visual.innerOpacity) : null}
-        {visual.centerDot ? (
-          <span
-            className="absolute left-1/2 top-1/2"
-            style={{
-              width: visual.centerSize,
-              opacity: visual.centerOpacity,
-              height: visual.centerSize,
-              backgroundColor: visual.color,
-              boxShadow: visual.outline ? "0 0 0 1px rgba(0,0,0,.9)" : undefined,
-              transform: "translate(-50%, -50%)",
-            }}
-          />
-        ) : null}
+          {visual.outer
+            ? lines(
+                "outer",
+                visual.outerLength,
+                visual.outerThickness,
+                visual.outerOffset,
+                visual.outerOpacity,
+              )
+            : null}
+          {visual.inner
+            ? lines(
+                "inner",
+                visual.innerLength,
+                visual.innerThickness,
+                visual.innerOffset,
+                visual.innerOpacity,
+              )
+            : null}
+          {visual.centerDot ? (
+            <span
+              className="absolute left-1/2 top-1/2"
+              style={{
+                width: visual.centerSize,
+                opacity: visual.centerOpacity,
+                height: visual.centerSize,
+                backgroundColor: visual.color,
+                boxShadow: visual.outline ? "0 0 0 1px rgba(0,0,0,.9)" : undefined,
+                transform: "translate(-50%, -50%)",
+              }}
+            />
+          ) : null}
         </div>
       </div>
       <p className="mt-1 text-center text-[9px] font-semibold text-muted-foreground">{label}</p>
@@ -945,8 +1311,12 @@ function CrosshairCanvas({ visual, tone, label }: { visual: CrosshairVisual; ton
 function Stat({ label, value }: { label: string; value: string | number | undefined }) {
   return (
     <div className="min-w-0">
-      <dt className="truncate text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground sm:text-[10px] sm:tracking-[0.1em]">{label}</dt>
-      <dd className="mt-0.5 break-words text-xs font-semibold text-foreground sm:mt-1 sm:text-sm">{value ?? "—"}</dd>
+      <dt className="truncate text-[9px] font-bold uppercase tracking-[0.08em] text-muted-foreground sm:text-[10px] sm:tracking-[0.1em]">
+        {label}
+      </dt>
+      <dd className="mt-0.5 break-words text-xs font-semibold text-foreground sm:mt-1 sm:text-sm">
+        {value ?? "—"}
+      </dd>
     </div>
   );
 }

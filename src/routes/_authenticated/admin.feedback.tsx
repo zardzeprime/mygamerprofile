@@ -1,12 +1,5 @@
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import {
-  CheckCircle2,
-  Clock3,
-  Inbox,
-  MessageSquareReply,
-  Save,
-  UserRound,
-} from "lucide-react";
+import { CheckCircle2, Clock3, Inbox, MessageSquareReply, Save, UserRound } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { useI18n } from "@/i18n";
@@ -98,9 +91,7 @@ function AdminFeedbackPage() {
       .single();
 
     if (!error && data) {
-      setRows((current) =>
-        current.map((row) => (row.id === id ? { ...row, ...data } : row)),
-      );
+      setRows((current) => current.map((row) => (row.id === id ? { ...row, ...data } : row)));
     } else if (error) {
       console.error("[ÍMPAR] admin feedback status", error);
     }

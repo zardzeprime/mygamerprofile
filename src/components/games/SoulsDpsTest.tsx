@@ -95,7 +95,7 @@ export function SoulsDpsTest({
         setWeapons(data);
         const first = data[0];
         setWeaponName(first?.name ?? "");
-        setInfusion(first?.infusions?.includes("-") ? "-" : first?.infusions?.[0] ?? "-");
+        setInfusion(first?.infusions?.includes("-") ? "-" : (first?.infusions?.[0] ?? "-"));
         setDs1Path("regular");
         setHumanity(0);
         setQuery("");
@@ -120,7 +120,10 @@ export function SoulsDpsTest({
   );
 
   const ds1PathOptions = useMemo(
-    () => (selectedWeapon && !isDs3 ? getDs1UpgradePathOptions(selectedWeapon) : ["regular"] as Ds1UpgradePath[]),
+    () =>
+      selectedWeapon && !isDs3
+        ? getDs1UpgradePathOptions(selectedWeapon)
+        : (["regular"] as Ds1UpgradePath[]),
     [isDs3, selectedWeapon],
   );
   const maxUpgrade = selectedWeapon
@@ -149,7 +152,7 @@ export function SoulsDpsTest({
         ? infusion
         : selectedWeapon.infusions?.includes("-")
           ? "-"
-          : selectedWeapon.infusions?.[0] ?? "-";
+          : (selectedWeapon.infusions?.[0] ?? "-");
       if (nextInfusion !== infusion) setInfusion(nextInfusion);
     }
   }, [ds1Path, ds1PathOptions, infusion, isDs3, maxUpgrade, selectedWeapon]);
@@ -162,16 +165,7 @@ export function SoulsDpsTest({
 
     if (!isDs3) {
       setLevelWeapon(null);
-      setResult(
-        calculateDs1Estimate(
-          selectedWeapon,
-          stats,
-          upgrade,
-          twoHanded,
-          ds1Path,
-          humanity,
-        ),
-      );
+      setResult(calculateDs1Estimate(selectedWeapon, stats, upgrade, twoHanded, ds1Path, humanity));
       return;
     }
 
@@ -215,7 +209,14 @@ export function SoulsDpsTest({
       .map((weapon) => {
         const name = normalize(weapon.name);
         const haystack = normalize(`${weapon.name} ${weapon.weaponClass ?? ""}`);
-        const score = name === normalized ? 0 : name.startsWith(normalized) ? 1 : haystack.includes(normalized) ? 2 : 9;
+        const score =
+          name === normalized
+            ? 0
+            : name.startsWith(normalized)
+              ? 1
+              : haystack.includes(normalized)
+                ? 2
+                : 9;
         return { weapon, score };
       })
       .filter(({ score }) => score < 9)
@@ -226,16 +227,12 @@ export function SoulsDpsTest({
   const searchResults = query.trim() ? filteredWeapons.slice(0, 8) : [];
 
   const currentWeapon = levelWeapon ?? selectedWeapon;
-  const naturalSynergy = currentWeapon
-    ? explainSoulsSynergy(currentWeapon, stats, twoHanded)
-    : [];
+  const naturalSynergy = currentWeapon ? explainSoulsSynergy(currentWeapon, stats, twoHanded) : [];
   const synergy =
     !isDs3 && ds1Path !== "regular"
       ? [
           DS1_UPGRADE_PATHS[ds1Path].description,
-          ...(ds1Path === "chaos"
-            ? [`Humanidade segurada: ${humanity}/10.`]
-            : []),
+          ...(ds1Path === "chaos" ? [`Humanidade segurada: ${humanity}/10.`] : []),
         ]
       : naturalSynergy;
   const source = isDs3 ? SOULS_DPS_SOURCES.ds3 : SOULS_DPS_SOURCES.ds1;
@@ -277,7 +274,11 @@ export function SoulsDpsTest({
             </span>
           </div>
           <h2 className="mt-3 font-display text-3xl font-bold text-foreground">
-            {copy("Teste sua arma antes de montar a build", "Test your weapon before building", "Prueba tu arma antes de montar la build")}
+            {copy(
+              "Teste sua arma antes de montar a build",
+              "Test your weapon before building",
+              "Prueba tu arma antes de montar la build",
+            )}
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
@@ -377,7 +378,11 @@ export function SoulsDpsTest({
                           >
                             <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-black/20 p-1">
                               {weapon.iconUrl ? (
-                                <img src={weapon.iconUrl} alt="" className="max-h-full max-w-full object-contain" />
+                                <img
+                                  src={weapon.iconUrl}
+                                  alt=""
+                                  className="max-h-full max-w-full object-contain"
+                                />
                               ) : (
                                 <Sword className="size-4 text-muted-foreground" />
                               )}
@@ -396,7 +401,11 @@ export function SoulsDpsTest({
                         ))
                       ) : (
                         <p className="px-3 py-4 text-xs text-muted-foreground">
-                          {copy("Nenhuma arma encontrada.", "No weapon found.", "No se encontró ningún arma.")}
+                          {copy(
+                            "Nenhuma arma encontrada.",
+                            "No weapon found.",
+                            "No se encontró ningún arma.",
+                          )}
                         </p>
                       )}
                     </div>
@@ -435,7 +444,9 @@ export function SoulsDpsTest({
                     >
                       {(selectedWeapon.infusions ?? ["-"]).map((value) => (
                         <option key={value} value={value}>
-                          {value === "-" ? copy("Sem infusão", "No infusion", "Sin infusión") : value}
+                          {value === "-"
+                            ? copy("Sem infusão", "No infusion", "Sin infusión")
+                            : value}
                         </option>
                       ))}
                     </select>
@@ -446,7 +457,11 @@ export function SoulsDpsTest({
                   <div>
                     <label className="block">
                       <span className="text-xs font-black uppercase tracking-[0.09em] text-muted-foreground">
-                        {copy("Caminho de reforço / elemento", "Upgrade path / element", "Ruta de mejora / elemento")}
+                        {copy(
+                          "Caminho de reforço / elemento",
+                          "Upgrade path / element",
+                          "Ruta de mejora / elemento",
+                        )}
                       </span>
                       <select
                         value={ds1Path}
@@ -566,9 +581,7 @@ export function SoulsDpsTest({
                   key={stat}
                   stat={stat}
                   value={stats[stat]}
-                  onChange={(next) =>
-                    setStats((current) => ({ ...current, [stat]: next }))
-                  }
+                  onChange={(next) => setStats((current) => ({ ...current, [stat]: next }))}
                 />
               ))}
             </div>
@@ -613,13 +626,17 @@ export function SoulsDpsTest({
                 <p className="text-[0.58rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
                   {copy("Skill / Weapon Art", "Skill / Weapon Art", "Skill / Weapon Art")}
                 </p>
-                <p className="mt-1 text-sm font-bold text-foreground">{currentWeapon.weaponSkill}</p>
+                <p className="mt-1 text-sm font-bold text-foreground">
+                  {currentWeapon.weaponSkill}
+                </p>
               </div>
             ) : null}
 
             {currentWeapon?.attackTypes?.length ? (
               <p className="mt-3 text-[0.68rem] leading-5 text-muted-foreground">
-                <strong className="text-foreground">{copy("Tipos de ataque:", "Attack types:", "Tipos de ataque:")}</strong>{" "}
+                <strong className="text-foreground">
+                  {copy("Tipos de ataque:", "Attack types:", "Tipos de ataque:")}
+                </strong>{" "}
                 {currentWeapon.attackTypes.join(" · ")}
               </p>
             ) : null}
@@ -736,9 +753,7 @@ function StatControl({
           min={1}
           max={99}
           value={value}
-          onChange={(event) =>
-            onChange(Math.max(1, Math.min(99, Number(event.target.value) || 1)))
-          }
+          onChange={(event) => onChange(Math.max(1, Math.min(99, Number(event.target.value) || 1)))}
           className="h-9 rounded-lg border border-border bg-background px-2 text-center text-sm font-bold text-foreground outline-none focus:border-gold/50"
         />
         <button
@@ -791,10 +806,14 @@ function CasualResult({
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-muted-foreground">
-              {copy("Compatibilidade da build", "Build compatibility", "Compatibilidad de la build")}
+              {copy(
+                "Compatibilidade da build",
+                "Build compatibility",
+                "Compatibilidad de la build",
+              )}
             </p>
             <p className="mt-1 font-display text-3xl font-black text-foreground">
-              {calculating ? "…" : result?.ratingLabel ?? "—"}
+              {calculating ? "…" : (result?.ratingLabel ?? "—")}
             </p>
           </div>
           <span className="text-sm font-black text-gold-strong">{rating}/10</span>
@@ -841,11 +860,21 @@ function CasualResult({
             <div className="mt-3 space-y-2">
               {result?.requirementsMet ? (
                 <p className="text-xs leading-5 text-muted-foreground">
-                  ✓ {copy("Você cumpre os requisitos da arma.", "You meet the weapon requirements.", "Cumples los requisitos del arma.")}
+                  ✓{" "}
+                  {copy(
+                    "Você cumpre os requisitos da arma.",
+                    "You meet the weapon requirements.",
+                    "Cumples los requisitos del arma.",
+                  )}
                 </p>
               ) : (
                 <p className="text-xs leading-5 text-red-300">
-                  ! {copy("Faltam requisitos; isso derruba muito o desempenho.", "Requirements are missing; performance drops sharply.", "Faltan requisitos; el rendimiento cae mucho.")}
+                  !{" "}
+                  {copy(
+                    "Faltam requisitos; isso derruba muito o desempenho.",
+                    "Requirements are missing; performance drops sharply.",
+                    "Faltan requisitos; el rendimiento cae mucho.",
+                  )}
                 </p>
               )}
               {synergy.length ? (
@@ -874,9 +903,7 @@ function CasualResult({
               {(Object.keys(STAT_LABELS) as SoulsDpsStat[]).map((stat) => {
                 const grade = weapon?.scalingLetters?.[stat];
                 if (!grade || grade === "-") return null;
-                return (
-                  <InfoCell key={stat} label={STAT_LABELS[stat]} value={grade} />
-                );
+                return <InfoCell key={stat} label={STAT_LABELS[stat]} value={grade} />;
               })}
             </div>
           </div>
@@ -971,7 +998,9 @@ function AdvancedResult({
 
         <div className="mt-5 grid gap-3 md:grid-cols-2">
           <div className="rounded-2xl border border-border bg-muted/10 p-4">
-            <p className="text-xs font-bold text-foreground">{copy("Requisitos", "Requirements", "Requisitos")}</p>
+            <p className="text-xs font-bold text-foreground">
+              {copy("Requisitos", "Requirements", "Requisitos")}
+            </p>
             <div className="mt-3 grid grid-cols-2 gap-2">
               <InfoCell label="STR" value={weapon?.requirements.str ?? 0} />
               <InfoCell label="DEX" value={weapon?.requirements.dex ?? 0} />
@@ -981,7 +1010,9 @@ function AdvancedResult({
           </div>
 
           <div className="rounded-2xl border border-border bg-muted/10 p-4">
-            <p className="text-xs font-bold text-foreground">{copy("Scaling", "Scaling", "Escalado")}</p>
+            <p className="text-xs font-bold text-foreground">
+              {copy("Scaling", "Scaling", "Escalado")}
+            </p>
             <div className="mt-3 grid grid-cols-2 gap-2">
               {(Object.keys(STAT_LABELS) as SoulsDpsStat[]).map((stat) => {
                 const grade = result?.scalingGrades?.[stat];

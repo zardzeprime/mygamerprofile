@@ -75,7 +75,10 @@ export function ProfileCosmeticsPreview({ locale }: { locale: Locale }) {
       ) : (
         <div className="mt-5 grid gap-3 sm:grid-cols-3">
           {backgrounds.slice(0, 3).map((cosmetic) => (
-            <article key={cosmetic.slug} className="overflow-hidden rounded-xl border border-border bg-surface">
+            <article
+              key={cosmetic.slug}
+              className="overflow-hidden rounded-xl border border-border bg-surface"
+            >
               <div className={cn("relative h-24", cosmetic.css_class ?? "profile-bg-midnight")}>
                 <span className="absolute right-2 top-2 rounded-full border border-white/15 bg-black/35 px-2 py-1 text-[9px] font-bold uppercase tracking-[0.12em] text-white/80 backdrop-blur">
                   {cosmetic.animated ? copy("Animado", "Animated", "Animado") : cosmetic.rarity}

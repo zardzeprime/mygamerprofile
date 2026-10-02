@@ -59,7 +59,9 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
   }, [contentLocale, filter, locale, query]);
 
   const selected =
-    DARK_SOULS_BOSSES.find((boss) => boss.slug === selectedSlug) ?? filtered[0] ?? DARK_SOULS_BOSSES[0];
+    DARK_SOULS_BOSSES.find((boss) => boss.slug === selectedSlug) ??
+    filtered[0] ??
+    DARK_SOULS_BOSSES[0];
   const selectedImage = getDarkSoulsBossImage(selected?.slug);
 
   const selectBoss = (boss: DarkSoulsBoss) => {
@@ -106,7 +108,9 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
               <span className="rounded-full border border-border bg-background/70 px-3 py-1.5">
                 26 {copy("chefes", "bosses", "jefes")}
               </span>
-              <span className="rounded-full border border-border bg-background/70 px-3 py-1.5">4 DLC</span>
+              <span className="rounded-full border border-border bg-background/70 px-3 py-1.5">
+                4 DLC
+              </span>
             </div>
           </div>
         </div>
@@ -121,10 +125,16 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
           <aside className="border-t border-border bg-muted/20 p-5 xl:border-l xl:border-t-0 sm:p-6">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
-                <p className="section-kicker">{copy("ARTE DE REFERÊNCIA", "REFERENCE ART", "ARTE DE REFERENCIA")}</p>
+                <p className="section-kicker">
+                  {copy("ARTE DE REFERÊNCIA", "REFERENCE ART", "ARTE DE REFERENCIA")}
+                </p>
                 <p className="mt-1 text-sm font-semibold text-foreground">
                   {selectedImage
-                    ? copy("Procedência registrada", "Provenance recorded", "Procedencia registrada")
+                    ? copy(
+                        "Procedência registrada",
+                        "Provenance recorded",
+                        "Procedencia registrada",
+                      )
                     : copy("Fallback ÍMPAR", "ÍMPAR fallback", "Fallback ÍMPAR")}
                 </p>
               </div>
@@ -193,7 +203,9 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
             ) : (
               <div className="flex aspect-[4/5] flex-col items-center justify-center rounded-xl border border-dashed border-gold/25 bg-[radial-gradient(circle_at_top,hsl(var(--gold)/0.08),transparent_55%)] p-6 text-center">
                 <Skull className="size-11 text-gold-strong" />
-                <p className="mt-4 font-display text-2xl font-bold text-foreground">{selected?.name}</p>
+                <p className="mt-4 font-display text-2xl font-bold text-foreground">
+                  {selected?.name}
+                </p>
               </div>
             )}
           </aside>
@@ -216,12 +228,14 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
             />
           </label>
           <div className="flex flex-wrap gap-2">
-            {([
-              ["all", copy("Todos", "All", "Todos")],
-              ["required", copy("Obrigatórios", "Required", "Obligatorios")],
-              ["optional", copy("Opcionais", "Optional", "Opcionales")],
-              ["dlc", "DLC"],
-            ] as const).map(([key, label]) => (
+            {(
+              [
+                ["all", copy("Todos", "All", "Todos")],
+                ["required", copy("Obrigatórios", "Required", "Obligatorios")],
+                ["optional", copy("Opcionais", "Optional", "Opcionales")],
+                ["dlc", "DLC"],
+              ] as const
+            ).map(([key, label]) => (
               <Button
                 key={key}
                 type="button"
@@ -284,7 +298,9 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h3 className="font-display text-lg font-bold text-foreground">{boss.name}</h3>
+                      <h3 className="font-display text-lg font-bold text-foreground">
+                        {boss.name}
+                      </h3>
                       <p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
                         <MapPin className="size-3.5" />
                         {boss.location[contentLocale]}
@@ -297,7 +313,11 @@ export function DarkSoulsBossWiki({ locale }: { locale: Locale }) {
                   </p>
                   <p className="mt-3 text-[0.67rem] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                     {image
-                      ? copy("Arte de referência · fonte registrada", "Reference art · source recorded", "Arte de referencia · fuente registrada")
+                      ? copy(
+                          "Arte de referência · fonte registrada",
+                          "Reference art · source recorded",
+                          "Arte de referencia · fuente registrada",
+                        )
                       : copy("Arte em revisão", "Artwork in review", "Arte en revisión")}
                   </p>
                   {wiki ? (
@@ -355,14 +375,18 @@ function BossDetail({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <Pill>{boss.dlc ? "Artorias of the Abyss" : copy("Jogo base", "Base game", "Juego base")}</Pill>
+            <Pill>
+              {boss.dlc ? "Artorias of the Abyss" : copy("Jogo base", "Base game", "Juego base")}
+            </Pill>
             <Pill>
               {boss.requiredStatus === "required"
                 ? copy("Obrigatório", "Required", "Obligatorio")
                 : copy("Opcional", "Optional", "Opcional")}
             </Pill>
           </div>
-          <h3 className="mt-4 font-display text-3xl font-bold text-foreground sm:text-4xl">{boss.name}</h3>
+          <h3 className="mt-4 font-display text-3xl font-bold text-foreground sm:text-4xl">
+            {boss.name}
+          </h3>
           <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="size-4 text-gold-strong" />
             {boss.location[contentLocale]}
@@ -414,7 +438,10 @@ function BossDetail({
         <InfoCard icon={BookOpen} title={copy("Contexto", "Context", "Contexto")}>
           <p>{wiki?.loreIntro[contentLocale] ?? boss.shortSummary[contentLocale]}</p>
         </InfoCard>
-        <InfoCard icon={Sword} title={copy("Como é a luta", "How the fight plays", "Cómo es el combate")}>
+        <InfoCard
+          icon={Sword}
+          title={copy("Como é a luta", "How the fight plays", "Cómo es el combate")}
+        >
           <p>{boss.combatStyle[contentLocale]}</p>
           <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-gold-strong">
             {boss.combatType[contentLocale]}
@@ -422,24 +449,44 @@ function BossDetail({
         </InfoCard>
       </div>
 
-      {(boss.weaknesses?.length || boss.resistances?.length) ? (
+      {boss.weaknesses?.length || boss.resistances?.length ? (
         <div className="mt-4">
-          <InfoCard icon={Shield} title={copy("Fraquezas e resistências", "Weaknesses & resistances", "Debilidades y resistencias")}>
+          <InfoCard
+            icon={Shield}
+            title={copy(
+              "Fraquezas e resistências",
+              "Weaknesses & resistances",
+              "Debilidades y resistencias",
+            )}
+          >
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <p className="text-[0.62rem] font-black uppercase tracking-[0.1em] text-gold-strong">
-                  {copy("Fraquezas / boas opções", "Weaknesses / strong options", "Debilidades / buenas opciones")}
+                  {copy(
+                    "Fraquezas / boas opções",
+                    "Weaknesses / strong options",
+                    "Debilidades / buenas opciones",
+                  )}
                 </p>
                 {boss.weaknesses?.length ? (
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {boss.weaknesses.map((entry, index) => (
-                      <span key={index} className="rounded-full border border-gold/25 bg-gold/[0.06] px-2.5 py-1 text-xs font-semibold text-foreground">
+                      <span
+                        key={index}
+                        className="rounded-full border border-gold/25 bg-gold/[0.06] px-2.5 py-1 text-xs font-semibold text-foreground"
+                      >
                         {entry[contentLocale]}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <p className="mt-2 text-xs">{copy("Nenhuma dominante registrada.", "No dominant weakness recorded.", "Sin debilidad dominante registrada.")}</p>
+                  <p className="mt-2 text-xs">
+                    {copy(
+                      "Nenhuma dominante registrada.",
+                      "No dominant weakness recorded.",
+                      "Sin debilidad dominante registrada.",
+                    )}
+                  </p>
                 )}
               </div>
               <div>
@@ -449,13 +496,22 @@ function BossDetail({
                 {boss.resistances?.length ? (
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {boss.resistances.map((entry, index) => (
-                      <span key={index} className="rounded-full border border-border bg-background/50 px-2.5 py-1 text-xs font-semibold text-muted-foreground">
+                      <span
+                        key={index}
+                        className="rounded-full border border-border bg-background/50 px-2.5 py-1 text-xs font-semibold text-muted-foreground"
+                      >
                         {entry[contentLocale]}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <p className="mt-2 text-xs">{copy("Nenhuma resistência dominante registrada.", "No dominant resistance recorded.", "Sin resistencia dominante registrada.")}</p>
+                  <p className="mt-2 text-xs">
+                    {copy(
+                      "Nenhuma resistência dominante registrada.",
+                      "No dominant resistance recorded.",
+                      "Sin resistencia dominante registrada.",
+                    )}
+                  </p>
                 )}
               </div>
             </div>
@@ -465,7 +521,11 @@ function BossDetail({
               rel="noreferrer"
               className="mt-4 inline-flex items-center gap-1.5 text-[0.66rem] font-bold text-gold-strong hover:underline"
             >
-              {copy("Fonte de matchup / cross-check", "Matchup source / cross-check", "Fuente de matchup / verificación")}
+              {copy(
+                "Fonte de matchup / cross-check",
+                "Matchup source / cross-check",
+                "Fuente de matchup / verificación",
+              )}
               <ExternalLink className="size-3" />
             </a>
           </InfoCard>
@@ -486,7 +546,11 @@ function BossDetail({
             {wiki.tailCut ? (
               <div className="mt-4 rounded-lg border border-gold/20 bg-gold/5 p-3">
                 <p className="text-xs font-bold uppercase tracking-wide text-gold-strong">
-                  {copy("Corte de cauda / apêndice", "Tail / appendage cut", "Corte de cola / apéndice")}
+                  {copy(
+                    "Corte de cauda / apêndice",
+                    "Tail / appendage cut",
+                    "Corte de cola / apéndice",
+                  )}
                 </p>
                 <p className="mt-1">{wiki.tailCut[contentLocale]}</p>
               </div>
@@ -495,7 +559,11 @@ function BossDetail({
           <InfoCard icon={Shield} title={copy("Progressão", "Progression", "Progresión")}>
             <p>
               {boss.spoilerContext?.[contentLocale] ??
-                copy("Chefe opcional de exploração.", "Optional exploration boss.", "Jefe opcional de exploración.")}
+                copy(
+                  "Chefe opcional de exploração.",
+                  "Optional exploration boss.",
+                  "Jefe opcional de exploración.",
+                )}
             </p>
             {wiki.notes?.map((note, index) => (
               <p key={index} className="mt-3 text-xs text-muted-foreground">
@@ -522,7 +590,12 @@ function BossDetail({
                 )}
               </p>
             </div>
-            <Button type="button" variant="outline" size="sm" onClick={() => setShowSpoilers(!showSpoilers)}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSpoilers(!showSpoilers)}
+            >
               {showSpoilers ? <EyeOff className="mr-2 size-4" /> : <Eye className="mr-2 size-4" />}
               {showSpoilers
                 ? copy("Ocultar spoilers", "Hide spoilers", "Ocultar spoilers")
@@ -540,7 +613,15 @@ function BossDetail({
   );
 }
 
-function InfoCard({ icon: Icon, title, children }: { icon: typeof BookOpen; title: string; children: ReactNode }) {
+function InfoCard({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: typeof BookOpen;
+  title: string;
+  children: ReactNode;
+}) {
   return (
     <section className="rounded-xl border border-border bg-muted/20 p-5">
       <h4 className="flex items-center gap-2 font-display text-base font-bold text-foreground">

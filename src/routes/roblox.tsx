@@ -87,7 +87,9 @@ function RobloxCatalog() {
                 <span className="rounded-full border border-white/15 bg-black/35 px-2.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.1em] text-white/75 backdrop-blur">
                   Roblox Experience
                 </span>
-                <h2 className="mt-3 font-display text-2xl font-bold text-white">{experience.name}</h2>
+                <h2 className="mt-3 font-display text-2xl font-bold text-white">
+                  {experience.name}
+                </h2>
                 <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-white/65">
                   {experience.category}
                 </p>
@@ -128,7 +130,11 @@ function RobloxCatalog() {
       {results.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-dashed border-border p-10 text-center">
           <p className="font-semibold text-foreground">
-            {copy("Nenhuma experiência encontrada", "No experience found", "No se encontró ninguna experiencia")}
+            {copy(
+              "Nenhuma experiência encontrada",
+              "No experience found",
+              "No se encontró ninguna experiencia",
+            )}
           </p>
         </div>
       ) : null}

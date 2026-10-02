@@ -1,8 +1,5 @@
 import type { ComponentType } from "react";
-import {
-  AvapgvReportEmail,
-  type AvapgvReportData,
-} from "./avapgv-report";
+import { AvapgvReportEmail, type AvapgvReportData } from "./avapgv-report";
 
 export interface TemplateEntry {
   component: ComponentType<Record<string, unknown>>;
@@ -45,9 +42,7 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
           : "+/-";
       const rawTitle = data["title"];
       const title =
-        typeof rawTitle === "string" && rawTitle.trim()
-          ? rawTitle.trim()
-          : "Relatório operacional";
+        typeof rawTitle === "string" && rawTitle.trim() ? rawTitle.trim() : "Relatório operacional";
       return `[AVAPGV ${status}] ${title}`;
     },
     previewData: avapgvPreviewData,

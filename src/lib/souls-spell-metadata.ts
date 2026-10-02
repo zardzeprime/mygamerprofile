@@ -13,8 +13,7 @@ export type SoulsSpellMetadata = {
   };
 };
 
-const ROOT =
-  "https://raw.githubusercontent.com/darthdemono/sl2-analyzer/main";
+const ROOT = "https://raw.githubusercontent.com/darthdemono/sl2-analyzer/main";
 const SOURCE = "https://github.com/darthdemono/sl2-analyzer";
 
 function stripDs1SchoolPrefix(name: string) {
@@ -36,20 +35,14 @@ function ds3School(id: number): SoulsSpellSchool {
 }
 
 async function load(game: SoulsCompendiumGame): Promise<SoulsSpellMetadata[]> {
-  const path =
-    game === "dark-souls-remastered"
-      ? "db_ds1/Spells.json"
-      : "db_ds3/spells.json";
+  const path = game === "dark-souls-remastered" ? "db_ds1/Spells.json" : "db_ds3/spells.json";
   const response = await fetch(`${ROOT}/${path}`);
   if (!response.ok) throw new Error(`SOULS_SPELL_METADATA_${response.status}`);
 
   const payload = (await response.json()) as Record<string, string | number>;
   return Object.entries(payload).map(([rawName, id]) => ({
     name: game === "dark-souls-remastered" ? stripDs1SchoolPrefix(rawName) : rawName,
-    school:
-      game === "dark-souls-remastered"
-        ? ds1School(rawName)
-        : ds3School(Number(id)),
+    school: game === "dark-souls-remastered" ? ds1School(rawName) : ds3School(Number(id)),
     sourceId: id,
     source: {
       label: "sl2-analyzer · spell registry",
@@ -70,14 +63,7 @@ export function loadSoulsSpellMetadata(game: SoulsCompendiumGame) {
   return ds3Promise;
 }
 
-export function findSoulsSpellMetadata(
-  entries: SoulsSpellMetadata[],
-  name: string,
-) {
+export function findSoulsSpellMetadata(entries: SoulsSpellMetadata[], name: string) {
   const target = normalizeSoulsEquipmentName(name);
-  return (
-    entries.find(
-      (entry) => normalizeSoulsEquipmentName(entry.name) === target,
-    ) ?? null
-  );
+  return entries.find((entry) => normalizeSoulsEquipmentName(entry.name) === target) ?? null;
 }

@@ -41,7 +41,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     try {
       const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
       if (isLocale(stored)) setLocaleState(stored);
-    } catch { /* Session language remains available when storage is blocked. */ }
+    } catch {
+      /* Session language remains available when storage is blocked. */
+    }
   }, []);
 
   useEffect(() => {
@@ -50,7 +52,11 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
-    try { window.localStorage.setItem(LOCALE_STORAGE_KEY, next); } catch { /* Keep the in-memory preference. */ }
+    try {
+      window.localStorage.setItem(LOCALE_STORAGE_KEY, next);
+    } catch {
+      /* Keep the in-memory preference. */
+    }
   }, []);
 
   const t = useCallback(
@@ -68,4 +74,3 @@ export function useI18n(): I18nContextValue {
   if (!ctx) throw new Error("useI18n must be used inside I18nProvider");
   return ctx;
 }
-

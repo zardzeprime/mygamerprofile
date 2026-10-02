@@ -13,7 +13,6 @@ const localAsset = <T extends { url: string }>(asset: T, url: string): T => ({
   url,
 });
 
-
 export type DarkSoulsBossImageAsset = {
   url: string;
   sourceUrl: string;
@@ -310,25 +309,31 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
     },
   ),
 
-  "pinwheel": remasteredAsset("Concept of pinwheel.jpg", {
+  pinwheel: remasteredAsset("Concept of pinwheel.jpg", {
     cardObjectPosition: "50% 30%",
     detailObjectPosition: "50% 34%",
     cardScale: 1.06,
     detailScale: 1.1,
   }),
 
-  "gravelord-nito": localAsset(creativeUncut("ds-nito", {
-    cardObjectPosition: "50% 28%",
-    detailObjectPosition: "50% 34%",
-    detailScale: 1.1,
-  }), "/assets/bosses/ds1/gravelord-nito.jpg"),
+  "gravelord-nito": localAsset(
+    creativeUncut("ds-nito", {
+      cardObjectPosition: "50% 28%",
+      detailObjectPosition: "50% 34%",
+      detailScale: 1.1,
+    }),
+    "/assets/bosses/ds1/gravelord-nito.jpg",
+  ),
 
-  "seath-the-scaleless": localAsset(creativeUncut("ds-crystal-dragon", {
-    cardObjectPosition: "50% 39%",
-    detailObjectPosition: "50% 42%",
-    cardScale: 1.07,
-    detailScale: 1.11,
-  }), "/assets/bosses/ds1/seath-the-scaleless.jpg"),
+  "seath-the-scaleless": localAsset(
+    creativeUncut("ds-crystal-dragon", {
+      cardObjectPosition: "50% 39%",
+      detailObjectPosition: "50% 42%",
+      cardScale: 1.07,
+      detailScale: 1.11,
+    }),
+    "/assets/bosses/ds1/seath-the-scaleless.jpg",
+  ),
 
   "four-kings": fandomAsset("Four kings.jpg", {
     label: conceptLabel,
@@ -351,7 +356,9 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
   }),
 
   "demon-firesage": {
-    url: reliableImageUrl("https://images.squarespace-cdn.com/content/v1/647e516c1ebf6d1ac5f8d201/7d2f6e05-3db6-46be-a80c-0ceebf69cbf5/firesage-1200x675.jpg"),
+    url: reliableImageUrl(
+      "https://images.squarespace-cdn.com/content/v1/647e516c1ebf6d1ac5f8d201/7d2f6e05-3db6-46be-a80c-0ceebf69cbf5/firesage-1200x675.jpg",
+    ),
     sourceUrl: "https://www.dvs.news/home/dark-souls-boss-guide",
     sourceLabel: {
       "pt-BR": "Screenshot de combate · DVS Gaming",
@@ -375,23 +382,29 @@ export const DARK_SOULS_BOSS_IMAGES: Record<string, DarkSoulsBossImageAsset> = {
     detailFit: "cover",
   }),
 
-  "bed-of-chaos": localAsset(fandomAsset("Bed of Chaos.jpg", {
-    cardObjectPosition: "50% 38%",
-    detailObjectPosition: "50% 42%",
-    cardScale: 1.08,
-    detailScale: 1.14,
-    detailFit: "cover",
-  }), "/assets/bosses/ds1/bed-of-chaos.jpg"),
+  "bed-of-chaos": localAsset(
+    fandomAsset("Bed of Chaos.jpg", {
+      cardObjectPosition: "50% 38%",
+      detailObjectPosition: "50% 42%",
+      cardScale: 1.08,
+      detailScale: 1.14,
+      detailFit: "cover",
+    }),
+    "/assets/bosses/ds1/bed-of-chaos.jpg",
+  ),
 
-  "gwyn-lord-of-cinder": localAsset(fandomAsset("Gwyn, Lord of Cinder concept art.jpg", {
-    label: conceptLabel,
-    kind: "concept-art",
-    cardObjectPosition: "50% 21%",
-    detailObjectPosition: "50% 28%",
-    cardScale: 1.06,
-    detailScale: 1.1,
-    detailFit: "contain",
-  }), "/assets/bosses/ds1/gwyn-lord-of-cinder.jpg"),
+  "gwyn-lord-of-cinder": localAsset(
+    fandomAsset("Gwyn, Lord of Cinder concept art.jpg", {
+      label: conceptLabel,
+      kind: "concept-art",
+      cardObjectPosition: "50% 21%",
+      detailObjectPosition: "50% 28%",
+      cardScale: 1.06,
+      detailScale: 1.1,
+      detailFit: "contain",
+    }),
+    "/assets/bosses/ds1/gwyn-lord-of-cinder.jpg",
+  ),
 
   "sanctuary-guardian": remasteredAsset("Sanctuary Guardian.jpg", {
     cardObjectPosition: "58% 42%",

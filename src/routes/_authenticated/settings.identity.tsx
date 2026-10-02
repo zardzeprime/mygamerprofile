@@ -35,7 +35,11 @@ function IdentitySettingsPage() {
         <div>
           <p className="section-kicker">ÍMPAR / 0.1.9</p>
           <h2 className="mt-2 font-display text-2xl font-semibold text-foreground">
-            {copy("Dados opcionais & privacidade", "Optional data & privacy", "Datos opcionales y privacidad")}
+            {copy(
+              "Dados opcionais & privacidade",
+              "Optional data & privacy",
+              "Datos opcionales y privacidad",
+            )}
           </h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
             {copy(

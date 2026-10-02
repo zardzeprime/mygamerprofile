@@ -36,7 +36,8 @@ const EVENTS: EsportsEvent[] = [
     status: "upcoming",
     href: "https://lolesports.com/",
     description: {
-      "pt-BR": "O Mundial fecha a temporada competitiva com as equipes classificadas pelos circuitos regionais e eventos internacionais.",
+      "pt-BR":
+        "O Mundial fecha a temporada competitiva com as equipes classificadas pelos circuitos regionais e eventos internacionais.",
       en: "Worlds closes the competitive season with teams qualified through regional circuits and international events.",
       es: "El Mundial cierra la temporada competitiva con equipos clasificados desde circuitos regionales y eventos internacionales.",
     },
@@ -50,7 +51,8 @@ const EVENTS: EsportsEvent[] = [
     status: "completed",
     href: "https://lolesports.com/",
     description: {
-      "pt-BR": "O principal evento internacional de meio de temporada reuniu representantes dos circuitos Tier 1.",
+      "pt-BR":
+        "O principal evento internacional de meio de temporada reuniu representantes dos circuitos Tier 1.",
       en: "The main mid-season international event brought together representatives from Tier 1 circuits.",
       es: "El principal evento internacional de mitad de temporada reunió representantes de los circuitos Tier 1.",
     },
@@ -64,7 +66,8 @@ const EVENTS: EsportsEvent[] = [
     status: "completed",
     href: "https://lolesports.com/",
     description: {
-      "pt-BR": "Primeiro grande encontro internacional da temporada, formado a partir das etapas regionais iniciais.",
+      "pt-BR":
+        "Primeiro grande encontro internacional da temporada, formado a partir das etapas regionais iniciais.",
       en: "The season's first major international meeting, built from the opening regional stages.",
       es: "El primer gran encuentro internacional de la temporada, formado desde las etapas regionales iniciales.",
     },
@@ -126,7 +129,7 @@ const UPCOMING_MATCHES: UpcomingMatch[] = [
     format: "Bo5",
     href: "https://lolesports.com/",
   },
-]
+];
 
 const REGIONS = ["CBLOL", "LCK", "LPL", "LEC", "LCS", "LCP"];
 
@@ -147,7 +150,9 @@ export function LeagueEsportsPanel({
         <div className="border-b border-border p-5">
           <div className="flex items-center gap-2 text-gold-strong">
             <Trophy className="size-4" />
-            <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em]">LoL Esports · 2026</span>
+            <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em]">
+              LoL Esports · 2026
+            </span>
           </div>
           <h2 className="mt-2 font-display text-xl font-semibold text-foreground">
             {copy("Circuito competitivo", "Competitive circuit", "Circuito competitivo")}
@@ -171,8 +176,12 @@ export function LeagueEsportsPanel({
               className="group block p-4 transition-colors hover:bg-muted/25"
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[0.65rem] font-black uppercase tracking-[0.1em] text-gold-strong">{match.date}</span>
-                <span className="text-[0.62rem] font-semibold text-muted-foreground">{match.league}</span>
+                <span className="text-[0.65rem] font-black uppercase tracking-[0.1em] text-gold-strong">
+                  {match.date}
+                </span>
+                <span className="text-[0.62rem] font-semibold text-muted-foreground">
+                  {match.league}
+                </span>
               </div>
               <p className="mt-2 truncate text-sm font-semibold text-foreground">
                 {match.left} <span className="text-muted-foreground">×</span> {match.right}
@@ -194,7 +203,11 @@ export function LeagueEsportsPanel({
             )}
           </p>
           {onOpenCompetitive ? (
-            <button type="button" onClick={onOpenCompetitive} className="mt-4 text-xs font-bold text-gold-strong hover:underline">
+            <button
+              type="button"
+              onClick={onOpenCompetitive}
+              className="mt-4 text-xs font-bold text-gold-strong hover:underline"
+            >
               {copy("Abrir competitivo →", "Open competitive →", "Abrir competitivo →")}
             </button>
           ) : null}
@@ -208,10 +221,16 @@ export function LeagueEsportsPanel({
       <div className="surface-panel p-5 sm:p-6">
         <div className="flex items-center gap-2 text-gold-strong">
           <RadioTower className="size-4" />
-          <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em]">LoL Esports · 2026</span>
+          <span className="text-[0.68rem] font-bold uppercase tracking-[0.12em]">
+            LoL Esports · 2026
+          </span>
         </div>
         <h2 className="mt-3 font-display text-2xl font-semibold text-foreground sm:text-3xl">
-          {copy("Competitivo de League of Legends", "League of Legends competitive", "Competitivo de League of Legends")}
+          {copy(
+            "Competitivo de League of Legends",
+            "League of Legends competitive",
+            "Competitivo de League of Legends",
+          )}
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
           {copy(
@@ -232,10 +251,19 @@ export function LeagueEsportsPanel({
               </h3>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              {copy("Snapshot do calendário oficial · 21/09/2026", "Official schedule snapshot · 2026-09-21", "Snapshot del calendario oficial · 21/09/2026")}
+              {copy(
+                "Snapshot do calendário oficial · 21/09/2026",
+                "Official schedule snapshot · 2026-09-21",
+                "Snapshot del calendario oficial · 21/09/2026",
+              )}
             </p>
           </div>
-          <a href="https://lolesports.com/" target="_blank" rel="noreferrer" className="shrink-0 text-xs font-bold text-gold-strong hover:underline">
+          <a
+            href="https://lolesports.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="shrink-0 text-xs font-bold text-gold-strong hover:underline"
+          >
             LoL Esports ↗
           </a>
         </div>
@@ -250,13 +278,21 @@ export function LeagueEsportsPanel({
               className="group bg-background p-4 transition-colors hover:bg-muted/20"
             >
               <div className="flex items-center justify-between gap-3">
-                <span className="rounded-full border border-gold/25 bg-gold/5 px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.1em] text-gold-strong">{match.date}</span>
-                <span className="text-[0.65rem] font-semibold text-muted-foreground">{match.format}</span>
+                <span className="rounded-full border border-gold/25 bg-gold/5 px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.1em] text-gold-strong">
+                  {match.date}
+                </span>
+                <span className="text-[0.65rem] font-semibold text-muted-foreground">
+                  {match.format}
+                </span>
               </div>
-              <p className="mt-3 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">{match.league}</p>
+              <p className="mt-3 text-[0.68rem] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+                {match.league}
+              </p>
               <div className="mt-2 space-y-1">
                 <p className="truncate text-sm font-semibold text-foreground">{match.left}</p>
-                <p className="text-[0.62rem] font-black uppercase tracking-[0.12em] text-muted-foreground">vs</p>
+                <p className="text-[0.62rem] font-black uppercase tracking-[0.12em] text-muted-foreground">
+                  vs
+                </p>
                 <p className="truncate text-sm font-semibold text-foreground">{match.right}</p>
               </div>
             </a>
@@ -274,12 +310,26 @@ export function LeagueEsportsPanel({
             <div className="p-5">
               <h3 className="font-display text-xl font-semibold text-foreground">{event.name}</h3>
               <div className="mt-3 space-y-2 text-xs text-muted-foreground">
-                <p className="flex items-center gap-2"><CalendarDays className="size-3.5 text-gold-strong" />{event.dates}</p>
-                <p className="flex items-center gap-2"><Globe2 className="size-3.5 text-gold-strong" />{event.location}</p>
+                <p className="flex items-center gap-2">
+                  <CalendarDays className="size-3.5 text-gold-strong" />
+                  {event.dates}
+                </p>
+                <p className="flex items-center gap-2">
+                  <Globe2 className="size-3.5 text-gold-strong" />
+                  {event.location}
+                </p>
               </div>
-              <p className="mt-4 text-sm leading-6 text-muted-foreground">{event.description[locale]}</p>
-              <a href={event.href} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-gold-strong hover:underline">
-                {copy("Ver no LoL Esports", "View on LoL Esports", "Ver en LoL Esports")} <ExternalLink className="size-3" />
+              <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                {event.description[locale]}
+              </p>
+              <a
+                href={event.href}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-gold-strong hover:underline"
+              >
+                {copy("Ver no LoL Esports", "View on LoL Esports", "Ver en LoL Esports")}{" "}
+                <ExternalLink className="size-3" />
               </a>
             </div>
           </article>
@@ -292,7 +342,12 @@ export function LeagueEsportsPanel({
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {REGIONS.map((region) => (
-            <span key={region} className="rounded-xl border border-border bg-muted/20 px-3 py-2 text-sm font-bold text-foreground">{region}</span>
+            <span
+              key={region}
+              className="rounded-xl border border-border bg-muted/20 px-3 py-2 text-sm font-bold text-foreground"
+            >
+              {region}
+            </span>
           ))}
         </div>
         <p className="mt-4 text-xs leading-5 text-muted-foreground">

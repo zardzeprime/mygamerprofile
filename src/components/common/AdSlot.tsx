@@ -71,7 +71,9 @@ export function AdSlot({ id, format = "fluid", className, label = "Publicidade" 
         style={{ display: "block" }}
         data-ad-client={ADSENSE_CLIENT}
         data-ad-slot={unitSlot}
-        data-ad-format={format === "rail" ? "auto" : format === "leaderboard" ? "horizontal" : "auto"}
+        data-ad-format={
+          format === "rail" ? "auto" : format === "leaderboard" ? "horizontal" : "auto"
+        }
         data-tag-for-age-treatment="2"
         data-full-width-responsive="true"
       />

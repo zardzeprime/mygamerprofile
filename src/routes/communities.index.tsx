@@ -36,19 +36,28 @@ function CommunitiesCatalog() {
           )}
         </p>
         <p className="mt-3 inline-flex rounded-full border border-[var(--impar-line)] bg-[var(--impar-spectral-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--impar-spectral)]">
-          {copy("Todas fazem parte da Comunidade ÍMPAR.", "All are part of the ÍMPAR Community.", "Todas forman parte de la Comunidad ÍMPAR.")}
+          {copy(
+            "Todas fazem parte da Comunidade ÍMPAR.",
+            "All are part of the ÍMPAR Community.",
+            "Todas forman parte de la Comunidad ÍMPAR.",
+          )}
         </p>
       </div>
 
       <div className="mt-9 grid grid-cols-1 gap-4 md:grid-cols-2">
         {ACTIVE_GAMES.map((game) => (
-          <article key={game.slug} className="impar-card group overflow-hidden rounded-2xl transition-all duration-200 hover:-translate-y-0.5">
+          <article
+            key={game.slug}
+            className="impar-card group overflow-hidden rounded-2xl transition-all duration-200 hover:-translate-y-0.5"
+          >
             <div className="relative h-44 overflow-hidden border-b border-border sm:h-48">
               <GameArtwork
                 game={game}
                 variant="card"
                 className="h-full w-full transition-transform duration-500 group-hover:scale-[1.025]"
-                {...(game.slug === "league-of-legends" ? { imageClassName: "!p-[8%] !opacity-100" } : {})}
+                {...(game.slug === "league-of-legends"
+                  ? { imageClassName: "!p-[8%] !opacity-100" }
+                  : {})}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--impar-night)] via-[var(--impar-night)]/25 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5">
@@ -85,7 +94,9 @@ function CommunitiesCatalog() {
                 params={{ slug: game.slug }}
                 className="mt-5 inline-flex w-full items-center justify-between rounded-xl border border-border bg-muted/20 px-4 py-3 text-sm font-semibold text-foreground transition hover:border-[var(--impar-spectral)]/35 hover:bg-[var(--impar-spectral-soft)]"
               >
-                <span>{copy("Entrar na comunidade", "Open community", "Entrar en la comunidad")}</span>
+                <span>
+                  {copy("Entrar na comunidade", "Open community", "Entrar en la comunidad")}
+                </span>
                 <ArrowRight className="size-4 text-[var(--impar-amber)] transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>

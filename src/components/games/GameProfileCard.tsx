@@ -77,7 +77,11 @@ export function GameProfileCard({ gameProfile, username, isOwn = false }: GamePr
             {isOwn
               ? configured
                 ? copy("Editar perfil do jogo", "Edit game profile", "Editar perfil del juego")
-                : copy("Configurar perfil do jogo", "Set up game profile", "Configurar perfil del juego")
+                : copy(
+                    "Configurar perfil do jogo",
+                    "Set up game profile",
+                    "Configurar perfil del juego",
+                  )
               : copy("Ver perfil do jogo", "View game profile", "Ver perfil del juego")}
           </span>
           {isOwn ? (

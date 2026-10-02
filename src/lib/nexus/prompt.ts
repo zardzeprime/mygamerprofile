@@ -30,8 +30,10 @@ function specialistSummary(coreIds: AiCoreId[]) {
 }
 
 function languageInstruction(locale: NexusLocale) {
-  if (locale === "en") return "Reply in natural English unless the user clearly switches languages.";
-  if (locale === "es") return "Reply in natural Spanish unless the user clearly switches languages.";
+  if (locale === "en")
+    return "Reply in natural English unless the user clearly switches languages.";
+  if (locale === "es")
+    return "Reply in natural Spanish unless the user clearly switches languages.";
   return "Reply in natural Brazilian Portuguese unless the user clearly switches languages.";
 }
 

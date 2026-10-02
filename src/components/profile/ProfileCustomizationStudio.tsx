@@ -33,14 +33,20 @@ const ICONS: Record<ProfileCustomizationSlot, typeof Wallpaper> = {
 export function ProfileCustomizationStudio({ locale }: { locale: Locale }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [selectedSlot, setSelectedSlot] = useState<ProfileCustomizationSlot>("background");
-  const [selectedPack, setSelectedPack] = useState(PROFILE_IDENTITY_PACK_CONCEPTS[0]?.id ?? "mgp-core");
+  const [selectedPack, setSelectedPack] = useState(
+    PROFILE_IDENTITY_PACK_CONCEPTS[0]?.id ?? "mgp-core",
+  );
 
   const slot = useMemo(
-    () => PROFILE_CUSTOMIZATION_SLOTS.find((item) => item.id === selectedSlot) ?? PROFILE_CUSTOMIZATION_SLOTS[0],
+    () =>
+      PROFILE_CUSTOMIZATION_SLOTS.find((item) => item.id === selectedSlot) ??
+      PROFILE_CUSTOMIZATION_SLOTS[0],
     [selectedSlot],
   );
   const pack = useMemo(
-    () => PROFILE_IDENTITY_PACK_CONCEPTS.find((item) => item.id === selectedPack) ?? PROFILE_IDENTITY_PACK_CONCEPTS[0],
+    () =>
+      PROFILE_IDENTITY_PACK_CONCEPTS.find((item) => item.id === selectedPack) ??
+      PROFILE_IDENTITY_PACK_CONCEPTS[0],
     [selectedPack],
   );
 
@@ -118,10 +124,16 @@ export function ProfileCustomizationStudio({ locale }: { locale: Locale }) {
                         : copy("slot pronto", "slot ready", "slot listo")}
                     </span>
                   </div>
-                  <p className="mt-3 truncate text-sm font-semibold text-foreground">{item.label[locale]}</p>
+                  <p className="mt-3 truncate text-sm font-semibold text-foreground">
+                    {item.label[locale]}
+                  </p>
                   {item.maxEquipped ? (
                     <p className="mt-1 text-[0.67rem] text-muted-foreground">
-                      {copy("até " + item.maxEquipped + " equipadas", "up to " + item.maxEquipped + " equipped", "hasta " + item.maxEquipped + " equipadas")}
+                      {copy(
+                        "até " + item.maxEquipped + " equipadas",
+                        "up to " + item.maxEquipped + " equipped",
+                        "hasta " + item.maxEquipped + " equipadas",
+                      )}
                     </p>
                   ) : null}
                 </button>
@@ -142,7 +154,9 @@ export function ProfileCustomizationStudio({ locale }: { locale: Locale }) {
                 {readiness}
               </span>
             </div>
-            <p className="mt-2 text-xs leading-5 text-muted-foreground">{slot.description[locale]}</p>
+            <p className="mt-2 text-xs leading-5 text-muted-foreground">
+              {slot.description[locale]}
+            </p>
             <p className="mt-3 text-[0.68rem] leading-5 text-muted-foreground">
               {copy(
                 "Os assets inspirados em jogos só serão liberados quando houver material original do ÍMPAR, licença, autorização ou procedência de reutilização suficientemente clara.",
@@ -154,7 +168,11 @@ export function ProfileCustomizationStudio({ locale }: { locale: Locale }) {
 
           <div className="mt-6">
             <p className="mb-3 text-[0.67rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-              {copy("Coleções de identidade — conceitos", "Identity collections — concepts", "Colecciones de identidad — conceptos")}
+              {copy(
+                "Coleções de identidade — conceitos",
+                "Identity collections — concepts",
+                "Colecciones de identidad — conceptos",
+              )}
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               {PROFILE_IDENTITY_PACK_CONCEPTS.map((item) => {
@@ -167,7 +185,9 @@ export function ProfileCustomizationStudio({ locale }: { locale: Locale }) {
                     onClick={() => setSelectedPack(item.id)}
                     className={cn(
                       "overflow-hidden rounded-[1rem_1rem_0.45rem_1rem] border bg-surface text-left transition-[transform,border-color] duration-200 hover:-translate-y-0.5",
-                      active ? "border-gold/50 ring-2 ring-gold/10" : "border-border hover:border-gold/25",
+                      active
+                        ? "border-gold/50 ring-2 ring-gold/10"
+                        : "border-border hover:border-gold/25",
                     )}
                   >
                     <div className={cn("relative h-20 overflow-hidden", item.previewClass)}>
@@ -178,7 +198,9 @@ export function ProfileCustomizationStudio({ locale }: { locale: Locale }) {
                     </div>
                     <div className="p-3">
                       <p className="text-sm font-semibold text-foreground">{item.label[locale]}</p>
-                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">{item.description[locale]}</p>
+                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">
+                        {item.description[locale]}
+                      </p>
                     </div>
                   </button>
                 );
@@ -191,7 +213,12 @@ export function ProfileCustomizationStudio({ locale }: { locale: Locale }) {
           <p className="text-[0.67rem] font-bold uppercase tracking-[0.12em] text-muted-foreground">
             {copy("Loadout em prévia", "Loadout preview", "Vista del loadout")}
           </p>
-          <div className={cn("mt-3 overflow-hidden rounded-[1.1rem_1.1rem_0.5rem_1.1rem] border border-border", pack.previewClass)}>
+          <div
+            className={cn(
+              "mt-3 overflow-hidden rounded-[1.1rem_1.1rem_0.5rem_1.1rem] border border-border",
+              pack.previewClass,
+            )}
+          >
             <div className="min-h-40 bg-gradient-to-t from-black/65 via-black/15 to-transparent p-4 text-white">
               <div className="flex min-h-32 flex-col justify-between">
                 <span className="w-fit rounded-md border border-white/15 bg-black/30 px-2 py-1 text-[0.6rem] font-bold uppercase tracking-[0.1em] backdrop-blur">
@@ -209,9 +236,17 @@ export function ProfileCustomizationStudio({ locale }: { locale: Locale }) {
             {PROFILE_CUSTOMIZATION_SLOTS.map((item) => {
               const included = pack.slots.includes(item.id);
               return (
-                <div key={item.id} className="flex items-center justify-between gap-3 border-b border-border/70 py-2 last:border-0">
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between gap-3 border-b border-border/70 py-2 last:border-0"
+                >
                   <span className="text-xs text-muted-foreground">{item.label[locale]}</span>
-                  <span className={cn("text-[0.62rem] font-bold uppercase tracking-[0.08em]", included ? "text-gold-strong" : "text-muted-foreground/55")}>
+                  <span
+                    className={cn(
+                      "text-[0.62rem] font-bold uppercase tracking-[0.08em]",
+                      included ? "text-gold-strong" : "text-muted-foreground/55",
+                    )}
+                  >
                     {included ? copy("incluído", "included", "incluido") : "—"}
                   </span>
                 </div>

@@ -21,12 +21,12 @@ export function GameArtwork({
   const isValorantArtwork = game.slug === "valorant";
   const isMinimalLogoArtwork = isLeagueArtwork || isValorantArtwork;
   const isWarframePlaceholder =
-    game.slug === "warframe" && game.visual.assetSource.startsWith("ÍMPAR-generated Warframe placeholder");
+    game.slug === "warframe" &&
+    game.visual.assetSource.startsWith("ÍMPAR-generated Warframe placeholder");
   const usesUpscaledRepositoryArtwork = ["dark-souls-iii", "elden-ring", "ea-sports-fc"].includes(
     game.slug,
   );
-  const configuredSource =
-    variant === "hero" ? game.visual.heroImage : game.visual.coverImage;
+  const configuredSource = variant === "hero" ? game.visual.heroImage : game.visual.coverImage;
   const [source, setSource] = useState(configuredSource);
   const objectPosition =
     variant === "hero" ? game.visual.heroObjectPosition : game.visual.cardObjectPosition;
@@ -69,7 +69,9 @@ export function GameArtwork({
           style={objectPosition ? { objectPosition } : undefined}
           className={cn(
             "game-artwork-base h-full w-full select-none transition-[transform,filter,opacity] duration-700",
-            usesUpscaledRepositoryArtwork ? "group-hover:scale-[1.015]" : "group-hover:scale-[1.045]",
+            usesUpscaledRepositoryArtwork
+              ? "group-hover:scale-[1.015]"
+              : "group-hover:scale-[1.045]",
             isLeagueArtwork
               ? variant === "hero"
                 ? "object-contain p-[19%] opacity-90"

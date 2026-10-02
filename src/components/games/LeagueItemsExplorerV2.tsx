@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowDown, ArrowLeft, ArrowUp, Coins, Hammer, Search, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowLeft,
+  ArrowUp,
+  Coins,
+  Hammer,
+  Search,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { DataSourceIndicator } from "@/components/common/DataSourceIndicator";
 import {
   Dialog,
@@ -151,7 +160,10 @@ function hasSummonersRiftUpgrade(item: LeagueItem, allItems: Map<string, LeagueI
   );
 }
 
-function getItemTier(item: LeagueItem, allItems: Map<string, LeagueItem>): Exclude<ItemTier, "all"> {
+function getItemTier(
+  item: LeagueItem,
+  allItems: Map<string, LeagueItem>,
+): Exclude<ItemTier, "all"> {
   if (item.tags?.includes("Consumable") || item.tags?.includes("Trinket")) return "consumable";
   if (item.tags?.includes("Boots")) return "boots";
   if (!item.from?.length) return "basic";
@@ -286,7 +298,9 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
         const englishUrl = `${DDRAGON}/cdn/${current}/data/en_US/item.json`;
         const [localResponse, englishResponse] = await Promise.all([
           fetch(localUrl, { signal: controller.signal }),
-          locale === "en" ? Promise.resolve(null) : fetch(englishUrl, { signal: controller.signal }),
+          locale === "en"
+            ? Promise.resolve(null)
+            : fetch(englishUrl, { signal: controller.signal }),
         ]);
 
         if (!localResponse.ok) throw new Error(`Data Dragon returned ${localResponse.status}`);
@@ -295,7 +309,9 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
         }
 
         const payload = (await localResponse.json()) as ItemPayload;
-        const englishPayload = englishResponse ? ((await englishResponse.json()) as ItemPayload) : payload;
+        const englishPayload = englishResponse
+          ? ((await englishResponse.json()) as ItemPayload)
+          : payload;
         const everyItem = Object.entries(payload.data);
 
         setVersion(current);
@@ -403,7 +419,9 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
             </p>
           </div>
           <span className="text-xs font-semibold text-muted-foreground">
-            {loading ? copy("Sincronizando…", "Syncing…", "Sincronizando…") : `${filtered.length} / ${catalog.length}`}
+            {loading
+              ? copy("Sincronizando…", "Syncing…", "Sincronizando…")
+              : `${filtered.length} / ${catalog.length}`}
           </span>
         </div>
 
@@ -414,7 +432,11 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0"
-              placeholder={copy("Buscar qualquer item…", "Search any item…", "Buscar cualquier objeto…")}
+              placeholder={copy(
+                "Buscar qualquer item…",
+                "Search any item…",
+                "Buscar cualquier objeto…",
+              )}
             />
           </label>
           <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -447,7 +469,10 @@ export function LeagueItemsExplorerV2({ locale }: { locale: Locale }) {
       {loading ? (
         <div className="grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12">
           {Array.from({ length: 36 }).map((_, index) => (
-            <div key={index} className="aspect-[0.82] animate-pulse rounded-xl border border-border bg-muted/40" />
+            <div
+              key={index}
+              className="aspect-[0.82] animate-pulse rounded-xl border border-border bg-muted/40"
+            />
           ))}
         </div>
       ) : (
@@ -556,7 +581,9 @@ function ItemDetail({
   const statLines = extractStatLines(item.description);
   const masterwork = variant === "masterwork" ? masterworkStats(item, englishItem) : [];
   const description = stripMarkup(item.description);
-  const cleanDescription = statLines.reduce((value, stat) => value.replace(stat, ""), description).trim();
+  const cleanDescription = statLines
+    .reduce((value, stat) => value.replace(stat, ""), description)
+    .trim();
 
   return (
     <div className="min-w-0">
@@ -593,7 +620,9 @@ function ItemDetail({
             <DialogTitle className="font-display text-2xl sm:text-3xl">{item.name}</DialogTitle>
             <DialogDescription className="mt-1">
               {tierLabel(getItemTier(item, allItems), locale)}
-              {variant === "masterwork" ? ` · ${copy("Magistral do Ornn", "Ornn Masterwork", "Magistral de Ornn")}` : ""}
+              {variant === "masterwork"
+                ? ` · ${copy("Magistral do Ornn", "Ornn Masterwork", "Magistral de Ornn")}`
+                : ""}
             </DialogDescription>
             <p className="mt-3 flex items-center gap-1.5 text-base font-bold text-gold-strong">
               <Coins className="size-4" />
@@ -619,12 +648,19 @@ function ItemDetail({
         {variant === "masterwork" && masterwork.length ? (
           <div className="divide-y divide-border">
             {masterwork.map((stat) => (
-              <div key={stat.key} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3">
-                <span className="text-sm font-semibold text-foreground">{statLabel(stat.key, locale)}</span>
+              <div
+                key={stat.key}
+                className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 py-3"
+              >
+                <span className="text-sm font-semibold text-foreground">
+                  {statLabel(stat.key, locale)}
+                </span>
                 <span className="text-right font-mono text-sm font-bold text-foreground">
                   {formatStat(stat.key, stat.base)}
                   <span className="mx-2 text-muted-foreground">→</span>
-                  <span className="text-orange-500">{formatStat(stat.key, stat.base + stat.bonus)}</span>
+                  <span className="text-orange-500">
+                    {formatStat(stat.key, stat.base + stat.bonus)}
+                  </span>
                 </span>
               </div>
             ))}
@@ -634,11 +670,16 @@ function ItemDetail({
             {statLines.map((line, index) => {
               const match = line.match(/^([+-]?\d+(?:\.\d+)?%?)\s*(.*)$/);
               return (
-                <div key={`${line}-${index}`} className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 px-4 py-3">
+                <div
+                  key={`${line}-${index}`}
+                  className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 px-4 py-3"
+                >
                   <span className="min-w-16 font-mono text-sm font-black text-gold-strong">
                     {match?.[1] ?? "•"}
                   </span>
-                  <span className="text-sm font-semibold text-foreground">{match?.[2] || line}</span>
+                  <span className="text-sm font-semibold text-foreground">
+                    {match?.[2] || line}
+                  </span>
                 </div>
               );
             })}
@@ -679,7 +720,11 @@ function ItemDetail({
           </span>
           <div>
             <p className="text-xs font-black uppercase tracking-[0.1em] text-orange-500">
-              {copy("Estimativa de Magistral do Ornn", "Ornn Masterwork estimate", "Estimación de Magistral de Ornn")}
+              {copy(
+                "Estimativa de Magistral do Ornn",
+                "Ornn Masterwork estimate",
+                "Estimación de Magistral de Ornn",
+              )}
             </p>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">
               {copy(
@@ -750,7 +795,11 @@ function RecipeTree({
         <div className="mx-auto max-w-xs">
           <div className="rounded-2xl border border-gold/45 bg-background/90 p-3 shadow-lift">
             <div className="flex items-center gap-3">
-              <img src={itemIcon(version, currentItem)} alt="" className="size-14 rounded-xl object-contain" />
+              <img
+                src={itemIcon(version, currentItem)}
+                alt=""
+                className="size-14 rounded-xl object-contain"
+              />
               <div className="min-w-0">
                 <p className="truncate text-sm font-bold text-foreground">{currentItem.name}</p>
                 <p className="mt-1 flex items-center gap-1 text-xs font-bold text-gold-strong">

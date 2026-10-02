@@ -1,11 +1,4 @@
-export type AiCoreId =
-  | "nexus"
-  | "aegis"
-  | "veil"
-  | "atlas"
-  | "pulse"
-  | "gear"
-  | "vector";
+export type AiCoreId = "nexus" | "aegis" | "veil" | "atlas" | "pulse" | "gear" | "vector";
 
 export type AiCoreKind = "orchestrator" | "specialist";
 
@@ -96,7 +89,8 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     executionModel: "orchestrated-specialization",
     kind: "specialist",
     domain: "privacy",
-    mission: "Apply privacy-by-design to personal data, visibility, consent, retention and telemetry.",
+    mission:
+      "Apply privacy-by-design to personal data, visibility, consent, retention and telemetry.",
     responsibilities: [
       "Personal-data minimization",
       "Visibility and sharing rules",
@@ -161,7 +155,8 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     executionModel: "orchestrated-specialization",
     kind: "specialist",
     domain: "updates",
-    mission: "Identify data and content that become stale and define how freshness should be maintained.",
+    mission:
+      "Identify data and content that become stale and define how freshness should be maintained.",
     responsibilities: [
       "Editorial freshness",
       "Game and platform change tracking",
@@ -193,7 +188,8 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     executionModel: "orchestrated-specialization",
     kind: "specialist",
     domain: "automation",
-    mission: "Turn stable repetitive work into reliable scripts, pipelines, schedules and operational automation.",
+    mission:
+      "Turn stable repetitive work into reliable scripts, pipelines, schedules and operational automation.",
     responsibilities: [
       "CI/CD workflows",
       "Scheduled jobs",
@@ -225,7 +221,8 @@ export const AI_CORE_REGISTRY: Record<AiCoreId, AiCoreDefinition> = {
     executionModel: "orchestrated-specialization",
     kind: "specialist",
     domain: "optimization",
-    mission: "Improve performance and technical efficiency without repeating optimization work already completed.",
+    mission:
+      "Improve performance and technical efficiency without repeating optimization work already completed.",
     responsibilities: [
       "Runtime and rendering performance",
       "Bundle and network cost",

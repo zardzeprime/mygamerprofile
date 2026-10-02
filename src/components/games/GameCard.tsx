@@ -87,7 +87,10 @@ export function GameCard({ game }: { game: GameConfig }) {
     const audio = audioRef.current;
     if (!audio) return;
     audio.volume = Math.min(audio.volume, targetVolume);
-    void audio.play().then(() => fadeAudio(targetVolume, 320)).catch(() => undefined);
+    void audio
+      .play()
+      .then(() => fadeAudio(targetVolume, 320))
+      .catch(() => undefined);
   };
 
   const handlePointerLeave = () => {
@@ -137,7 +140,9 @@ export function GameCard({ game }: { game: GameConfig }) {
           <GameArtwork game={game} className="game-card-image" />
         )}
         {!trailerOpen ? <div className="game-card-scrim absolute inset-0" /> : null}
-        {!trailerOpen ? <div className="game-card-sheen absolute inset-0" aria-hidden="true" /> : null}
+        {!trailerOpen ? (
+          <div className="game-card-sheen absolute inset-0" aria-hidden="true" />
+        ) : null}
         {!trailerOpen ? (
           <div className="absolute left-4 top-4 z-20 flex items-center gap-2">
             <span className="rounded-sm border border-border-strong bg-background/80 px-2 py-1 text-[0.65rem] font-bold uppercase text-foreground backdrop-blur">
@@ -157,7 +162,9 @@ export function GameCard({ game }: { game: GameConfig }) {
               toggleTrailer();
             }}
             className="absolute right-4 top-4 z-30 grid size-10 place-items-center rounded-full bg-black/70 text-white shadow-lift backdrop-blur transition-all duration-200 hover:scale-105 hover:bg-black/85 active:scale-95"
-            aria-label={trailerOpen ? `Fechar trailer de ${game.name}` : `Assistir trailer de ${game.name}`}
+            aria-label={
+              trailerOpen ? `Fechar trailer de ${game.name}` : `Assistir trailer de ${game.name}`
+            }
           >
             {trailerOpen ? <X className="size-4" /> : <Play className="size-4 fill-current" />}
           </button>
@@ -183,7 +190,9 @@ export function GameCard({ game }: { game: GameConfig }) {
             <ArrowUpRight className="size-4 shrink-0 text-gold-strong transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           )}
         </div>
-        <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">{game.description[locale]}</p>
+        <p className="mt-2 line-clamp-3 text-sm text-muted-foreground">
+          {game.description[locale]}
+        </p>
         <ul className="mt-4 flex flex-wrap gap-1.5">
           {game.platforms.map((platform) => (
             <li

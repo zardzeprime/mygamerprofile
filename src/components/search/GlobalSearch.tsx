@@ -1,14 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  Boxes,
-  Gamepad2,
-  Loader2,
-  Search,
-  Users,
-  UserRound,
-  X,
-} from "lucide-react";
+import { Boxes, Gamepad2, Loader2, Search, Users, UserRound, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useI18n } from "@/i18n";
@@ -121,7 +113,11 @@ export function GlobalSearch({
             setOpen(true);
           }}
           placeholder={copy("Buscar no ÍMPAR", "Search ÍMPAR", "Buscar en ÍMPAR")}
-          aria-label={copy("Buscar jogos, comunidades e pessoas", "Search games, communities and people", "Buscar juegos, comunidades y personas")}
+          aria-label={copy(
+            "Buscar jogos, comunidades e pessoas",
+            "Search games, communities and people",
+            "Buscar juegos, comunidades y personas",
+          )}
           className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
         />
         {query ? (
@@ -143,10 +139,7 @@ export function GlobalSearch({
       {open && trimmed ? (
         <div className="absolute left-0 right-0 top-[calc(100%+0.55rem)] z-[80] max-h-[min(72vh,34rem)] overflow-y-auto rounded-[1.05rem_1.05rem_0.48rem_1.05rem] border border-border bg-popover/98 p-2 shadow-2xl backdrop-blur-xl">
           {localResults.games.length ? (
-            <SearchGroup
-              icon={Gamepad2}
-              title={copy("Jogos", "Games", "Juegos")}
-            >
+            <SearchGroup icon={Gamepad2} title={copy("Jogos", "Games", "Juegos")}>
               {localResults.games.map((game) => (
                 <SearchResultLink
                   key={"game-" + game.slug}
@@ -184,8 +177,12 @@ export function GlobalSearch({
                     <Gamepad2 className="size-4" />
                   </span>
                   <span className="min-w-0">
-                    <span className="block truncate text-sm font-semibold text-foreground">{experience.name}</span>
-                    <span className="block truncate text-xs text-muted-foreground">{experience.category}</span>
+                    <span className="block truncate text-sm font-semibold text-foreground">
+                      {experience.name}
+                    </span>
+                    <span className="block truncate text-xs text-muted-foreground">
+                      {experience.category}
+                    </span>
                   </span>
                 </Link>
               ))}
@@ -193,10 +190,7 @@ export function GlobalSearch({
           ) : null}
 
           {localResults.communities.length ? (
-            <SearchGroup
-              icon={Users}
-              title={copy("Comunidades", "Communities", "Comunidades")}
-            >
+            <SearchGroup icon={Users} title={copy("Comunidades", "Communities", "Comunidades")}>
               {localResults.communities.map((game) => (
                 <SearchResultLink
                   key={"community-" + game.slug}
@@ -218,7 +212,11 @@ export function GlobalSearch({
             <SearchGroup
               icon={UserRound}
               title={copy("Pessoas", "People", "Personas")}
-              trailing={peopleLoading ? <Loader2 className="size-3.5 animate-spin text-muted-foreground" /> : null}
+              trailing={
+                peopleLoading ? (
+                  <Loader2 className="size-3.5 animate-spin text-muted-foreground" />
+                ) : null
+              }
             >
               {profiles.map((profile) => (
                 <Link
@@ -239,8 +237,12 @@ export function GlobalSearch({
                     )}
                   </span>
                   <span className="min-w-0">
-                    <span className="block truncate text-sm font-semibold text-foreground">{profile.display_name}</span>
-                    <span className="block truncate text-xs text-muted-foreground">@{profile.username}</span>
+                    <span className="block truncate text-sm font-semibold text-foreground">
+                      {profile.display_name}
+                    </span>
+                    <span className="block truncate text-xs text-muted-foreground">
+                      @{profile.username}
+                    </span>
                   </span>
                 </Link>
               ))}
@@ -272,7 +274,9 @@ export function GlobalSearch({
             onClick={goToAll}
             className="mt-1 flex w-full items-center justify-between rounded-[0.8rem_0.8rem_0.32rem_0.8rem] border border-border bg-muted/20 px-3 py-2.5 text-left text-xs font-semibold text-foreground transition-colors hover:border-gold/30 hover:bg-gold-soft/30"
           >
-            <span>{copy("Ver todos os resultados", "View all results", "Ver todos los resultados")}</span>
+            <span>
+              {copy("Ver todos os resultados", "View all results", "Ver todos los resultados")}
+            </span>
             <Search className="size-3.5 text-gold-strong" aria-hidden="true" />
           </button>
         </div>
@@ -297,7 +301,9 @@ function SearchGroup({
       <div className="flex items-center justify-between px-2.5 py-2">
         <div className="flex items-center gap-2">
           <Icon className="size-3.5 text-gold-strong" aria-hidden="true" />
-          <h3 className="text-[0.67rem] font-bold uppercase tracking-[0.11em] text-muted-foreground">{title}</h3>
+          <h3 className="text-[0.67rem] font-bold uppercase tracking-[0.11em] text-muted-foreground">
+            {title}
+          </h3>
         </div>
         {trailing}
       </div>

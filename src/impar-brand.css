@@ -47,9 +47,21 @@
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--impar-spectral) 13%, transparent), transparent 31rem),
-    radial-gradient(circle at 88% 4%, color-mix(in srgb, var(--impar-mystic) 12%, transparent), transparent 29rem),
-    linear-gradient(180deg, color-mix(in srgb, var(--impar-night-raised) 74%, transparent), transparent 36rem);
+    radial-gradient(
+      circle at 18% 12%,
+      color-mix(in srgb, var(--impar-spectral) 13%, transparent),
+      transparent 31rem
+    ),
+    radial-gradient(
+      circle at 88% 4%,
+      color-mix(in srgb, var(--impar-mystic) 12%, transparent),
+      transparent 29rem
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--impar-night-raised) 74%, transparent),
+      transparent 36rem
+    );
 }
 
 .impar-grid {
@@ -88,13 +100,20 @@
 .impar-card {
   border: 1px solid color-mix(in srgb, var(--impar-spectral) 13%, var(--color-border));
   background:
-    linear-gradient(145deg, color-mix(in srgb, var(--impar-spectral) 4%, transparent), transparent 55%),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--impar-spectral) 4%, transparent),
+      transparent 55%
+    ),
     var(--color-surface);
   box-shadow: 0 18px 54px rgb(0 0 0 / 0.18);
 }
 
 .impar-card-interactive {
-  transition: border-color 180ms ease, transform 180ms ease, background-color 180ms ease;
+  transition:
+    border-color 180ms ease,
+    transform 180ms ease,
+    background-color 180ms ease;
 }
 
 .impar-card-interactive:hover {
@@ -139,8 +158,16 @@
 
 .impar-noctis-halo {
   background:
-    radial-gradient(circle at 82% 82%, color-mix(in srgb, var(--impar-spectral) 12%, transparent), transparent 43%),
-    linear-gradient(145deg, transparent 53%, color-mix(in srgb, var(--impar-spectral) 4%, transparent));
+    radial-gradient(
+      circle at 82% 82%,
+      color-mix(in srgb, var(--impar-spectral) 12%, transparent),
+      transparent 43%
+    ),
+    linear-gradient(
+      145deg,
+      transparent 53%,
+      color-mix(in srgb, var(--impar-spectral) 4%, transparent)
+    );
 }
 
 /* The original 96x104 experimental WebP is kept only as a DOM hook on the
@@ -267,9 +294,6 @@ button[aria-label$="Noctis"] + section {
   }
 }
 
-
-
-
 /* The body itself carries a slow-moving star field so it stays visible under
    transparent page areas, even when route backgrounds create new layers. */
 body {
@@ -296,12 +320,18 @@ body {
 }
 
 @keyframes impar-body-star-drift {
-  from { background-position: 0 0; }
-  to { background-position: 42px -56px; }
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 42px -56px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body { animation: none; }
+  body {
+    animation: none;
+  }
 }
 
 /* Star field shared by every route. The glow stays low enough to preserve
@@ -328,7 +358,9 @@ body {
     radial-gradient(circle at 88% 90%, rgb(255 255 255 / 45%) 0 0.8px, transparent 1.7px);
   background-repeat: no-repeat;
   opacity: 0.34;
-  animation: impar-star-twinkle 8s ease-in-out infinite alternate, impar-star-drift 72s linear infinite;
+  animation:
+    impar-star-twinkle 8s ease-in-out infinite alternate,
+    impar-star-drift 72s linear infinite;
 }
 
 .impar-starry-sky::after {
@@ -340,7 +372,13 @@ body {
   height: 1px;
   border-radius: 999px;
   opacity: 0;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.2) 18%, var(--impar-spectral) 78%, transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.2) 18%,
+    var(--impar-spectral) 78%,
+    transparent
+  );
   box-shadow: 0 0 9px color-mix(in srgb, var(--impar-spectral) 52%, transparent);
   transform: rotate(-28deg);
   transform-origin: left center;
@@ -348,24 +386,47 @@ body {
 }
 
 @keyframes impar-star-twinkle {
-  from { opacity: 0.22; }
-  to { opacity: 0.4; }
+  from {
+    opacity: 0.22;
+  }
+  to {
+    opacity: 0.4;
+  }
 }
 
 @keyframes impar-star-drift {
-  from { background-position: 0 0; }
-  to { background-position: 36px -42px; }
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 36px -42px;
+  }
 }
 
 @keyframes impar-shooting-star {
-  0%, 5%, 100% { opacity: 0; transform: translate3d(0, 0, 0) rotate(-28deg); }
-  7% { opacity: 0.8; transform: translate3d(46vw, 25vh, 0) rotate(-28deg); }
-  10% { opacity: 0; transform: translate3d(125vw, 68vh, 0) rotate(-28deg); }
+  0%,
+  5%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-28deg);
+  }
+  7% {
+    opacity: 0.8;
+    transform: translate3d(46vw, 25vh, 0) rotate(-28deg);
+  }
+  10% {
+    opacity: 0;
+    transform: translate3d(125vw, 68vh, 0) rotate(-28deg);
+  }
 }
 
 @media (max-width: 639px) {
-  .impar-starry-sky { opacity: 0.27; }
-  .impar-starry-sky::after { width: 5rem; }
+  .impar-starry-sky {
+    opacity: 0.27;
+  }
+  .impar-starry-sky::after {
+    width: 5rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -374,15 +435,25 @@ body {
     animation: none;
   }
 
-  .impar-starry-sky::after { display: none; }
+  .impar-starry-sky::after {
+    display: none;
+  }
 }
 
 /* Home page atmosphere: soft spectral light, restrained grid and clearer card hierarchy. */
 .impar-home-hero {
   min-height: 32rem;
   background:
-    radial-gradient(ellipse at 82% 13%, color-mix(in srgb, var(--impar-mystic) 15%, transparent), transparent 34rem),
-    radial-gradient(ellipse at 8% 86%, color-mix(in srgb, var(--impar-spectral) 10%, transparent), transparent 34rem),
+    radial-gradient(
+      ellipse at 82% 13%,
+      color-mix(in srgb, var(--impar-mystic) 15%, transparent),
+      transparent 34rem
+    ),
+    radial-gradient(
+      ellipse at 8% 86%,
+      color-mix(in srgb, var(--impar-spectral) 10%, transparent),
+      transparent 34rem
+    ),
     linear-gradient(
       145deg,
       color-mix(in srgb, #0d151a 91%, transparent) 0%,
@@ -398,8 +469,16 @@ body {
   height: 31rem;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 72% 42%, color-mix(in srgb, var(--impar-mystic) 13%, transparent), transparent 36%),
-    radial-gradient(ellipse at 28% 56%, color-mix(in srgb, var(--impar-spectral) 9%, transparent), transparent 40%);
+    radial-gradient(
+      ellipse at 72% 42%,
+      color-mix(in srgb, var(--impar-mystic) 13%, transparent),
+      transparent 36%
+    ),
+    radial-gradient(
+      ellipse at 28% 56%,
+      color-mix(in srgb, var(--impar-spectral) 9%, transparent),
+      transparent 40%
+    );
   filter: blur(24px);
 }
 
@@ -412,10 +491,24 @@ body {
 .impar-home-noctis-card {
   border-color: color-mix(in srgb, var(--impar-spectral) 22%, var(--color-border));
   background:
-    radial-gradient(ellipse at 84% 82%, color-mix(in srgb, var(--impar-spectral) 12%, transparent), transparent 42%),
-    radial-gradient(ellipse at 12% 4%, color-mix(in srgb, var(--impar-mystic) 12%, transparent), transparent 44%),
-    linear-gradient(145deg, color-mix(in srgb, var(--impar-night-raised) 96%, transparent), color-mix(in srgb, var(--impar-surface) 92%, transparent));
-  box-shadow: 0 24px 72px rgb(0 0 0 / 0.34), inset 0 1px 0 rgb(255 255 255 / 0.035);
+    radial-gradient(
+      ellipse at 84% 82%,
+      color-mix(in srgb, var(--impar-spectral) 12%, transparent),
+      transparent 42%
+    ),
+    radial-gradient(
+      ellipse at 12% 4%,
+      color-mix(in srgb, var(--impar-mystic) 12%, transparent),
+      transparent 44%
+    ),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--impar-night-raised) 96%, transparent),
+      color-mix(in srgb, var(--impar-surface) 92%, transparent)
+    );
+  box-shadow:
+    0 24px 72px rgb(0 0 0 / 0.34),
+    inset 0 1px 0 rgb(255 255 255 / 0.035);
   backdrop-filter: blur(14px);
 }
 
@@ -423,8 +516,16 @@ body {
   min-height: 12.5rem;
   overflow: hidden;
   background:
-    radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--impar-mystic) 8%, transparent), transparent 68%),
-    linear-gradient(155deg, color-mix(in srgb, var(--impar-spectral) 5%, transparent), transparent 68%),
+    radial-gradient(
+      ellipse at 100% 0%,
+      color-mix(in srgb, var(--impar-mystic) 8%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--impar-spectral) 5%, transparent),
+      transparent 68%
+    ),
     var(--color-surface);
 }
 
@@ -433,14 +534,27 @@ body {
   position: absolute;
   inset: auto 1.1rem 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--impar-spectral) 28%, transparent), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--impar-spectral) 28%, transparent),
+    transparent
+  );
   opacity: 0.65;
 }
 
 .impar-home-destination:hover {
   background:
-    radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--impar-mystic) 13%, transparent), transparent 68%),
-    linear-gradient(155deg, color-mix(in srgb, var(--impar-spectral) 8%, transparent), transparent 68%),
+    radial-gradient(
+      ellipse at 100% 0%,
+      color-mix(in srgb, var(--impar-mystic) 13%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--impar-spectral) 8%, transparent),
+      transparent 68%
+    ),
     var(--color-surface);
 }
 
@@ -454,7 +568,6 @@ body {
   }
 }
 
-
 @media (max-width: 639px) {
   .impar-home-noctis-badge {
     gap: 0.3rem;
@@ -464,14 +577,14 @@ body {
   }
 }
 
-
 .impar-home-mascot {
   transform-origin: 50% 84%;
   animation: impar-noctis-idle 8.2s ease-in-out infinite;
 }
 
 @keyframes impar-noctis-idle {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate3d(0, 0, 0) rotate(0) scale(1);
   }
   25% {

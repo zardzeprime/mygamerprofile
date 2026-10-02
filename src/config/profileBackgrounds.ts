@@ -1,11 +1,5 @@
 export type ProfileBackgroundKey =
-  | "mgp-grid"
-  | "ember"
-  | "tactical"
-  | "midnight"
-  | "rift-nebula"
-  | "emberstorm"
-  | "hextech-pulse";
+  "mgp-grid" | "ember" | "tactical" | "midnight" | "rift-nebula" | "emberstorm" | "hextech-pulse";
 
 export type ProfileBackgroundPreset = {
   key: ProfileBackgroundKey;

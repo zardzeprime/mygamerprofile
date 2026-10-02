@@ -13,10 +13,16 @@ const createPostSchema = z.object({
   game_id: z.string().uuid().optional(),
   image_url: z.string().url().optional(),
 });
-const updatePostSchema = z.object({ id: z.string().uuid(), body: z.string().trim().min(1).max(2000) });
+const updatePostSchema = z.object({
+  id: z.string().uuid(),
+  body: z.string().trim().min(1).max(2000),
+});
 const deletePostSchema = z.object({ id: z.string().uuid() });
 const listCommentsSchema = z.object({ postId: z.string().uuid() });
-const createCommentSchema = z.object({ post_id: z.string().uuid(), body: z.string().trim().min(1).max(2000) });
+const createCommentSchema = z.object({
+  post_id: z.string().uuid(),
+  body: z.string().trim().min(1).max(2000),
+});
 const deleteCommentSchema = z.object({ id: z.string().uuid() });
 const reactionSchema = z.object({ post_id: z.string().uuid() });
 
@@ -95,9 +101,7 @@ export const listComments = createServerFn({ method: "GET" })
     const supabase = getSupabasePublic();
     const { data: rows, error } = await supabase
       .from("comments")
-      .select(
-        "*, author:profiles!comments_author_id_fkey(id, username, display_name, avatar_url)",
-      )
+      .select("*, author:profiles!comments_author_id_fkey(id, username, display_name, avatar_url)")
       .eq("post_id", data.postId)
       .is("deleted_at", null)
       .order("created_at", { ascending: true });
@@ -116,9 +120,7 @@ export const createComment = createServerFn({ method: "POST" })
         author_id: context.userId,
         body: data.body,
       })
-      .select(
-        "*, author:profiles!comments_author_id_fkey(id, username, display_name, avatar_url)",
-      )
+      .select("*, author:profiles!comments_author_id_fkey(id, username, display_name, avatar_url)")
       .single();
     if (error) throw new Error(error.message);
     return comment;

@@ -38,7 +38,8 @@ const QUICK_GUIDES: QuickGuide[] = [
       es: "Mejoras, Embers y herreros",
     },
     description: {
-      "pt-BR": "Como as rotas Normal, Raw, Divine, Occult, Magic, Enchanted, Fire, Chaos, Lightning e Crystal se conectam.",
+      "pt-BR":
+        "Como as rotas Normal, Raw, Divine, Occult, Magic, Enchanted, Fire, Chaos, Lightning e Crystal se conectam.",
       en: "How Normal, Raw, Divine, Occult, Magic, Enchanted, Fire, Chaos, Lightning and Crystal paths connect.",
       es: "Cómo se conectan las rutas Normal, Raw, Divine, Occult, Magic, Enchanted, Fire, Chaos, Lightning y Crystal.",
     },
@@ -102,7 +103,8 @@ const QUICK_GUIDES: QuickGuide[] = [
       es: "Covenants, rangos y consecuencias",
     },
     description: {
-      "pt-BR": "As nove facções, recompensas, oferendas e o que muda ao abandonar ou quebrar um pacto.",
+      "pt-BR":
+        "As nove facções, recompensas, oferendas e o que muda ao abandonar ou quebrar um pacto.",
       en: "The nine factions, rewards, offerings and what changes when leaving or breaking a covenant.",
       es: "Las nueve facciones, recompensas, ofrendas y lo que cambia al abandonar o romper un pacto.",
     },
@@ -134,7 +136,8 @@ const QUICK_GUIDES: QuickGuide[] = [
       es: "Poise, stamina, carga y defensa",
     },
     description: {
-      "pt-BR": "Como sobrevivência e mobilidade mudam quando você troca armadura, escudo e peso da build.",
+      "pt-BR":
+        "Como sobrevivência e mobilidade mudam quando você troca armadura, escudo e peso da build.",
       en: "How survivability and mobility change as armor, shields and build weight change.",
       es: "Cómo cambian supervivencia y movilidad al modificar armadura, escudo y peso de la build.",
     },

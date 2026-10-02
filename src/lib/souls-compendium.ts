@@ -15,14 +15,10 @@ export type SoulsCompendiumEntry = {
 const SOURCE_REPO = "https://raw.githubusercontent.com/LeMinerva/Dark-Souls-Documents/master";
 const SOURCE_PAGE = "https://github.com/LeMinerva/Dark-Souls-Documents";
 
-const gameNumber = (game: SoulsCompendiumGame) =>
-  game === "dark-souls-remastered" ? 1 : 3;
+const gameNumber = (game: SoulsCompendiumGame) => (game === "dark-souls-remastered" ? 1 : 3);
 
 function cleanSoulsText(value: string) {
-  return value
-    .replace(/^##/, "")
-    .replace(/#\d/g, "")
-    .trim();
+  return value.replace(/^##/, "").replace(/#\d/g, "").trim();
 }
 
 function parseTextNodes(xmlText: string) {
@@ -69,20 +65,12 @@ export async function loadSoulsCompendiumCategory(
     }))
     .filter(
       (entry) =>
-        entry.name &&
-        !/^(unused|dummy|test)/i.test(entry.name) &&
-        !entry.name.includes("UNUSED"),
+        entry.name && !/^(unused|dummy|test)/i.test(entry.name) && !entry.name.includes("UNUSED"),
     );
 }
 
 export async function loadSoulsCompendium(game: SoulsCompendiumGame) {
-  const categories: SoulsCompendiumCategory[] = [
-    "weapon",
-    "armor",
-    "ring",
-    "magic",
-    "item",
-  ];
+  const categories: SoulsCompendiumCategory[] = ["weapon", "armor", "ring", "magic", "item"];
   const groups = await Promise.all(
     categories.map((category) => loadSoulsCompendiumCategory(game, category)),
   );
@@ -95,9 +83,7 @@ export const SOULS_COMPENDIUM_SOURCE = {
   rights: {
     "pt-BR":
       "Ícones e textos de referência pertencem aos respectivos detentores de direitos da franquia Dark Souls, incluindo FromSoftware/Bandai Namco. O ÍMPAR os exibe no beta como referência com procedência registrada.",
-    en:
-      "Reference icons and text belong to the respective Dark Souls rights holders, including FromSoftware/Bandai Namco. ÍMPAR displays them in beta as sourced reference material.",
-    es:
-      "Los iconos y textos de referencia pertenecen a los respectivos titulares de derechos de Dark Souls, incluidos FromSoftware/Bandai Namco. ÍMPAR los muestra en la beta como material de referencia con procedencia identificada.",
+    en: "Reference icons and text belong to the respective Dark Souls rights holders, including FromSoftware/Bandai Namco. ÍMPAR displays them in beta as sourced reference material.",
+    es: "Los iconos y textos de referencia pertenecen a los respectivos titulares de derechos de Dark Souls, incluidos FromSoftware/Bandai Namco. ÍMPAR los muestra en la beta como material de referencia con procedencia identificada.",
   },
 };

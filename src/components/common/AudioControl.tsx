@@ -25,7 +25,10 @@ export function AudioControl() {
           {audible ? <Volume2 /> : <VolumeX />}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-72 rounded-xl border-border-strong bg-elevated p-4 shadow-lift">
+      <PopoverContent
+        align="end"
+        className="w-72 rounded-xl border-border-strong bg-elevated p-4 shadow-lift"
+      >
         <div className="mb-4 flex items-center gap-2">
           <AudioLines className="size-4 text-gold-strong" />
           <h2 className="font-display text-sm font-semibold">

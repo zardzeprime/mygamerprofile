@@ -15,10 +15,13 @@ async function fetchValorantApi<T>(path: string, locale: "pt-BR" | "en" | "es"):
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);
   try {
-    const response = await fetch(`https://valorant-api.com/v1/${path}?language=${providerLocale(locale)}`, {
-      signal: controller.signal,
-      headers: { Accept: "application/json" },
-    });
+    const response = await fetch(
+      `https://valorant-api.com/v1/${path}?language=${providerLocale(locale)}`,
+      {
+        signal: controller.signal,
+        headers: { Accept: "application/json" },
+      },
+    );
     if (!response.ok) throw new Error(`valorant_content_provider_${response.status}`);
     const payload = (await response.json()) as { status: number; data: T };
     return payload.data;
@@ -110,7 +113,12 @@ type AgentApi = {
   background: string | null;
   isPlayableCharacter: boolean;
   role: { displayName: string; description: string; displayIcon: string | null } | null;
-  abilities: Array<{ slot: string; displayName: string; description: string; displayIcon: string | null }>;
+  abilities: Array<{
+    slot: string;
+    displayName: string;
+    description: string;
+    displayIcon: string | null;
+  }>;
 };
 
 type MapApi = {
@@ -192,7 +200,11 @@ export const getValorantAgents = createServerFn({ method: "GET" })
         bustPortrait: agent.displayIcon,
         background: agent.background,
         role: agent.role
-          ? { name: agent.role.displayName, description: agent.role.description, icon: agent.role.displayIcon }
+          ? {
+              name: agent.role.displayName,
+              description: agent.role.description,
+              icon: agent.role.displayIcon,
+            }
           : null,
         abilities: agent.abilities.map((ability) => ({
           slot: ability.slot,
@@ -209,7 +221,9 @@ export const getValorantMaps = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const rows = await fetchValorantApi<MapApi[]>("maps", data.locale);
     return rows
-      .filter((map) => map.splash && map.displayName && !map.displayName.toLowerCase().includes("range"))
+      .filter(
+        (map) => map.splash && map.displayName && !map.displayName.toLowerCase().includes("range"),
+      )
       .map<ValorantMap>((map) => ({
         uuid: map.uuid,
         name: map.displayName,
@@ -237,7 +251,8 @@ export const getValorantWeapons = createServerFn({ method: "GET" })
         magazineSize: weapon.weaponStats?.magazineSize ?? null,
         reloadTime: weapon.weaponStats?.reloadTimeSeconds ?? null,
         equipTime: weapon.weaponStats?.equipTimeSeconds ?? null,
-        wallPenetration: weapon.weaponStats?.wallPenetration?.replace("EWallPenetrationDisplayType::", "") ?? null,
+        wallPenetration:
+          weapon.weaponStats?.wallPenetration?.replace("EWallPenetrationDisplayType::", "") ?? null,
         damageRanges:
           weapon.weaponStats?.damageRanges.map((range) => ({
             start: range.rangeStartMeters,
@@ -261,8 +276,11 @@ export const getValorantSkins = createServerFn({ method: "GET" })
 
     return weapons
       .map<ValorantSkinWeapon>((weapon) => {
-        const category = weapon.shopData?.category ?? weapon.category.replace("EEquippableCategory::", "");
-        const isMelee = category.toLowerCase().includes("melee") || weapon.displayName.toLowerCase().includes("melee");
+        const category =
+          weapon.shopData?.category ?? weapon.category.replace("EEquippableCategory::", "");
+        const isMelee =
+          category.toLowerCase().includes("melee") ||
+          weapon.displayName.toLowerCase().includes("melee");
         const skins = weapon.skins
           .filter((skin) => skin.displayName && skin.contentTierUuid)
           .map<ValorantSkin>((skin) => {
@@ -270,7 +288,11 @@ export const getValorantSkins = createServerFn({ method: "GET" })
             return {
               uuid: skin.uuid,
               name: skin.displayName,
-              icon: skin.displayIcon ?? skin.chromas[0]?.fullRender ?? skin.levels[0]?.displayIcon ?? null,
+              icon:
+                skin.displayIcon ??
+                skin.chromas[0]?.fullRender ??
+                skin.levels[0]?.displayIcon ??
+                null,
               wallpaper: skin.wallpaper,
               rarity: tier?.displayName ?? null,
               rarityIcon: tier?.displayIcon ?? null,

@@ -40,11 +40,36 @@ function makeRobloxPlaceholder(label: string, subtitle: string, from: string, to
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
-const BLOX_FRUITS_ART = makeRobloxPlaceholder("BLOX FRUITS", "ROBLOX EXPERIENCE · ÍMPAR", "#071a2e", "#0a6385");
-const PROJECT_SLAYERS_2_ART = makeRobloxPlaceholder("PROJECT SLAYERS 2", "ROBLOX EXPERIENCE · ÍMPAR", "#160d1d", "#6f2437");
-const ANIME_VANGUARDS_ART = makeRobloxPlaceholder("ANIME VANGUARDS", "ROBLOX EXPERIENCE · ÍMPAR", "#0f1027", "#4f2f87");
-const ANIME_LAST_STAND_ART = makeRobloxPlaceholder("ANIME LAST STAND", "ROBLOX EXPERIENCE · ÍMPAR", "#16120e", "#84592e");
-const KING_LEGACY_ART = makeRobloxPlaceholder("KING LEGACY", "ROBLOX EXPERIENCE · ÍMPAR", "#071d1a", "#156a58");
+const BLOX_FRUITS_ART = makeRobloxPlaceholder(
+  "BLOX FRUITS",
+  "ROBLOX EXPERIENCE · ÍMPAR",
+  "#071a2e",
+  "#0a6385",
+);
+const PROJECT_SLAYERS_2_ART = makeRobloxPlaceholder(
+  "PROJECT SLAYERS 2",
+  "ROBLOX EXPERIENCE · ÍMPAR",
+  "#160d1d",
+  "#6f2437",
+);
+const ANIME_VANGUARDS_ART = makeRobloxPlaceholder(
+  "ANIME VANGUARDS",
+  "ROBLOX EXPERIENCE · ÍMPAR",
+  "#0f1027",
+  "#4f2f87",
+);
+const ANIME_LAST_STAND_ART = makeRobloxPlaceholder(
+  "ANIME LAST STAND",
+  "ROBLOX EXPERIENCE · ÍMPAR",
+  "#16120e",
+  "#84592e",
+);
+const KING_LEGACY_ART = makeRobloxPlaceholder(
+  "KING LEGACY",
+  "ROBLOX EXPERIENCE · ÍMPAR",
+  "#071d1a",
+  "#156a58",
+);
 
 export const ROBLOX_HUB_TABS: Array<{
   id: RobloxHubTab;
@@ -54,7 +79,10 @@ export const ROBLOX_HUB_TABS: Array<{
   { id: "codes", label: { "pt-BR": "Códigos", en: "Codes", es: "Códigos" } },
   { id: "tier-list", label: { "pt-BR": "Tier Lists", en: "Tier Lists", es: "Tier Lists" } },
   { id: "guides", label: { "pt-BR": "Guias", en: "Guides", es: "Guías" } },
-  { id: "builds", label: { "pt-BR": "Builds / Presets", en: "Builds / Presets", es: "Builds / Presets" } },
+  {
+    id: "builds",
+    label: { "pt-BR": "Builds / Presets", en: "Builds / Presets", es: "Builds / Presets" },
+  },
 ];
 
 export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
@@ -66,7 +94,8 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
     officialUrl: "https://www.roblox.com/games/2753915549/Blox-Fruits",
     category: "Anime Action RPG",
     summary: {
-      "pt-BR": "Hub dedicado a progressão, frutas, espadas, estilos de luta, raças, chefes, códigos e rotas de evolução.",
+      "pt-BR":
+        "Hub dedicado a progressão, frutas, espadas, estilos de luta, raças, chefes, códigos e rotas de evolução.",
       en: "Dedicated hub for progression, fruits, swords, fighting styles, races, bosses, codes and progression routes.",
       es: "Hub dedicado a progresión, frutas, espadas, estilos de lucha, razas, jefes, códigos y rutas de progreso.",
     },
@@ -95,7 +124,8 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
         slug: "frutas",
         label: { "pt-BR": "Frutas", en: "Fruits", es: "Frutas" },
         description: {
-          "pt-BR": "Catálogo de frutas, raridade, obtenção, awakenings, uso em PvE/PvP e comparações.",
+          "pt-BR":
+            "Catálogo de frutas, raridade, obtenção, awakenings, uso em PvE/PvP e comparações.",
           en: "Fruit catalog with rarity, acquisition, awakenings, PvE/PvP use and comparisons.",
           es: "Catálogo de frutas con rareza, obtención, awakenings, uso PvE/PvP y comparaciones.",
         },
@@ -105,7 +135,8 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
         slug: "espadas",
         label: { "pt-BR": "Espadas", en: "Swords", es: "Espadas" },
         description: {
-          "pt-BR": "Espadas, requisitos, obtenção, upgrades, combos e recomendações por progressão.",
+          "pt-BR":
+            "Espadas, requisitos, obtenção, upgrades, combos e recomendações por progressão.",
           en: "Swords, requirements, acquisition, upgrades, combos and progression recommendations.",
           es: "Espadas, requisitos, obtención, mejoras, combos y recomendaciones por progresión.",
         },
@@ -115,7 +146,8 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
         slug: "estilos-de-luta",
         label: { "pt-BR": "Estilos de luta", en: "Fighting styles", es: "Estilos de lucha" },
         description: {
-          "pt-BR": "Estilos, requisitos, custos, evolução e uso em builds de fruta, espada e híbridas.",
+          "pt-BR":
+            "Estilos, requisitos, custos, evolução e uso em builds de fruta, espada e híbridas.",
           en: "Styles, requirements, costs, progression and use in fruit, sword and hybrid builds.",
           es: "Estilos, requisitos, costos, progresión y uso en builds de fruta, espada e híbridas.",
         },
@@ -164,7 +196,8 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
     officialUrl: "https://www.roblox.com/games/9093954913/Project-slayer-2",
     category: "Anime Action RPG",
     summary: {
-      "pt-BR": "Área para estilos de respiração, artes demoníacas, clãs, progressão, bosses, códigos e presets de personagem.",
+      "pt-BR":
+        "Área para estilos de respiração, artes demoníacas, clãs, progressão, bosses, códigos e presets de personagem.",
       en: "Area for breathing styles, demon arts, clans, progression, bosses, codes and character presets.",
       es: "Área para estilos de respiración, artes demoníacas, clanes, progresión, jefes, códigos y presets de personaje.",
     },
@@ -179,7 +212,13 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
       es: ["Respiraciones", "Artes demoníacas", "Clanes", "Armas"],
     },
     guideTopics: {
-      "pt-BR": ["Começando do zero", "Escolha Slayer/Demon", "Bosses", "Farm", "Progressão de habilidades"],
+      "pt-BR": [
+        "Começando do zero",
+        "Escolha Slayer/Demon",
+        "Bosses",
+        "Farm",
+        "Progressão de habilidades",
+      ],
       en: ["Starting from zero", "Slayer/Demon path", "Bosses", "Farm", "Skill progression"],
       es: ["Empezar desde cero", "Ruta Slayer/Demon", "Jefes", "Farm", "Progresión de habilidades"],
     },
@@ -249,10 +288,12 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
     name: "Anime Vanguards",
     aliases: ["Vanguards de Anime", "AV"],
     placeId: "16146832113",
-    officialUrl: "https://www.roblox.com/games/16146832113/Anime-Vanguards-Extermination-Event-Pt-1",
+    officialUrl:
+      "https://www.roblox.com/games/16146832113/Anime-Vanguards-Extermination-Event-Pt-1",
     category: "Anime Tower Defense",
     summary: {
-      "pt-BR": "Hub para unidades, traits, evoluções, times, códigos, modos e tier lists voltadas para conteúdo PvE.",
+      "pt-BR":
+        "Hub para unidades, traits, evoluções, times, códigos, modos e tier lists voltadas para conteúdo PvE.",
       en: "Hub for units, traits, evolutions, teams, codes, modes and PvE-focused tier lists.",
       es: "Hub para unidades, traits, evoluciones, equipos, códigos, modos y tier lists enfocadas en PvE.",
     },
@@ -330,7 +371,8 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
     officialUrl: "https://www.roblox.com/games/12886143095/Anime-Last-Stand",
     category: "Anime Tower Defense",
     summary: {
-      "pt-BR": "Centro para unidades, traits, evoluções, composições, códigos e guias de farm do Anime Last Stand.",
+      "pt-BR":
+        "Centro para unidades, traits, evoluções, composições, códigos e guias de farm do Anime Last Stand.",
       en: "Center for units, traits, evolutions, team comps, codes and Anime Last Stand farming guides.",
       es: "Centro para unidades, traits, evoluciones, composiciones, códigos y guías de farm de Anime Last Stand.",
     },
@@ -408,7 +450,8 @@ export const ROBLOX_EXPERIENCES: RobloxExperience[] = [
     officialUrl: "https://www.roblox.com/games/4520749081/King-Legacy",
     category: "Anime Action RPG",
     summary: {
-      "pt-BR": "Área para frutas, espadas, acessórios, progressão, raids, códigos e builds de King Legacy.",
+      "pt-BR":
+        "Área para frutas, espadas, acessórios, progressão, raids, códigos e builds de King Legacy.",
       en: "Area for fruits, swords, accessories, progression, raids, codes and King Legacy builds.",
       es: "Área para frutas, espadas, accesorios, progresión, raids, códigos y builds de King Legacy.",
     },

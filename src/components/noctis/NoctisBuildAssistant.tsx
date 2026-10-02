@@ -96,7 +96,11 @@ export function NoctisBuildAssistant({
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <h4 className="font-display text-lg font-semibold text-foreground">
-              {copy("Noctis · Copiloto de build", "Noctis · Build copilot", "Noctis · Copiloto de build")}
+              {copy(
+                "Noctis · Copiloto de build",
+                "Noctis · Build copilot",
+                "Noctis · Copiloto de build",
+              )}
             </h4>
             <span className="rounded-full border border-[var(--impar-line)] bg-background/50 px-2 py-0.5 text-[0.62rem] font-black uppercase tracking-[0.1em] text-[var(--impar-spectral)]">
               IA
@@ -146,7 +150,11 @@ export function NoctisBuildAssistant({
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <Button type="button" onClick={() => void generate()} disabled={!request.trim() || busy}>
-          {busy ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Sparkles className="mr-2 size-4" />}
+          {busy ? (
+            <Loader2 className="mr-2 size-4 animate-spin" />
+          ) : (
+            <Sparkles className="mr-2 size-4" />
+          )}
           {busy
             ? copy("Noctis pensando…", "Noctis is thinking…", "Noctis está pensando…")
             : copy("Gerar preset", "Generate preset", "Generar preset")}

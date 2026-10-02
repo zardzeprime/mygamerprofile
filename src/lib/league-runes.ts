@@ -42,34 +42,62 @@ export const LEAGUE_STAT_SHARDS: readonly (readonly LeagueStatShardOption[])[] =
     {
       key: "adaptive-force",
       name: { "pt-BR": "Força Adaptativa", en: "Adaptive Force", es: "Fuerza adaptable" },
-      description: { "pt-BR": "+9 de Força Adaptativa", en: "+9 Adaptive Force", es: "+9 de Fuerza adaptable" },
+      description: {
+        "pt-BR": "+9 de Força Adaptativa",
+        en: "+9 Adaptive Force",
+        es: "+9 de Fuerza adaptable",
+      },
     },
     {
       key: "attack-speed",
       name: { "pt-BR": "Velocidade de Ataque", en: "Attack Speed", es: "Velocidad de ataque" },
-      description: { "pt-BR": "+10% de Velocidade de Ataque", en: "+10% Attack Speed", es: "+10% de Velocidad de ataque" },
+      description: {
+        "pt-BR": "+10% de Velocidade de Ataque",
+        en: "+10% Attack Speed",
+        es: "+10% de Velocidad de ataque",
+      },
     },
     {
       key: "ability-haste",
-      name: { "pt-BR": "Aceleração de Habilidade", en: "Ability Haste", es: "Aceleración de habilidad" },
-      description: { "pt-BR": "+8 de Aceleração de Habilidade", en: "+8 Ability Haste", es: "+8 de Aceleración de habilidad" },
+      name: {
+        "pt-BR": "Aceleração de Habilidade",
+        en: "Ability Haste",
+        es: "Aceleración de habilidad",
+      },
+      description: {
+        "pt-BR": "+8 de Aceleração de Habilidade",
+        en: "+8 Ability Haste",
+        es: "+8 de Aceleración de habilidad",
+      },
     },
   ],
   [
     {
       key: "adaptive-force",
       name: { "pt-BR": "Força Adaptativa", en: "Adaptive Force", es: "Fuerza adaptable" },
-      description: { "pt-BR": "+9 de Força Adaptativa", en: "+9 Adaptive Force", es: "+9 de Fuerza adaptable" },
+      description: {
+        "pt-BR": "+9 de Força Adaptativa",
+        en: "+9 Adaptive Force",
+        es: "+9 de Fuerza adaptable",
+      },
     },
     {
       key: "move-speed",
       name: { "pt-BR": "Velocidade de Movimento", en: "Move Speed", es: "Velocidad de movimiento" },
-      description: { "pt-BR": "+2,5% de Velocidade de Movimento", en: "+2.5% Move Speed", es: "+2,5% de Velocidad de movimiento" },
+      description: {
+        "pt-BR": "+2,5% de Velocidade de Movimento",
+        en: "+2.5% Move Speed",
+        es: "+2,5% de Velocidad de movimiento",
+      },
     },
     {
       key: "scaling-health",
       name: { "pt-BR": "Vida Escalável", en: "Scaling Health", es: "Vida progresiva" },
-      description: { "pt-BR": "Vida adicional que aumenta com o nível", en: "Bonus health that scales with level", es: "Vida adicional que aumenta con el nivel" },
+      description: {
+        "pt-BR": "Vida adicional que aumenta com o nível",
+        en: "Bonus health that scales with level",
+        es: "Vida adicional que aumenta con el nivel",
+      },
     },
   ],
   [
@@ -81,12 +109,20 @@ export const LEAGUE_STAT_SHARDS: readonly (readonly LeagueStatShardOption[])[] =
     {
       key: "tenacity",
       name: { "pt-BR": "Tenacidade", en: "Tenacity", es: "Tenacidad" },
-      description: { "pt-BR": "+15% de Tenacidade e Resistência a Lentidão", en: "+15% Tenacity and Slow Resist", es: "+15% de Tenacidad y Resistencia a ralentización" },
+      description: {
+        "pt-BR": "+15% de Tenacidade e Resistência a Lentidão",
+        en: "+15% Tenacity and Slow Resist",
+        es: "+15% de Tenacidad y Resistencia a ralentización",
+      },
     },
     {
       key: "scaling-health",
       name: { "pt-BR": "Vida Escalável", en: "Scaling Health", es: "Vida progresiva" },
-      description: { "pt-BR": "Vida adicional que aumenta com o nível", en: "Bonus health that scales with level", es: "Vida adicional que aumenta con el nivel" },
+      description: {
+        "pt-BR": "Vida adicional que aumenta com o nível",
+        en: "Bonus health that scales with level",
+        es: "Vida adicional que aumenta con el nivel",
+      },
     },
   ],
 ] as const;
@@ -107,7 +143,10 @@ export function createDefaultRunePage(styles: LeagueRuneStyle[]): LeagueRunePage
 
   return {
     primaryStyleId: primary?.id ?? null,
-    primaryPerkIds: primary?.slots.map((slot) => slot.runes[0]?.id).filter((id): id is number => typeof id === "number") ?? [],
+    primaryPerkIds:
+      primary?.slots
+        .map((slot) => slot.runes[0]?.id)
+        .filter((id): id is number => typeof id === "number") ?? [],
     secondaryStyleId: secondary?.id ?? null,
     secondaryPerkIds:
       secondary?.slots

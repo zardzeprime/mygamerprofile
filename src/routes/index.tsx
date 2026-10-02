@@ -105,7 +105,9 @@ function Home() {
       <section className="impar-grid impar-home-hero relative isolate overflow-hidden border-b border-border/70">
         <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12 lg:py-16">
           <div className="animate-fade-in">
-            <p className="impar-kicker">ÍMPAR / {copy("SUA FORMA DE JOGAR", "YOUR WAY TO PLAY", "TU FORMA DE JUGAR")}</p>
+            <p className="impar-kicker">
+              ÍMPAR / {copy("SUA FORMA DE JOGAR", "YOUR WAY TO PLAY", "TU FORMA DE JUGAR")}
+            </p>
             <h1 className="mt-5 max-w-3xl text-balance font-display text-[clamp(2.7rem,6vw,5.35rem)] font-bold leading-[0.98] tracking-[-0.045em] text-foreground">
               {copy(
                 "Seu jogo. Seu perfil. Do seu jeito.",
@@ -149,7 +151,11 @@ function Home() {
                     Noctis · {copy("guardião do ÍMPAR", "guardian of ÍMPAR", "guardián de ÍMPAR")}
                   </div>
                   <h2 className="mt-3 max-w-sm font-display text-xl font-semibold leading-tight sm:mt-4 sm:text-3xl">
-                    {copy("Um guia para o seu próprio caminho.", "A guide for your own path.", "Un guía para tu propio camino.")}
+                    {copy(
+                      "Um guia para o seu próprio caminho.",
+                      "A guide for your own path.",
+                      "Un guía para tu propio camino.",
+                    )}
                   </h2>
                   <p className="mt-2 max-w-sm text-[0.8rem] leading-5 text-muted-foreground sm:mt-3 sm:text-sm sm:leading-6">
                     {copy(
@@ -192,7 +198,11 @@ function Home() {
       <section className="mx-auto w-full max-w-7xl px-4 pt-7 sm:px-6 sm:pt-9">
         <div className="impar-destination-grid">
           {destinations.map(({ to, icon: Icon, title, body, index }) => (
-            <Link key={to} to={to} className="impar-card impar-card-interactive impar-home-destination group rounded-2xl p-4 sm:p-5">
+            <Link
+              key={to}
+              to={to}
+              className="impar-card impar-card-interactive impar-home-destination group rounded-2xl p-4 sm:p-5"
+            >
               <div className="flex items-center justify-between gap-3">
                 <div className="grid size-9 place-items-center rounded-xl bg-[var(--impar-spectral-soft)] text-[var(--impar-spectral)]">
                   <Icon className="size-4" aria-hidden="true" />
@@ -212,17 +222,27 @@ function Home() {
         rail={<AdSlot id="home-rail" format="rail" />}
       >
         <section>
-          <Carousel opts={{ align: "start", containScroll: "trimSnaps", loop: false, slidesToScroll: 1 }}>
+          <Carousel
+            opts={{ align: "start", containScroll: "trimSnaps", loop: false, slidesToScroll: 1 }}
+          >
             <div className="mb-5 flex items-end justify-between gap-3">
               <div>
-                <p className="impar-kicker">{copy("ARQUIVOS EM DESTAQUE", "FEATURED ARCHIVES", "ARCHIVOS DESTACADOS")}</p>
+                <p className="impar-kicker">
+                  {copy("ARQUIVOS EM DESTAQUE", "FEATURED ARCHIVES", "ARCHIVOS DESTACADOS")}
+                </p>
                 <h2 className="mt-2 font-display text-2xl font-semibold sm:text-3xl">
                   {copy("Entre por um jogo", "Start with a game", "Entra por un juego")}
                 </h2>
               </div>
               <div className="flex shrink-0 gap-2">
-                <CarouselPrevious aria-label={copy("Jogo anterior", "Previous game", "Juego anterior")} className="static size-11 translate-y-0" />
-                <CarouselNext aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")} className="static size-11 translate-y-0" />
+                <CarouselPrevious
+                  aria-label={copy("Jogo anterior", "Previous game", "Juego anterior")}
+                  className="static size-11 translate-y-0"
+                />
+                <CarouselNext
+                  aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")}
+                  className="static size-11 translate-y-0"
+                />
               </div>
             </div>
             <CarouselContent>
@@ -235,31 +255,70 @@ function Home() {
           </Carousel>
         </section>
 
-        <section className="mt-12 grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]" aria-label={copy("Atividade da Comunidade ÍMPAR", "ÍMPAR community activity", "Actividad de la Comunidad ÍMPAR")}>
+        <section
+          className="mt-12 grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem]"
+          aria-label={copy(
+            "Atividade da Comunidade ÍMPAR",
+            "ÍMPAR community activity",
+            "Actividad de la Comunidad ÍMPAR",
+          )}
+        >
           <div className="space-y-4">
             <div>
-              <p className="impar-kicker">{copy("COMUNIDADE ÍMPAR", "ÍMPAR COMMUNITY", "COMUNIDAD ÍMPAR")}</p>
-              <h2 className="mt-2 font-display text-2xl font-semibold">{copy("O que a galera está criando", "What people are creating", "Lo que la gente está creando")}</h2>
+              <p className="impar-kicker">
+                {copy("COMUNIDADE ÍMPAR", "ÍMPAR COMMUNITY", "COMUNIDAD ÍMPAR")}
+              </p>
+              <h2 className="mt-2 font-display text-2xl font-semibold">
+                {copy(
+                  "O que a galera está criando",
+                  "What people are creating",
+                  "Lo que la gente está creando",
+                )}
+              </h2>
             </div>
             {user && <PostComposer onCreated={(post) => setPosts((prev) => [post, ...prev])} />}
             {posts.length === 0 ? (
-              <EmptyState title={copy("Nenhum post ainda. Seja o primeiro a publicar.", "No posts yet. Be the first to publish.", "Todavía no hay posts. Sé el primero en publicar.")} />
+              <EmptyState
+                title={copy(
+                  "Nenhum post ainda. Seja o primeiro a publicar.",
+                  "No posts yet. Be the first to publish.",
+                  "Todavía no hay posts. Sé el primero en publicar.",
+                )}
+              />
             ) : (
               posts.slice(0, visiblePosts).map((post) => <PostCard key={post.id} post={post} />)
             )}
             {visiblePosts < posts.length && (
-              <button type="button" className="brand-button-secondary min-h-11" onClick={() => setVisiblePosts((n) => n + 6)}>
+              <button
+                type="button"
+                className="brand-button-secondary min-h-11"
+                onClick={() => setVisiblePosts((n) => n + 6)}
+              >
                 {copy("Mostrar mais publicações", "Show more posts", "Mostrar más publicaciones")}
               </button>
             )}
           </div>
           <aside className="impar-card h-fit rounded-2xl p-5">
             <UsersRound className="size-5 text-[var(--impar-spectral)]" aria-hidden="true" />
-            <h2 className="mt-3 font-semibold">{copy("Falta alguém no grupo?", "Need one more player?", "¿Falta alguien en el equipo?")}</h2>
+            <h2 className="mt-3 font-semibold">
+              {copy(
+                "Falta alguém no grupo?",
+                "Need one more player?",
+                "¿Falta alguien en el equipo?",
+              )}
+            </h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              {copy("Abra o LFG e encontre companhia por jogo, plataforma, região e faixa de grupo.", "Open LFG and find players by game, platform and region.", "Abre el LFG y encuentra gente por juego, plataforma y región.")}
+              {copy(
+                "Abra o LFG e encontre companhia por jogo, plataforma, região e faixa de grupo.",
+                "Open LFG and find players by game, platform and region.",
+                "Abre el LFG y encuentra gente por juego, plataforma y región.",
+              )}
             </p>
-            <Link to="/lfg" search={{ compose: false, game: "" }} className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)]">
+            <Link
+              to="/lfg"
+              search={{ compose: false, game: "" }}
+              className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--impar-spectral)]"
+            >
               {copy("Encontrar grupo", "Find a group", "Encontrar grupo")}
               <ArrowRight className="size-4" />
             </Link>
@@ -274,7 +333,13 @@ function Home() {
           <div className="max-w-2xl">
             <div className="flex items-center gap-2 text-[var(--impar-amber)]">
               <HeartHandshake className="size-4" aria-hidden="true" />
-              <p className="text-xs font-bold uppercase tracking-[0.12em]">{copy("Projeto independente brasileiro", "Independent Brazilian project", "Proyecto brasileño independiente")}</p>
+              <p className="text-xs font-bold uppercase tracking-[0.12em]">
+                {copy(
+                  "Projeto independente brasileiro",
+                  "Independent Brazilian project",
+                  "Proyecto brasileño independiente",
+                )}
+              </p>
             </div>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {copy(

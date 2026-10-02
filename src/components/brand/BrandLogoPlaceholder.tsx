@@ -42,7 +42,9 @@ export function BrandLogoPlaceholder({
         />
       </span>
       <span className="flex flex-col leading-none">
-        <span className={cn("font-display font-bold tracking-tight text-foreground", textSize)}>ÍMPAR</span>
+        <span className={cn("font-display font-bold tracking-tight text-foreground", textSize)}>
+          ÍMPAR
+        </span>
         {withFullName ? (
           <span className="mt-0.5 text-[0.6rem] font-medium uppercase tracking-[0.18em] text-muted-foreground">
             {fullName}

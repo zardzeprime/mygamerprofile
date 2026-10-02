@@ -115,16 +115,25 @@ export function SoulsFashionTest({
 
   const pieces = useMemo(
     () =>
-      SLOT_ORDER.map((slot) => armor.find((entry) => entry.name === selection[slot]) ?? null).filter(
-        (entry): entry is SoulsArmorTechnical => Boolean(entry),
-      ),
+      SLOT_ORDER.map(
+        (slot) => armor.find((entry) => entry.name === selection[slot]) ?? null,
+      ).filter((entry): entry is SoulsArmorTechnical => Boolean(entry)),
     [armor, selection],
   );
 
   const totals = useMemo(() => {
     const weight = sum(pieces.map((piece) => piece.weight));
     const poise = sum(pieces.map((piece) => piece.poise));
-    const defenseKeys = ["physical", "strike", "slash", "thrust", "magic", "fire", "lightning", "dark"] as const;
+    const defenseKeys = [
+      "physical",
+      "strike",
+      "slash",
+      "thrust",
+      "magic",
+      "fire",
+      "lightning",
+      "dark",
+    ] as const;
     const resistanceKeys = ["bleed", "poison", "frost", "curse"] as const;
     const defense = Object.fromEntries(
       defenseKeys.map((key) => {
@@ -216,7 +225,9 @@ export function SoulsFashionTest({
         setNoctisText(String(response?.message?.content ?? ""));
       } else {
         const guestId =
-          typeof window !== "undefined" ? window.localStorage.getItem(FASHION_GUEST_KEY) ?? undefined : undefined;
+          typeof window !== "undefined"
+            ? (window.localStorage.getItem(FASHION_GUEST_KEY) ?? undefined)
+            : undefined;
         const status = await getNexusGuestStatus({ data: guestId ? { guestId } : {} });
         if (typeof window !== "undefined" && status?.guestId) {
           window.localStorage.setItem(FASHION_GUEST_KEY, status.guestId);
@@ -375,7 +386,11 @@ export function SoulsFashionTest({
             <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <span>
                 <span className="block text-xs font-black uppercase tracking-[0.09em] text-muted-foreground">
-                  {copy("Carga máxima do personagem", "Maximum equip load", "Carga máxima del personaje")}
+                  {copy(
+                    "Carga máxima do personagem",
+                    "Maximum equip load",
+                    "Carga máxima del personaje",
+                  )}
                 </span>
                 <span className="mt-1 block text-[0.68rem] leading-5 text-muted-foreground">
                   {copy(
@@ -399,8 +414,14 @@ export function SoulsFashionTest({
           {mode === "advanced" ? (
             <div className="mt-6 space-y-4">
               <div className="grid gap-3 sm:grid-cols-3">
-                <Metric label={copy("Peso do set", "Set weight", "Peso del set")} value={formatNumber(totals.weight, 2)} />
-                <Metric label={copy("Carga usada", "Load used", "Carga usada")} value={Number.isFinite(loadRatio) ? `${formatNumber(loadRatio * 100)}%` : "—"} />
+                <Metric
+                  label={copy("Peso do set", "Set weight", "Peso del set")}
+                  value={formatNumber(totals.weight, 2)}
+                />
+                <Metric
+                  label={copy("Carga usada", "Load used", "Carga usada")}
+                  value={Number.isFinite(loadRatio) ? `${formatNumber(loadRatio * 100)}%` : "—"}
+                />
                 <Metric label="Poise" value={formatNumber(totals.poise, 2)} />
               </div>
               <StatGrid
@@ -427,7 +448,9 @@ export function SoulsFashionTest({
                     <p className="text-[0.65rem] font-black uppercase tracking-[0.12em] text-muted-foreground">
                       {copy("Leitura rápida", "Quick read", "Lectura rápida")}
                     </p>
-                    <p className="mt-1 font-display text-2xl font-bold text-foreground">{bandLabel}</p>
+                    <p className="mt-1 font-display text-2xl font-bold text-foreground">
+                      {bandLabel}
+                    </p>
                   </div>
                   <div className="flex items-center gap-2 text-gold-strong">
                     <Scale className="size-5" />
@@ -468,7 +491,11 @@ export function SoulsFashionTest({
                   disabled={!complete || noctisLoading}
                   onClick={() => void askNoctis()}
                 >
-                  {noctisLoading ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Sparkles className="mr-2 size-4" />}
+                  {noctisLoading ? (
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="mr-2 size-4" />
+                  )}
                   {copy("Analisar combinação", "Analyze combination", "Analizar combinación")}
                 </Button>
                 {!complete ? (
@@ -485,7 +512,9 @@ export function SoulsFashionTest({
                     {noctisText}
                   </div>
                 ) : null}
-                {noctisError ? <p className="mt-3 text-xs text-destructive">{noctisError}</p> : null}
+                {noctisError ? (
+                  <p className="mt-3 text-xs text-destructive">{noctisError}</p>
+                ) : null}
               </div>
             </div>
           )}
@@ -508,7 +537,8 @@ export function SoulsFashionTest({
                   </p>
                   {piece ? (
                     <p className="mt-1 text-[0.68rem] text-muted-foreground">
-                      {copy("Peso", "Weight", "Peso")}: {formatNumber(piece.weight, 2)} · Poise: {formatNumber(piece.poise, 2)}
+                      {copy("Peso", "Weight", "Peso")}: {formatNumber(piece.weight, 2)} · Poise:{" "}
+                      {formatNumber(piece.poise, 2)}
                     </p>
                   ) : null}
                 </div>
@@ -531,7 +561,9 @@ export function SoulsFashionTest({
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-border bg-muted/10 p-4">
-      <p className="text-[0.6rem] font-black uppercase tracking-[0.09em] text-muted-foreground">{label}</p>
+      <p className="text-[0.6rem] font-black uppercase tracking-[0.09em] text-muted-foreground">
+        {label}
+      </p>
       <p className="mt-1 text-xl font-black text-foreground">{value}</p>
     </div>
   );
@@ -554,9 +586,12 @@ function StatGrid({
       <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {Object.entries(values).map(([key, value]) => (
           <div key={key} className="rounded-lg border border-border bg-background/45 p-3">
-            <p className="text-[0.55rem] font-black uppercase tracking-[0.08em] text-muted-foreground">{label(key)}</p>
+            <p className="text-[0.55rem] font-black uppercase tracking-[0.08em] text-muted-foreground">
+              {label(key)}
+            </p>
             <p className="mt-1 text-sm font-black text-foreground">
-              {formatNumber(value, 1)}{suffix}
+              {formatNumber(value, 1)}
+              {suffix}
             </p>
           </div>
         ))}

@@ -1,12 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import {
-  CheckCircle2,
-  Clock3,
-  LogIn,
-  MessageSquareText,
-  Send,
-  ShieldCheck,
-} from "lucide-react";
+import { CheckCircle2, Clock3, LogIn, MessageSquareText, Send, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
@@ -140,7 +133,11 @@ export function SupportFeedbackDesk() {
       <section className="surface-panel p-5 sm:p-6">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Clock3 className="size-4 animate-pulse text-gold-strong" />
-          {copy("Carregando canal de feedback…", "Loading feedback desk…", "Cargando canal de feedback…")}
+          {copy(
+            "Carregando canal de feedback…",
+            "Loading feedback desk…",
+            "Cargando canal de feedback…",
+          )}
         </div>
       </section>
     );
@@ -155,7 +152,11 @@ export function SupportFeedbackDesk() {
           </div>
           <div>
             <p className="font-display text-lg font-semibold text-foreground">
-              {copy("Feedback direto pelo ÍMPAR", "Direct feedback through ÍMPAR", "Feedback directo por ÍMPAR")}
+              {copy(
+                "Feedback direto pelo ÍMPAR",
+                "Direct feedback through ÍMPAR",
+                "Feedback directo por ÍMPAR",
+              )}
             </p>
             <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">
               {copy(
@@ -271,7 +272,11 @@ export function SupportFeedbackDesk() {
           </p>
         ) : null}
 
-        <button type="submit" disabled={submitting} className="brand-button mt-4 min-h-11 gap-2 disabled:opacity-60">
+        <button
+          type="submit"
+          disabled={submitting}
+          className="brand-button mt-4 min-h-11 gap-2 disabled:opacity-60"
+        >
           <Send className="size-4" />
           {submitting
             ? copy("Enviando…", "Sending…", "Enviando…")
@@ -301,7 +306,10 @@ export function SupportFeedbackDesk() {
             </p>
           ) : rows.length ? (
             rows.map((row) => (
-              <article key={row.id} className="rounded-xl border border-border bg-background/45 p-3">
+              <article
+                key={row.id}
+                className="rounded-xl border border-border bg-background/45 p-3"
+              >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="rounded-full border border-border px-2 py-1 text-[0.6rem] font-bold uppercase tracking-[0.08em] text-muted-foreground">
                     {categoryLabels[row.category as FeedbackCategory]}

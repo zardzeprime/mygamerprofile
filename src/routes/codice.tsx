@@ -36,7 +36,11 @@ function CodicePage() {
               <p className="impar-kicker">ÍMPAR / CÓDICE</p>
             </div>
             <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
-              {copy("Conhecimento que muda a partida.", "Knowledge that changes the game.", "Conocimiento que cambia la partida.")}
+              {copy(
+                "Conhecimento que muda a partida.",
+                "Knowledge that changes the game.",
+                "Conocimiento que cambia la partida.",
+              )}
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground">
               {copy(
@@ -82,12 +86,17 @@ function CodicePage() {
 
         <div className="mt-10 flex items-end justify-between gap-4">
           <div>
-            <p className="impar-kicker">{copy("ENTRADAS DO CÓDICE", "CODEX ENTRIES", "ENTRADAS DEL CÓDICE")}</p>
+            <p className="impar-kicker">
+              {copy("ENTRADAS DO CÓDICE", "CODEX ENTRIES", "ENTRADAS DEL CÓDICE")}
+            </p>
             <h2 className="mt-2 font-display text-2xl font-semibold sm:text-3xl">
               {copy("Escolha um jogo", "Choose a game", "Elige un juego")}
             </h2>
           </div>
-          <Link to="/games" className="hidden text-sm font-semibold text-[var(--impar-spectral)] sm:inline-flex sm:items-center sm:gap-2">
+          <Link
+            to="/games"
+            className="hidden text-sm font-semibold text-[var(--impar-spectral)] sm:inline-flex sm:items-center sm:gap-2"
+          >
             {copy("Ver Arquivos", "View Archives", "Ver Archivos")}
             <ArrowRight className="size-4" />
           </Link>

@@ -28,9 +28,12 @@ export function SteamFavoriteGameHighlight({
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const playingSince = highlight.startedOn
-    ? new Intl.DateTimeFormat(locale, { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" }).format(
-        new Date(`${highlight.startedOn}T00:00:00Z`),
-      )
+    ? new Intl.DateTimeFormat(locale, {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        timeZone: "UTC",
+      }).format(new Date(`${highlight.startedOn}T00:00:00Z`))
     : highlight.startedYear
       ? String(highlight.startedYear)
       : null;
@@ -51,7 +54,9 @@ export function SteamFavoriteGameHighlight({
               <Star className="size-3.5" />
               {copy("Jogo principal", "Main game", "Juego principal")}
             </div>
-            <h2 className="mt-1 font-display text-2xl font-bold text-foreground">{highlight.name}</h2>
+            <h2 className="mt-1 font-display text-2xl font-bold text-foreground">
+              {highlight.name}
+            </h2>
             <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
               {playingSince ? (
                 <span className="inline-flex items-center gap-1.5">
@@ -89,7 +94,11 @@ export function SteamFavoriteGameHighlight({
                 className="flex items-start gap-3 rounded-xl border border-border bg-muted/10 p-3"
               >
                 {achievement.iconUrl ? (
-                  <img src={achievement.iconUrl} alt="" className="size-11 shrink-0 rounded-lg object-cover" />
+                  <img
+                    src={achievement.iconUrl}
+                    alt=""
+                    className="size-11 shrink-0 rounded-lg object-cover"
+                  />
                 ) : (
                   <span className="grid size-11 shrink-0 place-items-center rounded-lg border border-border bg-background">
                     <Award className="size-4 text-muted-foreground" />

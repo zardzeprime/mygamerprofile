@@ -64,7 +64,11 @@ export function LeagueRuneTreeWheel({
               <div className="mb-4 text-center sm:mb-6">
                 <div className="inline-flex items-center gap-2 rounded-full border border-gold/25 bg-background/80 px-3 py-1.5 text-[0.64rem] font-black uppercase tracking-[0.12em] text-gold-strong shadow-lift">
                   <Sparkles className="size-3.5" />
-                  {copy("Trocar árvore principal", "Change primary tree", "Cambiar árbol principal")}
+                  {copy(
+                    "Trocar árvore principal",
+                    "Change primary tree",
+                    "Cambiar árbol principal",
+                  )}
                 </div>
                 <p className="mx-auto mt-3 max-w-sm text-xs leading-5 text-muted-foreground">
                   {copy(
@@ -169,7 +173,11 @@ export function LeagueRuneTreeWheel({
       >
         <span className="flex items-center gap-2.5">
           <span className="grid size-10 shrink-0 place-items-center rounded-xl border border-gold/20 bg-gold/10 sm:size-11">
-            <img src={leagueRuneIcon(activeStyle.icon)} alt="" className="size-7 object-contain sm:size-8" />
+            <img
+              src={leagueRuneIcon(activeStyle.icon)}
+              alt=""
+              className="size-7 object-contain sm:size-8"
+            />
           </span>
           <span className="hidden min-w-0 xl:block">
             <span className="block text-[0.55rem] font-black uppercase tracking-[0.12em] text-muted-foreground">

@@ -50,9 +50,7 @@ export function LeagueRunesExplorer({ locale }: { locale: Locale }) {
         if (!active) return;
         setStyles(nextStyles);
         setActiveStyleId((current) =>
-          nextStyles.some((style) => style.id === current)
-            ? current
-            : nextStyles[0]?.id ?? null,
+          nextStyles.some((style) => style.id === current) ? current : (nextStyles[0]?.id ?? null),
         );
       })
       .catch((error) => {
@@ -68,8 +66,7 @@ export function LeagueRunesExplorer({ locale }: { locale: Locale }) {
     };
   }, [locale, version]);
 
-  const activeStyle =
-    styles.find((style) => style.id === activeStyleId) ?? styles[0] ?? null;
+  const activeStyle = styles.find((style) => style.id === activeStyleId) ?? styles[0] ?? null;
   const normalizedQuery = query.trim().toLowerCase();
 
   const filteredSlots = useMemo(() => {
@@ -101,7 +98,11 @@ export function LeagueRunesExplorer({ locale }: { locale: Locale }) {
             </span>
           </div>
           <h2 className="mt-3 font-display text-3xl font-bold text-foreground">
-            {copy("Runas de League of Legends", "League of Legends runes", "Runas de League of Legends")}
+            {copy(
+              "Runas de League of Legends",
+              "League of Legends runes",
+              "Runas de League of Legends",
+            )}
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
@@ -168,7 +169,11 @@ export function LeagueRunesExplorer({ locale }: { locale: Locale }) {
           <div className="border-b border-border p-5 sm:p-6">
             <div className="flex items-center gap-4">
               <div className="grid size-16 shrink-0 place-items-center rounded-2xl border border-border bg-muted/10">
-                <img src={leagueRuneIcon(activeStyle.icon)} alt="" className="size-11 object-contain" />
+                <img
+                  src={leagueRuneIcon(activeStyle.icon)}
+                  alt=""
+                  className="size-11 object-contain"
+                />
               </div>
               <div>
                 <p className="section-kicker">{activeStyle.key}</p>
@@ -260,7 +265,10 @@ export function LeagueRunesExplorer({ locale }: { locale: Locale }) {
               </p>
               <div className="mt-3 space-y-2">
                 {row.map((option) => (
-                  <div key={option.key} className="rounded-xl border border-border bg-background/45 p-3">
+                  <div
+                    key={option.key}
+                    className="rounded-xl border border-border bg-background/45 p-3"
+                  >
                     <p className="text-xs font-bold text-foreground">{option.name[locale]}</p>
                     <p className="mt-1 text-[0.68rem] leading-4 text-muted-foreground">
                       {option.description[locale]}
@@ -273,7 +281,7 @@ export function LeagueRunesExplorer({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-{activeStyle ? (
+      {activeStyle ? (
         <LeagueRuneTreeWheel
           locale={locale}
           styles={styles}

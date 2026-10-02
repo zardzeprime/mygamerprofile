@@ -9,7 +9,6 @@ type ImageFit = "cover" | "contain";
 const reliableImageUrl = (url: string) =>
   `https://images.weserv.nl/?url=${encodeURIComponent(url)}&w=1200&fit=inside&we`;
 
-
 export type SoulsBossImageAsset = {
   url: string;
   sourceUrl: string;
@@ -86,7 +85,13 @@ const creativeUncut = (
 export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
   "iudex-gundyr": ds3("Gundyr concept.png", "50% 28%", "50% 34%", 1, 1.08),
   "vordt-of-the-boreal-valley": ds3("Vordt concept.png", "50% 42%", "50% 43%", 1, 1.08),
-  "curse-rotted-greatwood": ds3("Curse rotted greatwood concept.png", "50% 38%", "50% 40%", 1, 1.08),
+  "curse-rotted-greatwood": ds3(
+    "Curse rotted greatwood concept.png",
+    "50% 38%",
+    "50% 40%",
+    1,
+    1.08,
+  ),
   "crystal-sage": ds3("Crystal sage concept.png", "50% 24%", "50% 30%", 1, 1.08),
   "deacons-of-the-deep": ds3("Deacons concept.png", "50% 35%", "50% 38%", 1, 1.1),
   "abyss-watchers": ds3("Abyss Watcher (DS3 Design Works).png", "50% 26%", "50% 31%", 1, 1.08),
@@ -155,7 +160,13 @@ export const DARK_SOULS_III_BOSS_IMAGES: Record<string, SoulsBossImageAsset> = {
 
   "sister-friede-and-father-ariandel": ds3("Friede concept.png", "50% 24%", "50% 30%", 1, 1.07),
   "sister-friede": ds3("Friede concept.png", "50% 24%", "50% 30%", 1, 1.07),
-  "demon-in-pain-demon-from-below-and-demon-prince": ds3("Demon Prince artwork.png", "50% 40%", "50% 42%", 1, 1.12),
+  "demon-in-pain-demon-from-below-and-demon-prince": ds3(
+    "Demon Prince artwork.png",
+    "50% 40%",
+    "50% 42%",
+    1,
+    1.12,
+  ),
   "demon-prince": ds3("Demon Prince artwork.png", "50% 40%", "50% 42%", 1, 1.12),
   "halflight-spear-of-the-church": ds3(
     "Halflight concept.png",

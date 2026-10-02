@@ -14,7 +14,12 @@ type NoctisMarkProps = {
  * NEXUS remains the internal runtime/orchestration name for compatibility.
  * Public surfaces use a crisp, high-resolution Noctis illustration.
  */
-export function NoctisMark({ className, title = "Noctis", calmMotion = false, faceOnly = false }: NoctisMarkProps) {
+export function NoctisMark({
+  className,
+  title = "Noctis",
+  calmMotion = false,
+  faceOnly = false,
+}: NoctisMarkProps) {
   return (
     <span
       className={cn(

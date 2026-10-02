@@ -232,8 +232,7 @@ const en: Record<TranslationKey, string> = {
   "auth.resetSent": "If the email exists, we sent recovery instructions.",
 
   "home.hero.title": "Your identity across games.",
-  "home.hero.subtitle":
-    "ÍMPAR brings your profile, games, achievements and communities together.",
+  "home.hero.subtitle": "ÍMPAR brings your profile, games, achievements and communities together.",
   "home.cta.createProfile": "Create profile",
   "home.cta.login": "Sign in",
   "home.cta.exploreGames": "Explore games",

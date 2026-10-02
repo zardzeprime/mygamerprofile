@@ -25,25 +25,23 @@ export function searchGamesAndCommunities(query: string, limit = 5) {
     return 99;
   };
 
-  const matches = ACTIVE_GAMES
-    .map((game) => ({ game, score: score(game) }))
+  const matches = ACTIVE_GAMES.map((game) => ({ game, score: score(game) }))
     .filter((entry) => entry.score < 99)
     .sort((a, b) => a.score - b.score || a.game.name.localeCompare(b.game.name))
     .slice(0, limit)
     .map((entry) => entry.game);
 
-  const robloxExperiences = ROBLOX_EXPERIENCES
-    .map((experience) => {
-      const name = normalize(experience.name);
-      const aliases = experience.aliases.map(normalize);
-      const category = normalize(experience.category);
-      let rank = 99;
-      if (name === term || aliases.includes(term)) rank = 0;
-      else if (name.startsWith(term) || aliases.some((alias) => alias.startsWith(term))) rank = 1;
-      else if (name.includes(term) || aliases.some((alias) => alias.includes(term))) rank = 2;
-      else if (category.includes(term) || term === "roblox" || term === "anime roblox") rank = 3;
-      return { experience, rank };
-    })
+  const robloxExperiences = ROBLOX_EXPERIENCES.map((experience) => {
+    const name = normalize(experience.name);
+    const aliases = experience.aliases.map(normalize);
+    const category = normalize(experience.category);
+    let rank = 99;
+    if (name === term || aliases.includes(term)) rank = 0;
+    else if (name.startsWith(term) || aliases.some((alias) => alias.startsWith(term))) rank = 1;
+    else if (name.includes(term) || aliases.some((alias) => alias.includes(term))) rank = 2;
+    else if (category.includes(term) || term === "roblox" || term === "anime roblox") rank = 3;
+    return { experience, rank };
+  })
     .filter((entry) => entry.rank < 99)
     .sort((a, b) => a.rank - b.rank || a.experience.name.localeCompare(b.experience.name))
     .slice(0, limit)

@@ -138,7 +138,9 @@ export function LfgMatchCenter({
           </p>
         </div>
         <div className="flex items-center gap-2 rounded-full border border-border px-3 py-2 text-xs text-muted-foreground">
-          <ShieldCheck className={ageDeclared ? "size-4 text-gold-strong" : "size-4 text-amber-300"} />
+          <ShieldCheck
+            className={ageDeclared ? "size-4 text-gold-strong" : "size-4 text-amber-300"}
+          />
           {ageDeclared
             ? copy("Idade declarada", "Declared age", "Edad declarada")
             : copy("Idade necessária", "Age required", "Edad necesaria")}
@@ -180,7 +182,11 @@ export function LfgMatchCenter({
               ))
             ) : (
               <p className="text-sm text-muted-foreground">
-                {copy("Nenhum pedido recebido ainda.", "No incoming requests yet.", "Todavía no hay solicitudes recibidas.")}
+                {copy(
+                  "Nenhum pedido recebido ainda.",
+                  "No incoming requests yet.",
+                  "Todavía no hay solicitudes recibidas.",
+                )}
               </p>
             )}
           </div>
@@ -208,7 +214,11 @@ export function LfgMatchCenter({
               ))
             ) : (
               <p className="text-sm text-muted-foreground">
-                {copy("Você ainda não pediu match em nenhum grupo.", "You have not requested a match yet.", "Todavía no has pedido match en ningún grupo.")}
+                {copy(
+                  "Você ainda não pediu match em nenhum grupo.",
+                  "You have not requested a match yet.",
+                  "Todavía no has pedido match en ningún grupo.",
+                )}
               </p>
             )}
           </div>
@@ -242,17 +252,12 @@ function MatchRow({
   const gameName = post.game?.name ?? post.external_game_name ?? copy("Jogo", "Game", "Juego");
   const chatExpired =
     application.status === "accepted" &&
-    (!application.chat_expires_at ||
-      new Date(application.chat_expires_at).getTime() <= Date.now());
+    (!application.chat_expires_at || new Date(application.chat_expires_at).getTime() <= Date.now());
 
   return (
     <article className="rounded-xl border border-border bg-background/45 p-3">
       <div className="flex items-start gap-3">
-        <UserAvatar
-          src={otherUser?.avatar_url}
-          name={otherUser?.display_name}
-          size="sm"
-        />
+        <UserAvatar src={otherUser?.avatar_url} name={otherUser?.display_name} size="sm" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold text-foreground">
             {otherUser?.display_name ?? copy("Jogador", "Player", "Jugador")}
@@ -482,7 +487,11 @@ function LfgTextChatDialog({
               return (
                 <div
                   key={message.id}
-                  className={own ? "ml-auto max-w-[82%] rounded-xl bg-gold-soft px-3 py-2 text-sm" : "mr-auto max-w-[82%] rounded-xl bg-muted px-3 py-2 text-sm"}
+                  className={
+                    own
+                      ? "ml-auto max-w-[82%] rounded-xl bg-gold-soft px-3 py-2 text-sm"
+                      : "mr-auto max-w-[82%] rounded-xl bg-muted px-3 py-2 text-sm"
+                  }
                 >
                   <p className="whitespace-pre-wrap break-words">{message.body}</p>
                   <div className="mt-1 flex items-center justify-between gap-2">
@@ -506,7 +515,11 @@ function LfgTextChatDialog({
             })
           ) : (
             <p className="py-8 text-center text-sm text-muted-foreground">
-              {copy("Comece a conversa por texto.", "Start the text conversation.", "Empieza la conversación por texto.")}
+              {copy(
+                "Comece a conversa por texto.",
+                "Start the text conversation.",
+                "Empieza la conversación por texto.",
+              )}
             </p>
           )}
         </div>
@@ -525,7 +538,11 @@ function LfgTextChatDialog({
             }
           />
           <Button type="submit" disabled={expired || sending || !body.trim()} className="self-end">
-            {sending ? <Clock3 className="size-4 animate-pulse" /> : <MessageCircle className="size-4" />}
+            {sending ? (
+              <Clock3 className="size-4 animate-pulse" />
+            ) : (
+              <MessageCircle className="size-4" />
+            )}
           </Button>
         </form>
       </DialogContent>

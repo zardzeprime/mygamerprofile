@@ -98,7 +98,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "ÍMPAR é uma plataforma brasileira de identidade gamer: perfis, jogos, Códice, Comunidades, conteúdo e LFG do seu jeito.",
       },
-      { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" },
+      {
+        name: "robots",
+        content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+      },
       { name: "theme-color", content: "#0a0e17" },
       { property: "og:site_name", content: "ÍMPAR" },
       { property: "og:type", content: "website" },

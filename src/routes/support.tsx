@@ -44,8 +44,7 @@ export const Route = createFileRoute("/support")({
 
 function SupportPage() {
   const { locale } = useI18n();
-  const copy = (pt: string, en: string, es: string) =>
-    localeCopy(locale, pt, en, es);
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [copied, setCopied] = useState<"key" | "code" | null>(null);
   const pix = SUPPORT_METHODS.find((method) => method.id === "pix");
   const recurring = SUPPORT_METHODS.find((method) => method.id === "recurring");
@@ -99,7 +98,9 @@ function SupportPage() {
             <p className="mt-3 text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
               {copy("Quem está por trás", "Who is behind it", "Quién está detrás")}
             </p>
-            <p className="mt-2 font-display text-lg font-semibold text-foreground">ESDRAS, 22 anos</p>
+            <p className="mt-2 font-display text-lg font-semibold text-foreground">
+              ESDRAS, 22 anos
+            </p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               {copy(
                 "Graduando em uma área fora da programação, aprendendo desenvolvimento enquanto transforma algumas ideias antigas em um produto real e que possa fazer sentido para o público.",
@@ -185,7 +186,11 @@ function SupportPage() {
       <section className="mt-4 grid gap-4 md:grid-cols-2">
         <StoryCard
           icon={ServerCog}
-          title={copy("Como está sendo feito", "How it is being built", "Cómo se está construyendo")}
+          title={copy(
+            "Como está sendo feito",
+            "How it is being built",
+            "Cómo se está construyendo",
+          )}
           body={copy(
             "O projeto combina trabalho humano com IA para programação, pesquisa, revisão, testes e organização. A decisão final, a responsabilidade pelo produto e a direção continuam humanas.",
             "The project combines human work with AI for coding, research, review, testing and organization. Product direction, final decisions and responsibility remain human.",
@@ -204,9 +209,15 @@ function SupportPage() {
       </section>
 
       <section className="mt-8">
-        <p className="section-kicker">{copy("APOIO FINANCEIRO", "FINANCIAL SUPPORT", "APOYO FINANCIERO")}</p>
+        <p className="section-kicker">
+          {copy("APOIO FINANCEIRO", "FINANCIAL SUPPORT", "APOYO FINANCIERO")}
+        </p>
         <h2 className="mt-2 font-display text-2xl font-semibold text-foreground">
-          {copy("Duas formas simples de ajudar", "Two simple ways to help", "Dos formas simples de ayudar")}
+          {copy(
+            "Duas formas simples de ajudar",
+            "Two simple ways to help",
+            "Dos formas simples de ayudar",
+          )}
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
           {copy(
@@ -220,7 +231,11 @@ function SupportPage() {
           <SupportCard
             icon={WalletCards}
             title="Pix"
-            badge={copy("Recomendado para apoio pontual", "Best for one-time support", "Recomendado para apoyo puntual")}
+            badge={copy(
+              "Recomendado para apoio pontual",
+              "Best for one-time support",
+              "Recomendado para apoyo puntual",
+            )}
             description={copy(
               "O Pix usa uma chave aleatória dedicada ao projeto, evitando expor CPF, telefone ou e-mail pessoal. O nome do recebedor é mostrado antes da cópia para você conferir o destino.",
               "Pix uses a random key dedicated to the project, avoiding exposure of a personal ID, phone number or email. The recipient name is shown before copying so you can confirm the destination.",
@@ -245,7 +260,11 @@ function SupportPage() {
                       <div className="rounded-xl border border-border bg-white p-3 shadow-sm">
                         <img
                           src={pix.pixQrImageUrl}
-                          alt={copy("QR Code Pix do ÍMPAR", "ÍMPAR Pix QR code", "Código QR Pix de ÍMPAR")}
+                          alt={copy(
+                            "QR Code Pix do ÍMPAR",
+                            "ÍMPAR Pix QR code",
+                            "Código QR Pix de ÍMPAR",
+                          )}
                           className="mx-auto aspect-square w-full"
                         />
                       </div>
@@ -264,14 +283,30 @@ function SupportPage() {
                     </div>
                   ) : null}
                   <div className="flex flex-wrap gap-2">
-                    <button type="button" onClick={() => void copyPix("code")} className="brand-button min-h-11 gap-2">
-                      {copied === "code" ? <CheckCircle2 className="size-4" /> : <Copy className="size-4" />}
+                    <button
+                      type="button"
+                      onClick={() => void copyPix("code")}
+                      className="brand-button min-h-11 gap-2"
+                    >
+                      {copied === "code" ? (
+                        <CheckCircle2 className="size-4" />
+                      ) : (
+                        <Copy className="size-4" />
+                      )}
                       {copied === "code"
                         ? copy("Pix Copia e Cola copiado", "Pix code copied", "Código Pix copiado")
                         : copy("Copiar Pix Copia e Cola", "Copy Pix code", "Copiar código Pix")}
                     </button>
-                    <button type="button" onClick={() => void copyPix("key")} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border px-4 text-sm font-semibold text-foreground transition hover:bg-muted/50">
-                      {copied === "key" ? <CheckCircle2 className="size-4" /> : <Copy className="size-4" />}
+                    <button
+                      type="button"
+                      onClick={() => void copyPix("key")}
+                      className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border px-4 text-sm font-semibold text-foreground transition hover:bg-muted/50"
+                    >
+                      {copied === "key" ? (
+                        <CheckCircle2 className="size-4" />
+                      ) : (
+                        <Copy className="size-4" />
+                      )}
                       {copied === "key"
                         ? copy("Chave copiada", "Key copied", "Clave copiada")
                         : copy("Copiar chave", "Copy key", "Copiar clave")}
@@ -302,9 +337,15 @@ function SupportPage() {
       </section>
 
       <section className="mt-8 rounded-[1.2rem_1.2rem_0.55rem_1.2rem] border border-gold/20 bg-gold/[0.04] p-5 sm:p-6">
-        <p className="section-kicker">{copy("MONETIZAÇÃO FUTURA", "FUTURE MONETIZATION", "MONETIZACIÓN FUTURA")}</p>
+        <p className="section-kicker">
+          {copy("MONETIZAÇÃO FUTURA", "FUTURE MONETIZATION", "MONETIZACIÓN FUTURA")}
+        </p>
         <h2 className="mt-2 font-display text-xl font-semibold text-foreground">
-          {copy("Apoio hoje não é uma promessa de benefício amanhã.", "Support today is not a promise of future perks.", "Apoyar hoy no es una promesa de beneficios futuros.")}
+          {copy(
+            "Apoio hoje não é uma promessa de benefício amanhã.",
+            "Support today is not a promise of future perks.",
+            "Apoyar hoy no es una promesa de beneficios futuros.",
+          )}
         </h2>
         <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
           {copy(
@@ -316,11 +357,21 @@ function SupportPage() {
       </section>
 
       <section className="mt-8 rounded-[1.2rem_1.2rem_0.55rem_1.2rem] border border-border bg-muted/15 p-5 sm:p-6">
-        <p className="section-kicker">{copy("SEM DINHEIRO TAMBÉM AJUDA", "YOU CAN HELP WITHOUT MONEY", "TAMBIÉN PUEDES AYUDAR SIN DINERO")}</p>
+        <p className="section-kicker">
+          {copy(
+            "SEM DINHEIRO TAMBÉM AJUDA",
+            "YOU CAN HELP WITHOUT MONEY",
+            "TAMBIÉN PUEDES AYUDAR SIN DINERO",
+          )}
+        </p>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           <SmallHelp
             icon={Bug}
-            title={copy("Testar e reportar bugs", "Test and report bugs", "Probar y reportar errores")}
+            title={copy(
+              "Testar e reportar bugs",
+              "Test and report bugs",
+              "Probar y reportar errores",
+            )}
             body={copy(
               "Abrir o site em celular e PC e apontar o que ficou estranho já economiza muito tempo.",
               "Opening the site on mobile and desktop and reporting what feels wrong saves a lot of time.",
@@ -391,7 +442,9 @@ function SupportPage() {
             <Instagram className="size-4 text-gold-strong" />
             <span>
               <span className="block text-sm font-semibold text-foreground">Instagram</span>
-              <span className="block text-xs text-muted-foreground">{SUPPORT_INSTAGRAM_HANDLE}</span>
+              <span className="block text-xs text-muted-foreground">
+                {SUPPORT_INSTAGRAM_HANDLE}
+              </span>
             </span>
           </a>
         </div>
@@ -458,22 +511,16 @@ function SupportCard({
         </span>
       </div>
       <h3 className="mt-4 font-display text-xl font-semibold text-foreground">{title}</h3>
-      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-gold-strong">{badge}</p>
+      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-gold-strong">
+        {badge}
+      </p>
       <p className="mt-3 text-sm leading-6 text-muted-foreground">{description}</p>
       <div className="mt-5">{action}</div>
     </article>
   );
 }
 
-function SmallHelp({
-  icon: Icon,
-  title,
-  body,
-}: {
-  icon: typeof Bug;
-  title: string;
-  body: string;
-}) {
+function SmallHelp({ icon: Icon, title, body }: { icon: typeof Bug; title: string; body: string }) {
   return (
     <div>
       <Icon className="size-4 text-gold-strong" aria-hidden="true" />

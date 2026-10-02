@@ -62,7 +62,10 @@ function GamesCatalog() {
   ];
 
   return (
-    <AdReadyLayout className="impar-shell mx-auto w-full max-w-[92rem] px-4 py-10 sm:px-6 sm:py-16" rail={<AdSlot id="games-catalog-rail" format="rail" />}>
+    <AdReadyLayout
+      className="impar-shell mx-auto w-full max-w-[92rem] px-4 py-10 sm:px-6 sm:py-16"
+      rail={<AdSlot id="games-catalog-rail" format="rail" />}
+    >
       <p className="impar-kicker">ÍMPAR / ARQUIVOS</p>
       <h1 className="mt-2 font-display text-3xl font-bold text-foreground sm:text-5xl">
         {copy("Arquivos", "Archives", "Archivos")}
@@ -85,7 +88,9 @@ function GamesCatalog() {
       <div className="mt-8 flex flex-col gap-3 border-y border-border py-4 sm:flex-row sm:items-center sm:justify-between">
         <label className="flex max-w-md flex-1 items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2.5 transition-colors focus-within:border-[var(--impar-spectral)]/60 focus-within:ring-1 focus-within:ring-[var(--impar-spectral)]/20">
           <Search aria-hidden="true" className="size-4 text-muted-foreground" />
-          <span className="sr-only">{copy("Buscar nos Arquivos", "Search Archives", "Buscar en Archivos")}</span>
+          <span className="sr-only">
+            {copy("Buscar nos Arquivos", "Search Archives", "Buscar en Archivos")}
+          </span>
           <input
             type="search"
             value={query}
@@ -94,7 +99,10 @@ function GamesCatalog() {
             className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
         </label>
-        <div className="flex flex-wrap gap-2 text-xs font-semibold uppercase text-muted-foreground" aria-label={copy("Filtros dos Arquivos", "Archive filters", "Filtros de Archivos")}>
+        <div
+          className="flex flex-wrap gap-2 text-xs font-semibold uppercase text-muted-foreground"
+          aria-label={copy("Filtros dos Arquivos", "Archive filters", "Filtros de Archivos")}
+        >
           {filters.map((filter) => {
             const selected = genreFilter === filter.value;
             return (
@@ -115,10 +123,18 @@ function GamesCatalog() {
       <AdSlot id="games-catalog-top" format="leaderboard" className="mt-6" />
       <div className="mt-8">
         {results.length === 0 ? (
-          <EmptyState title={copy("Nenhum registro encontrado.", "No entries found.", "No se encontraron registros.")} />
+          <EmptyState
+            title={copy(
+              "Nenhum registro encontrado.",
+              "No entries found.",
+              "No se encontraron registros.",
+            )}
+          />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {results.map((game) => <GameCard key={game.slug} game={game} />)}
+            {results.map((game) => (
+              <GameCard key={game.slug} game={game} />
+            ))}
           </div>
         )}
       </div>

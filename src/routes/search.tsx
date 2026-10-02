@@ -136,7 +136,9 @@ function SearchPage() {
                 </span>
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-semibold">{experience.name}</span>
-                  <span className="block truncate text-xs text-muted-foreground">{experience.category}</span>
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {experience.category}
+                  </span>
                 </span>
               </Link>
             ))}

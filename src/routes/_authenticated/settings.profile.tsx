@@ -30,10 +30,7 @@ import { cn } from "@/lib/utils";
 
 function isFavoriteProfileData(value: Json) {
   return Boolean(
-    value &&
-      typeof value === "object" &&
-      !Array.isArray(value) &&
-      value["favorite"] === true,
+    value && typeof value === "object" && !Array.isArray(value) && value["favorite"] === true,
   );
 }
 
@@ -55,14 +52,16 @@ export const Route = createFileRoute("/_authenticated/settings/profile")({
     if (profileError) throw new Error(profileError.message);
     if (!profile) throw redirect({ to: "/onboarding" });
 
-    const [{ data: gameRows, error: gamesError }, { data: gameProfiles, error: gameProfilesError }] =
-      await Promise.all([
-        supabase.from("games").select("id,slug").eq("active", true).order("name"),
-        supabase
-          .from("game_profiles")
-          .select("game_id,profile_data,visibility")
-          .eq("user_id", profile.id),
-      ]);
+    const [
+      { data: gameRows, error: gamesError },
+      { data: gameProfiles, error: gameProfilesError },
+    ] = await Promise.all([
+      supabase.from("games").select("id,slug").eq("active", true).order("name"),
+      supabase
+        .from("game_profiles")
+        .select("game_id,profile_data,visibility")
+        .eq("user_id", profile.id),
+    ]);
 
     if (gamesError) throw new Error(gamesError.message);
     if (gameProfilesError) throw new Error(gameProfilesError.message);
@@ -219,7 +218,13 @@ function SettingsProfilePage() {
       const url = await uploadImage("avatars", file, "profile-avatar");
       setAvatarUrl(url);
     } catch {
-      setError(copy("Não foi possível enviar o avatar.", "Could not upload the avatar.", "No se pudo subir el avatar."));
+      setError(
+        copy(
+          "Não foi possível enviar o avatar.",
+          "Could not upload the avatar.",
+          "No se pudo subir el avatar.",
+        ),
+      );
     } finally {
       setUploadingAvatar(false);
       event.target.value = "";
@@ -232,11 +237,21 @@ function SettingsProfilePage() {
     <SettingsLayout>
       <form onSubmit={handleSubmit} className="space-y-5">
         <section className="surface-panel overflow-hidden rounded-2xl">
-          <div className={cn("relative min-h-48 overflow-hidden p-5 sm:min-h-56 sm:p-7", selectedBackground.className)}>
+          <div
+            className={cn(
+              "relative min-h-48 overflow-hidden p-5 sm:min-h-56 sm:p-7",
+              selectedBackground.className,
+            )}
+          >
             <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
             <div className="relative flex min-h-36 items-end gap-4 sm:gap-5">
               <div className="relative shrink-0">
-                <UserAvatar src={avatarUrl} name={displayName} size="lg" className="border-4 border-background shadow-lift" />
+                <UserAvatar
+                  src={avatarUrl}
+                  name={displayName}
+                  size="lg"
+                  className="border-4 border-background shadow-lift"
+                />
                 <button
                   type="button"
                   onClick={() => avatarInput.current?.click()}
@@ -255,7 +270,9 @@ function SettingsProfilePage() {
                 />
               </div>
               <div className="min-w-0 pb-1">
-                <p className="truncate font-display text-xl font-bold text-foreground sm:text-2xl">{displayName || "ÍMPAR Player"}</p>
+                <p className="truncate font-display text-xl font-bold text-foreground sm:text-2xl">
+                  {displayName || "ÍMPAR Player"}
+                </p>
                 <p className="truncate text-sm text-muted-foreground">@{username || "username"}</p>
               </div>
             </div>
@@ -263,9 +280,15 @@ function SettingsProfilePage() {
 
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-4 sm:px-7">
             <div>
-              <p className="text-sm font-semibold">{copy("Prévia do perfil", "Profile preview", "Vista previa del perfil")}</p>
+              <p className="text-sm font-semibold">
+                {copy("Prévia do perfil", "Profile preview", "Vista previa del perfil")}
+              </p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {copy("Esta prévia cobre os dados básicos. Títulos, fundos, molduras e efeitos equipados aparecem no seu perfil público.", "This preview covers basic profile data. Equipped titles, backgrounds, frames and effects appear on your public profile.", "Esta vista cubre los datos básicos. Los títulos, fondos, marcos y efectos equipados aparecen en tu perfil público.")}
+                {copy(
+                  "Esta prévia cobre os dados básicos. Títulos, fundos, molduras e efeitos equipados aparecem no seu perfil público.",
+                  "This preview covers basic profile data. Equipped titles, backgrounds, frames and effects appear on your public profile.",
+                  "Esta vista cubre los datos básicos. Los títulos, fondos, marcos y efectos equipados aparecen en tu perfil público.",
+                )}
               </p>
             </div>
             <Button asChild variant="outline" size="sm">
@@ -277,30 +300,55 @@ function SettingsProfilePage() {
           </div>
         </section>
 
-
-
         <section className="surface-panel rounded-2xl p-3 sm:p-4">
           <div className="grid gap-2 sm:grid-cols-3">
-            <a href="#profile-appearance" className="rounded-xl border border-border bg-muted/15 px-3 py-3 transition-colors hover:border-gold/35 hover:bg-gold-soft/20">
+            <a
+              href="#profile-appearance"
+              className="rounded-xl border border-border bg-muted/15 px-3 py-3 transition-colors hover:border-gold/35 hover:bg-gold-soft/20"
+            >
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <Sparkles className="size-4 text-gold-strong" />
                 {copy("Aparência & títulos", "Appearance & titles", "Apariencia y títulos")}
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">{copy("Cosméticos e loadout visual.", "Cosmetics and visual loadout.", "Cosméticos y loadout visual.")}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {copy(
+                  "Cosméticos e loadout visual.",
+                  "Cosmetics and visual loadout.",
+                  "Cosméticos y loadout visual.",
+                )}
+              </p>
             </a>
-            <a href="#profile-games" className="rounded-xl border border-border bg-muted/15 px-3 py-3 transition-colors hover:border-gold/35 hover:bg-gold-soft/20">
+            <a
+              href="#profile-games"
+              className="rounded-xl border border-border bg-muted/15 px-3 py-3 transition-colors hover:border-gold/35 hover:bg-gold-soft/20"
+            >
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <Gamepad2 className="size-4 text-gold-strong" />
                 {copy("Jogos favoritos", "Favorite games", "Juegos favoritos")}
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">{copy("Destaques do seu perfil gamer.", "Highlights for your gamer profile.", "Destacados de tu perfil gamer.")}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {copy(
+                  "Destaques do seu perfil gamer.",
+                  "Highlights for your gamer profile.",
+                  "Destacados de tu perfil gamer.",
+                )}
+              </p>
             </a>
-            <a href="#profile-info" className="rounded-xl border border-border bg-muted/15 px-3 py-3 transition-colors hover:border-gold/35 hover:bg-gold-soft/20">
+            <a
+              href="#profile-info"
+              className="rounded-xl border border-border bg-muted/15 px-3 py-3 transition-colors hover:border-gold/35 hover:bg-gold-soft/20"
+            >
               <div className="flex items-center gap-2 text-sm font-semibold">
                 <UserRound className="size-4 text-gold-strong" />
                 {copy("Informações", "Information", "Información")}
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">{copy("Nome, username, bio e visibilidade.", "Name, username, bio and visibility.", "Nombre, usuario, bio y visibilidad.")}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {copy(
+                  "Nome, username, bio e visibilidade.",
+                  "Name, username, bio and visibility.",
+                  "Nombre, usuario, bio y visibilidad.",
+                )}
+              </p>
             </a>
           </div>
         </section>
@@ -335,7 +383,9 @@ function SettingsProfilePage() {
                   onClick={() => toggleFavoriteGame(game.slug)}
                   className={cn(
                     "group overflow-hidden rounded-xl border bg-surface text-left transition-all hover:-translate-y-0.5",
-                    selected ? "border-gold/65 ring-2 ring-gold/15" : "border-border hover:border-gold/35",
+                    selected
+                      ? "border-gold/65 ring-2 ring-gold/15"
+                      : "border-border hover:border-gold/35",
                   )}
                 >
                   <div className="relative h-28 overflow-hidden">
@@ -344,7 +394,9 @@ function SettingsProfilePage() {
                     <span
                       className={cn(
                         "absolute right-3 top-3 grid size-7 place-items-center rounded-full border backdrop-blur",
-                        selected ? "border-gold bg-gold text-gold-foreground" : "border-white/20 bg-black/35 text-white/70",
+                        selected
+                          ? "border-gold bg-gold text-gold-foreground"
+                          : "border-white/20 bg-black/35 text-white/70",
                       )}
                     >
                       <Check className={cn("size-4", !selected && "opacity-0")} />
@@ -352,7 +404,9 @@ function SettingsProfilePage() {
                   </div>
                   <div className="p-4">
                     <p className="font-display text-sm font-semibold">{game.name}</p>
-                    <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">{game.genre}</p>
+                    <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">
+                      {game.genre}
+                    </p>
                   </div>
                 </button>
               );
@@ -363,7 +417,9 @@ function SettingsProfilePage() {
         <SteamFavoriteGameEditor userId={profile.id} locale={locale} />
 
         <section id="profile-info" className="surface-panel scroll-mt-24 rounded-2xl p-4 sm:p-6">
-          <h2 className="font-display text-xl font-semibold">{copy("Informações do perfil", "Profile information", "Información del perfil")}</h2>
+          <h2 className="font-display text-xl font-semibold">
+            {copy("Informações do perfil", "Profile information", "Información del perfil")}
+          </h2>
           <p className="mb-5 mt-2 text-sm leading-6 text-muted-foreground">
             {copy(
               "Edite aqui apenas os dados básicos da conta. A parte visual fica concentrada em Aparência & títulos para evitar configurações repetidas.",
@@ -374,35 +430,68 @@ function SettingsProfilePage() {
           <div className="grid gap-5 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="displayName">{t("auth.displayName")}</Label>
-              <Input id="displayName" value={displayName} onChange={(event) => setDisplayName(event.target.value)} required maxLength={80} />
+              <Input
+                id="displayName"
+                value={displayName}
+                onChange={(event) => setDisplayName(event.target.value)}
+                required
+                maxLength={80}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="username">{t("auth.username")}</Label>
-              <Input id="username" value={username} onChange={(event) => setUsername(event.target.value.toLowerCase())} required maxLength={20} />
+              <Input
+                id="username"
+                value={username}
+                onChange={(event) => setUsername(event.target.value.toLowerCase())}
+                required
+                maxLength={20}
+              />
               <p className="text-xs text-muted-foreground">{t("auth.errors.invalidUsername")}</p>
             </div>
           </div>
 
           <div className="mt-5 space-y-2">
             <Label htmlFor="bio">{t("auth.bio")}</Label>
-            <Textarea id="bio" value={bio} onChange={(event) => setBio(event.target.value)} rows={4} maxLength={500} />
-            <p className="text-right text-xs tabular-nums text-muted-foreground">{bio.length}/500</p>
+            <Textarea
+              id="bio"
+              value={bio}
+              onChange={(event) => setBio(event.target.value)}
+              rows={4}
+              maxLength={500}
+            />
+            <p className="text-right text-xs tabular-nums text-muted-foreground">
+              {bio.length}/500
+            </p>
           </div>
 
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="language">{t("settings.language")}</Label>
               <Select value={language} onValueChange={(value) => setLanguage(value as Locale)}>
-                <SelectTrigger id="language"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="language">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
-                  {LOCALES.map((loc) => <SelectItem key={loc} value={loc}>{LOCALE_LABELS[loc]}</SelectItem>)}
+                  {LOCALES.map((loc) => (
+                    <SelectItem key={loc} value={loc}>
+                      {LOCALE_LABELS[loc]}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="visibility">{copy("Visibilidade", "Visibility", "Visibilidad")}</Label>
-              <Select value={visibility} onValueChange={(value) => setVisibility(value as "public" | "private")}>
-                <SelectTrigger id="visibility"><SelectValue /></SelectTrigger>
+              <Label htmlFor="visibility">
+                {copy("Visibilidade", "Visibility", "Visibilidad")}
+              </Label>
+              <Select
+                value={visibility}
+                onValueChange={(value) => setVisibility(value as "public" | "private")}
+              >
+                <SelectTrigger id="visibility">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="public">{copy("Público", "Public", "Público")}</SelectItem>
                   <SelectItem value="private">{copy("Privado", "Private", "Privado")}</SelectItem>
@@ -432,7 +521,9 @@ function SettingsProfilePage() {
               {loading ? t("common.loading") : t("settings.save")}
             </Button>
             <Button type="button" variant="outline" asChild>
-              <Link to="/u/$username" params={{ username }}>{copy("Abrir perfil", "Open profile", "Abrir perfil")}</Link>
+              <Link to="/u/$username" params={{ username }}>
+                {copy("Abrir perfil", "Open profile", "Abrir perfil")}
+              </Link>
             </Button>
           </div>
         </section>

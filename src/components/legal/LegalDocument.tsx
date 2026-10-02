@@ -46,19 +46,14 @@ export function LegalDocument({
               <h1 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 {title}
               </h1>
-              <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base">
-                {summary}
-              </p>
+              <p className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base">{summary}</p>
             </div>
             <BrandLogoPlaceholder size="lg" className="shrink-0" />
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/70 px-3 py-1.5">
-              <CalendarDays
-                className="size-3.5 text-gold-strong"
-                aria-hidden="true"
-              />
+              <CalendarDays className="size-3.5 text-gold-strong" aria-hidden="true" />
               Vigente desde {effectiveDate}
             </span>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/70 px-3 py-1.5">
@@ -69,10 +64,7 @@ export function LegalDocument({
         </header>
 
         <div className="grid gap-8 px-5 py-8 sm:px-10 sm:py-10 lg:grid-cols-[13rem_minmax(0,1fr)]">
-          <nav
-            aria-label="Nesta página"
-            className="lg:sticky lg:top-24 lg:self-start"
-          >
+          <nav aria-label="Nesta página" className="lg:sticky lg:top-24 lg:self-start">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
               Nesta página
             </p>
@@ -92,11 +84,7 @@ export function LegalDocument({
 
           <div className="min-w-0 space-y-9">
             {sections.map((section, index) => (
-              <section
-                key={section.id}
-                id={section.id}
-                className="scroll-mt-24"
-              >
+              <section key={section.id} id={section.id} className="scroll-mt-24">
                 <h2 className="font-display text-xl font-semibold text-foreground sm:text-2xl">
                   {index + 1}. {section.title}
                 </h2>

@@ -235,7 +235,16 @@ export const GAMES: GameConfig[] = [
     platforms: ["PC", "PlayStation 4", "Xbox One"],
     ageRating: "16+",
     themeKey: "dark_souls",
-    modules: ["overview", "news", "builds", "dps-test", "fashion-test", "bosses", "items", "guides"],
+    modules: [
+      "overview",
+      "news",
+      "builds",
+      "dps-test",
+      "fashion-test",
+      "bosses",
+      "items",
+      "guides",
+    ],
     expansions: [
       { slug: "ashes-of-ariandel", name: "Ashes of Ariandel", kind: "dlc", releaseLabel: "2016" },
       { slug: "the-ringed-city", name: "The Ringed City", kind: "dlc", releaseLabel: "2017" },
@@ -521,13 +530,21 @@ export const GAMES: GameConfig[] = [
         key: "favorite_companion",
         type: "text",
         maxLength: 80,
-        label: { "pt-BR": "Companheiro favorito", en: "Favorite companion", es: "Compañero favorito" },
+        label: {
+          "pt-BR": "Companheiro favorito",
+          en: "Favorite companion",
+          es: "Compañero favorito",
+        },
       },
       {
         key: "preferred_activity",
         type: "text",
         maxLength: 80,
-        label: { "pt-BR": "Atividade preferida", en: "Preferred activity", es: "Actividad preferida" },
+        label: {
+          "pt-BR": "Atividade preferida",
+          en: "Preferred activity",
+          es: "Actividad preferida",
+        },
       },
       {
         key: "personal_notes",
@@ -543,7 +560,8 @@ export const GAMES: GameConfig[] = [
       fallbackImage: valorantAtmosphere,
       cardObjectPosition: "center",
       heroObjectPosition: "center",
-      assetSource: "ÍMPAR-generated Warframe placeholder; official media can replace it after asset review",
+      assetSource:
+        "ÍMPAR-generated Warframe placeholder; official media can replace it after asset review",
       assetLicense: "ÍMPAR original placeholder; no third-party artwork embedded",
     },
   },
@@ -623,8 +641,10 @@ export const GAMES: GameConfig[] = [
       heroObjectPosition: "center",
       trailerYoutubeId: "e_E9W2vsRbQ",
       trailerUrl: "https://www.youtube.com/watch?v=e_E9W2vsRbQ",
-      assetSource: "User-provided VALORANT card artwork stored locally in the ÍMPAR repository; hub background retains its separately tracked promotional reference",
-      assetLicense: "User-provided project asset using the VALORANT brand mark; repository provenance retained",
+      assetSource:
+        "User-provided VALORANT card artwork stored locally in the ÍMPAR repository; hub background retains its separately tracked promotional reference",
+      assetLicense:
+        "User-provided project asset using the VALORANT brand mark; repository provenance retained",
     },
   },
   {
@@ -641,7 +661,18 @@ export const GAMES: GameConfig[] = [
     platforms: ["PC"],
     ageRating: "12+",
     themeKey: "competitive",
-    modules: ["overview", "news", "champions", "runes", "builds", "maps", "items", "skins", "competitive", "guides"],
+    modules: [
+      "overview",
+      "news",
+      "champions",
+      "runes",
+      "builds",
+      "maps",
+      "items",
+      "skins",
+      "competitive",
+      "guides",
+    ],
     profileFields: [
       {
         key: "favorite_champion",

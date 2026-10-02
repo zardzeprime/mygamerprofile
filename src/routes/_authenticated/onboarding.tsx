@@ -59,8 +59,7 @@ function ageFromBirthDate(value: string, today = new Date()) {
 
   let age = today.getFullYear() - year;
   const beforeBirthday =
-    today.getMonth() < month - 1 ||
-    (today.getMonth() === month - 1 && today.getDate() < day);
+    today.getMonth() < month - 1 || (today.getMonth() === month - 1 && today.getDate() < day);
   if (beforeBirthday) age -= 1;
   return age;
 }
@@ -117,13 +116,25 @@ function OnboardingPage() {
     }
 
     if (genderIdentity === "custom" && !customGender.trim()) {
-      setError(copy("Descreva seu gênero personalizado ou escolha outra opção.", "Describe your custom gender or choose another option.", "Describe tu género personalizado o elige otra opción."));
+      setError(
+        copy(
+          "Descreva seu gênero personalizado ou escolha outra opção.",
+          "Describe your custom gender or choose another option.",
+          "Describe tu género personalizado o elige otra opción.",
+        ),
+      );
       return;
     }
 
     const calculatedAge = ageFromBirthDate(birthDate);
     if (calculatedAge === null || calculatedAge > 120 || calculatedAge < 0) {
-      setError(copy("Informe uma data de nascimento válida.", "Enter a valid birth date.", "Ingresa una fecha de nacimiento válida."));
+      setError(
+        copy(
+          "Informe uma data de nascimento válida.",
+          "Enter a valid birth date.",
+          "Ingresa una fecha de nacimiento válida.",
+        ),
+      );
       return;
     }
     if (calculatedAge < 13) {
@@ -142,7 +153,13 @@ function OnboardingPage() {
       const { data: userData, error: userError } = await supabase.auth.getUser();
       const user = userData.user;
       if (userError || !user) {
-        throw new Error(copy("Sua sessão expirou. Entre novamente.", "Your session expired. Sign in again.", "Tu sesión expiró. Inicia sesión de nuevo."));
+        throw new Error(
+          copy(
+            "Sua sessão expirou. Entre novamente.",
+            "Your session expired. Sign in again.",
+            "Tu sesión expiró. Inicia sesión de nuevo.",
+          ),
+        );
       }
 
       const acceptedAt = new Date().toISOString();
@@ -239,7 +256,9 @@ function OnboardingPage() {
       <Card className="w-full overflow-hidden border-border/80 shadow-lift">
         <CardHeader className="border-b border-border bg-muted/20 px-6 py-7 text-center sm:px-8">
           <BrandLogoPlaceholder size="lg" className="mx-auto mb-4" />
-          <CardTitle className="font-display text-2xl sm:text-3xl">{t("auth.onboarding.title")}</CardTitle>
+          <CardTitle className="font-display text-2xl sm:text-3xl">
+            {t("auth.onboarding.title")}
+          </CardTitle>
           <CardDescription className="mx-auto max-w-xl">
             {copy(
               "Escolha seu nome no ÍMPAR e marque os jogos que já fazem parte da sua identidade gamer.",
@@ -249,7 +268,10 @@ function OnboardingPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="p-6 sm:p-8">
-          <form onSubmit={handleSubmit} className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+          <form
+            onSubmit={handleSubmit}
+            className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+          >
             <div className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="username">{t("auth.username")}</Label>
@@ -268,12 +290,18 @@ function OnboardingPage() {
                   id="displayName"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder={copy("Como você quer aparecer", "How you want to appear", "Cómo quieres aparecer")}
+                  placeholder={copy(
+                    "Como você quer aparecer",
+                    "How you want to appear",
+                    "Cómo quieres aparecer",
+                  )}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="birthDate">{copy("Data de nascimento", "Date of birth", "Fecha de nacimiento")}</Label>
+                <Label htmlFor="birthDate">
+                  {copy("Data de nascimento", "Date of birth", "Fecha de nacimiento")}
+                </Label>
                 <Input
                   id="birthDate"
                   type="date"
@@ -293,23 +321,36 @@ function OnboardingPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="genderIdentity">{copy("Gênero", "Gender", "Género")}</Label>
-                <Select value={genderIdentity} onValueChange={(value) => setGenderIdentity(value as GenderIdentity)}>
+                <Select
+                  value={genderIdentity}
+                  onValueChange={(value) => setGenderIdentity(value as GenderIdentity)}
+                >
                   <SelectTrigger id="genderIdentity">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="male">{copy("Masculino", "Male", "Masculino")}</SelectItem>
                     <SelectItem value="female">{copy("Feminino", "Female", "Femenino")}</SelectItem>
-                    <SelectItem value="non_binary">{copy("Não binário", "Non-binary", "No binario")}</SelectItem>
-                    <SelectItem value="custom">{copy("Personalizado", "Custom", "Personalizado")}</SelectItem>
-                    <SelectItem value="prefer_not_to_say">{copy("Prefiro não dizer", "Prefer not to say", "Prefiero no decirlo")}</SelectItem>
+                    <SelectItem value="non_binary">
+                      {copy("Não binário", "Non-binary", "No binario")}
+                    </SelectItem>
+                    <SelectItem value="custom">
+                      {copy("Personalizado", "Custom", "Personalizado")}
+                    </SelectItem>
+                    <SelectItem value="prefer_not_to_say">
+                      {copy("Prefiro não dizer", "Prefer not to say", "Prefiero no decirlo")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
                 {genderIdentity === "custom" ? (
                   <Input
                     value={customGender}
                     onChange={(e) => setCustomGender(e.target.value.slice(0, 60))}
-                    placeholder={copy("Como você prefere descrever", "How you prefer to describe it", "Cómo prefieres describirlo")}
+                    placeholder={copy(
+                      "Como você prefere descrever",
+                      "How you prefer to describe it",
+                      "Cómo prefieres describirlo",
+                    )}
                     maxLength={60}
                   />
                 ) : null}
@@ -354,7 +395,11 @@ function OnboardingPage() {
               <div className="rounded-xl border border-gold/20 bg-gold/5 p-4 text-sm leading-relaxed text-muted-foreground">
                 <div className="mb-2 flex items-center gap-2 font-semibold text-foreground">
                   <Gamepad2 className="size-4 text-gold-strong" />
-                  {copy("Seu perfil começa aqui", "Your profile starts here", "Tu perfil empieza aquí")}
+                  {copy(
+                    "Seu perfil começa aqui",
+                    "Your profile starts here",
+                    "Tu perfil empieza aquí",
+                  )}
                 </div>
                 {copy(
                   "Depois você poderá completar builds, agentes, chefes favoritos e outras informações dentro de cada Game Profile.",
@@ -366,7 +411,9 @@ function OnboardingPage() {
 
             <div>
               <div className="mb-4">
-                <p className="section-kicker">{copy("JOGOS FAVORITOS", "FAVORITE GAMES", "JUEGOS FAVORITOS")}</p>
+                <p className="section-kicker">
+                  {copy("JOGOS FAVORITOS", "FAVORITE GAMES", "JUEGOS FAVORITOS")}
+                </p>
                 <h2 className="mt-2 font-display text-xl font-semibold text-foreground">
                   {copy("O que você joga?", "What do you play?", "¿Qué juegas?")}
                 </h2>
@@ -410,8 +457,12 @@ function OnboardingPage() {
                         </span>
                       </div>
                       <div className="p-4">
-                        <p className="font-display text-sm font-semibold text-foreground">{game.name}</p>
-                        <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">{game.genre}</p>
+                        <p className="font-display text-sm font-semibold text-foreground">
+                          {game.name}
+                        </p>
+                        <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">
+                          {game.genre}
+                        </p>
                       </div>
                     </button>
                   );
@@ -450,7 +501,8 @@ function OnboardingPage() {
                     className="font-semibold text-gold-strong underline-offset-4 hover:underline"
                   >
                     {copy("Política de Privacidade", "Privacy Policy", "Política de Privacidad")}
-                  </Link>.
+                  </Link>
+                  .
                 </Label>
               </div>
               {error && <p className="mb-4 text-sm text-destructive">{error}</p>}

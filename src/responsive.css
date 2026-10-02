@@ -56,18 +56,35 @@ article {
 
 .profile-hero-scrim {
   background:
-    linear-gradient(0deg, color-mix(in oklab, var(--color-background) 96%, transparent) 0%, color-mix(in oklab, var(--color-background) 30%, transparent) 45%, transparent 76%),
+    linear-gradient(
+      0deg,
+      color-mix(in oklab, var(--color-background) 96%, transparent) 0%,
+      color-mix(in oklab, var(--color-background) 30%, transparent) 45%,
+      transparent 76%
+    ),
     linear-gradient(90deg, color-mix(in oklab, black 32%, transparent), transparent 65%);
 }
 
 .profile-bg-mgp-grid {
   background-color: #151515;
   background-image:
-    radial-gradient(circle at 18% 15%, color-mix(in oklab, var(--color-gold) 32%, transparent), transparent 35%),
+    radial-gradient(
+      circle at 18% 15%,
+      color-mix(in oklab, var(--color-gold) 32%, transparent),
+      transparent 35%
+    ),
     linear-gradient(color-mix(in oklab, var(--color-gold) 10%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklab, var(--color-gold) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--color-gold) 10%, transparent) 1px,
+      transparent 1px
+    ),
     linear-gradient(135deg, #191919, #0e0f12 72%);
-  background-size: auto, 36px 36px, 36px 36px, auto;
+  background-size:
+    auto,
+    36px 36px,
+    36px 36px,
+    auto;
 }
 
 .profile-bg-ember {
@@ -79,8 +96,18 @@ article {
 
 .profile-bg-tactical {
   background:
-    linear-gradient(118deg, transparent 0 28%, rgba(79, 151, 255, 0.18) 28.2% 29%, transparent 29.2% 100%),
-    linear-gradient(62deg, transparent 0 68%, rgba(255, 70, 85, 0.14) 68.2% 69%, transparent 69.2% 100%),
+    linear-gradient(
+      118deg,
+      transparent 0 28%,
+      rgba(79, 151, 255, 0.18) 28.2% 29%,
+      transparent 29.2% 100%
+    ),
+    linear-gradient(
+      62deg,
+      transparent 0 68%,
+      rgba(255, 70, 85, 0.14) 68.2% 69%,
+      transparent 69.2% 100%
+    ),
     radial-gradient(circle at 72% 28%, rgba(79, 151, 255, 0.25), transparent 36%),
     linear-gradient(135deg, #111722, #101114 72%);
 }
@@ -207,7 +234,6 @@ article {
   }
 }
 
-
 /* Premium shell + ad-ready grid. Empty ad slots collapse until inventory is activated. */
 .mgp-ad-layout {
   display: grid;
@@ -215,9 +241,16 @@ article {
   gap: clamp(1rem, 2vw, 1.75rem);
   width: 100%;
 }
-.mgp-ad-layout__main { min-width: 0; }
-.mgp-ad-layout__rail { display: none; min-width: 0; }
-.mgp-ad-slot:empty { display: none; }
+.mgp-ad-layout__main {
+  min-width: 0;
+}
+.mgp-ad-layout__rail {
+  display: none;
+  min-width: 0;
+}
+.mgp-ad-slot:empty {
+  display: none;
+}
 .mgp-ad-slot:not(:empty) {
   width: 100%;
   overflow: clip;
@@ -226,9 +259,15 @@ article {
   background: color-mix(in oklab, var(--color-background) 88%, var(--color-gold) 2%);
   contain: layout paint;
 }
-.mgp-ad-slot--leaderboard:not(:empty) { min-height: 90px; }
-.mgp-ad-slot--rectangle:not(:empty) { min-height: 250px; }
-.mgp-ad-slot--rail:not(:empty) { min-height: 600px; }
+.mgp-ad-slot--leaderboard:not(:empty) {
+  min-height: 90px;
+}
+.mgp-ad-slot--rectangle:not(:empty) {
+  min-height: 250px;
+}
+.mgp-ad-slot--rail:not(:empty) {
+  min-height: 600px;
+}
 
 @media (min-width: 1280px) {
   .mgp-ad-layout:has(.mgp-ad-layout__rail > :not(:empty)) {
@@ -245,7 +284,10 @@ article {
 @media (hover: hover) and (pointer: fine) {
   .surface-panel,
   .game-card {
-    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
   }
   .surface-panel:hover,
   .game-card:hover {

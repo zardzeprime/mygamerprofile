@@ -64,7 +64,8 @@ const PRESETS: BuildPreset[] = [
       es: "Versátil · PvE",
     },
     summary: {
-      "pt-BR": "Uma rota segura para aprender o jogo: Claymore +15, boa vida, stamina alta e investimento equilibrado em Força/Destreza. Ao usar a arma com duas mãos, 27 STR aproveita o bônus de 1,5× de Força.",
+      "pt-BR":
+        "Uma rota segura para aprender o jogo: Claymore +15, boa vida, stamina alta e investimento equilibrado em Força/Destreza. Ao usar a arma com duas mãos, 27 STR aproveita o bônus de 1,5× de Força.",
       en: "A safe learning route: Claymore +15, healthy vitality/endurance and balanced Strength/Dexterity. Two-handing lets 27 STR benefit from the 1.5× Strength modifier.",
       es: "Una ruta segura para aprender: Claymore +15, buena vitalidad/resistencia y Fuerza/Destreza equilibradas. A dos manos, 27 STR aprovecha el modificador de 1,5×.",
     },
@@ -87,8 +88,14 @@ const PRESETS: BuildPreset[] = [
       },
     ],
     sources: [
-      { label: "Steam · Quality / Claymore 27 STR + 40 DEX", url: "https://steamcommunity.com/app/570940/discussions/0/1696049513772474324/" },
-      { label: "Reddit · Claymore como quality weapon", url: "https://www.reddit.com/r/darksouls/comments/nvmkwk/" },
+      {
+        label: "Steam · Quality / Claymore 27 STR + 40 DEX",
+        url: "https://steamcommunity.com/app/570940/discussions/0/1696049513772474324/",
+      },
+      {
+        label: "Reddit · Claymore como quality weapon",
+        url: "https://www.reddit.com/r/darksouls/comments/nvmkwk/",
+      },
     ],
     icon: Sword,
   },
@@ -105,7 +112,8 @@ const PRESETS: BuildPreset[] = [
       es: "Impacto pesado · PvE",
     },
     summary: {
-      "pt-BR": "Build de dano físico alto e stagger. O Great Club +15 possui forte escalamento de Força e funciona muito bem com 27 STR quando usado em duas mãos; sobra nível para Vida, Stamina e carga.",
+      "pt-BR":
+        "Build de dano físico alto e stagger. O Great Club +15 possui forte escalamento de Força e funciona muito bem com 27 STR quando usado em duas mãos; sobra nível para Vida, Stamina e carga.",
       en: "High physical damage and stagger. Great Club +15 scales strongly with Strength and works well at 27 STR when two-handed, leaving levels for vitality, stamina and equip load.",
       es: "Alto daño físico y stagger. Great Club +15 escala fuerte con Fuerza y funciona bien con 27 STR a dos manos, dejando niveles para vida, stamina y carga.",
     },
@@ -128,8 +136,14 @@ const PRESETS: BuildPreset[] = [
       },
     ],
     sources: [
-      { label: "Steam · Great Club / Bandit / Strength", url: "https://steamcommunity.com/app/570940/discussions/0/1696049513772474324/" },
-      { label: "Reddit · STR 40 + Great Club / Black Knight route", url: "https://www.reddit.com/r/darksouls/comments/zy62wh/" },
+      {
+        label: "Steam · Great Club / Bandit / Strength",
+        url: "https://steamcommunity.com/app/570940/discussions/0/1696049513772474324/",
+      },
+      {
+        label: "Reddit · STR 40 + Great Club / Black Knight route",
+        url: "https://www.reddit.com/r/darksouls/comments/zy62wh/",
+      },
     ],
     icon: Hammer,
   },
@@ -146,7 +160,8 @@ const PRESETS: BuildPreset[] = [
       es: "Movilidad · Burst",
     },
     summary: {
-      "pt-BR": "DEX fornece o dano da arma e acelera a conjuração em níveis altos, enquanto o dano da piromancia vem da própria Pyromancy Flame. É uma build rápida, agressiva e ótima para variar entre melee e burst.",
+      "pt-BR":
+        "DEX fornece o dano da arma e acelera a conjuração em níveis altos, enquanto o dano da piromancia vem da própria Pyromancy Flame. É uma build rápida, agressiva e ótima para variar entre melee e burst.",
       en: "DEX powers the weapon and improves casting speed at high values, while pyromancy damage comes from the Pyromancy Flame itself. Fast, aggressive and flexible between melee and burst.",
       es: "DEX potencia el arma y mejora la velocidad de casteo a valores altos, mientras el daño de piromancia viene de la Pyromancy Flame. Rápida, agresiva y flexible.",
     },
@@ -169,9 +184,18 @@ const PRESETS: BuildPreset[] = [
       },
     ],
     sources: [
-      { label: "Reddit · Pyromancy + Great Combustion / Power Within", url: "https://www.reddit.com/r/darksouls/comments/1dgio2o/" },
-      { label: "Reddit · DEX 40–45 e armas DEX", url: "https://www.reddit.com/r/darksoulsremastered/comments/hbj83x/" },
-      { label: "Steam · discussão de builds DEX/Pyro", url: "https://steamcommunity.com/app/570940/discussions/0/5283252978688325040/" },
+      {
+        label: "Reddit · Pyromancy + Great Combustion / Power Within",
+        url: "https://www.reddit.com/r/darksouls/comments/1dgio2o/",
+      },
+      {
+        label: "Reddit · DEX 40–45 e armas DEX",
+        url: "https://www.reddit.com/r/darksoulsremastered/comments/hbj83x/",
+      },
+      {
+        label: "Steam · discussão de builds DEX/Pyro",
+        url: "https://steamcommunity.com/app/570940/discussions/0/5283252978688325040/",
+      },
     ],
     icon: Flame,
   },
@@ -305,10 +329,16 @@ export function DarkSoulsBuildLab({ locale }: { locale: Locale }) {
         <div className="border-b border-border p-5 sm:p-7">
           <div className="flex items-center gap-2">
             <Anvil className="size-4 text-gold-strong" />
-            <span className="section-kicker">{copy("LABORATÓRIO ÍMPAR", "ÍMPAR BUILD LAB", "LABORATORIO ÍMPAR")}</span>
+            <span className="section-kicker">
+              {copy("LABORATÓRIO ÍMPAR", "ÍMPAR BUILD LAB", "LABORATORIO ÍMPAR")}
+            </span>
           </div>
           <h2 className="mt-3 font-display text-3xl font-bold text-foreground">
-            {copy("Builds de Dark Souls Remastered", "Dark Souls Remastered builds", "Builds de Dark Souls Remastered")}
+            {copy(
+              "Builds de Dark Souls Remastered",
+              "Dark Souls Remastered builds",
+              "Builds de Dark Souls Remastered",
+            )}
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
             {copy(
@@ -336,7 +366,9 @@ export function DarkSoulsBuildLab({ locale }: { locale: Locale }) {
                 )}
               >
                 <Icon className="size-5 text-gold-strong" />
-                <p className="mt-3 font-display text-lg font-semibold text-foreground">{build.title[locale]}</p>
+                <p className="mt-3 font-display text-lg font-semibold text-foreground">
+                  {build.title[locale]}
+                </p>
                 <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">
                   {build.archetype[locale]}
                 </p>
@@ -363,20 +395,40 @@ export function DarkSoulsBuildLab({ locale }: { locale: Locale }) {
                 <ActiveIcon className="size-5 text-gold-strong" />
               </span>
               <div>
-                <h3 className="font-display text-3xl font-bold text-foreground">{active.title[locale]}</h3>
-                <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">{active.summary[locale]}</p>
+                <h3 className="font-display text-3xl font-bold text-foreground">
+                  {active.title[locale]}
+                </h3>
+                <p className="mt-2 max-w-3xl text-sm leading-7 text-muted-foreground">
+                  {active.summary[locale]}
+                </p>
               </div>
             </div>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <BuildPanel title={copy("Stats alvo", "Target stats", "Stats objetivo")} rows={active.stats} />
+              <BuildPanel
+                title={copy("Stats alvo", "Target stats", "Stats objetivo")}
+                rows={active.stats}
+              />
               <BuildPanel title={copy("Núcleo", "Core", "Núcleo")} rows={active.core} highlighted />
-              <BuildPanel title={copy("Opções secundárias", "Secondary options", "Opciones secundarias")} rows={active.secondary} />
+              <BuildPanel
+                title={copy("Opções secundárias", "Secondary options", "Opciones secundarias")}
+                rows={active.secondary}
+              />
               <BuildPanel title={copy("Anéis", "Rings", "Anillos")} rows={active.rings} />
               {active.spells.length ? (
-                <BuildPanel title={copy("Magias / piromancias", "Spells / pyromancies", "Magias / piromancias")} rows={active.spells} />
+                <BuildPanel
+                  title={copy(
+                    "Magias / piromancias",
+                    "Spells / pyromancies",
+                    "Magias / piromancias",
+                  )}
+                  rows={active.spells}
+                />
               ) : null}
-              <BuildPanel title={copy("Variantes", "Variants", "Variantes")} rows={active.variants.map((entry) => entry[locale])} />
+              <BuildPanel
+                title={copy("Variantes", "Variants", "Variantes")}
+                rows={active.variants.map((entry) => entry[locale])}
+              />
             </div>
           </article>
 
@@ -441,13 +493,31 @@ export function DarkSoulsBuildLab({ locale }: { locale: Locale }) {
             <Input value={customName} onChange={(event) => setCustomName(event.target.value)} />
           </BuilderField>
           <BuilderField label={copy("Core 1", "Core 1", "Core 1")}>
-            <Input value={coreOne} onChange={(event) => setCoreOne(event.target.value)} placeholder="Ex.: Claymore +15" />
+            <Input
+              value={coreOne}
+              onChange={(event) => setCoreOne(event.target.value)}
+              placeholder="Ex.: Claymore +15"
+            />
           </BuilderField>
           <BuilderField label={copy("Core 2 (opcional)", "Core 2 (optional)", "Core 2 (opcional)")}>
-            <Input value={coreTwo} onChange={(event) => setCoreTwo(event.target.value)} placeholder="Ex.: Pyromancy Flame" />
+            <Input
+              value={coreTwo}
+              onChange={(event) => setCoreTwo(event.target.value)}
+              placeholder="Ex.: Pyromancy Flame"
+            />
           </BuilderField>
-          <BuilderField label={copy("Variante / situacional", "Variant / situational", "Variante / situacional")}>
-            <Input value={variant} onChange={(event) => setVariant(event.target.value)} placeholder="Ex.: Havel's Ring" />
+          <BuilderField
+            label={copy(
+              "Variante / situacional",
+              "Variant / situational",
+              "Variante / situacional",
+            )}
+          >
+            <Input
+              value={variant}
+              onChange={(event) => setVariant(event.target.value)}
+              placeholder="Ex.: Havel's Ring"
+            />
           </BuilderField>
         </div>
 
@@ -474,8 +544,12 @@ export function DarkSoulsBuildLab({ locale }: { locale: Locale }) {
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {[coreOne, coreTwo, variant].filter(Boolean).map((value, index) => (
-              <span key={`${value}-${index}`} className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-foreground">
-                {index < 2 ? copy("Core", "Core", "Core") : copy("Variante", "Variant", "Variante")}: {value}
+              <span
+                key={`${value}-${index}`}
+                className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-foreground"
+              >
+                {index < 2 ? copy("Core", "Core", "Core") : copy("Variante", "Variant", "Variante")}
+                : {value}
               </span>
             ))}
           </div>
@@ -506,13 +580,29 @@ export function DarkSoulsBuildLab({ locale }: { locale: Locale }) {
           <div className="flex flex-wrap items-center gap-3">
             <p className="text-xs text-muted-foreground">
               {saveStatus === "saved"
-                ? copy("Build salva no seu perfil.", "Build saved to your profile.", "Build guardada en tu perfil.")
+                ? copy(
+                    "Build salva no seu perfil.",
+                    "Build saved to your profile.",
+                    "Build guardada en tu perfil.",
+                  )
                 : saveStatus === "login"
-                  ? copy("Entre na sua conta para salvar.", "Sign in to save.", "Inicia sesión para guardar.")
+                  ? copy(
+                      "Entre na sua conta para salvar.",
+                      "Sign in to save.",
+                      "Inicia sesión para guardar.",
+                    )
                   : saveStatus === "error"
-                    ? copy("Não foi possível salvar agora.", "Could not save right now.", "No se pudo guardar ahora.")
+                    ? copy(
+                        "Não foi possível salvar agora.",
+                        "Could not save right now.",
+                        "No se pudo guardar ahora.",
+                      )
                     : !coreOne.trim()
-                      ? copy("Adicione pelo menos um item core.", "Add at least one core item.", "Añade al menos un objeto core.")
+                      ? copy(
+                          "Adicione pelo menos um item core.",
+                          "Add at least one core item.",
+                          "Añade al menos un objeto core.",
+                        )
                       : copy("Pronta para salvar.", "Ready to save.", "Lista para guardar.")}
             </p>
             <button
@@ -543,8 +633,15 @@ function BuildPanel({
   highlighted?: boolean;
 }) {
   return (
-    <section className={cn("rounded-2xl border p-4", highlighted ? "border-gold/35 bg-gold/[0.06]" : "border-border bg-muted/10")}>
-      <h4 className="text-xs font-black uppercase tracking-[0.1em] text-muted-foreground">{title}</h4>
+    <section
+      className={cn(
+        "rounded-2xl border p-4",
+        highlighted ? "border-gold/35 bg-gold/[0.06]" : "border-border bg-muted/10",
+      )}
+    >
+      <h4 className="text-xs font-black uppercase tracking-[0.1em] text-muted-foreground">
+        {title}
+      </h4>
       <ul className="mt-3 space-y-2">
         {rows.map((row) => (
           <li key={row} className="flex gap-2 text-sm leading-6 text-foreground">
@@ -560,7 +657,9 @@ function BuildPanel({
 function BuilderField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label>
-      <span className="text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">{label}</span>
+      <span className="text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">
+        {label}
+      </span>
       <div className="mt-2">{children}</div>
     </label>
   );

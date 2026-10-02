@@ -126,12 +126,14 @@ function SettingsAppearancePage() {
             )}
           </p>
           <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-            {([
-              ["classic", copy("ÍMPAR padrão", "ÍMPAR default", "ÍMPAR estándar"), MousePointer2],
-              ["sword", copy("Espada", "Sword", "Espada"), Sword],
-              ["axe", copy("Machado", "Axe", "Hacha"), Axe],
-              ["reticle", copy("Mira", "Reticle", "Mira"), Crosshair],
-            ] as const).map(([value, label, Icon]) => (
+            {(
+              [
+                ["classic", copy("ÍMPAR padrão", "ÍMPAR default", "ÍMPAR estándar"), MousePointer2],
+                ["sword", copy("Espada", "Sword", "Espada"), Sword],
+                ["axe", copy("Machado", "Axe", "Hacha"), Axe],
+                ["reticle", copy("Mira", "Reticle", "Mira"), Crosshair],
+              ] as const
+            ).map(([value, label, Icon]) => (
               <button
                 key={value}
                 type="button"
@@ -150,10 +152,18 @@ function SettingsAppearancePage() {
                   <span className="block">{label}</span>
                   <span className="mt-0.5 block text-[0.65rem] font-medium text-muted-foreground">
                     {value === "classic"
-                      ? copy("Cursor normal customizado", "Customized normal cursor", "Cursor normal personalizado")
+                      ? copy(
+                          "Cursor normal customizado",
+                          "Customized normal cursor",
+                          "Cursor normal personalizado",
+                        )
                       : value === "reticle"
                         ? copy("Precisão central", "Centered precision", "Precisión central")
-                        : copy("Cosmético alternativo", "Alternative cosmetic", "Cosmético alternativo")}
+                        : copy(
+                            "Cosmético alternativo",
+                            "Alternative cosmetic",
+                            "Cosmético alternativo",
+                          )}
                   </span>
                 </span>
               </button>

@@ -287,9 +287,7 @@ export function LeagueBuildCreator({
 
   const nexusContext = useMemo(
     () => ({
-      champion: champion
-        ? { id: champion.id, name: champion.name, tags: champion.tags }
-        : null,
+      champion: champion ? { id: champion.id, name: champion.name, tags: champion.tags } : null,
       currentBuild: {
         role,
         patchLabel: patchLabel.trim() || null,
@@ -377,9 +375,7 @@ export function LeagueBuildCreator({
       ? suggestion["situationalItemIds"]
           .filter(
             (id): id is string =>
-              typeof id === "string" &&
-              validItemIds.has(id) &&
-              !nextCore.includes(id),
+              typeof id === "string" && validItemIds.has(id) && !nextCore.includes(id),
           )
           .slice(0, 2)
       : [];
@@ -405,15 +401,14 @@ export function LeagueBuildCreator({
           (skill): skill is SkillKey => skill === "Q" || skill === "W" || skill === "E",
         )
       : [];
-    if (
-      suggestedOrder.length === 3 &&
-      new Set(suggestedOrder).size === 3
-    ) {
+    if (suggestedOrder.length === 3 && new Set(suggestedOrder).size === 3) {
       setSkillOrder(suggestedOrder as [SkillKey, SkillKey, SkillKey]);
     }
 
     const runes =
-      suggestion["runes"] && typeof suggestion["runes"] === "object" && !Array.isArray(suggestion["runes"])
+      suggestion["runes"] &&
+      typeof suggestion["runes"] === "object" &&
+      !Array.isArray(suggestion["runes"])
         ? (suggestion["runes"] as Record<string, unknown>)
         : null;
     if (runes) {

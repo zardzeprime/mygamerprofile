@@ -8,13 +8,7 @@ import { LEGAL_ACCEPTANCE_VERSION } from "@/config/legal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { signInWithGoogle } from "@/lib/googleAuth";
 import { getAuthRedirectUrl } from "@/lib/siteUrl";
@@ -42,8 +36,7 @@ function isStrongPassword(value: string) {
 
 function RegisterPage() {
   const { t, locale } = useI18n();
-  const copy = (pt: string, en: string, es: string) =>
-    localeCopy(locale, pt, en, es);
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -168,11 +161,7 @@ function RegisterPage() {
               <MailCheck className="size-6" />
             </div>
             <CardTitle className="font-display text-2xl">
-              {copy(
-                "Confere seu e-mail",
-                "Check your email",
-                "Revisa tu correo",
-              )}
+              {copy("Confere seu e-mail", "Check your email", "Revisa tu correo")}
             </CardTitle>
             <CardDescription className="mx-auto max-w-md leading-relaxed">
               {copy(
@@ -204,9 +193,7 @@ function RegisterPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <BrandLogoPlaceholder size="lg" className="mx-auto mb-4" />
-          <CardTitle className="font-display text-2xl">
-            {t("auth.register")}
-          </CardTitle>
+          <CardTitle className="font-display text-2xl">{t("auth.register")}</CardTitle>
           <CardDescription>ÍMPAR — {t("brand.full")}</CardDescription>
         </CardHeader>
         <CardContent>
@@ -217,7 +204,9 @@ function RegisterPage() {
             onClick={() => void handleGoogle()}
             disabled={oauthLoading || loading}
           >
-            <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-bold">G</span>
+            <span className="mr-2 grid size-5 place-items-center rounded-full border border-border bg-background text-xs font-bold">
+              G
+            </span>
             {oauthLoading
               ? t("common.loading")
               : copy("Continuar com Google", "Continue with Google", "Continuar con Google")}
@@ -292,11 +281,7 @@ function RegisterPage() {
                 htmlFor="legal-acceptance"
                 className="text-xs font-normal leading-5 text-muted-foreground"
               >
-                {copy(
-                  "Li e aceito os",
-                  "I have read and accept the",
-                  "He leído y acepto los",
-                )}{" "}
+                {copy("Li e aceito os", "I have read and accept the", "He leído y acepto los")}{" "}
                 <Link
                   to="/terms"
                   target="_blank"
@@ -312,11 +297,7 @@ function RegisterPage() {
                   rel="noreferrer"
                   className="font-semibold text-gold-strong underline-offset-4 hover:underline"
                 >
-                  {copy(
-                    "Política de Privacidade",
-                    "Privacy Policy",
-                    "Política de Privacidad",
-                  )}
+                  {copy("Política de Privacidade", "Privacy Policy", "Política de Privacidad")}
                 </Link>
                 .
               </Label>

@@ -106,7 +106,11 @@ function RobloxExperienceSectionPage() {
                 </span>
               </div>
               <h2 className="mt-3 font-display text-2xl font-semibold text-foreground">
-                {copy("Estrutura pronta, conteúdo em carga", "Structure ready, content loading", "Estructura lista, contenido en carga")}
+                {copy(
+                  "Estrutura pronta, conteúdo em carga",
+                  "Structure ready, content loading",
+                  "Estructura lista, contenido en carga",
+                )}
               </h2>
               <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
                 {copy(
@@ -240,9 +244,7 @@ function StatusLine({
             : "rounded-full border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 text-[0.56rem] font-black uppercase tracking-[0.08em] text-amber-200"
         }
       >
-        {done
-          ? copy("Pronto", "Ready", "Listo")
-          : copy("Em andamento", "In progress", "En curso")}
+        {done ? copy("Pronto", "Ready", "Listo") : copy("Em andamento", "In progress", "En curso")}
       </span>
     </div>
   );
