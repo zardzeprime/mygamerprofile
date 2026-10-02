@@ -306,7 +306,7 @@ function RobloxExperienceHub() {
                   description={copy(
                     "Presets organizados por objetivo. Essa área pode receber o mesmo fluxo do Noctis usado nos outros criadores do ÍMPAR.",
                     "Goal-based presets. This area can use the same Noctis flow as the other ÍMPAR builders.",
-                    "Presets organizados por objetivo. Esta área puede usar el mismo flujo NEXUS que los otros creadores de ÍMPAR.",
+                    "Presets organizados por objetivo. Esta área puede usar el mismo flujo de Noctis que los otros creadores de ÍMPAR.",
                   )}
                   topics={experience.buildTopics[locale]}
                   locale={locale}

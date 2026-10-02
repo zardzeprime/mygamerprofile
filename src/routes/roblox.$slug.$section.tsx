@@ -144,7 +144,7 @@ function RobloxExperienceSectionPage() {
                 text={copy(
                   "Contexto preparado para o Noctis ajudar com recomendações e presets quando os dados verificáveis estiverem carregados.",
                   "Context is prepared for Noctis recommendations and presets once verifiable data is loaded.",
-                  "El contexto queda preparado para recomendaciones y presets de NEXUS cuando los datos verificables estén cargados.",
+                  "El contexto queda preparado para recomendaciones y presets de Noctis cuando los datos verificables estén cargados.",
                 )}
                 locale={locale}
               />
