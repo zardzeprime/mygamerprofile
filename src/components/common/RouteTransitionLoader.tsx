@@ -1,10 +1,8 @@
 import { useRouterState } from "@tanstack/react-router";
-import { Gamepad2, Keyboard, Mouse } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 
-const DEVICES = [Gamepad2, Mouse, Keyboard, Gamepad2, Mouse, Keyboard, Gamepad2, Mouse, Keyboard];
 const MIN_VISIBLE_MS = 420;
 
 export function RouteTransitionLoader() {
@@ -51,32 +49,23 @@ export function RouteTransitionLoader() {
     >
       <div className="mgp-route-loader__veil" />
       <div className="mgp-route-loader__content">
-        <div className="mgp-route-loader__devices" aria-hidden="true">
-          {DEVICES.map((Icon, index) => (
-            <span
-              key={`${Icon.displayName ?? Icon.name}-${index}`}
-              className="mgp-route-loader__device"
-              style={{ animationDelay: `${index * 110}ms` }}
-            >
-              <Icon className="size-5 sm:size-6" />
-            </span>
-          ))}
-        </div>
-
         <div className="mgp-route-loader__brand">
-          <span className="mgp-route-loader__logo-wrap">
-            <img src="/brand/impar-logo-official.webp" alt="" className="mgp-route-loader__logo" />
-          </span>
-          <div className="text-left">
-            <p className="font-display text-sm font-bold tracking-[0.16em] text-foreground">
-              ÍMPAR
-            </p>
+          <div className="mgp-route-loader__threshold" aria-hidden="true">
+            <span className="mgp-route-loader__gate-line mgp-route-loader__gate-line--a" />
+            <span className="mgp-route-loader__gate-line mgp-route-loader__gate-line--b" />
+            <span className="mgp-route-loader__logo-wrap">
+              <img src="/brand/impar-logo-official.webp" alt="" className="mgp-route-loader__logo" />
+            </span>
+          </div>
+
+          <div className="text-center">
+            <p className="font-display text-sm font-bold tracking-[0.2em] text-foreground">ÍMPAR</p>
             <p className="mt-1 text-xs font-semibold text-muted-foreground">
               {localeCopy(
                 locale,
-                "Carregando seu perfil gamer…",
-                "Loading your gamer profile…",
-                "Cargando tu perfil gamer…",
+                "Abrindo o Limiar…",
+                "Opening the Threshold…",
+                "Abriendo el Umbral…",
               )}
             </p>
           </div>
