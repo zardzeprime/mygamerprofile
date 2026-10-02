@@ -22,16 +22,33 @@ export function PointerAura() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (!finePointer.matches || reducedMotion.matches) return;
 
-    let targetX = -80;
-    let targetY = -80;
+    const root = document.documentElement;
+    let targetX = window.innerWidth * 0.5;
+    let targetY = window.innerHeight * 0.42;
     let currentX = targetX;
     let currentY = targetY;
     let frame = 0;
 
+    const writeAtmosphere = () => {
+      const width = Math.max(window.innerWidth, 1);
+      const height = Math.max(window.innerHeight, 1);
+      const nx = currentX / width - 0.5;
+      const ny = currentY / height - 0.5;
+
+      root.style.setProperty("--impar-pointer-x", `${currentX.toFixed(1)}px`);
+      root.style.setProperty("--impar-pointer-y", `${currentY.toFixed(1)}px`);
+      root.style.setProperty("--impar-star-dx", `${(nx * 18).toFixed(2)}px`);
+      root.style.setProperty("--impar-star-dy", `${(ny * 14).toFixed(2)}px`);
+      root.style.setProperty("--impar-star-dx-reverse", `${(-nx * 11).toFixed(2)}px`);
+      root.style.setProperty("--impar-star-dy-reverse", `${(-ny * 9).toFixed(2)}px`);
+    };
+
     const animate = () => {
-      currentX += (targetX - currentX) * 0.22;
-      currentY += (targetY - currentY) * 0.22;
+      currentX += (targetX - currentX) * 0.16;
+      currentY += (targetY - currentY) * 0.16;
       aura.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
+      writeAtmosphere();
+
       if (Math.abs(targetX - currentX) > 0.1 || Math.abs(targetY - currentY) > 0.1) {
         frame = window.requestAnimationFrame(animate);
       } else {
@@ -61,8 +78,12 @@ export function PointerAura() {
 
     const onPointerLeave = () => {
       aura.dataset["visible"] = "false";
+      targetX = window.innerWidth * 0.5;
+      targetY = window.innerHeight * 0.42;
+      if (frame === 0) frame = window.requestAnimationFrame(animate);
     };
 
+    writeAtmosphere();
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     window.addEventListener("pointerdown", onPointerDown, { passive: true });
     window.addEventListener("pointerup", onPointerUp, { passive: true });
@@ -74,6 +95,12 @@ export function PointerAura() {
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointerup", onPointerUp);
       document.documentElement.removeEventListener("mouseleave", onPointerLeave);
+      root.style.removeProperty("--impar-pointer-x");
+      root.style.removeProperty("--impar-pointer-y");
+      root.style.removeProperty("--impar-star-dx");
+      root.style.removeProperty("--impar-star-dy");
+      root.style.removeProperty("--impar-star-dx-reverse");
+      root.style.removeProperty("--impar-star-dy-reverse");
     };
   }, []);
 
