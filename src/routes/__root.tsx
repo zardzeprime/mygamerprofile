@@ -19,11 +19,13 @@ import imparBrandCss from "../impar-brand.css?url";
 import imparRefinementCss from "../impar-refinement.css?url";
 import hudRefinementCss from "../hud-refinement.css?url";
 import imparHotfixCss from "../impar-hotfix.css?url";
+import imparEvolutionCss from "../impar-evolution.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../i18n";
 import { ThemeProvider, themeBootstrapScript } from "../lib/theme";
 import { SoundProvider } from "../lib/sound";
 import { RouteTransitionLoader } from "../components/common/RouteTransitionLoader";
+import { PointerAura } from "../components/common/PointerAura";
 import { AppHeader } from "../components/layout/AppHeader";
 import { AppFooter } from "../components/layout/AppFooter";
 import { NoctisChat } from "../components/noctis/NoctisChat";
@@ -123,6 +125,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: imparRefinementCss },
       { rel: "stylesheet", href: hudRefinementCss },
       { rel: "stylesheet", href: imparHotfixCss },
+      { rel: "stylesheet", href: imparEvolutionCss },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "apple-touch-icon", href: "/brand/impar-logo-official.webp" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -218,6 +221,7 @@ function RootComponent() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <SoundProvider>
+            <PointerAura />
             <div className="impar-starry-sky" aria-hidden="true" />
             <RouteTransitionLoader />
             <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
