@@ -52,6 +52,7 @@ type Weapon = {
 };
 
 type ArsenalMode = "base" | "variants";
+type WeaponIdentity = "critical" | "status" | "hybrid" | "raw";
 
 const API_BASE = "https://api.warframestat.us";
 const IMAGE_BASE = "https://cdn.warframestat.us/img";
@@ -107,6 +108,11 @@ function formatDuration(seconds?: number) {
   return `${Math.round(seconds / 60)} min`;
 }
 
+function normalizedChance(value?: number) {
+  if (value === undefined || Number.isNaN(value)) return 0;
+  return value <= 1 ? value : value / 100;
+}
+
 function localizedType(item: Weapon, locale: Locale) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const raw = normalize(item.type || item.category || item.productCategory);
@@ -120,10 +126,90 @@ function localizedType(item: Weapon, locale: Locale) {
 }
 
 function classify(value: number | undefined, thresholds: [number, number]) {
-  if (value === undefined) return 1;
-  if (value < thresholds[0]) return 0;
-  if (value >= thresholds[1]) return 2;
+  const normalized = normalizedChance(value);
+  if (normalized < thresholds[0]) return 0;
+  if (normalized >= thresholds[1]) return 2;
   return 1;
+}
+
+function weaponIdentity(item: Weapon): WeaponIdentity {
+  const crit = normalizedChance(item.criticalChance);
+  const status = normalizedChance(item.procChance);
+  const strongCrit = crit >= 0.22;
+  const strongStatus = status >= 0.22;
+
+  if (strongCrit && strongStatus) return "hybrid";
+  if (strongCrit) return "critical";
+  if (strongStatus) return "status";
+  return "raw";
+}
+
+function identityLabel(identity: WeaponIdentity, locale: Locale) {
+  const labels: Record<WeaponIdentity, [string, string, string]> = {
+    critical: ["Tendência crítica", "Critical leaning", "Enfoque crítico"],
+    status: ["Tendência a status", "Status leaning", "Enfoque de estado"],
+    hybrid: ["Perfil híbrido", "Hybrid profile", "Perfil híbrido"],
+    raw: ["Dano/base e conforto", "Base damage / comfort", "Daño base / comodidad"],
+  };
+  const [pt, en, es] = labels[identity];
+  return localeCopy(locale, pt, en, es);
+}
+
+function identityExplanation(item: Weapon, locale: Locale) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const identity = weaponIdentity(item);
+  if (identity === "hybrid") {
+    return copy(
+      "Crítico e status já têm base suficiente para crescer juntos. Em vez de forçar só um lado, vale testar uma estrutura híbrida e observar qual parte realmente melhora o tempo para matar no conteúdo que você joga.",
+      "Critical and Status both have enough base value to scale together. Instead of forcing only one side, test a hybrid structure and watch which part actually improves time-to-kill in the content you play.",
+      "Crítico y estado tienen una base suficiente para crecer juntos. En vez de forzar un solo lado, prueba una estructura híbrida y observa qué parte mejora de verdad el tiempo para matar.",
+    );
+  }
+  if (identity === "critical") {
+    return copy(
+      "A arma tende a transformar melhor investimento em chance crítica e multiplicador crítico. Depois disso, dano base, multishot e elementos costumam ser o próximo eixo de teste.",
+      "The weapon tends to convert investment in critical chance and critical multiplier more efficiently. After that, base damage, multishot and elements are the next things to test.",
+      "El arma suele aprovechar mejor la probabilidad y el multiplicador crítico. Después, conviene probar daño base, multidisparo y elementos.",
+    );
+  }
+  if (identity === "status") {
+    return copy(
+      "O ponto forte é aplicar efeitos com consistência. Vale comparar mais status/multishot com elementos que façam sentido para o inimigo, sem assumir que um único elemento serve para todo conteúdo.",
+      "Its strength is applying effects consistently. Compare more Status/multishot with elements that fit the enemy instead of assuming one element works for every activity.",
+      "Su fuerte es aplicar efectos con constancia. Compara más estado/multidisparo con elementos adecuados al enemigo, sin asumir que un solo elemento sirve para todo.",
+    );
+  }
+  return copy(
+    "Os números de crítico e status não apontam para um caminho dominante. Aqui o ganho pode vir mais de dano base, multishot, velocidade, alcance ou conforto — depende bastante do comportamento real da arma.",
+    "Critical and Status values do not point to one dominant path. Gains may come more from base damage, multishot, speed, range or comfort, depending heavily on how the weapon actually behaves.",
+    "Los valores de crítico y estado no señalan un camino dominante. La mejora puede venir más de daño base, multidisparo, velocidad, alcance o comodidad, según cómo se comporte el arma.",
+  );
+}
+
+function handlingExplanation(item: Weapon, locale: Locale) {
+  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
+  const rate = item.fireRate ?? 0;
+  const magazine = item.magazineSize ?? 0;
+
+  if (rate >= 8 && magazine > 0 && magazine <= 30) {
+    return copy(
+      "Cadência alta com carregador curto pode transformar recarga e economia de munição em gargalos. Teste primeiro como a arma se sente antes de gastar slots só em dano.",
+      "High fire rate with a small magazine can make reload and ammo economy the bottleneck. Test how the weapon feels before spending every slot only on damage.",
+      "Cadencia alta con cargador corto puede volver la recarga y la munición el verdadero cuello de botella. Prueba la sensación del arma antes de dedicar todos los espacios solo a daño.",
+    );
+  }
+  if (rate > 0 && rate < 3) {
+    return copy(
+      "Cadência baixa costuma tornar cada disparo mais importante. Precisão, velocidade de ataque/disparo e o tempo entre alvos podem mudar mais a experiência do que um pequeno ganho numérico de dano.",
+      "Low fire rate makes each shot matter more. Accuracy, attack/fire speed and target-to-target timing can change the experience more than a small numerical damage gain.",
+      "La cadencia baja hace que cada disparo importe más. Precisión, velocidad y el tiempo entre objetivos pueden cambiar más la experiencia que una pequeña mejora de daño.",
+    );
+  }
+  return copy(
+    "A cadência não parece um extremo por si só. Use uma missão curta para sentir recarga, munição, recuo e ritmo antes de decidir se a build precisa de conforto ou só de dano.",
+    "Fire rate is not an extreme by itself. Use a short mission to feel reload, ammo, recoil and pacing before deciding whether the build needs comfort or just damage.",
+    "La cadencia no parece extrema por sí sola. Usa una misión corta para sentir recarga, munición, retroceso y ritmo antes de decidir si necesitas comodidad o solo daño.",
+  );
 }
 
 export function WarframeWeapons({ locale }: { locale: Locale }) {
@@ -207,13 +293,13 @@ export function WarframeWeapons({ locale }: { locale: Locale }) {
               <span className="section-kicker">ÍMPAR / ARSENAL</span>
             </div>
             <h2 className="mt-3 font-display text-2xl font-bold text-foreground sm:text-3xl">
-              {copy("Armas que dá para entender de relance", "Weapons you can read at a glance", "Armas fáciles de entender")}
+              {copy("Entenda a arma antes de montar a build", "Understand the weapon before building it", "Entiende el arma antes de crear la build")}
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground sm:text-[0.95rem]">
               {copy(
-                "O Arsenal abre limpo, mostrando as versões normais. Use o controle flutuante para trocar para Prime, Kuva, Tenet, Prisma, Wraith, Vandal e outras variantes sem misturar tudo na mesma lista.",
-                "The Arsenal opens cleanly with base weapons. Use the floating control to switch to Prime, Kuva, Tenet, Prisma, Wraith, Vandal and other variants without mixing everything together.",
-                "El Arsenal abre limpio con las armas normales. Usa el control flotante para cambiar a Prime, Kuva, Tenet, Prisma, Wraith, Vandal y otras variantes sin mezclar todo.",
+                "A descrição original fica visível e os números viram uma leitura prática: identidade de dano, gargalos de manuseio e um roteiro simples para testar Mods sem copiar uma build às cegas.",
+                "The original description stays visible and the numbers become a practical read: damage identity, handling bottlenecks and a simple path for testing Mods instead of copying a build blindly.",
+                "La descripción original permanece visible y los números se convierten en una lectura práctica: identidad de daño, límites de manejo y una ruta sencilla para probar Mods sin copiar una build a ciegas.",
               )}
             </p>
           </div>
@@ -231,7 +317,7 @@ export function WarframeWeapons({ locale }: { locale: Locale }) {
           <div className="grid min-h-64 place-items-center p-8 text-sm text-muted-foreground">{copy("Nenhuma arma encontrada neste modo.", "No weapon found in this mode.", "No se encontró ningún arma en este modo.")}</div>
         ) : (
           <div className="grid min-w-0 lg:grid-cols-[17rem_minmax(0,1fr)]">
-            <aside className="wf-roster border-b border-border p-3 lg:max-h-[860px] lg:overflow-y-auto lg:border-b-0 lg:border-r">
+            <aside className="wf-roster border-b border-border p-3 lg:max-h-[900px] lg:overflow-y-auto lg:border-b-0 lg:border-r">
               <div className="grid grid-cols-2 gap-2 min-[560px]:grid-cols-3 lg:grid-cols-1">
                 {visibleEntries.map((item) => {
                   const active = selected ? itemKey(selected) === itemKey(item) : false;
@@ -250,7 +336,7 @@ export function WarframeWeapons({ locale }: { locale: Locale }) {
       </section>
 
       <div className="pointer-events-none sticky bottom-4 z-30 flex justify-end px-3 sm:px-5">
-        <button type="button" onClick={switchMode} className="wf-variant-toggle pointer-events-auto">
+        <button type="button" onClick={switchMode} className="wf-variant-toggle pointer-events-auto" aria-label={arsenalMode === "base" ? copy("Mostrar variantes", "Show variants", "Mostrar variantes") : copy("Mostrar versões normais", "Show base versions", "Mostrar versiones normales")}>
           <Orbit className="wf-variant-toggle__icon size-4" />
           <span>{arsenalMode === "base" ? copy("Ver variantes", "View variants", "Ver variantes") : copy("Voltar às normais", "Back to base", "Volver a normales")}</span>
           <span className="wf-variant-toggle__dot" aria-hidden="true" />
@@ -267,7 +353,9 @@ function WeaponDetail({ item, locale }: { item: Weapon; locale: Locale }) {
   const level = [copy("Baixo", "Low", "Bajo"), copy("Médio", "Medium", "Medio"), copy("Alto", "High", "Alto")];
   const critClass = classify(item.criticalChance, [0.15, 0.28]);
   const statusClass = classify(item.procChance, [0.15, 0.28]);
-  const fireClass = classify(item.fireRate, [3, 8]);
+  const fireRateValue = item.fireRate ?? 0;
+  const fireClass = fireRateValue < 3 ? 0 : fireRateValue >= 8 ? 2 : 1;
+  const identity = weaponIdentity(item);
 
   return (
     <article className="min-w-0 p-4 sm:p-6 lg:p-7">
@@ -279,16 +367,21 @@ function WeaponDetail({ item, locale }: { item: Weapon; locale: Locale }) {
           <div className="mt-3 flex flex-wrap gap-1.5">
             {item.masteryReq !== undefined ? <Badge>{copy("Maestria", "Mastery", "Maestría")} {item.masteryReq}</Badge> : null}
             <Badge>{localizedType(item, locale)}</Badge>
+            <Badge>{identityLabel(identity, locale)}</Badge>
           </div>
         </div>
 
         <div className="min-w-0">
           <p className="text-[0.67rem] font-bold uppercase tracking-[0.1em] text-[var(--impar-spectral)]">{localizedType(item, locale)}</p>
           <h3 className="mt-2 text-balance font-display text-3xl font-bold text-foreground sm:text-4xl">{item.name}</h3>
-          {item.description ? <p className="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">{item.description}</p> : null}
+
+          <div className="mt-4 border-l-2 border-[var(--impar-line)] pl-4">
+            <p className="text-[0.63rem] font-bold uppercase tracking-[0.09em] text-muted-foreground">{copy("Descrição da base do jogo", "Game database description", "Descripción de la base del juego")}</p>
+            <p className="mt-2 max-w-4xl text-sm leading-7 text-foreground/90 sm:text-[0.95rem]">{item.description || copy("A base localizada não retornou uma descrição textual para esta arma.", "The localized database did not return a text description for this weapon.", "La base localizada no devolvió una descripción textual para esta arma.")}</p>
+          </div>
 
           <section className="wf-learn-strip mt-6">
-            <div className="wf-learn-strip__intro"><Gauge className="size-4" /><div><p className="text-xs font-bold text-foreground">{copy("Como ler esta arma", "How to read this weapon", "Cómo leer esta arma")}</p><p className="mt-0.5 text-[0.7rem] text-muted-foreground">{copy("Três sinais rápidos antes da build.", "Three quick signals before the build.", "Tres señales rápidas antes de la build.")}</p></div></div>
+            <div className="wf-learn-strip__intro"><Gauge className="size-4" /><div><p className="text-xs font-bold text-foreground">{identityLabel(identity, locale)}</p><p className="mt-0.5 text-[0.7rem] text-muted-foreground">{copy("Uma pista de por onde começar — não uma build pronta.", "A clue for where to start — not a finished build.", "Una pista para empezar, no una build terminada.")}</p></div></div>
             <QuickRead icon={Crosshair} label={copy("Chance crítica", "Critical chance", "Prob. crítica")} value={level[critClass]} />
             <QuickRead icon={Sparkles} label={copy("Status", "Status", "Estado")} value={level[statusClass]} />
             <QuickRead icon={Timer} label={copy("Cadência", "Fire rate", "Cadencia")} value={level[fireClass]} />
@@ -305,29 +398,38 @@ function WeaponDetail({ item, locale }: { item: Weapon; locale: Locale }) {
         </div>
       </div>
 
-      <div className="mt-8 grid gap-4 lg:grid-cols-2">
-        <section className="wf-learning-note">
-          <div className="flex items-center gap-2 text-[var(--impar-spectral)]"><Zap className="size-4" /><span className="text-xs font-bold">{copy("Leitura prática", "Practical read", "Lectura práctica")}</span></div>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            {copy(
-              "Crítico alto favorece Mods de chance e dano crítico. Status alto favorece aplicar efeitos com frequência. Uma arma pode ser híbrida quando os dois números são bons — a build final ainda depende do tipo de disparo e do conteúdo.",
-              "High critical chance favors critical chance and critical damage Mods. High Status favors frequent effects. A weapon can be hybrid when both are strong — the final build still depends on firing behavior and content.",
-              "Un crítico alto favorece Mods de probabilidad y daño crítico. Un Estado alto favorece aplicar efectos con frecuencia. Un arma puede ser híbrida cuando ambos son buenos; la build final depende del disparo y del contenido.",
-            )}
-          </p>
-        </section>
+      <section className="mt-8 grid gap-4 lg:grid-cols-2">
+        <div className="wf-learning-note">
+          <div className="flex items-center gap-2 text-[var(--impar-spectral)]"><Crosshair className="size-4" /><span className="text-xs font-bold">{copy("Direção de build para testar", "Build direction to test", "Dirección de build para probar")}</span></div>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{identityExplanation(item, locale)}</p>
+          <p className="mt-3 text-[0.7rem] leading-5 text-muted-foreground/80">{copy("Isto é leitura editorial a partir dos atributos mostrados acima. Não substitui testes com Mods, inimigos e modos de disparo específicos.", "This is editorial guidance based on the stats above. It does not replace testing with Mods, enemies and specific firing modes.", "Esta es una lectura editorial basada en los atributos anteriores. No sustituye pruebas con Mods, enemigos y modos de disparo específicos.")}</p>
+        </div>
 
-        <section className="wf-acquisition">
-          <div className="flex items-center gap-2"><Boxes className="size-4 text-[var(--impar-spectral)]" /><h4 className="font-display text-base font-semibold text-foreground">{copy("Fundição", "Foundry", "Fundición")}</h4></div>
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            {item.buildTime !== undefined ? <MiniFact icon={Timer} label={copy("Tempo", "Time", "Tiempo")} value={formatDuration(item.buildTime)} /> : null}
-            {item.buildPrice !== undefined ? <MiniFact icon={Coins} label={copy("Créditos", "Credits", "Créditos")} value={formatNumber(item.buildPrice)} /> : null}
-            {item.skipBuildTimePrice !== undefined ? <MiniFact icon={Zap} label={copy("Rush", "Rush", "Rush")} value={`${formatNumber(item.skipBuildTimePrice)} PL`} /> : null}
-          </div>
-          {components.length ? <div className="mt-4 space-y-2">{components.slice(0, 6).map((part, index) => <div key={`${part.name}-${index}`} className="flex items-center justify-between gap-3 border-b border-border/60 pb-2 text-xs last:border-0"><span className="truncate text-foreground">{part.name}</span><span className="shrink-0 text-muted-foreground">×{part.itemCount ?? part.count ?? 1}</span></div>)}</div> : null}
-          <a href={OFFICIAL_DROPS} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--impar-spectral)] hover:underline">{copy("Confirmar fontes oficiais", "Check official sources", "Ver fuentes oficiales")}<ExternalLink className="size-3.5" /></a>
-        </section>
-      </div>
+        <div className="wf-learning-note">
+          <div className="flex items-center gap-2 text-[var(--impar-spectral)]"><Timer className="size-4" /><span className="text-xs font-bold">{copy("Conforto e ritmo", "Handling and pacing", "Manejo y ritmo")}</span></div>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{handlingExplanation(item, locale)}</p>
+        </div>
+      </section>
+
+      <section className="wf-learning-note mt-4">
+        <div className="flex items-center gap-2 text-[var(--impar-spectral)]"><Sparkles className="size-4" /><span className="text-xs font-bold">{copy("Aprenda a arma em três testes", "Learn the weapon in three tests", "Aprende el arma en tres pruebas")}</span></div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <LearningStep number="1" title={copy("Sinta a base", "Feel the base", "Siente la base")} body={copy("Entre numa missão curta e observe recarga, precisão, recuo, alcance e consumo de munição antes de encher a arma de Mods.", "Run a short mission and observe reload, accuracy, recoil, range and ammo consumption before filling the weapon with Mods.", "Haz una misión corta y observa recarga, precisión, retroceso, alcance y consumo de munición antes de llenarla de Mods.")} />
+          <LearningStep number="2" title={copy("Teste a identidade", "Test the identity", "Prueba la identidad")} body={copy("Compare um núcleo crítico, de status ou híbrido conforme os números acima. Troque poucas peças por vez para saber o que realmente mudou.", "Compare a critical, Status or hybrid core based on the stats above. Change only a few pieces at a time so you know what actually changed.", "Compara un núcleo crítico, de estado o híbrido según los números anteriores. Cambia pocas piezas a la vez para saber qué cambió de verdad.")} />
+          <LearningStep number="3" title={copy("Corrija o gargalo", "Fix the bottleneck", "Corrige el cuello de botella")} body={copy("Só depois ajuste cadência, recarga, alcance ou munição. Se a arma já mata bem mas é desconfortável, conforto pode render mais que outro Mod de dano.", "Only then adjust fire rate, reload, range or ammo. If the weapon already kills well but feels awkward, comfort can be worth more than another damage Mod.", "Solo después ajusta cadencia, recarga, alcance o munición. Si el arma ya mata bien pero es incómoda, la comodidad puede valer más que otro Mod de daño.")} />
+        </div>
+      </section>
+
+      <section className="wf-acquisition mt-4">
+        <div className="flex items-center gap-2"><Boxes className="size-4 text-[var(--impar-spectral)]" /><h4 className="font-display text-base font-semibold text-foreground">{copy("Fundição e componentes", "Foundry and components", "Fundición y componentes")}</h4></div>
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {item.buildTime !== undefined ? <MiniFact icon={Timer} label={copy("Tempo", "Time", "Tiempo")} value={formatDuration(item.buildTime)} /> : null}
+          {item.buildPrice !== undefined ? <MiniFact icon={Coins} label={copy("Créditos", "Credits", "Créditos")} value={formatNumber(item.buildPrice)} /> : null}
+          {item.skipBuildTimePrice !== undefined ? <MiniFact icon={Zap} label={copy("Rush", "Rush", "Rush")} value={`${formatNumber(item.skipBuildTimePrice)} PL`} /> : null}
+        </div>
+        {components.length ? <div className="mt-4 grid gap-2 sm:grid-cols-2">{components.slice(0, 8).map((part, index) => <div key={`${part.name}-${index}`} className="flex items-center justify-between gap-3 border-b border-border/60 pb-2 text-xs"><span className="truncate text-foreground">{part.name}</span><span className="shrink-0 text-muted-foreground">×{part.itemCount ?? part.count ?? 1}</span></div>)}</div> : <p className="mt-3 text-sm text-muted-foreground">{copy("A resposta atual não trouxe componentes estruturados para esta arma.", "The current response did not include structured components for this weapon.", "La respuesta actual no incluyó componentes estructurados para esta arma.")}</p>}
+        <a href={OFFICIAL_DROPS} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--impar-spectral)] hover:underline">{copy("Confirmar fontes oficiais", "Check official sources", "Ver fuentes oficiales")}<ExternalLink className="size-3.5" /></a>
+      </section>
     </article>
   );
 }
@@ -347,6 +449,10 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 function MiniFact({ icon: Icon, label, value }: { icon: typeof Timer; label: string; value: string }) {
   return <div className="rounded-lg border border-border/70 bg-background/40 p-2.5"><div className="flex items-center gap-1.5 text-muted-foreground"><Icon className="size-3.5" /><span className="text-[0.6rem] font-bold uppercase tracking-[0.06em]">{label}</span></div><p className="mt-1 text-xs font-semibold text-foreground">{value}</p></div>;
+}
+
+function LearningStep({ number, title, body }: { number: string; title: string; body: string }) {
+  return <div className="rounded-xl border border-border/70 bg-background/25 p-3"><span className="text-[0.62rem] font-bold text-[var(--impar-spectral)]">{number.padStart(2, "0")}</span><h5 className="mt-2 text-sm font-semibold text-foreground">{title}</h5><p className="mt-1 text-xs leading-5 text-muted-foreground">{body}</p></div>;
 }
 
 function Badge({ children }: { children: React.ReactNode }) {
