@@ -1,0 +1,245 @@
+/* ÍMPAR refinement layer — intentionally loaded after the legacy brand layer.
+ * Keeps compatibility tokens intact while tightening the public visual system.
+ */
+
+:root {
+  --impar-night: #070a10;
+  --impar-night-raised: #0d131c;
+  --impar-surface: #121b26;
+  --impar-spectral: #72d99b;
+  --impar-spectral-strong: #9ce8b8;
+  --impar-spectral-soft: color-mix(in srgb, var(--impar-spectral) 13%, transparent);
+  --impar-amber: #e3b45d;
+  --impar-mystic: #7b70ff;
+  --impar-prestige: #cda75f;
+  --impar-line: color-mix(in srgb, var(--impar-spectral) 12%, transparent);
+}
+
+.dark {
+  --color-background: var(--impar-night);
+  --color-surface: var(--impar-night-raised);
+  --color-card: var(--impar-surface);
+  --color-gold: var(--impar-prestige);
+  --color-gold-strong: var(--impar-spectral);
+  --color-gold-soft: color-mix(in srgb, var(--impar-spectral) 10%, transparent);
+  --primary: var(--impar-spectral);
+  --primary-foreground: #06110c;
+  --ring: color-mix(in srgb, var(--impar-spectral) 82%, white);
+  --accent: color-mix(in srgb, var(--impar-mystic) 10%, var(--impar-night-raised));
+}
+
+/* The official mark is square. Do not crop it into the old circular shell. */
+.brand-logo-shell {
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 0.7rem !important;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.16) inset,
+    0 8px 28px rgb(0 0 0 / 0.24);
+}
+
+.brand-logo-shell img {
+  border-radius: 0.55rem;
+  object-fit: contain;
+}
+
+.impar-transition-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--impar-mystic) 24%, var(--impar-line));
+  background:
+    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--impar-mystic) 16%, transparent), transparent 22rem),
+    radial-gradient(circle at 92% 100%, color-mix(in srgb, var(--impar-spectral) 9%, transparent), transparent 24rem),
+    color-mix(in srgb, var(--impar-night-raised) 92%, transparent);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 0.2);
+}
+
+.impar-transition-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 0 66%, rgb(255 255 255 / 0.025) 66% 67%, transparent 67%);
+}
+
+/* Home mascot: layered, deliberately asynchronous idle rather than a simple bob. */
+.impar-home-mascot-stage {
+  isolation: isolate;
+}
+
+.impar-home-mascot-stage::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  bottom: 12%;
+  width: 8.2rem;
+  height: 8.2rem;
+  translate: -50% 0;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--impar-mystic) 20%, transparent), transparent 68%);
+  filter: blur(7px);
+  animation: impar-noctis-aura 7.7s ease-in-out infinite;
+}
+
+.impar-home-mascot-shadow {
+  transform-origin: center;
+  animation: impar-noctis-shadow 9.4s ease-in-out infinite;
+}
+
+.impar-home-mascot {
+  transform-origin: 50% 86%;
+  will-change: transform;
+  animation: impar-noctis-anime-idle 9.4s cubic-bezier(0.45, 0.05, 0.24, 1) infinite;
+}
+
+.impar-noctis-particle {
+  position: absolute;
+  z-index: 1;
+  width: 0.28rem;
+  height: 0.28rem;
+  border-radius: 999px;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--impar-spectral) 82%, white);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--impar-spectral) 72%, transparent);
+  opacity: 0;
+}
+
+.impar-noctis-particle--one {
+  right: 17%;
+  top: 18%;
+  animation: impar-noctis-particle-a 6.8s ease-in-out 0.4s infinite;
+}
+
+.impar-noctis-particle--two {
+  left: 18%;
+  top: 37%;
+  width: 0.2rem;
+  height: 0.2rem;
+  background: color-mix(in srgb, var(--impar-mystic) 68%, white);
+  box-shadow: 0 0 11px color-mix(in srgb, var(--impar-mystic) 62%, transparent);
+  animation: impar-noctis-particle-b 8.1s ease-in-out 2.2s infinite;
+}
+
+.impar-noctis-particle--three {
+  right: 31%;
+  top: 48%;
+  width: 0.18rem;
+  height: 0.18rem;
+  animation: impar-noctis-particle-a 7.5s ease-in-out 4.1s infinite reverse;
+}
+
+@keyframes impar-noctis-anime-idle {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  13% {
+    transform: translate3d(-1px, -2px, 0) rotate(-0.28deg) scale(1.004, 1.009);
+  }
+  29% {
+    transform: translate3d(1px, -6px, 0) rotate(0.46deg) scale(1.008, 1.014);
+  }
+  43% {
+    transform: translate3d(0, -3px, 0) rotate(0.08deg) scale(1.003, 1.007);
+  }
+  61% {
+    transform: translate3d(-1px, -7px, 0) rotate(-0.36deg) scale(1.009, 1.015);
+  }
+  78% {
+    transform: translate3d(1px, -4px, 0) rotate(0.31deg) scale(1.005, 1.009);
+  }
+  91% {
+    transform: translate3d(0, -1px, 0) rotate(-0.08deg) scale(1.001, 1.003);
+  }
+}
+
+@keyframes impar-noctis-shadow {
+  0%,
+  100% {
+    opacity: 0.38;
+    transform: translateX(-50%) scaleX(1);
+  }
+  29% {
+    opacity: 0.27;
+    transform: translateX(-50%) scaleX(0.82);
+  }
+  61% {
+    opacity: 0.24;
+    transform: translateX(-50%) scaleX(0.78);
+  }
+  78% {
+    opacity: 0.3;
+    transform: translateX(-50%) scaleX(0.88);
+  }
+}
+
+@keyframes impar-noctis-aura {
+  0%,
+  100% {
+    opacity: 0.48;
+    transform: scale(0.94);
+  }
+  34% {
+    opacity: 0.78;
+    transform: scale(1.08);
+  }
+  71% {
+    opacity: 0.56;
+    transform: scale(1.01);
+  }
+}
+
+@keyframes impar-noctis-particle-a {
+  0%,
+  13%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0) scale(0.65);
+  }
+  24% {
+    opacity: 0.9;
+  }
+  56% {
+    opacity: 0.58;
+    transform: translate3d(-5px, -13px, 0) scale(1);
+  }
+  72% {
+    opacity: 0;
+    transform: translate3d(3px, -23px, 0) scale(0.72);
+  }
+}
+
+@keyframes impar-noctis-particle-b {
+  0%,
+  25%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 5px, 0) scale(0.6);
+  }
+  36% {
+    opacity: 0.72;
+  }
+  63% {
+    opacity: 0.5;
+    transform: translate3d(6px, -10px, 0) scale(1);
+  }
+  79% {
+    opacity: 0;
+    transform: translate3d(-2px, -19px, 0) scale(0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .impar-home-mascot,
+  .impar-home-mascot-shadow,
+  .impar-home-mascot-stage::before,
+  .impar-noctis-particle {
+    animation: none !important;
+  }
+
+  .impar-noctis-particle {
+    display: none;
+  }
+}
