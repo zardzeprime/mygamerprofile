@@ -1,13 +1,9 @@
-import { useState } from "react";
-import { BookOpen, Boxes, PackageSearch, Sparkles, Sword, Wrench } from "lucide-react";
+import { BookOpen, PackageSearch, Wrench } from "lucide-react";
 
-import { WarframeDatabase } from "@/components/games/WarframeDatabase";
+import { WarframeCharacters } from "@/components/games/WarframeCharacters";
 import { WARFRAME_GUIDE_SEEDS } from "@/data/warframeRoster";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
-import { cn } from "@/lib/utils";
-
-type DatabaseSection = "warframes" | "weapons" | "items";
 
 export function WarframeExplorer({
   mode,
@@ -19,90 +15,7 @@ export function WarframeExplorer({
   return mode === "guides" ? (
     <WarframeGuides locale={locale} />
   ) : (
-    <WarframeArsenal locale={locale} />
-  );
-}
-
-function WarframeArsenal({ locale }: { locale: Locale }) {
-  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const [section, setSection] = useState<DatabaseSection>("warframes");
-  const tabs: Array<{ id: DatabaseSection; icon: typeof Sparkles; label: string; detail: string }> =
-    [
-      {
-        id: "warframes",
-        icon: Sparkles,
-        label: "Warframes",
-        detail: copy(
-          "Peças, Sistemas, Chassi e Fundição",
-          "Parts, Systems, Chassis and Foundry",
-          "Piezas, Sistemas, Chasis y Fundición",
-        ),
-      },
-      {
-        id: "weapons",
-        icon: Sword,
-        label: copy("Armas", "Weapons", "Armas"),
-        detail: copy(
-          "Stats, receita, MR e drops",
-          "Stats, recipe, MR and drops",
-          "Stats, receta, MR y drops",
-        ),
-      },
-      {
-        id: "items",
-        icon: Boxes,
-        label: copy("Itens", "Items", "Objetos"),
-        detail: copy(
-          "Recursos, blueprints e equipamentos",
-          "Resources, blueprints and gear",
-          "Recursos, planos y equipo",
-        ),
-      },
-    ];
-
-  return (
-    <div className="space-y-4">
-      <nav
-        className="surface-panel grid grid-cols-3 gap-2 p-2"
-        aria-label={copy("Banco de dados Warframe", "Warframe database", "Base de datos Warframe")}
-      >
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const active = section === tab.id;
-          return (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setSection(tab.id)}
-              aria-pressed={active}
-              className={cn(
-                "min-w-0 rounded-xl border px-2.5 py-3 text-left transition-all sm:px-4",
-                active
-                  ? "border-gold/35 bg-gold/[0.08] shadow-sm"
-                  : "border-transparent hover:border-border hover:bg-muted/25",
-              )}
-            >
-              <div className="flex items-center gap-2">
-                <Icon
-                  className={cn(
-                    "size-4 shrink-0",
-                    active ? "text-gold-strong" : "text-muted-foreground",
-                  )}
-                />
-                <span className="truncate text-sm font-semibold text-foreground sm:text-base">
-                  {tab.label}
-                </span>
-              </div>
-              <span className="mt-1.5 hidden text-xs leading-5 text-muted-foreground sm:block">
-                {tab.detail}
-              </span>
-            </button>
-          );
-        })}
-      </nav>
-
-      <WarframeDatabase mode={section} locale={locale} />
-    </div>
+    <WarframeCharacters locale={locale} />
   );
 }
 
@@ -125,9 +38,9 @@ function WarframeGuides({ locale }: { locale: Locale }) {
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
           {copy(
-            "Guias editoriais do ÍMPAR para progressão, Mods, dano, Status e farming. O banco de Warframes/Armas/Itens usa dados atuais e complementa estes guias.",
-            "ÍMPAR editorial guides for progression, Mods, damage, Status and farming. The live Warframes/Weapons/Items database complements these guides.",
-            "Guías editoriales de ÍMPAR para progresión, Mods, daño, Estado y farming. La base actual de Warframes/Armas/Objetos complementa estas guías.",
+            "Guias editoriais do ÍMPAR para progressão, Mods, dano, Status e farming. Warframes, Armas e Itens agora vivem em módulos separados do hub para cada área ter uma função clara.",
+            "ÍMPAR editorial guides for progression, Mods, damage, Status and farming. Warframes, Weapons and Items now live in separate hub modules so every area has a clear purpose.",
+            "Guías editoriales de ÍMPAR para progresión, Mods, daño, Estado y farming. Warframes, Armas y Objetos ahora viven en módulos separados para que cada área tenga una función clara.",
           )}
         </p>
       </div>
