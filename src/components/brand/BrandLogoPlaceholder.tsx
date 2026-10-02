@@ -32,7 +32,7 @@ export function BrandLogoPlaceholder({
         )}
       >
         <img
-          src="/brand/impar-logo.svg"
+          src="/brand/impar-logo-official.webp"
           alt=""
           width={256}
           height={256}
