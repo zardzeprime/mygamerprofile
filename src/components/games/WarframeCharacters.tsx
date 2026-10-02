@@ -119,15 +119,6 @@ function baseName(name: string) {
   return name.replace(/\s+Prime$/i, "").trim();
 }
 
-function slugify(value: string) {
-  return value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
 function curatedEntry(item?: WarframeApiItem) {
   if (!item) return undefined;
   const target = baseName(item.name).toLocaleLowerCase("en");
@@ -374,7 +365,7 @@ function WarframeDetail({ item, locale }: { item: WarframeApiItem; locale: Local
     <article className="min-w-0 p-4 sm:p-6">
       <div className="grid gap-6 xl:grid-cols-[15rem_minmax(0,1fr)]">
         <div>
-          <div className="aspect-square overflow-hidden rounded-2xl border border-border bg-[radial-gradient(circle_at_top,color-mix(in_srgb,var(--impar-mystic)_14%,transparent),transparent_70%),hsl(var(--muted)/0.18)] p-4">
+          <div className="aspect-square overflow-hidden rounded-2xl border border-border bg-muted/15 p-4">
             {source ? (
               <img src={source} alt={item.name} loading="lazy" className="h-full w-full object-contain" />
             ) : (
@@ -397,11 +388,13 @@ function WarframeDetail({ item, locale }: { item: WarframeApiItem; locale: Local
             {item.name}
           </h3>
           <p className="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground">
-            {curated?.summary[locale] || item.description || copy(
-              "Dados atuais carregados do ecossistema WFCD.",
-              "Current data loaded from the WFCD ecosystem.",
-              "Datos actuales cargados desde el ecosistema WFCD.",
-            )}
+            {curated?.summary[locale] ||
+              item.description ||
+              copy(
+                "Dados atuais carregados do ecossistema WFCD.",
+                "Current data loaded from the WFCD ecosystem.",
+                "Datos actuales cargados desde el ecosistema WFCD.",
+              )}
           </p>
 
           <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-5">
@@ -426,7 +419,7 @@ function WarframeDetail({ item, locale }: { item: WarframeApiItem; locale: Local
       <section className="mt-7">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="section-kicker">{copy("KIT", "KIT", "KIT")}</p>
+            <p className="section-kicker">KIT</p>
             <h4 className="mt-1 font-display text-xl font-semibold text-foreground">
               {copy("Habilidades", "Abilities", "Habilidades")}
             </h4>
@@ -517,7 +510,11 @@ function WarframeDetail({ item, locale }: { item: WarframeApiItem; locale: Local
               <div>
                 <PlayCircle className="mx-auto size-7 text-muted-foreground" />
                 <h4 className="mt-3 font-display text-lg font-semibold text-foreground">
-                  {copy("Mídia oficial ainda não catalogada", "Official media not curated yet", "Contenido oficial aún no catalogado")}
+                  {copy(
+                    "Mídia oficial ainda não catalogada",
+                    "Official media not curated yet",
+                    "Contenido oficial aún no catalogado",
+                  )}
                 </h4>
                 <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
                   {copy(
@@ -556,11 +553,21 @@ function WarframeDetail({ item, locale }: { item: WarframeApiItem; locale: Local
             </p>
           )}
           <div className="mt-5 flex flex-col gap-2">
-            <a href={curated?.officialUrl || OFFICIAL_WARFRAMES} target="_blank" rel="noreferrer" className="brand-button-secondary justify-between gap-2">
+            <a
+              href={curated?.officialUrl || OFFICIAL_WARFRAMES}
+              target="_blank"
+              rel="noreferrer"
+              className="brand-button-secondary justify-between gap-2"
+            >
               {copy("Página oficial", "Official page", "Página oficial")}
               <ExternalLink className="size-4" />
             </a>
-            <a href={OFFICIAL_DROPS} target="_blank" rel="noreferrer" className="brand-button-secondary justify-between gap-2">
+            <a
+              href={OFFICIAL_DROPS}
+              target="_blank"
+              rel="noreferrer"
+              className="brand-button-secondary justify-between gap-2"
+            >
               {copy("Drops oficiais", "Official drops", "Drops oficiales")}
               <ExternalLink className="size-4" />
             </a>
