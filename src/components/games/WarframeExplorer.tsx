@@ -1,6 +1,6 @@
 import { BookOpen, PackageSearch, Wrench } from "lucide-react";
 
-import { WarframeCharacters } from "@/components/games/WarframeCharacters";
+import { WarframeCodex } from "@/components/games/WarframeCodex";
 import { WARFRAME_GUIDE_SEEDS } from "@/data/warframeRoster";
 import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
@@ -15,7 +15,7 @@ export function WarframeExplorer({
   return mode === "guides" ? (
     <WarframeGuides locale={locale} />
   ) : (
-    <WarframeCharacters locale={locale} />
+    <WarframeCodex locale={locale} />
   );
 }
 
@@ -38,9 +38,9 @@ function WarframeGuides({ locale }: { locale: Locale }) {
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
           {copy(
-            "Guias editoriais do ÍMPAR para progressão, Mods, dano, Status e farming. Warframes, Armas e Itens agora vivem em módulos separados do hub para cada área ter uma função clara.",
-            "ÍMPAR editorial guides for progression, Mods, damage, Status and farming. Warframes, Weapons and Items now live in separate hub modules so every area has a clear purpose.",
-            "Guías editoriales de ÍMPAR para progresión, Mods, daño, Estado y farming. Warframes, Armas y Objetos ahora viven en módulos separados para que cada área tenga una función clara.",
+            "Guias editoriais do ÍMPAR para progressão, Mods, dano, Status e farming. Warframes, Armas e Itens vivem em módulos separados para cada área ter uma função clara.",
+            "ÍMPAR editorial guides for progression, Mods, damage, Status and farming. Warframes, Weapons and Items live in separate hub modules so every area has a clear purpose.",
+            "Guías editoriales de ÍMPAR para progresión, Mods, daño, Estado y farming. Warframes, Armas y Objetos viven en módulos separados para que cada área tenga una función clara.",
           )}
         </p>
       </div>
