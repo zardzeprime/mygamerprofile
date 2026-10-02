@@ -18,6 +18,7 @@ import profileBackgroundCss from "../profile-backgrounds.css?url";
 import imparBrandCss from "../impar-brand.css?url";
 import imparRefinementCss from "../impar-refinement.css?url";
 import hudRefinementCss from "../hud-refinement.css?url";
+import imparHotfixCss from "../impar-hotfix.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../i18n";
 import { ThemeProvider, themeBootstrapScript } from "../lib/theme";
@@ -121,6 +122,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: imparBrandCss },
       { rel: "stylesheet", href: imparRefinementCss },
       { rel: "stylesheet", href: hudRefinementCss },
+      { rel: "stylesheet", href: imparHotfixCss },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "apple-touch-icon", href: "/brand/impar-logo-official.webp" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
