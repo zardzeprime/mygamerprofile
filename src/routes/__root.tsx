@@ -16,6 +16,8 @@ import responsiveCss from "../responsive.css?url";
 import routeTransitionCss from "../route-transition.css?url";
 import profileBackgroundCss from "../profile-backgrounds.css?url";
 import imparBrandCss from "../impar-brand.css?url";
+import imparRefinementCss from "../impar-refinement.css?url";
+import hudRefinementCss from "../hud-refinement.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../i18n";
 import { ThemeProvider, themeBootstrapScript } from "../lib/theme";
@@ -102,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "robots",
         content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
       },
-      { name: "theme-color", content: "#0a0e17" },
+      { name: "theme-color", content: "#070a10" },
       { property: "og:site_name", content: "ÍMPAR" },
       { property: "og:type", content: "website" },
       { property: "og:image", content: DEFAULT_OG_IMAGE },
@@ -117,6 +119,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: routeTransitionCss },
       { rel: "stylesheet", href: profileBackgroundCss },
       { rel: "stylesheet", href: imparBrandCss },
+      { rel: "stylesheet", href: imparRefinementCss },
+      { rel: "stylesheet", href: hudRefinementCss },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "apple-touch-icon", href: "/brand/impar-logo-official.webp" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -179,8 +183,6 @@ function RootComponent() {
 
       image.removeAttribute("srcset");
 
-      // Technical mgp-* data attributes are intentionally preserved as stable
-      // compatibility identifiers during the public ÍMPAR rebrand.
       if (image.dataset["mgpExternalRetry"] !== "1") {
         image.dataset["mgpExternalRetry"] = "1";
         image.referrerPolicy = "strict-origin-when-cross-origin";
