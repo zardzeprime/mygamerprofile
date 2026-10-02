@@ -115,8 +115,8 @@
 
 # ÍMPAR — primeira etapa de rebranding público
 
-- [ ] Substituir nomes antigos nas superfícies visíveis por ÍMPAR
-- [ ] Atualizar metadata, acessibilidade, autenticação e e-mails públicos
-- [ ] Preservar domínio, callbacks, chaves e identificadores técnicos legados
-- [ ] Validar páginas públicas em desktop/mobile, lint e compilação
-- [ ] Registrar a revisão dos especialistas no estado do Conselho
+- [x] Substituir nomes antigos nas superfícies visíveis por ÍMPAR
+- [x] Atualizar metadata, acessibilidade, autenticação e e-mails públicos
+- [x] Preservar domínio, callbacks, chaves e identificadores técnicos legados
+- [x] Validar páginas públicas em desktop/mobile, lint e compilação
+- [x] Registrar a revisão dos especialistas no estado do Conselho
