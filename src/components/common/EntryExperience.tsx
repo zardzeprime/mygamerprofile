@@ -179,7 +179,7 @@ export function EntryExperience() {
               </button>
             </div>
             <p className="impar-entry__privacy">
-              Ao criar uma conta, você aceita os <Link to="/terms">Termos de Uso</Link> e a <Link to="/privacy">Política de Privacidade</Link>.
+              Para criar uma conta, você precisará aceitar os <Link to="/terms">Termos de Uso</Link> e a <Link to="/privacy">Política de Privacidade</Link>.
             </p>
           </div>
         </dialog>
