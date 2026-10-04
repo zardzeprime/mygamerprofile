@@ -143,4 +143,25 @@ export const LEAGUE_NEWS: LeagueNewsItem[] = [
     "Champion and system updates alongside new League Classic content.",
     "Actualizaciones de campeones y sistemas junto con nuevo contenido de League Classic.",
   ),
+  patch(
+    "26.9",
+    "2026-04-28T18:00:00.000Z",
+    "A Temporada 2: Pandemonium começou com grandes mudanças em Campeões, itens, sistemas e runas, retorno de Deathfire Touch e Stormraider's Surge, ajustes nas missões de função, Shyvana, Arena, ARAM: Desordem e WASD nas ranqueadas.",
+    "Season 2: Pandemonium opened with broad Champion, item, system and rune changes, the return of Deathfire Touch and Stormraider's Surge, role quest and Shyvana updates, Arena and ARAM: Mayhem tuning, and WASD in Ranked.",
+    "La Temporada 2: Pandemonium comenzó con grandes cambios a campeones, objetos, sistemas y runas, el regreso de Deathfire Touch y Stormraider's Surge, ajustes a misiones de rol y Shyvana, Arena, ARAM: Mayhem y WASD en clasificatorias.",
+  ),
+  patch(
+    "26.8",
+    "2026-04-14T18:00:00.000Z",
+    "Balanceamento de Campeões, atualizações de ARAM, ARAM: Desordem e Arena, além da chegada de atalhos específicos por Campeão e da integração beta com Discord no Brasil, EUA e Canadá.",
+    "Champion balance plus ARAM, ARAM: Mayhem and Arena updates, alongside champion-specific keybinds and a Discord integration beta in Brazil, the US and Canada.",
+    "Balance de campeones y actualizaciones de ARAM, ARAM: Mayhem y Arena, junto con atajos específicos por campeón y una beta de integración con Discord en Brasil, EE. UU. y Canadá.",
+  ),
+  patch(
+    "26.7",
+    "2026-03-31T18:00:00.000Z",
+    "Atualização de 1º de abril com ajustes de Campeões e sistemas, melhorias de qualidade de vida no ARAM: Desordem e a conclusão do metajogo Demacia Rising.",
+    "The April Fools update brought Champion and system tuning, quality-of-life improvements for ARAM: Mayhem, and the final Demacia Rising metagame update.",
+    "La actualización de April Fools trajo ajustes a campeones y sistemas, mejoras de calidad de vida para ARAM: Mayhem y la actualización final del metajuego Demacia Rising.",
+  ),
 ];
