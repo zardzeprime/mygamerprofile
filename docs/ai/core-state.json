@@ -42,7 +42,8 @@
         "Coordinated the first safe public rebrand pass from legacy MG Profile/MGP naming to ÍMPAR while preserving technical identifiers, domains and integration contracts.",
         "Implemented ÍMPAR first-visit welcome with Noctis, guest/account choices, verified-session post-signup sequence and a short CSS black-hole reveal without changing Supabase callbacks.",
         "Completed the ÍMPAR entry-flow correction pass on main (28631e4): removed remaining yellow accents, clarified legal-choice copy, delayed the account-ready animation until successful onboarding, and visually verified the first-visit dialog, loaded Noctis/white logo, and round lavender star field in production.",
-        "Centered the Noctis welcome modal and increased the white ÍMPAR mark so it reads clearly in the first-visit dialog; verified the dialog bounds centered in the production desktop viewport."
+        "Centered the Noctis welcome modal and increased the white ÍMPAR mark so it reads clearly in the first-visit dialog; verified the dialog bounds centered in the production desktop viewport.",
+        "Applied the transparent Noctis face mark across the header, welcome dialog and reveal; sent Códice cards directly to the strongest configured game section; grouped equal-size home carousel controls and removed the initial overview flash from module deep links."
       ],
       "inProgress": [
         "Continue page-by-page visual art-direction review on top of Visual System v2 after the foundation PR is merged and rendered in Lovable.",
@@ -79,7 +80,8 @@
         "Reviewed the ÍMPAR public rebrand and preserved OAuth URLs, sender domains, storage keys, database names, error codes and other compatibility-sensitive identifiers.",
         "Reviewed the entry flow: UI storage markers only, no authentication/session flags; Supabase remains the sole source of truth and OAuth callbacks remain unchanged.",
         "Reviewed main through 28631e4: account-entry animation marker is written only after successful onboarding RPC and valid username; Supabase session checks remain authoritative, with no auth bypass found.",
-        "Reviewed entry-dialog centering/logo sizing change at 31c89c3: CSS-only, no auth, session, privacy-data or network behavior changed."
+        "Reviewed entry-dialog centering/logo sizing change at 31c89c3: CSS-only, no auth, session, privacy-data or network behavior changed.",
+        "Reviewed Códice module query handling: user input is constrained to visible configured modules with an overview fallback; no auth or security boundary changed."
       ],
       "inProgress": [],
       "next": [
@@ -108,7 +110,8 @@
         "Reviewed the ÍMPAR public rebrand for privacy and kept account data behavior, consent scope and technical preference keys unchanged.",
         "Reviewed first-visit copy and consent: account creation starts only after explicit choice, guest browsing remains available, and privacy/terms links appear before registration.",
         "Reviewed main through 28631e4: no new privacy finding; entry marker stores only a one-time timestamp, and legal acceptance remains required before email/Google onboarding completion. Google consent version/time is persisted at onboarding completion; an abandoned onboarding may leave an incomplete auth user without that record, with no profile access bypass identified.",
-        "Reviewed entry-dialog centering/logo sizing change at 31c89c3: consent text, privacy links, tracking and persistence are untouched; content remains scrollable within the viewport."
+        "Reviewed entry-dialog centering/logo sizing change at 31c89c3: consent text, privacy links, tracking and persistence are untouched; content remains scrollable within the viewport.",
+        "Reviewed the module query and Noctis branding update: only public navigation state is reflected in the URL; no personal data, consent, tracking or persistence changes."
       ],
       "inProgress": [],
       "next": [
@@ -147,7 +150,8 @@
         "Completed boss-image coverage for Dark Souls Remastered and Dark Souls III: all 26 DS1 boss slugs and all 25 DS3 boss slugs now resolve to attributed encounter/reference media instead of generic cover fallbacks.",
         "Reused the approved ÍMPAR logo asset and Noctis artwork without introducing external or unverified brand media.",
         "Re-rendered the project-owned ÍMPAR SVG mark as a bright-white transparent PNG; reused the existing first-party Noctis web asset, with no external images.",
-        "Reviewed the logo sizing change at 31c89c3 and visually confirmed the existing white PNG loads and is legible at desktop size in the production welcome dialog; no replacement asset or crop was introduced."
+        "Reviewed the logo sizing change at 31c89c3 and visually confirmed the existing white PNG loads and is legible at desktop size in the production welcome dialog; no replacement asset or crop was introduced.",
+        "Created the ÍMPAR Noctis face mark from the owner-provided mascot artwork, preserving the owl-cat face and heterochromatic eyes in a transparent, compact local asset; no external media source added."
       ],
       "inProgress": [],
       "next": [
@@ -190,7 +194,8 @@
         "Reviewed public copy and metadata for stale legacy brand names across PT-BR, English and Spanish surfaces.",
         "Reviewed the onboarding game references as static local humor; no live game-status claims or external data dependencies were added.",
         "Reviewed final entry-flow copy and dependencies at main 28631e4: no stale or time-sensitive claims and no dependencies added.",
-        "Reviewed the 31c89c3 CSS-only dialog/logo change: no dependencies, dates, live claims or time-sensitive content changed."
+        "Reviewed the 31c89c3 CSS-only dialog/logo change: no dependencies, dates, live claims or time-sensitive content changed.",
+        "Verified the Códice priority list against all five active game module configs; current deep links resolve to configured sections and introduce no live or time-sensitive claims."
       ],
       "inProgress": [
         "Continue individual ProSettings verification for players whose settings remain hidden.",
@@ -241,7 +246,8 @@
         "Preserved automation, email sender domains and integration identifiers while updating public email branding.",
         "Reviewed build/deploy impact: added only React/CSS and localStorage UI state, with no new dependency, scheduled job, or external service; preserved the existing auth routes.",
         "Verified production deployment for main 28631e4 is READY and Vercel status is success; Vite build completed without errors. GitHub Actions push-run results were unavailable from the exposed PR-only workflow-runs endpoint.",
-        "Verified production deployment for 31c89c3 is READY with Vercel success; the Vite build completed. GitHub Actions full-source lint failed on the existing generated `src/integrations/supabase/previewAuthStorage.ts:54` prefer-const error; build and data/syntax checks passed."
+        "Verified production deployment for 31c89c3 is READY with Vercel success; the Vite build completed. GitHub Actions full-source lint failed on the existing generated `src/integrations/supabase/previewAuthStorage.ts:54` prefer-const error; build and data/syntax checks passed.",
+        "Verified Vercel production deployment and GitHub Actions quality run after the route, logo and carousel changes; corrected the single-assignment timer lint error in previewAuthStorage.ts."
       ],
       "inProgress": [],
       "next": [
@@ -304,7 +310,8 @@
         "Reviewed public shell, auth, profiles and responsive surfaces so the ÍMPAR naming remains concise and layout-safe.",
         "Replaced cross-like star streaks with circular star points, made default accents lavender and user-configurable, and added reduced-motion/touch/mobile fallbacks to the entry animation.",
         "Validated the entry-flow fixes through main 28631e4: reduced-motion users skip waits, onboarding stays immediate, the welcome uses a native focus-managed dialog, the black-hole reveal uses transform/opacity instead of huge animated shadows, and account-ready animation has a skip control.",
-        "Fixed native Noctis dialog positioning with fixed viewport centering, viewport max-height and internal vertical scrolling; loader/warp dialogs now center consistently, and the existing white logo is more prominent. Desktop production bounds were verified centered."
+        "Fixed native Noctis dialog positioning with fixed viewport centering, viewport max-height and internal vertical scrolling; loader/warp dialogs now center consistently, and the existing white logo is more prominent. Desktop production bounds were verified centered.",
+        "Compact equal-size carousel controls, direct Códice module links and preselected module state shipped; production verified for the transparent Noctis mark and section deep link."
       ],
       "inProgress": [],
       "next": [
