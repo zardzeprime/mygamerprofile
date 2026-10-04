@@ -30,14 +30,14 @@ export function BrandLogoPlaceholder({
       <span
         aria-hidden="true"
         className={cn(
-          "brand-logo-shell grid shrink-0 place-items-center overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.045]",
+          "brand-logo-shell grid shrink-0 place-items-center overflow-visible rounded-none transition-transform duration-300 group-hover:scale-[1.045]",
           markSize,
         )}
       >
         <img
-          src="/brand/impar-logo-white.png"
+          src="/brand/noctis-mark.svg"
           alt=""
-          width={256}
+          width={180}
           height={256}
           decoding="async"
           draggable={false}
