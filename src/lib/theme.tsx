@@ -6,7 +6,7 @@ import type { Database } from "@/integrations/supabase/types";
 export const THEME_STORAGE_KEY = "mgp-theme";
 export const ACCENT_STORAGE_KEY = "mgp-accent-color";
 export const CURSOR_STORAGE_KEY = "mgp-cursor-v2";
-export const DEFAULT_ACCENT_COLOR = "#c9a95d";
+export const DEFAULT_ACCENT_COLOR = "#b9a5ff";
 export type CursorStyle = "classic" | "sword" | "axe" | "reticle";
 
 type ThemeContextValue = {

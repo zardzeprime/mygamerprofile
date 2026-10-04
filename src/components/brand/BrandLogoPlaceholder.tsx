@@ -35,7 +35,7 @@ export function BrandLogoPlaceholder({
         )}
       >
         <img
-          src="/brand/impar-logo-uploaded.png"
+          src="/brand/impar-logo-white.png"
           alt=""
           width={256}
           height={256}

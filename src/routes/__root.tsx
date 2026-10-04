@@ -21,12 +21,14 @@ import hudRefinementCss from "../hud-refinement.css?url";
 import imparHotfixCss from "../impar-hotfix.css?url";
 import imparEvolutionCss from "../impar-evolution.css?url";
 import imparCelestialCss from "../impar-celestial.css?url";
+import entryExperienceCss from "../entry-experience.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../i18n";
 import { ThemeProvider, themeBootstrapScript } from "../lib/theme";
 import { SoundProvider } from "../lib/sound";
 import { RouteTransitionLoader } from "../components/common/RouteTransitionLoader";
 import { PointerAura } from "../components/common/PointerAura";
+import { EntryExperience } from "../components/common/EntryExperience";
 import { AppHeader } from "../components/layout/AppHeader";
 import { AppFooter } from "../components/layout/AppFooter";
 import { NoctisChat } from "../components/noctis/NoctisChat";
@@ -128,6 +130,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: imparHotfixCss },
       { rel: "stylesheet", href: imparEvolutionCss },
       { rel: "stylesheet", href: imparCelestialCss },
+      { rel: "stylesheet", href: entryExperienceCss },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "apple-touch-icon", href: "/brand/impar-logo-uploaded.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -226,6 +229,7 @@ function RootComponent() {
             <PointerAura />
             <div className="impar-starry-sky" aria-hidden="true" />
             <RouteTransitionLoader />
+            <EntryExperience />
             <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
               <AppHeader />
               <div aria-hidden="true" className="h-[4.25rem] shrink-0" />

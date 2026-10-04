@@ -54,7 +54,7 @@ export function RouteTransitionLoader() {
             <span className="mgp-route-loader__gate-line mgp-route-loader__gate-line--a" />
             <span className="mgp-route-loader__gate-line mgp-route-loader__gate-line--b" />
             <span className="mgp-route-loader__logo-wrap">
-              <img src="/brand/impar-logo-official.webp" alt="" className="mgp-route-loader__logo" />
+              <img src="/brand/impar-logo-white.png" alt="" className="mgp-route-loader__logo" />
             </span>
           </div>
 

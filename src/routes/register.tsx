@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { BrandLogoPlaceholder } from "@/components/brand/BrandLogoPlaceholder";
 import { signInWithGoogle } from "@/lib/googleAuth";
 import { getAuthRedirectUrl } from "@/lib/siteUrl";
+import { markAccountEntryPending, clearAccountEntryPending } from "@/lib/entry-experience";
 
 export const Route = createFileRoute("/register")({
   component: RegisterPage,
@@ -61,9 +62,11 @@ function RegisterPage() {
     }
 
     setOauthLoading(true);
+    markAccountEntryPending();
     try {
       await signInWithGoogle("/onboarding");
     } catch (err) {
+      clearAccountEntryPending();
       setOauthLoading(false);
       setError(
         err instanceof Error && err.message
@@ -138,6 +141,7 @@ function RegisterPage() {
         return;
       }
 
+      markAccountEntryPending();
       if (!data.session) {
         setPendingEmail(email);
         return;
