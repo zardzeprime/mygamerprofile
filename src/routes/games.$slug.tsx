@@ -83,7 +83,6 @@ function GameHub() {
   const activeHub = isGameActive(game.slug);
   useGameAmbience(activeHub ? game.visual.ambientAudio : undefined);
 
-  const [active, setActive] = useState<GameModuleKey>("overview");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const visibleModules = useMemo(() => {
     const modules = game.modules.filter(
@@ -95,6 +94,9 @@ function GameHub() {
       new Set(modules.map((moduleKey) => (moduleKey === "maps" ? "modes" : moduleKey))),
     ) as GameModuleKey[];
   }, [game.modules, game.slug]);
+  const [active, setActive] = useState<GameModuleKey>(
+    () => visibleModules.find((moduleKey) => moduleKey === requestedModule) ?? "overview",
+  );
   useEffect(() => {
     const target = visibleModules.find((moduleKey) => moduleKey === requestedModule) ?? "overview";
     setActive(target);
