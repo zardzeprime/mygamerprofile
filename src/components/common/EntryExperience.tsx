@@ -159,7 +159,7 @@ export function EntryExperience() {
             <span className="impar-entry__mascot-glow" />
           </div>
           <div className="impar-entry__welcome-copy">
-            <img className="impar-entry__logo" src="/brand/impar-logo-white.png" alt="" width="52" height="52" />
+            <img className="impar-entry__logo" src="/brand/noctis-mark.svg" alt="" width="52" height="52" />
             <p className="impar-entry__eyebrow">ÍMPAR · UM LUGAR PRA SER SEU</p>
             <h1 id="impar-entry-title" ref={titleRef} tabIndex={-1}>
               Opa! Eu sou o Noctis.
@@ -214,7 +214,7 @@ export function EntryExperience() {
           <div className="impar-entry__black-hole" aria-hidden="true">
             <span />
           </div>
-          <img className="impar-entry__reveal-logo" src="/brand/impar-logo-white.png" alt="Ímpar" width="118" height="118" />
+          <img className="impar-entry__reveal-logo" src="/brand/noctis-mark.svg" alt="Ímpar" width="118" height="118" />
           <button className="impar-entry__skip impar-entry__skip--warp" onClick={skip}>Pular</button>
         </dialog>
       )}
