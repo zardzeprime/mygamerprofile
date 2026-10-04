@@ -20,6 +20,7 @@ import imparRefinementCss from "../impar-refinement.css?url";
 import hudRefinementCss from "../hud-refinement.css?url";
 import imparHotfixCss from "../impar-hotfix.css?url";
 import imparEvolutionCss from "../impar-evolution.css?url";
+import imparCelestialCss from "../impar-celestial.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../i18n";
 import { ThemeProvider, themeBootstrapScript } from "../lib/theme";
@@ -107,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "robots",
         content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
       },
-      { name: "theme-color", content: "#070a10" },
+      { name: "theme-color", content: "#07182d" },
       { property: "og:site_name", content: "ÍMPAR" },
       { property: "og:type", content: "website" },
       { property: "og:image", content: DEFAULT_OG_IMAGE },
@@ -126,8 +127,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: hudRefinementCss },
       { rel: "stylesheet", href: imparHotfixCss },
       { rel: "stylesheet", href: imparEvolutionCss },
+      { rel: "stylesheet", href: imparCelestialCss },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      { rel: "apple-touch-icon", href: "/brand/impar-logo-official.webp" },
+      { rel: "apple-touch-icon", href: "/brand/impar-logo-uploaded.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
