@@ -33,9 +33,6 @@ html.dark {
   --color-gold: var(--impar-spectral);
   --color-gold-strong: var(--impar-spectral-strong);
   --color-gold-soft: var(--impar-spectral-soft);
-  --primary: var(--impar-spectral);
-  --primary-foreground: var(--mgp-user-accent-foreground, #111318);
-  --ring: var(--impar-spectral-strong);
   --accent: color-mix(in srgb, var(--impar-spectral) 11%, var(--impar-night-raised));
 }
 
@@ -125,8 +122,18 @@ html.dark {
   background-size: 91px 107px, 157px 173px;
   background-position: 19px 27px, 61px 73px;
 }
+ .impar-entry__dialog::backdrop,
+.impar-entry__loading::backdrop,
+.impar-entry__warp::backdrop {
+  background: transparent;
+}
 .impar-entry__dialog {
   position: relative;
+  inset: auto;
+  margin: auto;
+  max-width: none;
+  max-height: none;
+  color: inherit;
   display: grid;
   grid-template-columns: minmax(12rem, .78fr) minmax(0, 1.22fr);
   align-items: center;
@@ -237,9 +244,17 @@ html.dark {
 }
 .impar-entry__privacy a { color: #ded6ff; text-underline-offset: 3px; }
 .impar-entry__privacy a:hover { color: #fff; }
-.impar-entry__loading,
+ .impar-entry__loading,
 .impar-entry__warp {
   position: relative;
+  inset: auto;
+  margin: auto;
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
   display: grid;
   justify-items: center;
   align-content: center;
@@ -283,7 +298,7 @@ html.dark {
   cursor: pointer;
 }
 .impar-entry__skip:hover { color: #fff; }
-.impar-entry__warp {
+ .impar-entry__warp {
   min-height: 100vh;
   width: 100%;
   overflow: hidden;
@@ -293,8 +308,22 @@ html.dark {
   background: #02030a;
   animation: impar-entry-veil 1.65s ease-in both;
 }
+ .impar-entry__void {
+  position: fixed;
+  z-index: 0;
+  left: 50%;
+  top: 50%;
+  width: 6vmin;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #02030a;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(.01);
+  animation: impar-void-expand 1.65s cubic-bezier(.55,.02,.92,.55) both;
+}
 .impar-entry__black-hole {
   position: absolute;
+  z-index: 1;
   left: 50%;
   top: 50%;
   width: min(24vw, 11rem);
@@ -314,9 +343,9 @@ html.dark {
   box-shadow: 0 0 1rem color-mix(in srgb, var(--impar-spectral) 60%, transparent);
   animation: impar-hole-ring 1.2s ease-out .18s both;
 }
-.impar-entry__reveal-logo {
+ .impar-entry__reveal-logo {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: clamp(5rem, 13vw, 8rem);
   height: auto;
   opacity: 0;
@@ -334,10 +363,15 @@ html.dark {
 @keyframes impar-noctis-greet { 0%,100% { transform: translateY(0) rotate(-1deg); } 45% { transform: translateY(-8px) rotate(1deg); } 72% { transform: translateY(-3px) rotate(-1.5deg); } }
 @keyframes impar-entry-progress { from { transform: translateX(-120%); } to { transform: translateX(250%); } }
 @keyframes impar-entry-veil { 0% { background-color: rgb(5 8 18 / .28); } 48%,100% { background-color: #02030a; } }
+@keyframes impar-void-expand {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(.01); }
+  55% { opacity: .92; transform: translate(-50%, -50%) scale(19); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(42); }
+}
 @keyframes impar-hole-collapse {
-  0% { transform: translate(-50%, -50%) scale(.08); box-shadow: 0 0 1.6rem .35rem color-mix(in srgb, var(--impar-spectral) 42%, transparent), 0 0 0 1px rgb(255 255 255 / .56); }
-  64% { transform: translate(-50%, -50%) scale(.85); box-shadow: 0 0 2.5rem .75rem color-mix(in srgb, var(--impar-spectral) 50%, transparent), 0 0 0 90vmax #02030a; }
-  100% { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 0 2.8rem .9rem color-mix(in srgb, var(--impar-spectral) 40%, transparent), 0 0 0 125vmax #02030a; }
+  0% { transform: translate(-50%, -50%) scale(.08); }
+  64% { transform: translate(-50%, -50%) scale(.85); }
+  100% { transform: translate(-50%, -50%) scale(1.15); }
 }
 @keyframes impar-hole-ring { 0% { transform: scale(.75); opacity: .95; } 100% { transform: scale(2.4); opacity: 0; } }
 @keyframes impar-entry-logo-reveal { 0% { opacity: 0; transform: scale(.5) rotate(-9deg); } 55% { opacity: 1; transform: scale(1.16) rotate(3deg); } 100% { opacity: 1; transform: scale(1) rotate(0); } }
@@ -368,9 +402,11 @@ html.dark {
   .impar-entry__progress span { animation: none !important; }
   .impar-entry__button { transition: none; }
   .impar-entry--warp,
+  .impar-entry__void,
   .impar-entry__black-hole,
   .impar-entry__black-hole span,
   .impar-entry__reveal-logo { animation: none !important; }
   .impar-entry--warp { background: #02030a; }
+  .impar-entry__void { opacity: 1; transform: translate(-50%, -50%) scale(42); }
   .impar-entry__reveal-logo { opacity: 1; }
 }
