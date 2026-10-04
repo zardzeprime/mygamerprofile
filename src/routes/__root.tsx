@@ -100,7 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ÍMPAR — Sua identidade gamer" },
+      { title: "ÍMPAR — Seu jogo. Seu perfil. Do seu jeito." },
       {
         name: "description",
         content:
@@ -112,6 +112,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "theme-color", content: "#07182d" },
       { property: "og:site_name", content: "ÍMPAR" },
+      { name: "application-name", content: "ÍMPAR" },
       { property: "og:type", content: "website" },
       { property: "og:image", content: DEFAULT_OG_IMAGE },
       { name: "twitter:card", content: "summary_large_image" },
@@ -131,8 +132,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: imparEvolutionCss },
       { rel: "stylesheet", href: imparCelestialCss },
       { rel: "stylesheet", href: entryExperienceCss },
-      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      { rel: "apple-touch-icon", href: "/brand/impar-logo-uploaded.png" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml", sizes: "any" },
+      { rel: "apple-touch-icon", href: "/brand/noctis-mark.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
