@@ -174,6 +174,9 @@ const CarouselItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
 );
 CarouselItem.displayName = "CarouselItem";
 
+const carouselControlClass =
+  "absolute h-7 w-7 rounded-xl border-border/80 bg-surface/90 text-muted-foreground shadow-[0_10px_28px_rgba(0,0,0,0.24)] backdrop-blur-md transition-[border-color,background-color,color,transform,opacity] duration-200 hover:border-gold/45 hover:bg-muted hover:text-gold-strong disabled:opacity-30";
+
 const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
   ({ className, variant = "outline", size = "icon", ...props }, ref) => {
     const { orientation, scrollPrev, canScrollPrev } = useCarousel();
@@ -184,17 +187,17 @@ const CarouselPrevious = React.forwardRef<HTMLButtonElement, React.ComponentProp
         variant={variant}
         size={size}
         className={cn(
-          "absolute  h-8 w-8 rounded-full",
+          carouselControlClass,
           orientation === "horizontal"
-            ? "-left-12 top-1/2 -translate-y-1/2"
-            : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
+            ? "-left-9 top-1/2 -translate-y-1/2"
+            : "-top-9 left-1/2 -translate-x-1/2 rotate-90",
           className,
         )}
         disabled={!canScrollPrev}
         onClick={scrollPrev}
         {...props}
       >
-        <ArrowLeft className="h-4 w-4" />
+        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2.1} />
         <span className="sr-only">Previous slide</span>
       </Button>
     );
@@ -212,17 +215,17 @@ const CarouselNext = React.forwardRef<HTMLButtonElement, React.ComponentProps<ty
         variant={variant}
         size={size}
         className={cn(
-          "absolute h-8 w-8 rounded-full",
+          carouselControlClass,
           orientation === "horizontal"
-            ? "-right-12 top-1/2 -translate-y-1/2"
-            : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
+            ? "-right-9 top-1/2 -translate-y-1/2"
+            : "-bottom-9 left-1/2 -translate-x-1/2 rotate-90",
           className,
         )}
         disabled={!canScrollNext}
         onClick={scrollNext}
         {...props}
       >
-        <ArrowRight className="h-4 w-4" />
+        <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.1} />
         <span className="sr-only">Next slide</span>
       </Button>
     );
