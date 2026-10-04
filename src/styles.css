@@ -196,7 +196,7 @@
  * (actions, rails, focus, tabs and highlights) while danger/success stay semantic.
  */
 :root {
-  --mgp-user-accent: #c9a95d;
+  --mgp-user-accent: #b9a5ff;
   --mgp-user-accent-foreground: #111318;
   --mgp-user-accent-soft: color-mix(in oklab, var(--mgp-user-accent) 12%, var(--surface));
   --mgp-personal-gradient: linear-gradient(
