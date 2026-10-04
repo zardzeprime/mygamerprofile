@@ -13,7 +13,15 @@
   --impar-celestial-star-bright: #fff;
 }
 
-.dark {
+html.dark {
+  --impar-spectral: var(--mgp-user-accent, #b9a5ff);
+  --impar-spectral-strong: color-mix(in srgb, var(--impar-spectral) 78%, white 22%);
+  --impar-spectral-soft: color-mix(in srgb, var(--impar-spectral) 16%, transparent);
+  --impar-amber: var(--impar-spectral);
+  --impar-prestige: var(--impar-spectral);
+  --primary: var(--impar-spectral);
+  --primary-foreground: #111318;
+  --ring: var(--impar-spectral-strong);
   --color-background: var(--impar-night);
   --color-surface: var(--impar-night-raised);
   --color-card: var(--impar-surface);
