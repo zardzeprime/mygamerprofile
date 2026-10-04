@@ -279,7 +279,8 @@ function Home() {
               <div className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border/70 bg-surface/70 p-1">
                 <CarouselPrevious
                   aria-label={copy("Jogo anterior", "Previous game", "Juego anterior")}
-                  className="!static !inset-auto !size-9 !translate-x-0 !translate-y-0"
+                  className="size-9"
+                  style={{ position: "static", inset: "auto", width: 36, height: 36, transform: "none" }}
                 />
                 <CarouselNext
                   aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")}
