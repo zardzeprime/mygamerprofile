@@ -53,7 +53,8 @@ export function consumeAccountEntryPending(): boolean {
     const store = storage();
     const createdAt = Number(store?.getItem(ACCOUNT_ENTRY_KEY));
     store?.removeItem(ACCOUNT_ENTRY_KEY);
-    return Number.isFinite(createdAt) && createdAt > 0 && Date.now() - createdAt < ACCOUNT_ENTRY_MAX_AGE_MS;
+    const now = Date.now();
+    return Number.isFinite(createdAt) && createdAt > 0 && createdAt <= now && now - createdAt < ACCOUNT_ENTRY_MAX_AGE_MS;
   } catch {
     return false;
   }
