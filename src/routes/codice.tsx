@@ -3,15 +3,23 @@ import { ArrowRight, BookOpen, Compass, Hammer, ScrollText } from "lucide-react"
 
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { ACTIVE_GAMES } from "@/config/gameAvailability";
+import { MODULE_LABELS, type GameConfig, type GameModuleKey } from "@/config/games";
 import { useI18n } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { buildSeo } from "@/lib/seo";
+
+const CODEX_MODULE_ORDER: GameModuleKey[] = ["builds", "guides", "bosses", "items", "weapons", "champions", "agents", "warframes", "runes", "skins", "competitive", "news"];
+
+function getCodexSection(game: GameConfig): GameModuleKey {
+  return CODEX_MODULE_ORDER.find((module) => game.modules.includes(module)) ?? "overview";
+}
 
 const SORTED_GAMES = [...ACTIVE_GAMES].sort((a, b) =>
   a.name.localeCompare(b.name, "pt-BR", { sensitivity: "base" }),
 );
 
 export const Route = createFileRoute("/codice")({
+  validateSearch: (search: Record<string, unknown>) => ({ module: typeof search.module === "string" ? search.module : undefined }),
   head: () =>
     buildSeo({
       title: "Códice — guias, builds e estratégias — ÍMPAR",
@@ -44,9 +52,9 @@ function CodicePage() {
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground">
               {copy(
-                "O Códice reúne os caminhos para builds, guias, estratégias e sistemas já disponíveis nos hubs do ÍMPAR. Ele cresce junto com o conteúdo real da plataforma — sem inventar guia onde ainda não existe.",
-                "The Codex gathers the paths to builds, guides, strategies and systems already available across ÍMPAR. It grows with real platform content — no pretending a guide exists when it does not.",
-                "El Códice reúne los caminos hacia builds, guías, estrategias y sistemas ya disponibles en ÍMPAR. Crece junto al contenido real de la plataforma, sin fingir que existe una guía cuando todavía no existe.",
+                "O Códice abre diretamente as seções de builds, guias e estratégias de cada jogo. Escolha um jogo e vá direto ao conteúdo, sem passar por outra página de hub.",
+                "The Codex opens straight to each game's builds, guides and strategy sections. Pick a game and go directly to the relevant content without another hub stop.",
+                "El Códice abre directamente las secciones de builds, guías y estrategias de cada juego. Elige un juego para ir al contenido correcto sin pasar por otra página de hub.",
               )}
             </p>
           </div>
@@ -103,11 +111,14 @@ function CodicePage() {
         </div>
 
         <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-3">
-          {SORTED_GAMES.map((game) => (
+          {SORTED_GAMES.map((game) => {
+            const section = getCodexSection(game);
+            return (
             <Link
               key={game.slug}
               to="/games/$slug"
               params={{ slug: game.slug }}
+              search={{ module: section }}
               className="impar-card impar-card-interactive group relative isolate min-h-44 overflow-hidden rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--impar-spectral)] sm:min-h-56"
             >
               <GameArtwork
@@ -118,7 +129,7 @@ function CodicePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--impar-night)] via-[var(--impar-night)]/45 to-transparent" />
               <div className="relative flex h-full min-h-44 flex-col justify-end p-4 sm:min-h-56 sm:p-5">
                 <span className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[var(--impar-spectral)]">
-                  {copy("Abrir registro", "Open entry", "Abrir registro")}
+                  {copy("Abrir", "Open", "Abrir")} · {MODULE_LABELS[section][locale]}
                 </span>
                 <span className="mt-1 flex items-center justify-between gap-2 font-display text-base font-semibold text-white sm:text-lg">
                   {game.name}
@@ -126,15 +137,16 @@ function CodicePage() {
                 </span>
               </div>
             </Link>
-          ))}
+            );
+          })}
         </div>
 
         <div className="mt-8 rounded-2xl border border-border bg-muted/15 p-5 sm:p-6">
           <p className="text-sm leading-6 text-muted-foreground">
             {copy(
-              "Alguns jogos ainda têm áreas em desenvolvimento. Quando um guia ou build não estiver publicado, o Códice leva você ao hub real do jogo em vez de preencher o espaço com conteúdo fictício.",
-              "Some games still have areas in development. When a guide or build is not published yet, the Codex takes you to the real game hub instead of filling the space with fictional content.",
-              "Algunos juegos todavía tienen áreas en desarrollo. Cuando una guía o build aún no está publicada, el Códice te lleva al hub real del juego en vez de llenar el espacio con contenido ficticio.",
+              "Cada cartão abre a seção mais relevante disponível para aquele jogo. Se uma área ainda estiver em preparação, esse estado aparece dentro da própria seção.",
+              "Each card opens the most relevant available section for that game. If an area is still being prepared, that status appears inside the section itself.",
+              "Cada tarjeta abre la sección más relevante disponible para ese juego. Si un área aún está en preparación, ese estado aparece dentro de la propia sección.",
             )}
           </p>
         </div>
