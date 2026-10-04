@@ -18,9 +18,20 @@ export function EntryExperience() {
   const [destination, setDestination] = useState<EntryDestination>("home");
   const [lineIndex, setLineIndex] = useState(0);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const reducedMotion =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const [reducedMotion, setReducedMotion] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(preference.matches);
+    preference.addEventListener("change", update);
+    return () => preference.removeEventListener("change", update);
+  }, []);
 
   const loadingLines = [
     copy("Ajustando os portais…", "Aligning the portals…", "Ajustando los portales…"),
@@ -31,12 +42,15 @@ export function EntryExperience() {
 
   useEffect(() => {
     if (pathname === "/onboarding") {
-      if (authLoading || !user) return;
-      if (consumeAccountEntryPending()) {
-        setDestination("home");
-        setLineIndex(0);
-        setScreen("loading");
-      }
+      // Keep the required profile setup immediately usable after authentication.
+      setScreen("hidden");
+      return;
+    }
+
+    if (pathname.startsWith("/u/") && !authLoading && user && consumeAccountEntryPending()) {
+      setDestination("home");
+      setLineIndex(0);
+      setScreen(reducedMotion ? "hidden" : "loading");
       return;
     }
 
@@ -47,15 +61,33 @@ export function EntryExperience() {
 
     if (!hasSeenEntryIntro()) setScreen("welcome");
     else setScreen("hidden");
-  }, [pathname, authLoading, user]);
+  }, [pathname, authLoading, user, reducedMotion]);
 
   useEffect(() => {
+    if (screen === "hidden") return;
+    const dialog = dialogRef.current;
+    if (!dialog || dialog.open) return;
+
+    const active = document.activeElement;
+    previousFocusRef.current = active instanceof HTMLElement ? active : null;
+    dialog.showModal();
     if (screen === "welcome") titleRef.current?.focus();
+
+    return () => {
+      if (dialog.open) dialog.close();
+      const previousFocus = previousFocusRef.current;
+      previousFocusRef.current = null;
+      if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+    };
   }, [screen]);
 
   useEffect(() => {
     if (screen === "loading") {
-      const timeout = window.setTimeout(() => setScreen("warp"), reducedMotion ? 850 : 2500);
+      if (reducedMotion) {
+        setScreen("hidden");
+        return;
+      }
+      const timeout = window.setTimeout(() => setScreen("warp"), 2500);
       const interval = window.setInterval(() => {
         setLineIndex((current) => (current + 1) % loadingLines.length);
       }, 740);
@@ -66,10 +98,15 @@ export function EntryExperience() {
     }
 
     if (screen === "warp") {
+      if (reducedMotion) {
+        setScreen("hidden");
+        if (destination === "register") void navigate({ to: "/register" });
+        return;
+      }
       const timeout = window.setTimeout(() => {
         setScreen("hidden");
         if (destination === "register") void navigate({ to: "/register" });
-      }, reducedMotion ? 140 : 1650);
+      }, 1650);
       return () => window.clearTimeout(timeout);
     }
   }, [screen, destination, navigate, reducedMotion, loadingLines.length]);
@@ -77,6 +114,11 @@ export function EntryExperience() {
   const beginWarp = (next: EntryDestination) => {
     markEntryIntroSeen();
     setDestination(next);
+    if (reducedMotion) {
+      setScreen("hidden");
+      if (next === "register") void navigate({ to: "/register" });
+      return;
+    }
     setScreen("warp");
   };
 
@@ -92,18 +134,18 @@ export function EntryExperience() {
     <div
       className={`impar-entry impar-entry--${screen}`}
       data-screen={screen}
-      onKeyDown={(event) => {
-        if (event.key === "Escape") skip();
-      }}
     >
       <div className="impar-entry__stars" aria-hidden="true" />
       {screen === "welcome" ? (
-        <section
+        <dialog
+          ref={dialogRef}
           className="impar-entry__dialog"
-          role="dialog"
-          aria-modal="true"
           aria-labelledby="impar-entry-title"
           aria-describedby="impar-entry-copy"
+          onCancel={(event) => {
+            event.preventDefault();
+            skip();
+          }}
         >
           <div className="impar-entry__mascot-wrap" aria-hidden="true">
             <img
@@ -140,24 +182,41 @@ export function EntryExperience() {
               Ao criar uma conta, você aceita os <Link to="/terms">Termos de Uso</Link> e a <Link to="/privacy">Política de Privacidade</Link>.
             </p>
           </div>
-        </section>
+        </dialog>
       ) : screen === "loading" ? (
-        <section className="impar-entry__loading" role="status" aria-live="polite" aria-atomic="true">
+        <dialog
+          ref={dialogRef}
+          className="impar-entry__loading"
+          aria-label="Preparando seu perfil"
+          onCancel={(event) => {
+            event.preventDefault();
+            skip();
+          }}
+        >
           <img className="impar-entry__loading-mascot" src="/assets/noctis/noctis-impar-web-hd.webp" alt="" width="200" height="230" />
-          <p className="impar-entry__eyebrow">ACESSO CONFIRMADO</p>
-          <h2>Agora vamos preparar seu espaço.</h2>
-          <p className="impar-entry__loading-line">{loadingLines[lineIndex]}</p>
+          <p className="impar-entry__eyebrow">PERFIL CONCLUÍDO</p>
+          <h2>Seu espaço já está pronto.</h2>
+          <p className="impar-entry__loading-line" aria-live="polite">{loadingLines[lineIndex]}</p>
           <div className="impar-entry__progress" aria-hidden="true"><span /></div>
           <button className="impar-entry__skip" onClick={skip}>Pular animação</button>
-        </section>
+        </dialog>
       ) : (
-        <section className="impar-entry__warp" aria-label="Abrindo o Ímpar">
+        <dialog
+          ref={dialogRef}
+          className="impar-entry__warp"
+          aria-label="Abrindo o Ímpar"
+          onCancel={(event) => {
+            event.preventDefault();
+            skip();
+          }}
+        >
+          <div className="impar-entry__void" aria-hidden="true" />
           <div className="impar-entry__black-hole" aria-hidden="true">
             <span />
           </div>
           <img className="impar-entry__reveal-logo" src="/brand/impar-logo-white.png" alt="Ímpar" width="118" height="118" />
           <button className="impar-entry__skip impar-entry__skip--warp" onClick={skip}>Pular</button>
-        </section>
+        </dialog>
       )}
     </div>
   );
