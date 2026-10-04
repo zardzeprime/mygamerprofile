@@ -20,6 +20,7 @@ import { GAMES } from "@/config/games";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { LEGAL_ACCEPTANCE_VERSION } from "@/config/legal";
+import { markAccountEntryPending } from "@/lib/entry-experience";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   component: OnboardingPage,
@@ -230,6 +231,7 @@ function OnboardingPage() {
       // before navigating to the newly-created public profile.
       window.dispatchEvent(new Event("mgp:profile-updated"));
       await router.invalidate();
+      markAccountEntryPending();
       await router.navigate({
         to: "/u/$username",
         params: { username: profile.username },
