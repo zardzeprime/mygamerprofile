@@ -204,12 +204,12 @@ function Home() {
         <div className="impar-transition-panel rounded-[1.5rem_1.5rem_0.7rem_1.5rem] p-5 sm:p-6">
           <div className="relative z-10 grid gap-5 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start">
             <img
-              src="/brand/impar-logo-official.webp"
+              src="/brand/noctis-mark.svg"
               alt="Símbolo oficial do ÍMPAR"
               width={256}
               height={256}
               loading="lazy"
-              className="size-14 rounded-xl border border-white/15 bg-white object-contain shadow-lg sm:size-16"
+              className="size-14 object-contain drop-shadow-[0_8px_20px_rgba(0,0,0,.4)] sm:size-16"
             />
             <div>
               <span className="inline-flex rounded-full border border-[var(--impar-line)] bg-black/20 px-2.5 py-1 text-[0.62rem] font-bold uppercase tracking-[0.13em] text-[var(--impar-spectral)]">
@@ -276,10 +276,10 @@ function Home() {
                   )}
                 </p>
               </div>
-              <div className="flex shrink-0 gap-2">
+              <div className="inline-flex shrink-0 items-center gap-1 rounded-full border border-border/70 bg-surface/70 p-1">
                 <CarouselPrevious
                   aria-label={copy("Jogo anterior", "Previous game", "Juego anterior")}
-                  className="static size-11 translate-y-0"
+                  className="!static !inset-auto !size-9 !translate-x-0 !translate-y-0"
                 />
                 <CarouselNext
                   aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")}
