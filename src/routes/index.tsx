@@ -205,7 +205,7 @@ function Home() {
           <div className="relative z-10 grid gap-5 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start">
             <img
               src="/brand/noctis-mark.svg"
-              alt="Símbolo oficial do ÍMPAR"
+              alt="Rosto do Noctis, mascote do ÍMPAR"
               width={256}
               height={256}
               loading="lazy"
@@ -283,7 +283,7 @@ function Home() {
                 />
                 <CarouselNext
                   aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")}
-                  className="static size-11 translate-y-0"
+                  className="!static !inset-auto !size-9 !translate-x-0 !translate-y-0"
                 />
               </div>
             </div>
