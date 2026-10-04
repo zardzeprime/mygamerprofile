@@ -19,8 +19,13 @@ html.dark {
   --impar-spectral-soft: color-mix(in srgb, var(--impar-spectral) 16%, transparent);
   --impar-amber: var(--impar-spectral);
   --impar-prestige: var(--impar-spectral);
+  --gold: var(--impar-spectral);
+  --gold-strong: var(--impar-spectral-strong);
+  --gold-soft: var(--impar-spectral-soft);
+  --gold-foreground: #111318;
   --primary: var(--impar-spectral);
   --primary-foreground: #111318;
+  --accent-foreground: var(--impar-spectral-strong);
   --ring: var(--impar-spectral-strong);
   --color-background: var(--impar-night);
   --color-surface: var(--impar-night-raised);
