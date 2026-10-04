@@ -28,20 +28,19 @@
   --accent: color-mix(in srgb, var(--impar-mystic) 10%, var(--impar-night-raised));
 }
 
-/* The official mark is square. Do not crop it into the old circular shell. */
+/* The Noctis mark has a transparent canvas; keep it floating cleanly on dark surfaces. */
 .brand-logo-shell {
-  overflow: hidden;
-  border: 1px solid rgb(255 255 255 / 0.16);
-  border-radius: 0.7rem !important;
-  background: #fff;
-  box-shadow:
-    0 0 0 1px rgb(0 0 0 / 0.16) inset,
-    0 8px 28px rgb(0 0 0 / 0.24);
+  overflow: visible !important;
+  border: 0;
+  border-radius: 0 !important;
+  background: transparent;
+  box-shadow: none;
 }
 
 .brand-logo-shell img {
-  border-radius: 0.55rem;
+  border-radius: 0;
   object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgb(0 0 0 / 0.36));
 }
 
 .impar-transition-panel {
