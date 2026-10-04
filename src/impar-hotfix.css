@@ -13,18 +13,12 @@
   background: transparent !important;
 }
 
-html.dark .brand-logo-shell img,
-html.dark .mgp-route-loader__logo,
-.dark .brand-logo-shell img,
-.dark .mgp-route-loader__logo {
-  filter: invert(1) drop-shadow(0 0 18px rgb(255 255 255 / 0.08)) !important;
-  mix-blend-mode: screen;
-}
-
-html:not(.dark) .brand-logo-shell img,
-html:not(.dark) .mgp-route-loader__logo {
-  filter: none !important;
-  mix-blend-mode: multiply;
+/* These are colored character illustrations, so preserve their source colors
+   in both themes instead of applying the old monochrome-logo inversion. */
+.brand-logo-shell img,
+.mgp-route-loader__logo {
+  filter: drop-shadow(0 0 18px rgb(255 255 255 / 0.08)) !important;
+  mix-blend-mode: normal !important;
 }
 
 /* Route loader — the old device chase is intentionally retired. */
