@@ -284,7 +284,8 @@ function Home() {
                 />
                 <CarouselNext
                   aria-label={copy("Próximo jogo", "Next game", "Siguiente juego")}
-                  className="!static !inset-auto !size-9 !translate-x-0 !translate-y-0"
+                  className="size-9"
+                  style={{ position: "static", inset: "auto", width: 36, height: 36, transform: "none" }}
                 />
               </div>
             </div>
