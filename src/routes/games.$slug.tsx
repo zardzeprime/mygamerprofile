@@ -33,6 +33,9 @@ export const Route = createFileRoute("/games/$slug")({
     if (!game) throw notFound();
     return { game };
   },
+  validateSearch: (search: Record<string, unknown>) => ({
+    module: typeof search.module === "string" ? search.module : undefined,
+  }),
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
@@ -73,6 +76,7 @@ function HubMissing() {
 
 function GameHub() {
   const { game } = Route.useLoaderData();
+  const { module: requestedModule } = Route.useSearch();
   const { locale, t } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -92,9 +96,20 @@ function GameHub() {
     ) as GameModuleKey[];
   }, [game.modules, game.slug]);
   useEffect(() => {
-    setActive("overview");
+    const target = visibleModules.find((moduleKey) => moduleKey === requestedModule) ?? "overview";
+    setActive(target);
     setMobileMenuOpen(false);
-  }, [game.slug]);
+
+    if (target !== "overview") {
+      requestAnimationFrame(() => {
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        panelRef.current?.scrollIntoView({
+          behavior: reducedMotion ? "auto" : "smooth",
+          block: "start",
+        });
+      });
+    }
+  }, [game.slug, requestedModule, visibleModules]);
   const editorial = GAME_EDITORIAL_OVERVIEW[game.slug];
 
   const handleTab = (moduleKey: GameModuleKey, scrollToPanel = false) => {
