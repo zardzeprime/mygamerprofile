@@ -43,7 +43,10 @@ body {
       transparent 36rem
     ),
     linear-gradient(180deg, #07172b 0%, #071426 47%, #06111f 100%) !important;
+  background-size: auto, auto !important;
+  background-repeat: no-repeat !important;
   background-attachment: fixed;
+  animation: none !important;
 }
 
 /* Dense warm-gold star field inspired by the celestial identity reference. */
@@ -70,6 +73,9 @@ body {
   content: "";
   position: absolute;
   inset: -4%;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 0;
   pointer-events: none;
   transform-origin: center;
   will-change: opacity, transform, filter;
