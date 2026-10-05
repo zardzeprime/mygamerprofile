@@ -201,3 +201,74 @@ body {
     transform: none !important;
   }
 }
+
+/* Home art direction: an editorial game atlas, with matte surfaces and precise dividers. */
+.impar-home-hero {
+  background:
+    linear-gradient(90deg, transparent calc(50% - 0.5px), color-mix(in srgb, var(--impar-spectral) 18%, transparent) 50%, transparent calc(50% + 0.5px)),
+    linear-gradient(112deg, #0b1114 0%, #0d1117 54%, #11121a 100%) !important;
+}
+
+.impar-home-hero::before {
+  inset: 0 0 auto;
+  height: 100%;
+  background:
+    linear-gradient(132deg, transparent 0 67%, color-mix(in srgb, var(--impar-spectral) 7%, transparent) 67.1%, transparent 67.25%),
+    linear-gradient(132deg, transparent 0 75%, rgb(255 255 255 / 0.025) 75.1%, transparent 75.2%);
+  filter: none;
+}
+
+.impar-home-hero::after {
+  display: none;
+}
+
+.impar-home-hero .impar-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  letter-spacing: 0.16em;
+}
+
+.impar-home-hero .impar-kicker::before {
+  content: "";
+  display: inline-block;
+  width: 1.65rem;
+  height: 1px;
+  background: var(--impar-spectral);
+}
+
+.impar-home-noctis-card {
+  border: 1px solid color-mix(in srgb, var(--impar-spectral) 22%, rgb(255 255 255 / 0.08)) !important;
+  border-radius: 1.1rem 1.1rem 0.25rem 1.1rem !important;
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 0.025), transparent 55%),
+    #10171b !important;
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--impar-spectral) 78%, transparent) !important;
+  backdrop-filter: none !important;
+}
+
+.impar-home-noctis-card .impar-home-noctis-badge {
+  border: 0 !important;
+  background: transparent !important;
+  padding-inline: 0 !important;
+  backdrop-filter: none !important;
+}
+
+.impar-home-destination {
+  border-radius: 0.85rem 0.85rem 0.2rem 0.85rem !important;
+  background: linear-gradient(145deg, rgb(255 255 255 / 0.028), transparent 62%), #101519 !important;
+}
+
+.impar-home-destination::after {
+  inset-inline: 0.9rem;
+  background: linear-gradient(90deg, var(--impar-spectral), transparent 65%);
+  opacity: 0.9;
+}
+
+@media (max-width: 1023px) {
+  .impar-home-hero {
+    background:
+      linear-gradient(180deg, transparent 0, color-mix(in srgb, var(--impar-spectral) 12%, transparent) 100%),
+      #0b1114 !important;
+  }
+}
