@@ -16,9 +16,9 @@ export function AppFooter() {
             <BrandLogoPlaceholder withFullName />
             <p className="mt-3 max-w-sm text-xs leading-5 text-muted-foreground">
               {copy(
-                "Seu jogo. Seu perfil. Do seu jeito.",
-                "Your game. Your profile. Your way.",
-                "Tu juego. Tu perfil. A tu manera.",
+                "Jogue junto. Compartilhe o que sabe. Guarde o que funciona.",
+                "Find your squad. Share what you know. Keep what works.",
+                "Juega en equipo. Comparte lo que sabes. Guarda lo que sirve.",
               )}
             </p>
           </div>
