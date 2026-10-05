@@ -6,6 +6,7 @@
       "name": "NEXUS",
       "role": "mother-orchestrator",
       "completed": [
+        "Completed the Warframe launch path: main-branch CI passed, the frontend is READY on Vercel, the catalog/age gate migration is recorded, and nexus-inference is ACTIVE at version 22.",
         "Added a dedicated Warframe Mods library and build workspace, catalog-grounded Noctis build proposals saved as private, explicit player-controlled publishing, contextual exploration tips and direct module entry that removes the repeated hub detour.",
         "Established specialist-core routing architecture for AI-assisted development.",
         "Created persistent Nexus chat tables with per-user RLS in Supabase.",
@@ -46,9 +47,7 @@
         "Centered the Noctis welcome modal and increased the white ÍMPAR mark so it reads clearly in the first-visit dialog; verified the dialog bounds centered in the production desktop viewport.",
         "Applied the transparent Noctis face mark across the header, welcome dialog and reveal; sent Códice cards directly to the strongest configured game section; grouped equal-size home carousel controls and removed the initial overview flash from module deep links."
       ],
-      "inProgress": [
-        "Run project CI and verify production frontend and the Warframe build-assist Edge Function after the main update."
-      ],
+      "inProgress": [],
       "next": [
         "Add the GitHub App bridge as the first write-capable Nexus development tool using branch/review/merge by default.",
         "Add explicit human-approval gates before destructive or production-impacting tool actions.",
@@ -222,6 +221,7 @@
       "name": "Marbas",
       "role": "automation",
       "completed": [
+        "Applied the Warframe catalog entry with the existing 16+ account-age gate and deployed nexus-inference version 22 for catalog-validated Warframe build assistance.",
         "Recorded the release path: frontend changes go through the connected main-branch pipeline; the nexus-inference Edge Function requires its own verified deployment.",
         "Registered GitHub, Supabase and Lovable as separate Nexus tool bridges with explicit transports and approval requirements.",
         "Scheduled a daily pg_cron retention job to delete expired anonymous Nexus sessions and cascading message history.",
@@ -251,9 +251,7 @@
         "Verified production deployment for 31c89c3 is READY with Vercel success; the Vite build completed. GitHub Actions full-source lint failed on the existing generated `src/integrations/supabase/previewAuthStorage.ts:54` prefer-const error; build and data/syntax checks passed.",
         "Verified Vercel production deployment and GitHub Actions quality run after the route, logo and carousel changes; corrected the single-assignment timer lint error in previewAuthStorage.ts."
       ],
-      "inProgress": [
-        "Verify main-branch CI and the production Edge Function deployment version."
-      ],
+      "inProgress": [],
       "next": [
         "Implement scoped OAuth/App credential flows for Nexus administrative tools.",
         "Identify repeated manual project workflows that are stable enough to automate.",
@@ -276,6 +274,7 @@
       "name": "Andrealphus",
       "role": "optimization",
       "completed": [
+        "Confirmed the Warframe feature commit passed the repository build/lint workflow and the matching production deployment reached READY.",
         "Lazy-loaded the Warframe build editor and retained one in-session Mods catalog request per language; deep-linked modules avoid loading game hero media and ambience.",
         "Separated boss-card framing from boss-detail framing so each context can use its own crop and scale.",
         "Added per-boss image position, scale and cover/contain controls for Dark Souls and Dark Souls III.",
@@ -319,7 +318,7 @@
         "Compact equal-size carousel controls, direct Códice module links and preselected module state shipped; production verified for the transparent Noctis mark and section deep link."
       ],
       "inProgress": [
-        "Run responsive QA at 360/390/768/1024/1440px when a rendered preview is available."
+        "Run rendered QA at 360/390/768/1024/1440px when a preview session is available."
       ],
       "next": [
         "Verify starfield, opening transition, reduced-motion and mobile layouts in the rendered site after CI.",
