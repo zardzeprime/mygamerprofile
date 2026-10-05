@@ -1,4 +1,5 @@
 import { Construction, FlaskConical, Search, Wrench } from "lucide-react";
+import { lazy, Suspense } from "react";
 import { EmptyState } from "@/components/common/EmptyState";
 import { Input } from "@/components/ui/input";
 import type { GameModuleKey, GameThemeKey } from "@/config/games";
@@ -29,6 +30,8 @@ import { SoulsBossExplorer } from "@/components/games/SoulsBossExplorer";
 import { SoulsGameGuides } from "@/components/games/SoulsGameGuides";
 import { WarframeDatabase } from "@/components/games/WarframeDatabase";
 import { WarframeExplorer } from "@/components/games/WarframeExplorer";
+
+const WarframeBuildLab = lazy(() => import("@/components/games/WarframeBuildLab").then((module) => ({ default: module.WarframeBuildLab })));
 
 export function FutureCollection({
   moduleKey,
@@ -71,6 +74,7 @@ export function FutureCollection({
   }
 
   if (gameSlug === "warframe") {
+    if (moduleKey === "builds" || moduleKey === "mods") return <Suspense fallback={<div className="min-h-48 animate-pulse rounded-2xl border border-border bg-muted/20" aria-busy="true" />}><WarframeBuildLab locale={locale} mode={moduleKey} /></Suspense>;
     if (moduleKey === "warframes") return <WarframeExplorer mode="warframes" locale={locale} />;
     if (moduleKey === "weapons") return <WarframeDatabase mode="weapons" locale={locale} />;
     if (moduleKey === "items") return <WarframeDatabase mode="items" locale={locale} />;

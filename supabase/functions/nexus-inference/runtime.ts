@@ -159,6 +159,7 @@ const BUILD_ASSIST_GAMES = new Set([
   "league-of-legends",
   "dark-souls-remastered",
   "dark-souls-iii",
+  "warframe",
 ]);
 
 function parseBuildJson(text: string) {
@@ -183,6 +184,16 @@ function parseBuildJson(text: string) {
 }
 
 function buildAssistSchema(gameSlug: string) {
+  if (gameSlug === "warframe") {
+    return [
+      "Return exactly one JSON object with this shape:",
+      '{"title":"string","summary":"string","reason":"string","mods":[{"uniqueName":"exact supplied catalog ID","name":"exact supplied catalog name","slot":1,"reason":"string"}],"notes":"string"}',
+      "Return at most 8 distinct Mods and only IDs present in context.availableMods. The server will discard every other ID.",
+      "Use supplied catalog values only. Do not invent stats, ranks, compatibility, polarity, capacity or patch-specific meta.",
+      "Explain the role of each selected Mod and practical tradeoffs. If the supplied catalog cannot support a coherent build, say so in summary and return no unsupported Mod.",
+    ].join("\n");
+  }
+
   if (gameSlug === "league-of-legends") {
     return [
       "Return exactly one JSON object with this shape:",
@@ -230,6 +241,27 @@ export async function handleBuildAssist(req: Request, raw: Record<string, unknow
     buildAssistSchema(gameSlug),
   ].join("\n");
 
+  if (gameSlug === "warframe") {
+    const sourceMods = Array.isArray((context as Record<string, unknown>).availableMods)
+      ? ((context as Record<string, unknown>).availableMods as unknown[]).slice(0, 40)
+      : [];
+    const safeMods = sourceMods.flatMap((item) => {
+      if (!item || typeof item !== "object") return [];
+      const mod = item as Record<string, unknown>;
+      if (typeof mod.uniqueName !== "string" || typeof mod.name !== "string") return [];
+      return [{
+        uniqueName: mod.uniqueName.slice(0, 240),
+        name: mod.name.slice(0, 120),
+        description: typeof mod.description === "string" ? mod.description.slice(0, 500) : "",
+        type: typeof mod.type === "string" ? mod.type.slice(0, 80) : "",
+        polarity: typeof mod.polarity === "string" ? mod.polarity.slice(0, 40) : "",
+        baseDrain: typeof mod.baseDrain === "number" ? mod.baseDrain : null,
+        compatName: typeof mod.compatName === "string" ? mod.compatName.slice(0, 120) : "",
+      }];
+    });
+    (context as Record<string, unknown>).availableMods = safeMods;
+  }
+
   let completion: Awaited<ReturnType<typeof complete>>;
   try {
     completion = await complete({
@@ -246,7 +278,7 @@ export async function handleBuildAssist(req: Request, raw: Record<string, unknow
         },
       ],
       effort: "medium",
-      maxOutputTokens: 1700,
+      maxOutputTokens: gameSlug === "warframe" ? 2200 : 1700,
       grounding: false,
     });
   } catch (error) {
@@ -260,6 +292,29 @@ export async function handleBuildAssist(req: Request, raw: Record<string, unknow
   }
 
   const suggestion = parseBuildJson(completion.text);
+  if (gameSlug === "warframe") {
+    const supplied = Array.isArray((context as Record<string, unknown>).availableMods)
+      ? ((context as Record<string, unknown>).availableMods as Array<Record<string, unknown>>)
+      : [];
+    const byId = new Map<string, Record<string, unknown>>(
+      supplied.map((mod) => [String(mod.uniqueName), mod] as const),
+    );
+    const seen = new Set<string>();
+    const validMods = (Array.isArray(suggestion.mods) ? suggestion.mods : []).flatMap((candidate) => {
+      if (!candidate || typeof candidate !== "object") return [];
+      const item = candidate as Record<string, unknown>;
+      const id = typeof item.uniqueName === "string" ? item.uniqueName : "";
+      const source = byId.get(id);
+      if (!source || seen.has(id)) return [];
+      seen.add(id);
+      return [{ uniqueName: id, name: String(source.name), slot: seen.size, reason: typeof item.reason === "string" ? item.reason.slice(0, 500) : "" }];
+    }).slice(0, 8);
+    suggestion.mods = validMods;
+    if (!validMods.length) throw new Error("NEXUS_BUILD_NO_VALID_WARFRAME_MODS");
+    for (const key of ["title", "summary", "reason", "notes"]) {
+      if (typeof suggestion[key] === "string") suggestion[key] = (suggestion[key] as string).slice(0, 1200);
+    }
+  }
   await recordRuntimeEvent(db, "build_assist_success", "Structured build preset generated", {
     userId,
     gameSlug,

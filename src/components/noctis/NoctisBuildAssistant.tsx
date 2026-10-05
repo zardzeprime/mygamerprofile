@@ -22,12 +22,14 @@ export function NoctisBuildAssistant({
   context,
   quickPrompts = [],
   onApply,
+  onGenerated,
 }: {
   gameSlug: string;
   locale: Locale;
   context: Record<string, unknown>;
   quickPrompts?: string[];
   onApply: (suggestion: NoctisBuildSuggestion) => void;
+  onGenerated?: (suggestion: NoctisBuildSuggestion) => void | Promise<void>;
 }) {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [request, setRequest] = useState("");
@@ -71,6 +73,7 @@ export function NoctisBuildAssistant({
         throw new Error("NEXUS_BUILD_EMPTY");
       }
 
+      await onGenerated?.(response.suggestion);
       setRequest(prompt);
       setSuggestion(response.suggestion);
     } catch (reason) {

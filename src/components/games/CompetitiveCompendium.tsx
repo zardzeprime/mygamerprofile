@@ -244,7 +244,7 @@ export function CompetitiveCompendium({ game, locale }: { game: EsportsGameSlug;
                   className="group min-w-0 rounded-xl border border-border bg-muted/10 p-3 text-left transition duration-200 hover:-translate-y-0.5 hover:border-gold/35 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/35 sm:rounded-2xl sm:p-4"
                 >
                   <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-                    <TeamLogo team={team} className="size-9 rounded-lg sm:size-11 sm:rounded-xl" />
+                    <TeamLogo team={team} className="size-11 rounded-xl sm:size-14 sm:rounded-2xl" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-display text-sm font-semibold text-foreground sm:text-base">
                         {team.name}
@@ -478,14 +478,14 @@ function TeamLogo({ team, className }: { team: EsportsTeam; className: string })
 
   return (
     <div
-      className={`grid shrink-0 place-items-center border border-border bg-background/70 p-1.5 text-[10px] font-bold text-foreground ${className}`}
+      className={`grid shrink-0 place-items-center border border-border/80 bg-[radial-gradient(circle_at_35%_25%,rgba(255,255,255,0.13),transparent_72%),hsl(var(--background)/0.78)] p-1.5 text-[10px] font-bold text-foreground shadow-md shadow-black/15 ring-1 ring-white/5 transition-colors ${className}`}
       aria-label={`${team.name} logo`}
     >
       {showImage ? (
         <img
           src={team.logoUrl}
           alt=""
-          className="max-h-full max-w-full object-contain transition-transform duration-200 group-hover:scale-105"
+          className="max-h-full max-w-full object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.28)] transition-transform duration-200 group-hover:scale-105"
           loading="lazy"
           onError={() => setFailed(true)}
         />

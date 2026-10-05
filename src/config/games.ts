@@ -13,6 +13,7 @@ export type GameModuleKey =
   | "bosses"
   | "guides"
   | "warframes"
+  | "mods"
   | "news"
   | "agents"
   | "champions"
@@ -84,6 +85,7 @@ export const MODULE_LABELS: Record<GameModuleKey, Record<Locale, string>> = {
   bosses: { "pt-BR": "Chefes", en: "Bosses", es: "Jefes" },
   guides: { "pt-BR": "Guias", en: "Guides", es: "Guías" },
   warframes: { "pt-BR": "Warframes", en: "Warframes", es: "Warframes" },
+  mods: { "pt-BR": "Mods", en: "Mods", es: "Mods" },
   news: { "pt-BR": "Novidades", en: "News", es: "Novedades" },
   agents: { "pt-BR": "Agentes", en: "Agents", es: "Agentes" },
   champions: { "pt-BR": "Campeões", en: "Champions", es: "Campeones" },
@@ -505,7 +507,7 @@ export const GAMES: GameConfig[] = [
     platforms: ["PC", "PlayStation", "Xbox", "Nintendo Switch", "Mobile"],
     ageRating: "16+",
     themeKey: "competitive",
-    modules: ["overview", "warframes", "builds", "weapons", "guides", "news"],
+    modules: ["overview", "warframes", "builds", "mods", "weapons", "guides", "news"],
     profileFields: [
       {
         key: "favorite_warframe",

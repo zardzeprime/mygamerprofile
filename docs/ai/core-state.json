@@ -1,11 +1,12 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-04",
+  "updatedAt": "2026-10-05",
   "cores": {
     "nexus": {
       "name": "NEXUS",
       "role": "mother-orchestrator",
       "completed": [
+        "Added a dedicated Warframe Mods library and build workspace, catalog-grounded Noctis build proposals saved as private, explicit player-controlled publishing, contextual exploration tips and direct module entry that removes the repeated hub detour.",
         "Established specialist-core routing architecture for AI-assisted development.",
         "Created persistent Nexus chat tables with per-user RLS in Supabase.",
         "Created a global in-product Nexus chat with Gamer and admin-only Development modes.",
@@ -46,8 +47,7 @@
         "Applied the transparent Noctis face mark across the header, welcome dialog and reveal; sent Códice cards directly to the strongest configured game section; grouped equal-size home carousel controls and removed the initial overview flash from module deep links."
       ],
       "inProgress": [
-        "Continue page-by-page visual art-direction review on top of Visual System v2 after the foundation PR is merged and rendered in Lovable.",
-        "Run rendered visual QA for the first-visit sequence and confirm the public Lovable preview after CI."
+        "Run project CI and verify production frontend and the Warframe build-assist Edge Function after the main update."
       ],
       "next": [
         "Add the GitHub App bridge as the first write-capable Nexus development tool using branch/review/merge by default.",
@@ -66,6 +66,7 @@
       "name": "Sabnock",
       "role": "security",
       "completed": [
+        "Kept Warframe build assistance behind the existing authenticated inference path and allowlisted every generated Mod against the exact catalog context; confirmed owner-only update policies protect build visibility.",
         "Restricted Nexus Development mode to MGP administrators.",
         "Kept model-provider credentials server-side and documented that consumer sessions must not be used as hidden API credentials.",
         "Applied per-user RLS to Nexus conversations and optimized Nexus auth.uid() RLS evaluation.",
@@ -98,6 +99,7 @@
       "name": "Bael",
       "role": "privacy",
       "completed": [
+        "Kept generated and manually saved Warframe builds private by default; only the owner can read or change private builds, and publishing is an explicit owner action.",
         "Scoped Nexus authenticated chat history to the user through RLS.",
         "Separated Gamer mode from internal Development context to avoid exposing repository/admin details to normal users.",
         "Implemented anonymous Nexus sessions with an opaque HTTP-only cookie rather than email or device fingerprinting.",
@@ -127,6 +129,7 @@
       "name": "Andromalius",
       "role": "image-rights-and-licensing",
       "completed": [
+        "Updated competitive team logo framing without changing externally sourced logo URLs or provenance; retained the existing fallback for unavailable images.",
         "Added explicit source attribution metadata to Dark Souls and Dark Souls III boss artwork mappings.",
         "Preferred identifiable concept/reference artwork over ambiguous screenshots where practical.",
         "Preserved source-page links for externally sourced boss artwork.",
@@ -175,6 +178,7 @@
       "name": "Vassago",
       "role": "updates",
       "completed": [
+        "Grounded Warframe Mods in the live WarframeStat catalog and checked its documented /mods endpoint; added explicit guardrails against unsupported patch-meta claims.",
         "Expanded the VALORANT competitive snapshot across Americas, EMEA, Pacific and China with dated VLR provenance and roster-status metadata.",
         "Added dated, source-linked VALORANT staff snapshots for LOUD, LEVIATÁN, MIBR and Sentinels.",
         "Closed the competitive team-logo coverage gap from 16/62 to 62/62 records.",
@@ -197,10 +201,7 @@
         "Reviewed the 31c89c3 CSS-only dialog/logo change: no dependencies, dates, live claims or time-sensitive content changed.",
         "Verified the Códice priority list against all five active game module configs; current deep links resolve to configured sections and introduce no live or time-sensitive claims."
       ],
-      "inProgress": [
-        "Continue individual ProSettings verification for players whose settings remain hidden.",
-        "Expand verified staff coverage across the remaining competitive organizations without inferring missing roles."
-      ],
+      "inProgress": [],
       "next": [
         "Track model IDs and provider API changes so Nexus defaults do not become stale.",
         "Track game/editorial data that can become stale and define refresh expectations before automating it.",
@@ -221,6 +222,7 @@
       "name": "Marbas",
       "role": "automation",
       "completed": [
+        "Recorded the release path: frontend changes go through the connected main-branch pipeline; the nexus-inference Edge Function requires its own verified deployment.",
         "Registered GitHub, Supabase and Lovable as separate Nexus tool bridges with explicit transports and approval requirements.",
         "Scheduled a daily pg_cron retention job to delete expired anonymous Nexus sessions and cascading message history.",
         "Standardized AVAPGV Watch on a responsive branded MG Profile HTML email contract with plain-text fallback and secret-safe reporting.",
@@ -249,7 +251,9 @@
         "Verified production deployment for 31c89c3 is READY with Vercel success; the Vite build completed. GitHub Actions full-source lint failed on the existing generated `src/integrations/supabase/previewAuthStorage.ts:54` prefer-const error; build and data/syntax checks passed.",
         "Verified Vercel production deployment and GitHub Actions quality run after the route, logo and carousel changes; corrected the single-assignment timer lint error in previewAuthStorage.ts."
       ],
-      "inProgress": [],
+      "inProgress": [
+        "Verify main-branch CI and the production Edge Function deployment version."
+      ],
       "next": [
         "Implement scoped OAuth/App credential flows for Nexus administrative tools.",
         "Identify repeated manual project workflows that are stable enough to automate.",
@@ -272,6 +276,7 @@
       "name": "Andrealphus",
       "role": "optimization",
       "completed": [
+        "Lazy-loaded the Warframe build editor and retained one in-session Mods catalog request per language; deep-linked modules avoid loading game hero media and ambience.",
         "Separated boss-card framing from boss-detail framing so each context can use its own crop and scale.",
         "Added per-boss image position, scale and cover/contain controls for Dark Souls and Dark Souls III.",
         "Reduced poor letterboxing for landscape boss screenshots by allowing targeted crop/zoom.",
@@ -313,7 +318,9 @@
         "Fixed native Noctis dialog positioning with fixed viewport centering, viewport max-height and internal vertical scrolling; loader/warp dialogs now center consistently, and the existing white logo is more prominent. Desktop production bounds were verified centered.",
         "Compact equal-size carousel controls, direct Códice module links and preselected module state shipped; production verified for the transparent Noctis mark and section deep link."
       ],
-      "inProgress": [],
+      "inProgress": [
+        "Run responsive QA at 360/390/768/1024/1440px when a rendered preview is available."
+      ],
       "next": [
         "Verify starfield, opening transition, reduced-motion and mobile layouts in the rendered site after CI.",
         "Review external boss-art delivery for image weight, caching and layout stability after visual approval.",

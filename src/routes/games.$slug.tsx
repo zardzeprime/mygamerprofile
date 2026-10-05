@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { GameLivePanel } from "@/components/games/GameLivePanel";
 import { GameArtwork } from "@/components/games/GameArtwork";
 import { FutureCollection } from "@/components/games/FutureCollection";
+import { NoctisPageTip } from "@/components/games/NoctisPageTip";
 import { LeagueEsportsPanel } from "@/components/games/LeagueEsportsPanel";
 import { RiotPlayerSearch } from "@/components/games/RiotPlayerSearch";
 import { useGameAmbience } from "@/hooks/useGameAmbience";
@@ -81,7 +82,6 @@ function GameHub() {
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const panelRef = useRef<HTMLDivElement>(null);
   const activeHub = isGameActive(game.slug);
-  useGameAmbience(activeHub ? game.visual.ambientAudio : undefined);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const visibleModules = useMemo(() => {
@@ -102,7 +102,7 @@ function GameHub() {
     setActive(target);
     setMobileMenuOpen(false);
 
-    if (target !== "overview") {
+    if (target !== "overview" && target !== requestedModule) {
       requestAnimationFrame(() => {
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         panelRef.current?.scrollIntoView({
@@ -112,6 +112,12 @@ function GameHub() {
       });
     }
   }, [game.slug, requestedModule, visibleModules]);
+  const directModule = Boolean(
+    requestedModule &&
+      visibleModules.includes(requestedModule as GameModuleKey) &&
+      active !== "overview",
+  );
+  useGameAmbience(activeHub && !directModule ? game.visual.ambientAudio : undefined);
   const editorial = GAME_EDITORIAL_OVERVIEW[game.slug];
 
   const handleTab = (moduleKey: GameModuleKey, scrollToPanel = false) => {
@@ -140,7 +146,7 @@ function GameHub() {
         game.themeKey === "dark_souls" ? "game-hub-ember" : "game-hub-tactical",
       )}
     >
-      <section className="game-hub-hero relative isolate overflow-hidden border-b border-border">
+      {!directModule ? <section className="game-hub-hero relative isolate overflow-hidden border-b border-border">
         <GameArtwork
           game={game}
           variant="hero"
@@ -201,7 +207,17 @@ function GameHub() {
             ) : null}
           </div>
         </div>
-      </section>
+      </section> : null}
+
+      {directModule ? (
+        <div className="mx-auto w-full max-w-[92rem] px-4 pt-5 sm:px-6">
+          <div className="flex flex-wrap items-end justify-between gap-4 rounded-2xl border border-border bg-background/60 p-4 sm:p-5">
+            <div><p className="section-kicker">{game.name}</p><h1 className="mt-1 font-display text-2xl font-bold text-foreground sm:text-3xl">{MODULE_LABELS[active][locale]}</h1></div>
+            <Link to="/games/$slug" params={{ slug: game.slug }} className="inline-flex min-h-10 items-center rounded-xl border border-border px-4 text-sm font-semibold text-foreground transition hover:bg-muted/35">{copy("Visão geral do jogo", "Game overview", "Vista general del juego")}</Link>
+          </div>
+          <NoctisPageTip gameSlug={game.slug} moduleKey={active} locale={locale} />
+        </div>
+      ) : null}
 
       <AdReadyLayout
         className="mx-auto min-w-0 w-full max-w-[92rem] px-4 sm:px-6"
