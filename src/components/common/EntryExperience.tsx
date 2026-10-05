@@ -165,17 +165,17 @@ export function EntryExperience() {
               Opa! Eu sou o Noctis.
             </h1>
             <p id="impar-entry-copy" className="impar-entry__body">
-              Seja bem-vindo ao Ímpar: um espaço pra mostrar sua identidade gamer, descobrir coisas novas e encontrar gente pra jogar do seu jeito.
+              {copy("Bem-vindo ao Ímpar: escolha um jogo, consulte um guia, descubra uma build ou procure companhia. Dá para começar sem conta.", "Welcome to ÍMPAR: pick a game, check a guide, explore a build or find people to play with. You can start without an account.", "Bienvenido a ÍMPAR: elige un juego, consulta una guía, descubre una build o busca con quién jugar. Puedes empezar sin cuenta.")}
             </p>
             <p className="impar-entry__subcopy">
-              Crie seu perfil e participe da comunidade, ou entre sem conta e dê uma olhada primeiro.
+              {copy("Uma conta fica para quando você quiser publicar, responder, encontrar um grupo ou salvar algo para depois.", "An account is there when you want to post, reply, find a group or save something for later.", "La cuenta es para cuando quieras publicar, responder, buscar grupo o guardar algo para después.")}
             </p>
             <div className="impar-entry__actions">
               <button className="impar-entry__button impar-entry__button--primary" onClick={() => beginWarp("register")}>
-                Criar minha conta
+                {copy("Criar conta", "Create account", "Crear cuenta")}
               </button>
               <button className="impar-entry__button impar-entry__button--secondary" onClick={() => beginWarp("home")}>
-                Continuar sem conta
+                {copy("Explorar sem conta", "Explore without an account", "Explorar sin cuenta")}
               </button>
             </div>
             <p className="impar-entry__privacy">
