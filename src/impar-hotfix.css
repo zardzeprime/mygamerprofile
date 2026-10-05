@@ -221,3 +221,14 @@
     transition: none !important;
   }
 }
+
+/* Keep the floating Noctis shortcut clear of copy on narrow screens. */
+@media (max-width: 767px) {
+  .impar-noctis-chat-button {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    right: max(0.75rem, env(safe-area-inset-right)) !important;
+    bottom: max(0.75rem, env(safe-area-inset-bottom)) !important;
+    opacity: 0.9;
+  }
+}
