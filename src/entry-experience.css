@@ -414,3 +414,20 @@ html.dark {
   .impar-entry__void { opacity: 1; transform: translate(-50%, -50%) scale(42); }
   .impar-entry__reveal-logo { opacity: 1; }
 }
+
+
+/* Keep the mobile entry headline clear of the persistent Noctis control. */
+@media (max-width: 480px) {
+  .impar-home-hero h1 {
+    max-width: 14ch;
+    font-size: clamp(2rem, 8.2vw, 2.4rem) !important;
+    line-height: 1.04 !important;
+  }
+
+  .impar-noctis-chat-button {
+    right: max(0.75rem, env(safe-area-inset-right)) !important;
+    bottom: max(0.75rem, env(safe-area-inset-bottom)) !important;
+    width: 3rem !important;
+    height: 3rem !important;
+  }
+}
