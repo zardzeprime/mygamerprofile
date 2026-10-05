@@ -38,7 +38,7 @@ export const Route = createFileRoute("/")({
   loader: async () => ({ posts: await listPosts({ data: {} }).catch(() => []) }),
   head: () =>
     buildSeo({
-      title: "ÍMPAR — Seu jogo. Seu perfil. Do seu jeito.",
+      title: "ÍMPAR — Jogue. Aprenda. Encontre seu grupo.",
       description:
         "Descubra o que jogar, encontre companhia, consulte o Códice e guarde o que aprendeu no ÍMPAR.",
       path: "/",
@@ -112,9 +112,9 @@ function Home() {
             </p>
             <h1 className="mt-5 max-w-3xl text-balance font-display text-[clamp(2.7rem,6vw,5.35rem)] font-bold leading-[0.98] tracking-[-0.045em] text-foreground">
               {copy(
-                "Jogue junto. Compartilhe o que sabe. Guarde o que funciona.",
-                "Find your squad. Share what you know. Keep what works.",
-                "Juega en equipo. Comparte lo que sabes. Guarda lo que sirve.",
+                "Jogue. Aprenda. Encontre seu grupo.",
+                "Play. Learn. Find your squad.",
+                "Juega. Aprende. Encuentra tu grupo.",
               )}
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
@@ -270,9 +270,9 @@ function Home() {
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
                   {copy(
-                    "Escolha um jogo para acessar guias, builds, comunidades e conteúdos criados para cada experiência.",
-                    "Choose a game to access guides, builds, communities and content made for each experience.",
-                    "Elige un juego para acceder a guías, builds, comunidades y contenido creado para cada experiencia.",
+                    "Cada hub resolve perguntas diferentes: onde conseguir um item, como funciona uma habilidade, o que vale montar e quem está procurando grupo.",
+                    "Each hub answers different questions: where to get an item, how an ability works, what is worth building and who is looking for a group.",
+                    "Cada hub responde preguntas concretas: dónde conseguir un objeto, cómo funciona una habilidad, qué build conviene y quién busca grupo.",
                   )}
                 </p>
               </div>
