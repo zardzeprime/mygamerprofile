@@ -359,7 +359,7 @@ export function NoctisChat() {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="fixed bottom-5 right-5 z-[70] grid size-14 place-items-center rounded-full border border-[var(--impar-spectral)]/45 bg-foreground text-[var(--impar-spectral)] shadow-lift transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--impar-spectral)]"
+        className="impar-noctis-chat-button fixed bottom-5 right-5 z-[70] grid size-14 place-items-center rounded-full border border-[var(--impar-spectral)]/45 bg-foreground text-[var(--impar-spectral)] shadow-lift transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--impar-spectral)]"
         aria-label={copy("Abrir Noctis", "Open Noctis", "Abrir Noctis")}
       >
         {open ? (
