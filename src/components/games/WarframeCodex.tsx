@@ -129,7 +129,7 @@ function detectRoles(description: string): AbilityRole[] {
 
   if (/dano|damage|daño|corte|slash|toxic|viral|heat|fogo|impact|explod|burst|projétil|projectile/.test(text)) add("damage");
   if (/cura|heal|vida|health|escudo|shield|armor|armadura|protec|defen|invulner|reduz.*dano|damage reduction/.test(text)) add("survival");
-  if (/controle|control|stun|slow|lent|derrub|knock|fear|terror|puxa|pull|ragdoll|suspende|lift/.test(text)) add("control");
+  if (/controle|control|stun|slow|lent|derrub|knock|fear|terror|puxa|pull|ragdoll|suspende|lift|cego|cegando|cegar|blind/.test(text)) add("control");
   if (/movimento|movement|speed|veloc|teleport|dash|salto|jump|avan[cç]|leap/.test(text)) add("mobility");
   if (/energia|energy|buff|aliad|ally|squad|equipe|support|suporte|aumenta|increase/.test(text)) add("support");
   if (/invis|stealth|furtiv|cloak/.test(text)) add("stealth");
@@ -186,7 +186,12 @@ export function WarframeCodex({ locale }: { locale: Locale }) {
           raw
             .filter(
               (candidate): candidate is WarframeApiItem =>
-                Boolean(candidate && typeof candidate === "object" && "name" in candidate),
+                Boolean(
+                  candidate &&
+                    typeof candidate === "object" &&
+                    "name" in candidate &&
+                    candidate.type === "Warframe",
+                ),
             )
             .sort((a, b) => a.name.localeCompare(b.name, locale)),
         );
@@ -409,7 +414,7 @@ function WarframeDetail({ item, locale }: { item: WarframeApiItem; locale: Local
       </section>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
-        <section className="wf-learning-note"><div className="flex items-center gap-2 text-[var(--impar-spectral)]"><Sparkles className="size-4" /><span className="text-xs font-bold">{copy("Como aprender o kit", "How to learn the kit", "Cómo aprender el kit")}</span></div><p className="mt-2 text-sm leading-6 text-muted-foreground">{copy("Faça três testes: primeiro use cada habilidade sozinha; depois combine controle → dano; por último teste a mesma sequência em movimento. Isso separa o que a skill faz do que o kit inteiro faz junto.", "Run three tests: first use every ability alone; then combine control → damage; finally repeat the same sequence while moving. This separates what each skill does from what the whole kit does together.", "Haz tres pruebas: primero usa cada habilidad sola; después combina control → daño; por último repite la secuencia en movimiento. Así separas lo que hace cada skill de lo que hace todo el kit junto.")}</p></section>
+        <section className="wf-learning-note"><div className="flex items-center gap-2 text-[var(--impar-spectral)]"><BookOpenCheck className="size-4" /><span className="text-xs font-bold">{copy("Sobre os dados", "About this data", "Sobre los datos")}</span></div><p className="mt-2 text-sm leading-6 text-muted-foreground">{copy("As descrições e os componentes vêm da base pública do jogo. Os rótulos de função são automáticos; builds e dicas de uso só devem aparecer aqui quando forem revisados para este Warframe.", "Descriptions and components come from the public game database. Role tags are automatic; builds and usage advice should appear here only after review for this Warframe.", "Las descripciones y los componentes vienen de la base pública del juego. Las etiquetas de función son automáticas; las builds y los consejos solo deben aparecer tras revisarlos para este Warframe.")}</p></section>
 
         <aside className="wf-acquisition"><div className="flex items-center gap-2"><Boxes className="size-4 text-[var(--impar-spectral)]" /><h4 className="font-display text-base font-semibold text-foreground">{copy("Como conseguir", "How to get it", "Cómo conseguirlo")}</h4></div>{parts.length ? <div className="mt-3 space-y-2">{parts.slice(0, 7).map((part, index) => <div key={`${part.name}-${index}`} className="flex items-center justify-between gap-3 border-b border-border/60 pb-2 text-xs last:border-0 last:pb-0"><span className="min-w-0 truncate text-foreground">{part.name}</span><span className="shrink-0 text-muted-foreground">×{part.itemCount ?? part.count ?? 1}</span></div>)}</div> : <p className="mt-3 text-sm leading-6 text-muted-foreground">{copy("Sem componentes estruturados nesta resposta.", "No structured components in this response.", "Sin componentes estructurados en esta respuesta.")}</p>}<a href={OFFICIAL_DROPS} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--impar-spectral)] hover:underline">{copy("Confirmar drops oficiais", "Check official drops", "Ver drops oficiales")}<ExternalLink className="size-3.5" /></a></aside>
       </div>
