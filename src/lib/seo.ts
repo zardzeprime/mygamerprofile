@@ -1,4 +1,4 @@
-export const SITE_ORIGIN = "https://impar-imp21.vercel.app";
+export const SITE_ORIGIN = "https://projeto-impar.vercel.app";
 export const SITE_NAME = "ÍMPAR";
 export const SITE_FULL_NAME = "ÍMPAR — Sua identidade gamer";
 export const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/brand/impar-social.svg`;
