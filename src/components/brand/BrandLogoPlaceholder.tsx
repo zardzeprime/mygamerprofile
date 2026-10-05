@@ -1,0 +1,59 @@
+import { Link } from "@tanstack/react-router";
+import { useI18n } from "@/i18n";
+import { localeCopy } from "@/i18n/locale-utils";
+import { cn } from "@/lib/utils";
+import "@/impar-refinement.css";
+
+export function BrandLogoPlaceholder({
+  withFullName = false,
+  size = "md",
+  className,
+}: {
+  withFullName?: boolean;
+  size?: "sm" | "md" | "lg" | "xl";
+  className?: string;
+}) {
+  const { locale } = useI18n();
+  const fullName = localeCopy(locale, "Identidade gamer", "Gaming identity", "Identidad gamer");
+
+  const markSize =
+    size === "xl" ? "size-16" : size === "lg" ? "size-12" : size === "sm" ? "size-7" : "size-9";
+  const textSize =
+    size === "xl" ? "text-2xl" : size === "lg" ? "text-xl" : size === "sm" ? "text-sm" : "text-base";
+
+  return (
+    <Link
+      to="/"
+      aria-label={`ÍMPAR — ${fullName}`}
+      className={cn("group inline-flex items-center gap-2.5", className)}
+    >
+      <span
+        aria-hidden="true"
+        className={cn(
+          "brand-logo-shell grid shrink-0 place-items-center overflow-visible rounded-none transition-transform duration-300 group-hover:scale-[1.045]",
+          markSize,
+        )}
+      >
+        <img
+          src="/brand/noctis-mark.svg"
+          alt=""
+          width={180}
+          height={256}
+          decoding="async"
+          draggable={false}
+          className="h-full w-full select-none object-contain"
+        />
+      </span>
+      <span className="flex flex-col leading-none">
+        <span className={cn("font-display font-bold tracking-tight text-foreground", textSize)}>
+          ÍMPAR
+        </span>
+        {withFullName ? (
+          <span className="mt-0.5 text-[0.6rem] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+            {fullName}
+          </span>
+        ) : null}
+      </span>
+    </Link>
+  );
+}

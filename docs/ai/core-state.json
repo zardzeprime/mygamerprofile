@@ -6,7 +6,6 @@
       "name": "NEXUS",
       "role": "mother-orchestrator",
       "completed": [
-        "Recorded the Os Sete review for the Noctis voice update: Sabnock found no new security issue; Bael found low privacy risk; Vassago found no prompt-scope blocker; Atlas, Marbas and Andrealphus classified their domains not_applicable. Retrieval freshness/caching was unchanged.",
         "Refined Noctis's gamer system prompts and voice guide across the production Supabase Edge runtime and server fallback: more natural, context-aware conversation and stronger grounded game/build reasoning without overclaiming current data or memory.",
         "Changed game cards in Arquivos and featured game lists to enter the most useful available content module directly, avoiding the generic overview detour.",
         "Completed the Warframe launch path: main-branch CI passed, the frontend is READY on Vercel, the catalog/age gate migration is recorded, and nexus-inference is ACTIVE at version 22.",

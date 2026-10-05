@@ -1,0 +1,192 @@
+/* ÍMPAR evolution layer — loaded after the previous refinement layers. */
+
+:root {
+  --impar-spectral: var(--mgp-user-accent, #c9a95d);
+  --impar-spectral-strong: color-mix(in srgb, var(--impar-spectral) 78%, white 22%);
+  --impar-spectral-soft: color-mix(in srgb, var(--impar-spectral) 14%, transparent);
+  --impar-line: color-mix(in srgb, var(--impar-spectral) 18%, transparent);
+  --impar-amber: color-mix(in srgb, var(--impar-spectral) 72%, #f0c56a 28%);
+  --impar-pointer-x: 50vw;
+  --impar-pointer-y: 42vh;
+  --impar-star-dx: 0px;
+  --impar-star-dy: 0px;
+  --impar-star-dx-reverse: 0px;
+  --impar-star-dy-reverse: 0px;
+}
+
+.dark {
+  --primary: var(--impar-spectral);
+  --color-gold-strong: var(--impar-spectral);
+  --color-gold-soft: color-mix(in srgb, var(--impar-spectral) 13%, transparent);
+  --ring: color-mix(in srgb, var(--impar-spectral) 76%, white 24%);
+  --accent: color-mix(in srgb, var(--impar-spectral) 9%, var(--impar-night-raised));
+}
+
+.impar-kicker,
+.section-kicker,
+.impar-accent,
+.text-\[var\(--impar-spectral\)\] {
+  color: var(--impar-spectral) !important;
+}
+
+.brand-button {
+  background: var(--impar-spectral) !important;
+  color: var(--mgp-user-accent-foreground, #111318) !important;
+}
+
+.brand-button:hover {
+  background: var(--impar-spectral-strong) !important;
+}
+
+.brand-logo-shell,
+.impar-transition-panel img[src*="impar-logo-official"],
+.mgp-route-loader__logo-wrap {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.brand-logo-shell {
+  border-color: color-mix(in srgb, var(--impar-spectral) 20%, transparent) !important;
+}
+
+
+.impar-home-destination .font-mono,
+.impar-home-destination > svg:last-child {
+  display: none !important;
+}
+
+.impar-home-destination {
+  min-height: 8.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.impar-home-destination h2 {
+  margin-top: 1rem !important;
+}
+
+body { background-image: none !important; }
+
+.impar-starry-sky {
+  position: fixed;
+  inset: -3rem;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.55 !important;
+  background-image:
+    radial-gradient(circle at 16% 24%, rgb(255 255 255 / 0.7) 0 0.8px, transparent 1.5px),
+    radial-gradient(circle at 73% 18%, color-mix(in srgb, var(--impar-spectral) 58%, white) 0 0.85px, transparent 1.6px),
+    radial-gradient(circle at 42% 72%, rgb(255 255 255 / 0.48) 0 0.7px, transparent 1.4px),
+    radial-gradient(circle at 88% 66%, color-mix(in srgb, var(--impar-spectral) 48%, white) 0 0.75px, transparent 1.5px);
+  background-size: 187px 211px, 263px 239px, 149px 173px, 313px 277px;
+  background-position: 0 0, 42px 71px, 91px 38px, 17px 103px;
+  transform: translate3d(var(--impar-star-dx), var(--impar-star-dy), 0);
+  will-change: transform;
+  animation: impar-stars-breathe 9s ease-in-out infinite alternate;
+}
+
+.impar-starry-sky::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle 18rem at var(--impar-pointer-x) var(--impar-pointer-y), color-mix(in srgb, var(--impar-spectral) 10%, transparent), transparent 70%),
+    radial-gradient(circle at 24% 36%, rgb(255 255 255 / 0.55) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 66% 53%, color-mix(in srgb, var(--impar-spectral) 52%, white) 0 0.9px, transparent 1.7px),
+    radial-gradient(circle at 84% 27%, rgb(255 255 255 / 0.45) 0 0.7px, transparent 1.5px);
+  background-size: auto, 337px 293px, 227px 269px, 401px 353px;
+  transform: translate3d(var(--impar-star-dx-reverse), var(--impar-star-dy-reverse), 0);
+}
+
+.impar-starry-sky::after {
+  content: "";
+  position: absolute;
+  inset: 8% 5%;
+  opacity: 0.42;
+  background:
+    radial-gradient(ellipse at 30% 30%, color-mix(in srgb, var(--impar-spectral) 9%, transparent), transparent 35%),
+    radial-gradient(ellipse at 74% 64%, rgb(104 116 255 / 0.055), transparent 38%);
+  filter: blur(22px);
+  animation: impar-nebula-drift 18s ease-in-out infinite alternate;
+}
+
+.mgp-pointer-aura {
+  position: fixed;
+  z-index: 4;
+  left: 0;
+  top: 0;
+  width: 9rem;
+  height: 9rem;
+  pointer-events: none;
+  border-radius: 999px;
+  opacity: 0;
+  background: radial-gradient(circle, color-mix(in srgb, var(--impar-spectral) 10%, transparent), transparent 68%);
+  transition: opacity 180ms ease, width 180ms ease, height 180ms ease;
+}
+
+.mgp-pointer-aura[data-visible="true"] { opacity: 0.7; }
+.mgp-pointer-aura[data-interactive="true"] { width: 11rem; height: 11rem; opacity: 0.9; }
+.mgp-pointer-aura[data-pressed="true"] { width: 7rem; height: 7rem; }
+
+@keyframes impar-stars-breathe {
+  from { opacity: 0.38; filter: brightness(0.92); }
+  to { opacity: 0.62; filter: brightness(1.08); }
+}
+
+@keyframes impar-nebula-drift {
+  from { transform: translate3d(-1.5%, -1%, 0) scale(0.98); }
+  to { transform: translate3d(1.5%, 1%, 0) scale(1.03); }
+}
+
+.surface-panel,
+.impar-card {
+  border-color: color-mix(in srgb, var(--impar-spectral) 10%, rgb(255 255 255 / 0.075)) !important;
+}
+
+.impar-card-interactive { position: relative; overflow: hidden; }
+.impar-card-interactive::after {
+  content: "";
+  position: absolute;
+  inset: auto 1rem 0;
+  height: 1px;
+  scale: 0 1;
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--impar-spectral), transparent);
+  transition: scale 220ms ease;
+}
+.impar-card-interactive:hover::after,
+.impar-card-interactive:focus-visible::after { scale: 1 1; }
+
+@media (max-width: 639px) {
+  .impar-starry-sky {
+    inset: -1rem;
+    opacity: 0.42 !important;
+    transform: none;
+    animation-duration: 13s;
+  }
+  .impar-starry-sky::before {
+    transform: none;
+    background: radial-gradient(circle at 50% 22%, color-mix(in srgb, var(--impar-spectral) 8%, transparent), transparent 56%);
+  }
+  .mgp-pointer-aura { display: none; }
+  .impar-home-destination { min-height: 7.3rem; padding: 0.9rem !important; }
+  .impar-home-destination h2 { font-size: 1.05rem !important; }
+  button[aria-label="Jogo anterior"],
+  button[aria-label="Previous game"],
+  button[aria-label="Juego anterior"],
+  button[aria-label="Próximo jogo"],
+  button[aria-label="Next game"],
+  button[aria-label="Siguiente juego"] { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .impar-starry-sky,
+  .impar-starry-sky::after,
+  .mgp-pointer-aura,
+  .impar-card-interactive::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

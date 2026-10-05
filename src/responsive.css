@@ -1,0 +1,296 @@
+/* ÍMPAR responsive hardening: keep every route fluid and prevent mobile focus zoom. */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@supports (overflow: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img,
+video,
+iframe,
+svg,
+canvas {
+  max-width: 100%;
+}
+
+iframe,
+video {
+  display: block;
+}
+
+.game-hub,
+.game-hub > *,
+[role="tabpanel"],
+.surface-panel,
+.profile-shell,
+.profile-shell > *,
+main,
+section,
+article {
+  min-width: 0;
+}
+
+.hub-tablist {
+  scroll-snap-type: x proximity;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.hub-tab {
+  scroll-snap-align: start;
+}
+
+.profile-hero-scrim {
+  background:
+    linear-gradient(
+      0deg,
+      color-mix(in oklab, var(--color-background) 96%, transparent) 0%,
+      color-mix(in oklab, var(--color-background) 30%, transparent) 45%,
+      transparent 76%
+    ),
+    linear-gradient(90deg, color-mix(in oklab, black 32%, transparent), transparent 65%);
+}
+
+.profile-bg-mgp-grid {
+  background-color: #151515;
+  background-image:
+    radial-gradient(
+      circle at 18% 15%,
+      color-mix(in oklab, var(--color-gold) 32%, transparent),
+      transparent 35%
+    ),
+    linear-gradient(color-mix(in oklab, var(--color-gold) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--color-gold) 10%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(135deg, #191919, #0e0f12 72%);
+  background-size:
+    auto,
+    36px 36px,
+    36px 36px,
+    auto;
+}
+
+.profile-bg-ember {
+  background:
+    radial-gradient(circle at 22% 72%, rgba(240, 112, 35, 0.42), transparent 24%),
+    radial-gradient(circle at 74% 15%, rgba(212, 167, 44, 0.24), transparent 30%),
+    linear-gradient(135deg, #24130d, #121316 72%);
+}
+
+.profile-bg-tactical {
+  background:
+    linear-gradient(
+      118deg,
+      transparent 0 28%,
+      rgba(79, 151, 255, 0.18) 28.2% 29%,
+      transparent 29.2% 100%
+    ),
+    linear-gradient(
+      62deg,
+      transparent 0 68%,
+      rgba(255, 70, 85, 0.14) 68.2% 69%,
+      transparent 69.2% 100%
+    ),
+    radial-gradient(circle at 72% 28%, rgba(79, 151, 255, 0.25), transparent 36%),
+    linear-gradient(135deg, #111722, #101114 72%);
+}
+
+.profile-bg-midnight {
+  background:
+    radial-gradient(circle at 50% -10%, rgba(212, 167, 44, 0.16), transparent 42%),
+    linear-gradient(145deg, #1b1d24, #0c0d11 68%);
+}
+
+@media (max-width: 1023px) {
+  .game-hub-hero {
+    min-height: 28rem;
+  }
+
+  .game-hub-hero > .relative {
+    min-height: 28rem !important;
+  }
+}
+
+@media (max-width: 767px) {
+  /* iOS/Safari zooms the viewport when focusing controls below 16px. */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  button,
+  a,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
+  .game-hub-hero {
+    min-height: 24rem;
+  }
+
+  .game-hub-hero > .relative {
+    min-height: 24rem !important;
+    padding-top: 4.75rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .game-hub-hero h1 {
+    font-size: clamp(2rem, 11vw, 3.25rem) !important;
+    line-height: 1.02 !important;
+    overflow-wrap: anywhere;
+  }
+
+  .hub-tablist {
+    margin-inline: -0.75rem !important;
+    padding-inline: 0.75rem !important;
+  }
+
+  .hub-tab {
+    min-height: 2.75rem;
+    padding-inline: 0.85rem !important;
+    white-space: nowrap;
+  }
+
+  .surface-panel {
+    border-radius: 1rem;
+  }
+
+  [role="dialog"] > div {
+    max-height: calc(100dvh - 1rem);
+    max-width: calc(100vw - 1rem);
+  }
+
+  [role="dialog"] video {
+    max-height: 56dvh !important;
+  }
+
+  /* Video decode and a full-screen backdrop blur compete for the same mobile GPU budget. */
+  [role="dialog"]:has(video) {
+    background-color: rgba(0, 0, 0, 0.86) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    animation: none !important;
+  }
+
+  [role="dialog"]:has(video) > div {
+    animation: none !important;
+    box-shadow: var(--shadow-hero);
+  }
+
+  [role="dialog"]:has(video) video {
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+
+  .profile-hero {
+    min-height: 12.5rem !important;
+  }
+}
+
+@media (max-width: 479px) {
+  .game-card {
+    border-radius: 1rem;
+  }
+
+  .game-card-media {
+    aspect-ratio: 16 / 9;
+  }
+
+  .section-kicker {
+    letter-spacing: 0.1em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-tablist,
+  [data-scroll-lock-region] {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Premium shell + ad-ready grid. Empty ad slots collapse until inventory is activated. */
+.mgp-ad-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1rem, 2vw, 1.75rem);
+  width: 100%;
+}
+.mgp-ad-layout__main {
+  min-width: 0;
+}
+.mgp-ad-layout__rail {
+  display: none;
+  min-width: 0;
+}
+.mgp-ad-slot:empty {
+  display: none;
+}
+.mgp-ad-slot:not(:empty) {
+  width: 100%;
+  overflow: clip;
+  border: 1px solid color-mix(in oklab, var(--color-border) 76%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--color-background) 88%, var(--color-gold) 2%);
+  contain: layout paint;
+}
+.mgp-ad-slot--leaderboard:not(:empty) {
+  min-height: 90px;
+}
+.mgp-ad-slot--rectangle:not(:empty) {
+  min-height: 250px;
+}
+.mgp-ad-slot--rail:not(:empty) {
+  min-height: 600px;
+}
+
+@media (min-width: 1280px) {
+  .mgp-ad-layout:has(.mgp-ad-layout__rail > :not(:empty)) {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+    align-items: start;
+  }
+  .mgp-ad-layout__rail:has(> :not(:empty)) {
+    display: block;
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .surface-panel,
+  .game-card {
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+  .surface-panel:hover,
+  .game-card:hover {
+    border-color: color-mix(in oklab, var(--color-gold) 28%, var(--color-border));
+  }
+}

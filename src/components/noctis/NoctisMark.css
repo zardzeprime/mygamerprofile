@@ -1,0 +1,124 @@
+.noctis-mark {
+  transition:
+    transform 180ms ease,
+    filter 180ms ease;
+}
+
+.noctis-mark__work {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: auto;
+  filter: drop-shadow(0 3px 8px rgb(0 0 0 / 0.28));
+}
+
+.noctis-mark.noctis-mark--face {
+  overflow: hidden;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 40%,
+    color-mix(in srgb, var(--impar-spectral) 18%, var(--impar-night-raised)),
+    var(--impar-night)
+  );
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--impar-spectral) 28%, transparent);
+}
+
+/* The chat launcher uses a face crop. Moving the illustration inside the crop
+ * creates a subtle anime-style breathing/head-shift idle without distorting it. */
+.noctis-mark--face .noctis-mark__work {
+  transform-origin: 50% 28%;
+  will-change: transform;
+  animation: noctis-face-idle 8.9s cubic-bezier(0.45, 0.05, 0.24, 1) infinite;
+}
+
+.noctis-mark--calm-motion .noctis-mark__work {
+  transform-origin: 50% 82%;
+  will-change: transform;
+  animation: noctis-calm-idle 8.2s cubic-bezier(0.45, 0.05, 0.24, 1) infinite;
+}
+
+@keyframes noctis-face-idle {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1.8);
+  }
+  16% {
+    transform: translate3d(-0.4px, 0.2px, 0) rotate(-0.2deg) scale(1.805, 1.82);
+  }
+  33% {
+    transform: translate3d(0.5px, -0.7px, 0) rotate(0.28deg) scale(1.81, 1.835);
+  }
+  49% {
+    transform: translate3d(0, -0.2px, 0) rotate(0.04deg) scale(1.804, 1.815);
+  }
+  68% {
+    transform: translate3d(-0.5px, -0.8px, 0) rotate(-0.24deg) scale(1.812, 1.836);
+  }
+  84% {
+    transform: translate3d(0.35px, -0.3px, 0) rotate(0.16deg) scale(1.805, 1.818);
+  }
+}
+
+@keyframes noctis-calm-idle {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  24% {
+    transform: translate3d(-0.5px, -1px, 0) rotate(-0.18deg) scale(1.003, 1.009);
+  }
+  47% {
+    transform: translate3d(0.5px, -2.4px, 0) rotate(0.22deg) scale(1.006, 1.014);
+  }
+  72% {
+    transform: translate3d(-0.25px, -1.3px, 0) rotate(-0.12deg) scale(1.003, 1.008);
+  }
+}
+
+.noctis-mark:hover {
+  transform: translateY(-2px) scale(1.035);
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--impar-spectral) 18%, transparent));
+}
+
+/* Legacy Work hook: keep it alive but use an asymmetric timing so it does not
+ * read as a generic CSS bob. */
+@supports selector(:has(*)) {
+  :where(div, span):has(> img[src*="noctis-idle.webp"])::after {
+    animation: noctis-work-hero-idle 8.6s cubic-bezier(0.45, 0.05, 0.24, 1) infinite;
+    transform-origin: 50% 88%;
+  }
+}
+
+@keyframes noctis-work-hero-idle {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  27% {
+    transform: translate3d(-1px, -4px, 0) rotate(-0.22deg);
+  }
+  52% {
+    transform: translate3d(1px, -6px, 0) rotate(0.3deg);
+  }
+  76% {
+    transform: translate3d(0, -2.5px, 0) rotate(-0.1deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noctis-mark,
+  .noctis-mark__work,
+  .noctis-mark--face .noctis-mark__work,
+  .noctis-mark--calm-motion .noctis-mark__work,
+  :where(div, span):has(> img[src*="noctis-idle.webp"])::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .noctis-mark--face .noctis-mark__work {
+    transform: scale(1.8) !important;
+  }
+}
+
+/* Preview refresh marker: refined ÍMPAR mascot idle validated on 2026-10-02. */

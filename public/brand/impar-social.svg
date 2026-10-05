@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">ÍMPAR</title>
+  <desc id="desc">ÍMPAR — seu jogo, seu perfil, do seu jeito.</desc>
+  <defs>
+    <radialGradient id="g1" cx="0" cy="0" r="1" gradientTransform="translate(300 150) rotate(36) scale(560 420)" gradientUnits="userSpaceOnUse"><stop stop-color="#83E9A6" stop-opacity=".2"/><stop offset="1" stop-color="#83E9A6" stop-opacity="0"/></radialGradient>
+    <radialGradient id="g2" cx="0" cy="0" r="1" gradientTransform="translate(950 130) rotate(130) scale(430 360)" gradientUnits="userSpaceOnUse"><stop stop-color="#7567FF" stop-opacity=".2"/><stop offset="1" stop-color="#7567FF" stop-opacity="0"/></radialGradient>
+    <linearGradient id="line" x1="170" y1="115" x2="430" y2="380" gradientUnits="userSpaceOnUse"><stop stop-color="#83E9A6"/><stop offset="1" stop-color="#F5C451"/></linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0A0E17"/>
+  <rect width="1200" height="630" fill="url(#g1)"/>
+  <rect width="1200" height="630" fill="url(#g2)"/>
+  <g opacity=".18" stroke="#83E9A6"><path d="M0 90h1200M0 180h1200M0 270h1200M0 360h1200M0 450h1200M0 540h1200"/><path d="M90 0v630M180 0v630M270 0v630M360 0v630M450 0v630M540 0v630M630 0v630M720 0v630M810 0v630M900 0v630M990 0v630M1080 0v630"/></g>
+  <g transform="translate(126 142)">
+    <path fill="#83E9A6" d="m118 0 34 27-26 29-37-27z"/>
+    <path fill="none" stroke="#83E9A6" stroke-width="19" stroke-linecap="square" stroke-linejoin="bevel" d="M55 65h148M129 65v169M57 236h143"/>
+    <path fill="none" stroke="url(#line)" stroke-width="9" stroke-linecap="round" d="M4 150c30-78 77-116 126-116 58 0 103 40 133 116-30 76-75 115-133 115C77 265 31 226 4 150Z" opacity=".92"/>
+    <circle cx="129" cy="150" r="18" fill="#7567FF"/>
+  </g>
+  <text x="485" y="260" fill="#F7FAF8" font-family="Arial, Helvetica, sans-serif" font-size="106" font-weight="800" letter-spacing="6">ÍMPAR</text>
+  <text x="492" y="326" fill="#83E9A6" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" letter-spacing="4">IDENTIDADE GAMER</text>
+  <text x="492" y="387" fill="#AEB9B4" font-family="Arial, Helvetica, sans-serif" font-size="31">Seu jogo. Seu perfil. Do seu jeito.</text>
+  <path d="M492 427h370" stroke="#F5C451" stroke-width="3" opacity=".7"/>
+</svg>
