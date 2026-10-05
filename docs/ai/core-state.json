@@ -6,6 +6,7 @@
       "name": "NEXUS",
       "role": "mother-orchestrator",
       "completed": [
+        "Changed game cards in Arquivos and featured game lists to enter the most useful available content module directly, avoiding the generic overview detour.",
         "Completed the Warframe launch path: main-branch CI passed, the frontend is READY on Vercel, the catalog/age gate migration is recorded, and nexus-inference is ACTIVE at version 22.",
         "Added a dedicated Warframe Mods library and build workspace, catalog-grounded Noctis build proposals saved as private, explicit player-controlled publishing, contextual exploration tips and direct module entry that removes the repeated hub detour.",
         "Established specialist-core routing architecture for AI-assisted development.",
@@ -274,6 +275,7 @@
       "name": "Andrealphus",
       "role": "optimization",
       "completed": [
+        "Kept direct game-card entry lightweight: selected existing modules through route search state without new requests or dependencies.",
         "Confirmed the Warframe feature commit passed the repository build/lint workflow and the matching production deployment reached READY.",
         "Lazy-loaded the Warframe build editor and retained one in-session Mods catalog request per language; deep-linked modules avoid loading game hero media and ambience.",
         "Separated boss-card framing from boss-detail framing so each context can use its own crop and scale.",

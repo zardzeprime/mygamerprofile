@@ -103,7 +103,13 @@ export function GameCard({ game }: { game: GameConfig }) {
   };
 
   const openHub = () => {
-    void navigate({ to: "/games/$slug", params: { slug: game.slug } });
+    const preferredEntries = ["builds", "warframes", "agents", "champions", "competitive", "weapons", "bosses", "items", "guides", "news"] as const;
+    const entryModule = preferredEntries.find((module) => game.modules.includes(module)) ?? "overview";
+    void navigate({
+      to: "/games/$slug",
+      params: { slug: game.slug },
+      search: { module: entryModule },
+    });
   };
 
   const toggleTrailer = () => {
