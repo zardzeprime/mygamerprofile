@@ -76,6 +76,7 @@ export function NoctisChat() {
   const { locale } = useI18n();
   const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
   const [open, setOpen] = useState(false);
+  const [floatingShortcutVisible, setFloatingShortcutVisible] = useState(true);
   const [mode, setMode] = useState<NoctisMode>("gaming");
   const [threadId, setThreadId] = useState<string | undefined>();
   const [messages, setMessages] = useState<NoctisMessage[]>([]);
@@ -101,6 +102,18 @@ export function NoctisChat() {
     setMode("gaming");
     setError("");
   }, [user?.id]);
+
+  useEffect(() => {
+    const isNarrowHome = window.matchMedia("(max-width: 767px)").matches && window.location.pathname === "/";
+    if (!isNarrowHome) return;
+
+    const updateShortcutVisibility = () => {
+      setFloatingShortcutVisible(window.scrollY > 240);
+    };
+    updateShortcutVisibility();
+    window.addEventListener("scroll", updateShortcutVisibility, { passive: true });
+    return () => window.removeEventListener("scroll", updateShortcutVisibility);
+  }, []);
 
   useEffect(() => {
     const handleOpen = () => setOpen(true);
@@ -356,18 +369,20 @@ export function NoctisChat() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen((value) => !value)}
-        className="impar-noctis-chat-button fixed bottom-5 right-5 z-[70] grid size-14 place-items-center rounded-full border border-[var(--impar-spectral)]/45 bg-foreground text-[var(--impar-spectral)] shadow-lift transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--impar-spectral)]"
-        aria-label={copy("Abrir Noctis", "Open Noctis", "Abrir Noctis")}
-      >
-        {open ? (
-          <X className="size-5 text-background" />
-        ) : (
-          <NoctisMark className="size-full rounded-full" faceOnly />
-        )}
-      </button>
+      {floatingShortcutVisible ? (
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          className="impar-noctis-chat-button fixed bottom-5 right-5 z-[70] grid size-14 place-items-center rounded-full border border-[var(--impar-spectral)]/45 bg-foreground text-[var(--impar-spectral)] shadow-lift transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--impar-spectral)]"
+          aria-label={copy("Abrir Noctis", "Open Noctis", "Abrir Noctis")}
+        >
+          {open ? (
+            <X className="size-5 text-background" />
+          ) : (
+            <NoctisMark className="size-full rounded-full" faceOnly />
+          )}
+        </button>
+      ) : null}
 
       {open ? (
         <section className="fixed bottom-24 right-4 z-[69] flex h-[min(700px,calc(100vh-8rem))] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl border border-[var(--impar-line)] bg-background shadow-lift">
