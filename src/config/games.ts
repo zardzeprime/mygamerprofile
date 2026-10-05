@@ -136,9 +136,9 @@ export const GAMES: GameConfig[] = [
     aliases: ["Dark Souls", "DSR", "DS1"],
     description: {
       "pt-BR":
-        "Um RPG de ação sombrio e implacável, feito de descobertas, atalhos secretos e chefes memoráveis.",
-      en: "A dark, unforgiving action RPG built on discovery, secret shortcuts and memorable bosses.",
-      es: "Un RPG de acción oscuro e implacable, construido sobre descubrimientos, atajos secretos y jefes memorables.",
+        "Lordran parece um labirinto até você perceber como suas áreas se encaixam. O combate cobra leitura de animação, controle de stamina e escolha de rota; cada atalho aberto muda o risco de voltar para casa.",
+      en: "Lordran feels like a maze until you see how its areas connect. Combat rewards reading enemy animations, managing stamina and choosing your route; every shortcut changes the risk of getting back.",
+      es: "Lordran parece un laberinto hasta que descubres cómo se conectan sus zonas. El combate exige leer animaciones, medir la resistencia y elegir la ruta; cada atajo cambia el riesgo del regreso.",
     },
     genre: "Action RPG",
     platforms: ["PC", "PlayStation", "Xbox", "Nintendo Switch"],
@@ -229,9 +229,9 @@ export const GAMES: GameConfig[] = [
     aliases: ["Dark Souls 3", "DS3"],
     description: {
       "pt-BR":
-        "O capítulo final da trilogia Dark Souls: combate preciso, builds profundas e um mundo consumido pelas cinzas.",
-      en: "The final Dark Souls trilogy chapter: precise combat, deep builds and a world consumed by ash.",
-      es: "El capítulo final de la trilogía Dark Souls: combate preciso, builds profundas y un mundo consumido por las cenizas.",
+        "Lothric acelera o ritmo sem abandonar a cautela: ataques atrasados, combos longos e pressão constante testam sua leitura de espaço e stamina. O hub reúne chefes, builds e guias para entender o que cada arma e atributo muda na luta.",
+      en: "Lothric quickens the pace without losing the need for caution: delayed swings, long combos and constant pressure test your spacing and stamina. This hub brings together bosses, builds and guides to explain what each weapon and stat changes in a fight.",
+      es: "Lothric acelera el ritmo sin dejar de exigir cautela: golpes retrasados, combos largos y presión constante ponen a prueba tu espacio y resistencia. Este hub reúne jefes, builds y guías para entender qué cambia cada arma y atributo en combate.",
     },
     genre: "Action RPG",
     platforms: ["PC", "PlayStation 4", "Xbox One"],
@@ -320,9 +320,9 @@ export const GAMES: GameConfig[] = [
     aliases: ["Elden Ring Shadow of the Erdtree", "Shadow of the Erdtree"],
     description: {
       "pt-BR":
-        "Action RPG de mundo aberto da FromSoftware, com exploração livre, builds extensas e a expansão Shadow of the Erdtree no mesmo hub.",
-      en: "FromSoftware's open-world action RPG, with free-form exploration, extensive builds and Shadow of the Erdtree inside the same hub.",
-      es: "RPG de acción de mundo abierto de FromSoftware, con exploración libre, builds extensas y Shadow of the Erdtree dentro del mismo hub.",
+        "As Terras Intermédias raramente apontam um único caminho: uma caverna, um elevador ou um chefe opcional podem mudar seu próximo destino. Explore no próprio ritmo e ajuste a build ao que encontrar; Shadow of the Erdtree fica no mesmo hub para manter tudo no mesmo lugar.",
+      en: "The Lands Between rarely offer just one route: a cave, lift or optional boss can change where you head next. Explore at your own pace and adjust your build to what you find; Shadow of the Erdtree stays in the same hub so everything remains together.",
+      es: "Las Tierras Intermedias rara vez ofrecen una sola ruta: una cueva, un ascensor o un jefe opcional pueden cambiar tu próximo destino. Explora a tu ritmo y adapta tu build a lo que encuentres; Shadow of the Erdtree está en el mismo hub.",
     },
     genre: "Open-world Action RPG",
     platforms: ["PC", "PlayStation", "Xbox"],
@@ -415,9 +415,9 @@ export const GAMES: GameConfig[] = [
     aliases: ["Nightreign", "Night Ring"],
     description: {
       "pt-BR":
-        "Aventura cooperativa standalone no universo de Elden Ring, centrada em Nightfarers, runs e encontros contra Nightlords.",
-      en: "A standalone cooperative adventure in the Elden Ring universe focused on Nightfarers, runs and Nightlord encounters.",
-      es: "Una aventura cooperativa independiente en el universo de Elden Ring centrada en Nightfarers, runs y enfrentamientos contra Nightlords.",
+        "Nightreign transforma o universo de Elden Ring em expedições cooperativas para três pessoas. Cada run combina exploração rápida, escolhas de equipamento e confrontos que apertam o cerco ao fim do dia; a coordenação do grupo importa tanto quanto a build.",
+      en: "Nightreign turns Elden Ring's universe into three-player expeditions. Each run mixes quick exploration, gear choices and encounters that tighten the pressure at day's end; squad coordination matters as much as the build.",
+      es: "Nightreign convierte el universo de Elden Ring en expediciones cooperativas para tres personas. Cada run combina exploración rápida, decisiones de equipo y encuentros que aumentan la presión al final del día; la coordinación importa tanto como la build.",
     },
     genre: "Co-op Action RPG",
     platforms: ["PC", "PlayStation", "Xbox"],
@@ -499,9 +499,9 @@ export const GAMES: GameConfig[] = [
     aliases: ["War Frame", "Tenno"],
     description: {
       "pt-BR":
-        "Ação cooperativa free-to-play com Warframes, armas, Mods, missões e progressão por sistemas que se conectam ao longo do Sistema de Origem.",
-      en: "A free-to-play cooperative action game built around Warframes, weapons, Mods, missions and interconnected progression systems across the Origin System.",
-      es: "Juego de acción cooperativo free-to-play centrado en Warframes, armas, Mods, misiones y sistemas de progresión conectados en el Sistema Origen.",
+        "Warframe é uma cadeia de sistemas que se alimentam: escolher um Warframe define como você aborda a missão; Mods, armas e companheiros completam a build; e cada atividade abre outro caminho de progressão. Aqui você consulta habilidades, itens e fabricação sem perder de vista onde cada peça entra.",
+      en: "Warframe is a chain of systems that feed into each other: your Warframe shapes how you approach a mission; Mods, weapons and companions complete the build; each activity opens another path of progression. Look up abilities, items and crafting here, with context for how each piece fits.",
+      es: "Warframe conecta sus sistemas entre sí: el Warframe define cómo afrontas una misión; Mods, armas y compañeros completan la build; cada actividad abre otra ruta de progreso. Consulta habilidades, objetos y fabricación con contexto sobre dónde encaja cada pieza.",
     },
     genre: "Action RPG / Looter Shooter",
     platforms: ["PC", "PlayStation", "Xbox", "Nintendo Switch", "Mobile"],
@@ -573,9 +573,9 @@ export const GAMES: GameConfig[] = [
     aliases: ["VALORANT"],
     description: {
       "pt-BR":
-        "FPS tático 5v5 com agentes, habilidades e economia de rodada. Precisão, informação e coordenação decidem a partida.",
-      en: "A 5v5 tactical FPS with agents, abilities and round economy. Aim, information and coordination decide the match.",
-      es: "FPS táctico 5v5 con agentes, habilidades y economía por rondas. Precisión, información y coordinación deciden la partida.",
+        "No VALORANT, ganhar um duelo ajuda; ganhar a rodada exige mais. Comprar bem, guardar créditos quando necessário, trocar informação e combinar habilidades pode virar um ataque antes mesmo do primeiro disparo.",
+      en: "Winning a duel helps in VALORANT; winning the round takes more. Smart buys, saving credits when needed, sharing information and layering abilities can turn a site hit before the first shot.",
+      es: "Ganar un duelo ayuda en VALORANT; ganar la ronda exige más. Comprar bien, ahorrar créditos cuando toca, compartir información y combinar habilidades puede decidir un ataque antes del primer disparo.",
     },
     genre: "Tactical FPS",
     platforms: ["PC", "PlayStation 5", "Xbox Series X|S"],
@@ -655,9 +655,9 @@ export const GAMES: GameConfig[] = [
     aliases: ["LoL", "League"],
     description: {
       "pt-BR":
-        "MOBA competitivo 5v5 da Riot Games. Campeões, rotas, itens, macro e execução convergem na disputa pelo Nexus.",
-      en: "Riot Games' competitive 5v5 MOBA. Champions, lanes, items, macro and execution converge in the fight for the Nexus.",
-      es: "MOBA competitivo 5v5 de Riot Games. Campeones, líneas, objetos, macro y ejecución convergen en la lucha por el Nexus.",
+        "No League, uma vantagem pequena só vale se virar algo no mapa: uma wave bem preparada abre espaço para objetivo, uma rotação muda a luta e a compra certa altera o próximo confronto. O hub aproxima campeões, habilidades, runas, itens e builds para você ligar a escolha ao que acontece na partida.",
+      en: "In League, a small lead only matters when it changes the map: a prepared wave creates room for an objective, a rotation reshapes a fight and the right purchase changes the next duel. The hub brings champions, abilities, runes, items and builds together so you can connect a pick to what happens in game.",
+      es: "En League, una pequeña ventaja solo importa si cambia el mapa: una oleada preparada abre espacio para un objetivo, una rotación transforma una pelea y la compra correcta cambia el siguiente duelo. El hub reúne campeones, habilidades, runas, objetos y builds para relacionar la elección con lo que pasa en partida.",
     },
     genre: "MOBA",
     platforms: ["PC"],
@@ -744,9 +744,9 @@ export const GAMES: GameConfig[] = [
     aliases: ["FIFA", "EA FC", "FC 26", "EA SPORTS FC 26"],
     description: {
       "pt-BR":
-        "Hub permanente da série de futebol da EA, cobrindo Ultimate Team, Clubs, Carreira e competitivo sem recriar o perfil a cada edição anual.",
-      en: "A permanent hub for EA's football series, covering Ultimate Team, Clubs, Career and competitive play without recreating the profile every annual edition.",
-      es: "Un hub permanente para la serie de fútbol de EA, cubriendo Ultimate Team, Clubs, Carrera y competitivo sin recrear el perfil en cada edición anual.",
+        "O futebol muda de um modo para outro: montar um elenco no Ultimate Team é um problema diferente de desenvolver um atleta na Carreira ou encaixar seu papel no Clubs. O hub organiza esses caminhos num lugar só e acompanha a série sem começar tudo do zero a cada edição.",
+      en: "Each mode asks for something different: building a squad in Ultimate Team is not the same problem as developing a player in Career or fitting your role in Clubs. This hub keeps those paths together and follows the series without starting over every annual release.",
+      es: "Cada modo plantea algo distinto: armar una plantilla en Ultimate Team no es lo mismo que desarrollar un jugador en Carrera o encontrar tu papel en Clubs. El hub reúne esos caminos y acompaña la serie sin empezar desde cero en cada edición.",
     },
     genre: "Sports",
     platforms: ["PC", "PlayStation", "Xbox", "Nintendo Switch"],
