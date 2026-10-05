@@ -133,7 +133,7 @@ function normalizedAbilities(item: WarframeApiItem) {
   return item.abilities
     .map((ability, index) => {
       if (typeof ability === "string") {
-        return { slot: index + 1, name: ability, description: "" };
+        return { slot: index + 1, name: ability, description: "", iconUrl: undefined };
       }
       return {
         slot: index + 1,
