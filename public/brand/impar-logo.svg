@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
-  <title id="title">ÍMPAR</title>
-  <desc id="desc">Símbolo assimétrico branco da identidade ÍMPAR</desc>
-  <path fill="#fff" d="M61 12 78 25 65 39 47 26z"/>
-  <path fill="none" stroke="#fff" stroke-width="10" stroke-linecap="square" stroke-linejoin="bevel" d="M41 39h46M64 39v50M42 90h44"/>
-  <path fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" d="M25 66c9-23 25-35 39-35 18 0 32 13 40 35-8 23-22 35-40 35-16 0-31-12-39-35Z"/>
-  <circle cx="64" cy="66" r="8" fill="#fff"/>
-</svg>
