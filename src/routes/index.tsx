@@ -35,12 +35,12 @@ const SORTED_GAMES = [...ACTIVE_GAMES].sort((a, b) =>
 );
 
 export const Route = createFileRoute("/")({
-  loader: async () => ({ posts: await listPosts({ data: {} }) }),
+  loader: async () => ({ posts: await listPosts({ data: {} }).catch(() => []) }),
   head: () =>
     buildSeo({
       title: "ÍMPAR — Seu jogo. Seu perfil. Do seu jeito.",
       description:
-        "Construa sua identidade gamer no ÍMPAR: perfis, jogos, Códice, Comunidades, conteúdo e pessoas para jogar do seu jeito.",
+        "Descubra o que jogar, encontre companhia, consulte o Códice e guarde o que aprendeu no ÍMPAR.",
       path: "/",
     }),
   component: Home,
@@ -112,27 +112,27 @@ function Home() {
             </p>
             <h1 className="mt-5 max-w-3xl text-balance font-display text-[clamp(2.7rem,6vw,5.35rem)] font-bold leading-[0.98] tracking-[-0.045em] text-foreground">
               {copy(
-                "Seu jogo. Seu perfil. Do seu jeito.",
-                "Your game. Your profile. Your way.",
-                "Tu juego. Tu perfil. A tu manera.",
+                "Jogue junto. Compartilhe o que sabe. Guarde o que funciona.",
+                "Find your squad. Share what you know. Keep what works.",
+                "Juega en equipo. Comparte lo que sabes. Guarda lo que sirve.",
               )}
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
               {copy(
-                "O que você joga faz parte da história. A forma como você monta seu perfil, cria conteúdo, encontra pessoas e vive cada jogo é ÍMPAR.",
-                "What you play is part of the story. The way you build your profile, create, meet people and experience each game is ÍMPAR.",
-                "Lo que juegas forma parte de la historia. La manera en que construyes tu perfil, creas, conoces gente y vives cada juego es ÍMPAR.",
+                "No ÍMPAR você chega por causa de um jogo: consulta um guia, monta uma build ou procura grupo. Quando quiser participar, uma conta leve guarda seus favoritos e dá autoria ao que você compartilha.",
+                "Come to ÍMPAR for a game: check a guide, shape a build or find a group. When you want to join in, a lightweight account saves your favorites and credits what you share.",
+                "En ÍMPAR llegas por un juego: consultas una guía, preparas una build o buscas grupo. Cuando quieras participar, una cuenta ligera guarda tus favoritos y da autoría a lo que compartes.",
               )}
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               {user ? (
                 <Link to="/settings/profile" className="brand-button min-h-11 gap-2">
-                  {copy("Dar meu toque ao perfil", "Shape my profile", "Dar mi toque al perfil")}
+                  {copy("Minha conta", "My account", "Mi cuenta")}
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               ) : (
                 <Link to="/register" className="brand-button min-h-11 gap-2">
-                  {copy("Criar meu perfil", "Create my profile", "Crear mi perfil")}
+                  {copy("Criar conta", "Create account", "Crear cuenta")}
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
               )}
@@ -220,9 +220,9 @@ function Home() {
               </h2>
               <p className="mt-3 max-w-5xl text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
                 {copy(
-                  "O projeto está passando por uma transição de identidade para refletir melhor sua proposta: ser um espaço de expressão, descoberta e conexão entre jogadores. Mais do que um catálogo de jogos, o ÍMPAR valoriza o perfil de cada pessoa, suas comunidades, seus gostos e sua forma única de viver o universo gamer. Durante esse processo, alguns elementos visuais, nomes e seções ainda podem estar sendo ajustados.",
-                  "The project is going through an identity transition to better reflect its purpose: a space for expression, discovery and connection between players. More than a game catalog, ÍMPAR values each person's profile, communities, tastes and unique way of experiencing gaming. During this process, some visual elements, names and sections may still be adjusted.",
-                  "El proyecto está pasando por una transición de identidad para reflejar mejor su propósito: ser un espacio de expresión, descubrimiento y conexión entre jugadores. Más que un catálogo de juegos, ÍMPAR valora el perfil de cada persona, sus comunidades, sus gustos y su forma única de vivir el universo gamer. Durante este proceso, algunos elementos visuales, nombres y secciones todavía pueden estar en ajuste.",
+                  "O ÍMPAR nasceu como MG Profile, com a ideia de fazer do perfil gamer o centro do produto. No começo, porém, esse modelo exige muita personalização, armazenamento e manutenção antes de entregar valor — e só funciona mesmo quando já existe bastante gente ativa. Estamos mudando o foco para ferramentas que ajudam desde a primeira visita: consultar informações de jogos, aprender, montar ou salvar builds e encontrar companhia. A conta continua existindo, mas fica leve: entra quando você quer publicar, responder, achar um grupo ou guardar algo. Assim o projeto pode crescer pelo que oferece aos jogadores, sem depender de um perfil elaborado nem de uma comunidade enorme logo de saída.",
+                  "ÍMPAR began as MG Profile, with the gamer profile at the center. Early on, though, that model demands extensive customization, storage and upkeep before it can deliver much value — and it only really works once many people are active. We are shifting toward tools that help from the first visit: looking up game information, learning, building or saving builds, and finding people to play with. Accounts stay, but get lighter: use one when you want to post, reply, find a group or save something. That lets the project grow through what it offers players, without relying on elaborate profiles or a large community from day one.",
+                  "ÍMPAR empezó como MG Profile, con el perfil gamer en el centro. Al principio, sin embargo, ese modelo exige mucha personalización, almacenamiento y mantenimiento antes de aportar valor, y solo funciona de verdad cuando ya hay muchas personas activas. Estamos cambiando el foco hacia herramientas útiles desde la primera visita: consultar información de juegos, aprender, crear o guardar builds y encontrar con quién jugar. Las cuentas siguen, pero serán más ligeras: se usan para publicar, responder, buscar grupo o guardar algo. Así el proyecto puede crecer por lo que ofrece a quienes juegan, sin depender de perfiles elaborados ni de una comunidad enorme desde el primer día.",
                 )}
               </p>
             </div>
