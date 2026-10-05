@@ -143,4 +143,25 @@ export const LEAGUE_NEWS: LeagueNewsItem[] = [
     "Champion and system updates alongside new League Classic content.",
     "Actualizaciones de campeones y sistemas junto con nuevo contenido de League Classic.",
   ),
+  patch(
+    "26.15",
+    "2026-07-28T18:00:00.000Z",
+    "Início da Temporada 3 com uma atualização focada na fantasia de evolução da Bel'Veth, ajustes em Campeões, itens e runas, retorno das duplas no Mestre e mudanças em ARAM: Desordem e Arena.",
+    "Season 3 begins with a Bel'Veth update focused on her evolution fantasy, Champion, item and rune balance, Master-tier duo queue returning, plus ARAM: Mayhem and Arena changes.",
+    "La Temporada 3 comienza con una actualización de Bel'Veth centrada en su fantasía de evolución, ajustes de campeones, objetos y runas, el regreso de dúos en Maestro y cambios en ARAM: Caos y Arena.",
+  ),
+  patch(
+    "26.14",
+    "2026-07-14T18:00:00.000Z",
+    "Celebração da T1 tricampeã com sua linha de skins, além de ajustes em Campeões, efeito azul, itens, ARAM: Desordem e Arena.",
+    "Celebrates three-time World champions T1 with their skin line, alongside Champion, blue buff, item, ARAM: Mayhem and Arena adjustments.",
+    "Celebra a T1 tricampeona con su línea de aspectos, junto con ajustes de campeones, mejora azul, objetos, ARAM: Caos y Arena.",
+  ),
+  patch(
+    "26.13",
+    "2026-06-23T18:00:00.000Z",
+    "Locke, o Exorcista Cinzento, estreia no Rift; a atualização também traz balanceamento de Campeões e itens, indicadores de último golpe em filas não ranqueadas, Ranked 5s e integração com Discord em regiões compatíveis.",
+    "Locke, the Ashen Exorcist, debuts on the Rift alongside Champion and item balance, last-hit indicators in non-Ranked queues, Ranked 5s and Discord integration in supported regions.",
+    "Locke, el Exorcista Cinéreo, debuta en la Grieta junto con ajustes de campeones y objetos, indicadores de último golpe en colas no clasificatorias, Ranked 5s e integración con Discord en regiones compatibles.",
+  ),
 ];
