@@ -23,6 +23,7 @@ type ApiAbility =
   | {
       name?: string;
       description?: string;
+      imageName?: string;
     };
 
 type WarframePart = {
@@ -138,6 +139,9 @@ function normalizedAbilities(item: WarframeApiItem) {
         slot: index + 1,
         name: ability?.name?.trim() || `Ability ${index + 1}`,
         description: ability?.description?.trim() || "",
+        iconUrl: ability?.imageName
+          ? `${IMAGE_BASE}/${encodeURIComponent(ability.imageName)}`
+          : undefined,
       };
     })
     .filter((ability) => ability.name)
@@ -354,10 +358,11 @@ function WarframeDetail({ item, locale }: { item: WarframeApiItem; locale: Local
   const parts = Array.isArray(item.components) ? item.components.filter((part) => part?.name) : [];
 
   const abilities = curatedSkills.length
-    ? curatedSkills.map((ability) => ({
+    ? curatedSkills.map((ability, index) => ({
         slot: ability.slot,
         name: ability.name[locale],
         description: ability.description[locale],
+        iconUrl: apiSkills[index]?.iconUrl,
       }))
     : apiSkills;
 
@@ -445,8 +450,20 @@ function WarframeDetail({ item, locale }: { item: WarframeApiItem; locale: Local
                 className="min-w-0 rounded-2xl border border-border bg-muted/10 p-3.5 sm:p-4"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="grid size-7 place-items-center rounded-lg bg-[var(--impar-spectral-soft)] font-mono text-xs font-bold text-[var(--impar-spectral)]">
-                    {ability.slot}
+                  <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-black/20">
+                    {ability.iconUrl ? (
+                      <img
+                        src={ability.iconUrl}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="size-full object-contain p-1"
+                      />
+                    ) : (
+                      <span className="font-mono text-xs font-bold text-[var(--impar-spectral)]">
+                        {ability.slot}
+                      </span>
+                    )}
                   </span>
                   <Sparkles className="size-3.5 text-muted-foreground" />
                 </div>
