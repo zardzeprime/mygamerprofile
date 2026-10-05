@@ -14,7 +14,7 @@ O projeto começou como **MGP — My Gamer Profile**. A ideia evoluiu: a platafo
 - **Builds e conhecimento** para compartilhar com a comunidade ou salvar na própria conta.
 - **Identidade leve** para atribuir autoria às publicações e conectar as atividades de uma pessoa.
 
-O objetivo é que a leitura e a descoberta sejam simples, enquanto criar uma conta seja necessário principalmente para participar: publicar, responder, encontrar grupo e salvar conteúdo. Perfil detalhado, personalização extensa e recursos que aumentem a manutenção de contas não são prioridades do produto neste momento.
+Essa mudança também responde ao momento do projeto: uma rede centrada em perfis só entrega valor quando já existe uma base grande e ativa — difícil de sustentar no começo — enquanto perfis muito customizados aumentam o atrito de criação e o custo de manter dados e recursos. O ÍMPAR prioriza ações úteis desde a primeira visita: ler, explorar jogos e procurar grupos sem conta; criar uma conta leve quando a pessoa quiser publicar, responder, encontrar grupo ou salvar builds e conhecimento. Perfis detalhados e personalização extensa ficam fora do foco atual.
 
 ## Estado do projeto
 
