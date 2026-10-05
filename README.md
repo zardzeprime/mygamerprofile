@@ -53,5 +53,5 @@ O nome histórico do repositório ainda pode aparecer como `mygamerprofile`, e a
 
 ## Links
 
-- [Aplicação](https://mygamerprofile.lovable.app)
+- [Aplicação ÍMPAR](https://mygamerprofile.vercel.app)
 - [Projeto no Lovable](https://lovable.dev/projects/95c5a73d-d8d1-4747-85d3-6194f336fae8)
