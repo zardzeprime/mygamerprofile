@@ -1,4 +1,4 @@
-const DEFAULT_PRODUCTION_SITE_URL = "https://mgprofile.online";
+const DEFAULT_PRODUCTION_SITE_URL = "https://impar-imp21.vercel.app";
 
 export const PRODUCTION_SITE_URL = (
   import.meta.env["VITE_SITE_URL"] || DEFAULT_PRODUCTION_SITE_URL
