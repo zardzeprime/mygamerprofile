@@ -21,7 +21,7 @@ import type { Locale } from "@/i18n";
 import { localeCopy } from "@/i18n/locale-utils";
 import { cn } from "@/lib/utils";
 
-type ApiAbility = string | { name?: string; description?: string };
+type ApiAbility = string | { name?: string; description?: string; imageName?: string };
 
 type WarframePart = {
   name?: string;
@@ -54,6 +54,7 @@ type AbilityView = {
   slot: number;
   name: string;
   description: string;
+  iconUrl?: string;
 };
 
 const API_BASE = "https://api.warframestat.us";
@@ -100,6 +101,7 @@ function normalizedAbilities(item: WarframeApiItem): AbilityView[] {
         slot: index + 1,
         name: ability?.name?.trim() || `Habilidade ${index + 1}`,
         description: ability?.description?.trim() || "",
+        iconUrl: ability?.imageName ? `${IMAGE_BASE}/${encodeURIComponent(ability.imageName)}` : undefined,
       };
     })
     .filter((ability) => ability.name)
@@ -146,78 +148,6 @@ function roleLabel(role: AbilityRole, locale: Locale) {
   };
   const [pt, en, es] = labels[role];
   return localeCopy(locale, pt, en, es);
-}
-
-function practicalTip(roles: AbilityRole[], locale: Locale) {
-  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  if (roles.includes("control") && roles.includes("damage")) {
-    return copy(
-      "Use para travar ou agrupar inimigos e já converter essa abertura em dano. Funciona melhor quando você prepara o alvo antes de descarregar arma ou outra habilidade.",
-      "Use it to lock down or group enemies, then immediately convert that opening into damage. It works best when you prepare targets before committing a weapon or another ability.",
-      "Úsala para controlar o agrupar enemigos y convertir esa apertura en daño. Funciona mejor si preparas el objetivo antes de gastar otra habilidad o el arma.",
-    );
-  }
-  if (roles.includes("survival")) {
-    return copy(
-      "Pense nela como ferramenta de sustentação: use antes de entrar numa troca longa ou assim que sua defesa começar a cair, em vez de guardar só para o último segundo.",
-      "Treat it as a sustain tool: use it before a long engagement or as soon as your defenses start dropping instead of saving it only for emergencies.",
-      "Piénsala como una herramienta de aguante: úsala antes de un combate largo o cuando empiece a caer tu defensa, no solo como último recurso.",
-    );
-  }
-  if (roles.includes("mobility")) {
-    return copy(
-      "Serve tanto para reposicionar quanto para acelerar o ritmo do kit. Tente usá-la para entrar ou sair de alcance sem interromper o ciclo das outras habilidades.",
-      "It is both a repositioning tool and a way to speed up the kit. Use it to enter or leave range without breaking the rest of your ability cycle.",
-      "Sirve para reposicionarte y acelerar el ritmo del kit. Úsala para entrar o salir de alcance sin romper el ciclo de las otras habilidades.",
-    );
-  }
-  if (roles.includes("support")) {
-    return copy(
-      "O valor cresce quando você mantém o efeito ativo no momento certo. Observe duração, alcance e quem realmente recebe o benefício antes de recastar.",
-      "Its value grows when the effect is active at the right time. Watch duration, range and who actually receives the benefit before recasting.",
-      "Su valor aumenta cuando el efecto está activo en el momento correcto. Vigila duración, alcance y quién recibe el beneficio antes de volver a lanzarla.",
-    );
-  }
-  if (roles.includes("stealth")) {
-    return copy(
-      "Use a janela de furtividade para reposicionar, preparar dano ou quebrar pressão. O ganho não é só ficar invisível: é escolher quando a luta volta a começar.",
-      "Use the stealth window to reposition, prepare damage or reset pressure. The value is not only being unseen: it lets you decide when the fight resumes.",
-      "Usa la ventana de sigilo para reposicionarte, preparar daño o reiniciar la presión. No se trata solo de ser invisible: eliges cuándo vuelve a empezar la pelea.",
-    );
-  }
-  return copy(
-    "É uma peça de pressão do kit. Procure usar depois de preparar o alvo com controle, debuff ou posicionamento, em vez de apertar isoladamente sempre que sair do cooldown.",
-    "It is a pressure piece in the kit. Try to use it after preparing the target with control, a debuff or positioning instead of pressing it in isolation whenever it is available.",
-    "Es una pieza de presión del kit. Intenta usarla después de preparar el objetivo con control, debuff o posicionamiento, en vez de lanzarla sola cada vez que esté disponible.",
-  );
-}
-
-function synergyTip(current: AbilityView, abilities: AbilityView[], locale: Locale) {
-  const copy = (pt: string, en: string, es: string) => localeCopy(locale, pt, en, es);
-  const currentRoles = detectRoles(current.description);
-  const candidates = abilities.filter((ability) => ability.slot !== current.slot);
-
-  const preferred = currentRoles.includes("damage")
-    ? candidates.find((ability) => detectRoles(ability.description).includes("control"))
-    : currentRoles.includes("control")
-      ? candidates.find((ability) => detectRoles(ability.description).includes("damage"))
-      : currentRoles.includes("survival")
-        ? candidates.find((ability) => detectRoles(ability.description).includes("damage"))
-        : candidates.find((ability) => detectRoles(ability.description).includes("control")) || candidates[0];
-
-  if (!preferred) {
-    return copy(
-      "Leia esta habilidade junto da passiva e dos atributos do Warframe; algumas habilidades ganham muito valor pela forma como sustentam o restante do kit.",
-      "Read this ability together with the passive and the Warframe's base stats; some abilities gain most of their value from how they sustain the rest of the kit.",
-      "Léela junto con la pasiva y los atributos del Warframe; algunas habilidades ganan valor por cómo sostienen el resto del kit.",
-    );
-  }
-
-  return copy(
-    `Teste a sequência ${preferred.name} → ${current.name} e também o caminho inverso. O primeiro costuma preparar espaço; o segundo mostra se ${current.name} funciona melhor como abertura ou como conversão de dano.`,
-    `Test ${preferred.name} → ${current.name}, then try the reverse order. The first sequence often creates space; the reverse shows whether ${current.name} works better as an opener or as damage conversion.`,
-    `Prueba la secuencia ${preferred.name} → ${current.name} y después el orden inverso. La primera suele preparar espacio; la segunda muestra si ${current.name} funciona mejor para abrir o para convertir en daño.`,
-  );
 }
 
 function classify(value: number | undefined, thresholds: [number, number]) {
@@ -319,9 +249,9 @@ export function WarframeCodex({ locale }: { locale: Locale }) {
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground sm:text-[0.95rem]">
               {copy(
-                "A descrição do jogo fica inteira. Embaixo dela, o ÍMPAR separa função, uso prático e uma sinergia para você testar sem misturar orientação editorial com o texto original.",
-                "The game description stays intact. Under it, ÍMPAR separates role, practical use and a synergy to test without mixing editorial guidance with the original text.",
-                "La descripción del juego se mantiene completa. Debajo, ÍMPAR separa función, uso práctico y una sinergia para probar sin mezclar la guía editorial con el texto original.",
+                "Descrições e ícones vêm dos dados do jogo. Os rótulos ajudam a ler o kit; sugestões específicas aparecem apenas quando há conteúdo editorial preparado.",
+                "Descriptions and icons come from game data. Tags help read the kit; specific advice appears only when editorial guidance is available.",
+                "Las descripciones e iconos vienen de los datos del juego. Las etiquetas ayudan a leer el kit; los consejos específicos aparecen solo cuando hay contenido editorial preparado.",
               )}
             </p>
           </div>
@@ -388,7 +318,12 @@ function WarframeDetail({ item, locale }: { item: WarframeApiItem; locale: Local
   const parts = Array.isArray(item.components) ? item.components.filter((part) => part?.name) : [];
 
   const abilities: AbilityView[] = curatedSkills.length
-    ? curatedSkills.map((ability) => ({ slot: ability.slot, name: ability.name[locale], description: ability.description[locale] }))
+    ? curatedSkills.map((ability) => ({
+        slot: ability.slot,
+        name: ability.name[locale],
+        description: ability.description[locale],
+        iconUrl: apiSkills.find((apiAbility) => apiAbility.slot === ability.slot)?.iconUrl,
+      }))
     : apiSkills;
 
   const durabilityScore = (item.health ?? 0) + (item.shield ?? 0) + (item.armor ?? 0) * 0.75;
@@ -448,7 +383,7 @@ function WarframeDetail({ item, locale }: { item: WarframeApiItem; locale: Local
               return (
                 <article key={`${ability.slot}-${ability.name}`} className="wf-ability-card">
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex min-w-0 items-center gap-3"><span className="wf-ability-card__slot">{ability.slot}</span><h5 className="font-display text-lg font-semibold text-foreground">{ability.name}</h5></div>
+                    <div className="flex min-w-0 items-center gap-3"><span className="wf-ability-card__slot">{ability.iconUrl ? <img src={ability.iconUrl} alt="" loading="lazy" decoding="async" className="size-full object-contain p-1" /> : ability.slot}</span><h5 className="font-display text-lg font-semibold text-foreground">{ability.name}</h5></div>
                     <div className="flex flex-wrap justify-end gap-1">{roles.map((role) => <span key={role} className="wf-skill-tag">{roleLabel(role, locale)}</span>)}</div>
                   </div>
 
@@ -457,10 +392,15 @@ function WarframeDetail({ item, locale }: { item: WarframeApiItem; locale: Local
                     <p className="mt-2 text-sm leading-6 text-foreground/90">{ability.description || copy("A fonte localizada ainda não retornou uma descrição completa para esta habilidade.", "The localized source has not returned a full description for this ability yet.", "La fuente localizada todavía no devolvió una descripción completa para esta habilidad.")}</p>
                   </div>
 
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    <div className="wf-learning-note !p-3"><p className="text-[0.63rem] font-bold uppercase tracking-[0.08em] text-[var(--impar-spectral)]">{copy("Como usar", "How to use it", "Cómo usarla")}</p><p className="mt-2 text-xs leading-5 text-muted-foreground">{practicalTip(roles, locale)}</p></div>
-                    <div className="wf-learning-note !p-3"><p className="text-[0.63rem] font-bold uppercase tracking-[0.08em] text-[var(--impar-spectral)]">{copy("Sinergia para testar", "Synergy to test", "Sinergia para probar")}</p><p className="mt-2 text-xs leading-5 text-muted-foreground">{synergyTip(ability, abilities, locale)}</p></div>
-                  </div>
+                  {!curated ? (
+                    <p className="mt-4 text-xs leading-5 text-muted-foreground">
+                      {copy(
+                        "Aqui fica a descrição oficial da habilidade. Dicas de uso e combinações precisam de revisão por Warframe para não virar conselho genérico.",
+                        "This is the official ability description. Usage tips and combinations need Warframe-specific review to avoid generic advice.",
+                        "Aquí aparece la descripción oficial de la habilidad. Los consejos y combinaciones requieren revisión para cada Warframe y evitar recomendaciones genéricas.",
+                      )}
+                    </p>
+                  ) : null}
                 </article>
               );
             })}
