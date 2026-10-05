@@ -100,11 +100,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ÍMPAR — Seu jogo. Seu perfil. Do seu jeito." },
+      { title: "ÍMPAR — Jogue. Aprenda. Encontre seu grupo." },
       {
         name: "description",
         content:
-          "ÍMPAR é uma plataforma brasileira de identidade gamer: perfis, jogos, Códice, Comunidades, conteúdo e LFG do seu jeito.",
+          "ÍMPAR é uma plataforma brasileira para explorar jogos, consultar guias, compartilhar builds e encontrar pessoas para jogar.",
       },
       {
         name: "robots",
