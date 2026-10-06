@@ -43,6 +43,24 @@ const patch = (
 // Vassago snapshot: only Riot Games / LoL Esports official sources.
 export const LEAGUE_NEWS: LeagueNewsItem[] = [
   {
+    id: "worlds-2026-primer",
+    category: "esports",
+    publishedAt: "2026-10-05T00:00:00.000Z",
+    official: true,
+    title: localized(
+      "Guia oficial do Worlds 2026",
+      "Worlds 2026 Primer",
+      "Guía oficial de Worlds 2026",
+    ),
+    summary: localized(
+      "O LoL Esports publicou o guia completo do Mundial 2026: Play-In de 15 a 18 de outubro, Suíço de 23 a 31 de outubro e mata-mata de 3 a 14 de novembro. O anúncio também detalha equipes classificadas, sorteios, Pick'Em, Fan Fest e conteúdo do evento dentro do jogo.",
+      "LoL Esports published the full Worlds 2026 primer: Play-Ins run October 15-18, Swiss runs October 23-31, and Knockouts run November 3-14. The announcement also details qualified teams, draws, Pick'Em, Fan Fest, and in-game event content.",
+      "LoL Esports publicó la guía completa de Worlds 2026: Play-In del 15 al 18 de octubre, Suizo del 23 al 31 de octubre y eliminatorias del 3 al 14 de noviembre. El anuncio también detalla equipos clasificados, sorteos, Pick'Em, Fan Fest y contenido del evento dentro del juego.",
+    ),
+    url: "https://lolesports.com/en-US/news/worlds-2026-primer",
+    sourceLabel: "LoL Esports",
+  },
+  {
     id: "lcp-2027-wild-card-open-invitation",
     category: "esports",
     publishedAt: "2026-09-23T00:00:00.000Z",
@@ -142,5 +160,26 @@ export const LEAGUE_NEWS: LeagueNewsItem[] = [
     "Atualizações de Campeões e sistemas, além da chegada de novos conteúdos ao League Classic.",
     "Champion and system updates alongside new League Classic content.",
     "Actualizaciones de campeones y sistemas junto con nuevo contenido de League Classic.",
+  ),
+  patch(
+    "26.15",
+    "2026-07-28T18:00:00.000Z",
+    "Ajustes de Campeões e sistemas com uma atualização ampla de Bel'Veth, mudanças na Égide da Valentia e novas restrições de dupla nos ranques mais altos, além de balanceamento de Arena e Desordem.",
+    "Champion and system tuning with a broad Bel'Veth update, changes to Aegis of Valor and high-rank duo restrictions, plus Arena and Mayhem balance work.",
+    "Ajustes de campeones y sistemas con una amplia actualización de Bel'Veth, cambios a Aegis of Valor y restricciones de dúo en rangos altos, además de balance de Arena y Mayhem.",
+  ),
+  patch(
+    "26.14",
+    "2026-07-14T18:00:00.000Z",
+    "Ajustes em Campeões, efeito azul e itens, além de mudanças em Desordem e Arena. As skins da T1 tricampeã do Mundial chegaram nesta atualização.",
+    "Champion, blue buff and item tuning alongside Mayhem and Arena changes. T1's three-peat World Championship skins arrived in this patch.",
+    "Ajustes de campeones, buff azul y objetos, además de cambios en Mayhem y Arena. Las skins de T1 tricampeón mundial llegaron en esta versión.",
+  ),
+  patch(
+    "26.13",
+    "2026-06-23T18:00:00.000Z",
+    "Locke, o Exorcista Cinzento, estreia junto do retorno das Ranqueadas 5v5, novas opções de Arena e a integração Riot/Discord nas regiões compatíveis.",
+    "Locke, the Ashen Exorcist, debuts alongside the return of Ranked 5s, new Arena options, and Riot/Discord integration in supported regions.",
+    "Locke, el Exorcista Cenizo, debuta junto al regreso de Ranked 5s, nuevas opciones de Arena y la integración Riot/Discord en regiones compatibles.",
   ),
 ];
