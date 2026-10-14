@@ -143,4 +143,25 @@ export const LEAGUE_NEWS: LeagueNewsItem[] = [
     "Champion and system updates alongside new League Classic content.",
     "Actualizaciones de campeones y sistemas junto con nuevo contenido de League Classic.",
   ),
+  patch(
+    "26.12",
+    "2026-06-09T18:00:00.000Z",
+    "Início do Ato 2 da Temporada 2 com ajustes em campeões mirando diversidade antes do MSI, mudanças no Teleporte e Honor no painel social, além de uma grande atualização de ARAM: Mayhem com Augmentos de Habilidade e Missão.",
+    "Season 2 Act 2 opened with champion tuning aimed at diversity ahead of MSI, Teleport and social-panel Honor changes, plus a major ARAM: Mayhem update introducing Ability and Quest Augments.",
+    "El Acto 2 de la Temporada 2 comenzó con ajustes de campeones para ampliar la diversidad antes del MSI, cambios a Teleport y Honor en el panel social, además de una gran actualización de ARAM: Mayhem con aumentos de habilidad y misión.",
+  ),
+  patch(
+    "26.11",
+    "2026-05-27T18:00:00.000Z",
+    "Revisão ampla do meta de suporte: enfraquecimento de encantadores, fortalecimento de tanques e mudanças em Mandato Imperial, Medalhão dos Solari, Juramento do Cavaleiro e Convergência de Zeke, além de ajustes de campeões, itens e runas.",
+    "A broad support-meta pass nerfed enchanters, buffed tanks, and changed Imperial Mandate, Locket of the Iron Solari, Knight's Vow and Zeke's Convergence alongside champion, item and rune tuning.",
+    "Una revisión amplia del meta de soporte debilitó a los encantadores, reforzó a los tanques y modificó Mandato Imperial, Medallón de los Solari, Juramento del Caballero y Convergencia de Zeke, además de ajustes a campeones, objetos y runas.",
+  ),
+  patch(
+    "26.10",
+    "2026-05-12T18:00:00.000Z",
+    "Acompanhamento das mudanças da Temporada 2, com nerfs em Deathfire Touch, Gluttonous Greaves e Voltaic Cyclosword e buffs em Stormraider's Surge e nos novos itens iniciais.",
+    "A Season 2 follow-up nerfed Deathfire Touch, Gluttonous Greaves and Voltaic Cyclosword while buffing Stormraider's Surge and the new starting items.",
+    "Seguimiento de los cambios de la Temporada 2, con nerfs a Deathfire Touch, Gluttonous Greaves y Voltaic Cyclosword y buffs a Stormraider's Surge y los nuevos objetos iniciales.",
+  ),
 ];
