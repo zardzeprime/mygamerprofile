@@ -1,5 +1,36 @@
 {
   "schemaVersion": 1,
   "sourcePolicy": "official-only",
-  "items": []
+  "items": [
+    {
+      "id": "auto-65ebeda2b732",
+      "category": "announcement",
+      "publishedAt": "2026-10-23T15:00:00.000Z",
+      "titlePtBr": "VALORANT - Torneios de Comunidade - 23/10 a 29/10",
+      "summaryPtBr": "Participe dos torneios criados pela própria comunidade.",
+      "url": "https://playvalorant.com/pt-br/news/community/valorant-torneios-de-comunidade-23-10-a-29-10",
+      "sourceLabel": "VALORANT Brasil · Riot Games",
+      "sourceKind": "official-web"
+    },
+    {
+      "id": "auto-3def66647208",
+      "category": "announcement",
+      "publishedAt": "2026-10-16T15:00:00.000Z",
+      "titlePtBr": "VALORANT - Torneios de Comunidade - 16/10 a 22/10",
+      "summaryPtBr": "Participe dos torneios criados pela própria comunidade.",
+      "url": "https://playvalorant.com/pt-br/news/comunidade/valorant-torneios-de-comunidade-16-10-a-22-10/",
+      "sourceLabel": "VALORANT Brasil · Riot Games",
+      "sourceKind": "official-web"
+    },
+    {
+      "id": "auto-90a9abef37d7",
+      "category": "esports",
+      "publishedAt": "2025-09-04T18:00:00.000Z",
+      "titlePtBr": "Tudo o que você precisa saber: Champions Paris",
+      "summaryPtBr": "Partidas, formato, datas e muito mais!",
+      "url": "https://playvalorant.com/pt-br/news/esports/everything-you-need-to-know-champions-paris/",
+      "sourceLabel": "VALORANT Esports · Brasil",
+      "sourceKind": "official-web"
+    }
+  ]
 }
