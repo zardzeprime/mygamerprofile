@@ -35,5 +35,93 @@
       ]
     }
   },
-  "candidates": []
+  "candidates": [
+    {
+      "id": "valorant-patch-fd6589510f46",
+      "game": "valorant",
+      "kind": "patch",
+      "version": "13.08",
+      "publishedAt": "2026-10-13T13:00:00.000Z",
+      "title": "Notas da Atualização 13.08",
+      "summary": "O Ato 6 começa agora.",
+      "url": "https://playvalorant.com/pt-br/news/game-updates/valorant-patch-notes-13-08",
+      "signals": [
+        {
+          "id": "maps",
+          "label": "map rotation / maps"
+        },
+        {
+          "id": "agents",
+          "label": "agents"
+        },
+        {
+          "id": "skins",
+          "label": "skins / cosmetics"
+        },
+        {
+          "id": "modes",
+          "label": "game modes"
+        },
+        {
+          "id": "competitive",
+          "label": "competitive / ranked"
+        }
+      ],
+      "source": "Riot Games · VALORANT"
+    },
+    {
+      "id": "league-patch-9894e9ba2a5a",
+      "game": "league",
+      "kind": "patch",
+      "version": "26.21",
+      "publishedAt": "2026-10-20T18:00:00.000Z",
+      "title": "Notas da Atualização 26.21",
+      "summary": "True Damage chegando no maior estilo! Além de novidades para SR, Desordem, Classic e Arena.",
+      "url": "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-21-notes",
+      "signals": [
+        {
+          "id": "items",
+          "label": "items"
+        },
+        {
+          "id": "skins",
+          "label": "skins / chromas"
+        },
+        {
+          "id": "modes",
+          "label": "modes"
+        },
+        {
+          "id": "systems",
+          "label": "systems / gameplay"
+        }
+      ],
+      "source": "Riot Games · League of Legends"
+    },
+    {
+      "id": "league-ddragon-16.21.1",
+      "game": "league",
+      "kind": "data-dragon",
+      "version": "16.21.1",
+      "publishedAt": "2026-10-31T16:00:23.505Z",
+      "title": "Riot Data Dragon 16.21.1",
+      "summary": "A new Data Dragon version is available; champion/item/map payloads and image paths should be regression-checked.",
+      "url": "https://ddragon.leagueoflegends.com/api/versions.json",
+      "signals": [
+        {
+          "id": "champions",
+          "label": "champions"
+        },
+        {
+          "id": "items",
+          "label": "items"
+        },
+        {
+          "id": "assets",
+          "label": "official assets"
+        }
+      ],
+      "source": "Riot Data Dragon"
+    }
+  ]
 }
