@@ -1,5 +1,66 @@
 {
   "schemaVersion": 1,
   "sourcePolicy": "official-only",
-  "items": []
+  "items": [
+    {
+      "id": "auto-b96eefe8fb64",
+      "category": "announcement",
+      "publishedAt": "2026-10-30T15:00:00.000Z",
+      "titlePtBr": "VALORANT - Torneios de Comunidade - 30/10 a 05/11",
+      "summaryPtBr": "Participe dos torneios criados pela própria comunidade.",
+      "url": "https://playvalorant.com/pt-br/news/community/valorant-torneios-de-comunidade-30-10-a-05-11",
+      "sourceLabel": "VALORANT Brasil · Riot Games",
+      "sourceKind": "official-web"
+    },
+    {
+      "id": "auto-7536f2808b9f",
+      "category": "announcement",
+      "publishedAt": "2026-10-27T17:00:00.000Z",
+      "titlePtBr": "Guia de Cosplay: Hush",
+      "summaryPtBr": "Tudo o que você precisa saber para fazer seu cosplay de Hush.",
+      "url": "https://playvalorant.com/pt-br/news/community/agent-cosplay-guide-hush",
+      "sourceLabel": "VALORANT Brasil · Riot Games",
+      "sourceKind": "official-web"
+    },
+    {
+      "id": "auto-765a5b24ed5d",
+      "category": "patch",
+      "publishedAt": "2026-10-27T13:00:00.000Z",
+      "titlePtBr": "Atualização 13.09 do VALORANT",
+      "summaryPtBr": "Shh... Hush chegou.",
+      "url": "https://playvalorant.com/pt-br/news/game-updates/valorant-patch-notes-1309",
+      "sourceLabel": "VALORANT Brasil · Riot Games",
+      "sourceKind": "official-web"
+    },
+    {
+      "id": "auto-65ebeda2b732",
+      "category": "announcement",
+      "publishedAt": "2026-10-23T15:00:00.000Z",
+      "titlePtBr": "VALORANT - Torneios de Comunidade - 23/10 a 29/10",
+      "summaryPtBr": "Participe dos torneios criados pela própria comunidade.",
+      "url": "https://playvalorant.com/pt-br/news/community/valorant-torneios-de-comunidade-23-10-a-29-10",
+      "sourceLabel": "VALORANT Brasil · Riot Games",
+      "sourceKind": "official-web"
+    },
+    {
+      "id": "auto-3def66647208",
+      "category": "announcement",
+      "publishedAt": "2026-10-16T15:00:00.000Z",
+      "titlePtBr": "VALORANT - Torneios de Comunidade - 16/10 a 22/10",
+      "summaryPtBr": "Participe dos torneios criados pela própria comunidade.",
+      "url": "https://playvalorant.com/pt-br/news/comunidade/valorant-torneios-de-comunidade-16-10-a-22-10/",
+      "sourceLabel": "VALORANT Brasil · Riot Games",
+      "sourceKind": "official-web"
+    },
+    {
+      "id": "auto-90a9abef37d7",
+      "category": "esports",
+      "publishedAt": "2025-09-04T18:00:00.000Z",
+      "titlePtBr": "Tudo o que você precisa saber: Champions Paris",
+      "summaryPtBr": "Partidas, formato, datas e muito mais!",
+      "url": "https://playvalorant.com/pt-br/news/esports/everything-you-need-to-know-champions-paris/",
+      "sourceLabel": "VALORANT Esports · Brasil",
+      "sourceKind": "official-web"
+    }
+  ]
 }
