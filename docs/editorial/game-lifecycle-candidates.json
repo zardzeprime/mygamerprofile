@@ -35,5 +35,93 @@
       ]
     }
   },
-  "candidates": []
+  "candidates": [
+    {
+      "id": "valorant-patch-fd6589510f46",
+      "game": "valorant",
+      "kind": "patch",
+      "version": "13.08",
+      "publishedAt": "2026-10-13T13:00:00.000Z",
+      "title": "Notas da Atualização 13.08",
+      "summary": "O Ato 6 começa agora.",
+      "url": "https://playvalorant.com/pt-br/news/game-updates/valorant-patch-notes-13-08",
+      "signals": [
+        {
+          "id": "maps",
+          "label": "map rotation / maps"
+        },
+        {
+          "id": "agents",
+          "label": "agents"
+        },
+        {
+          "id": "skins",
+          "label": "skins / cosmetics"
+        },
+        {
+          "id": "modes",
+          "label": "game modes"
+        },
+        {
+          "id": "competitive",
+          "label": "competitive / ranked"
+        }
+      ],
+      "source": "Riot Games · VALORANT"
+    },
+    {
+      "id": "league-patch-391189758999",
+      "game": "league",
+      "kind": "patch",
+      "version": "26.22",
+      "publishedAt": "2026-11-03T19:00:00.000Z",
+      "title": "Notas da Atualização 26.22 do League of Legends",
+      "summary": "A Atualização 26.22 está no topo das paradas! K/DA chegando pra botar fogo no parquinho, Mel recebendo uma atualização parcial e várias mudanças para SR, Desordem e Classic.",
+      "url": "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-22-notes",
+      "signals": [
+        {
+          "id": "items",
+          "label": "items"
+        },
+        {
+          "id": "skins",
+          "label": "skins / chromas"
+        },
+        {
+          "id": "modes",
+          "label": "modes"
+        },
+        {
+          "id": "systems",
+          "label": "systems / gameplay"
+        }
+      ],
+      "source": "Riot Games · League of Legends"
+    },
+    {
+      "id": "league-ddragon-16.22.1",
+      "game": "league",
+      "kind": "data-dragon",
+      "version": "16.22.1",
+      "publishedAt": "2026-11-06T17:53:10.863Z",
+      "title": "Riot Data Dragon 16.22.1",
+      "summary": "A new Data Dragon version is available; champion/item/map payloads and image paths should be regression-checked.",
+      "url": "https://ddragon.leagueoflegends.com/api/versions.json",
+      "signals": [
+        {
+          "id": "champions",
+          "label": "champions"
+        },
+        {
+          "id": "items",
+          "label": "items"
+        },
+        {
+          "id": "assets",
+          "label": "official assets"
+        }
+      ],
+      "source": "Riot Data Dragon"
+    }
+  ]
 }
