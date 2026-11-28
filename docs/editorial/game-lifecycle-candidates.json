@@ -35,5 +35,93 @@
       ]
     }
   },
-  "candidates": []
+  "candidates": [
+    {
+      "id": "valorant-patch-c332cbecad89",
+      "game": "valorant",
+      "kind": "patch",
+      "version": "13.10",
+      "publishedAt": "2026-11-10T14:00:00.000Z",
+      "title": "Atualização 13.10 do VALORANT",
+      "summary": "Marcações de replays, novidades na Contenda Bugada, mudanças nas assistências e correções de bugs!",
+      "url": "https://playvalorant.com/pt-br/news/game-updates/valorant-patch-notes-13-10",
+      "signals": [
+        {
+          "id": "maps",
+          "label": "map rotation / maps"
+        },
+        {
+          "id": "agents",
+          "label": "agents"
+        },
+        {
+          "id": "skins",
+          "label": "skins / cosmetics"
+        },
+        {
+          "id": "modes",
+          "label": "game modes"
+        },
+        {
+          "id": "competitive",
+          "label": "competitive / ranked"
+        }
+      ],
+      "source": "Riot Games · VALORANT"
+    },
+    {
+      "id": "league-patch-f492d658ea58",
+      "game": "league",
+      "kind": "patch",
+      "version": "26.23",
+      "publishedAt": "2026-11-17T19:00:00.000Z",
+      "title": "Notas da Atualização 26.23 do League of Legends",
+      "summary": "O mapa de inverno está de volta, com várias atualizações de balanceamento e um pouquinho de Desordem Musical.",
+      "url": "https://www.leagueoflegends.com/pt-br/news/game-updates/league-of-legends-patch-26-23-notes",
+      "signals": [
+        {
+          "id": "items",
+          "label": "items"
+        },
+        {
+          "id": "skins",
+          "label": "skins / chromas"
+        },
+        {
+          "id": "modes",
+          "label": "modes"
+        },
+        {
+          "id": "systems",
+          "label": "systems / gameplay"
+        }
+      ],
+      "source": "Riot Games · League of Legends"
+    },
+    {
+      "id": "league-ddragon-16.23.1",
+      "game": "league",
+      "kind": "data-dragon",
+      "version": "16.23.1",
+      "publishedAt": "2026-11-28T18:48:32.543Z",
+      "title": "Riot Data Dragon 16.23.1",
+      "summary": "A new Data Dragon version is available; champion/item/map payloads and image paths should be regression-checked.",
+      "url": "https://ddragon.leagueoflegends.com/api/versions.json",
+      "signals": [
+        {
+          "id": "champions",
+          "label": "champions"
+        },
+        {
+          "id": "items",
+          "label": "items"
+        },
+        {
+          "id": "assets",
+          "label": "official assets"
+        }
+      ],
+      "source": "Riot Data Dragon"
+    }
+  ]
 }
